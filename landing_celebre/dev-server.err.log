@@ -1,0 +1,2 @@
+$ pnpm --filter @workspace/celebre-pizzaria dev
+$ vite --config vite.config.ts --host 0.0.0.0
