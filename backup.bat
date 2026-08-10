@@ -1,1 +1,0 @@
-robocopy "\\192.168.200.2\d\EVENTOS" "D:\Eventos" *.* /e /S /Z /R:0 /W:0 /XO /V /FP
