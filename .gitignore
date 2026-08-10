@@ -1,0 +1,55 @@
+# Dependências e artefatos de build
+**/node_modules/
+**/.pnpm-store/
+**/dist/
+**/build/
+**/coverage/
+**/.next/
+**/.turbo/
+*.tsbuildinfo
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+!.env.test.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Logs, bancos e dados locais
+*.log
+logs/
+*.sqlite
+*.sqlite3
+*.db
+uploads/
+tmp/
+temp/
+
+# Arquivos do sistema/IDE
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/settings.example.json
+*.swp
+*.swo
+
+# Binários locais que não devem ser versionados.
+# ZIPs são mantidos fora desta lista porque serão versionados via Git LFS.
+*.exe
+*.dll
+*.msi
+*.lnk
+
+# Arquivos de backup e compactações temporárias
+*.bak
+*.tmp
+*.old
+*.orig
