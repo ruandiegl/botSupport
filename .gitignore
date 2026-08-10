@@ -53,3 +53,16 @@ desktop.ini
 *.tmp
 *.old
 *.orig
+
+# Outros projetos/arquivos que estavam na pasta Desktop e não pertencem ao GTF-Bot
+assets/
+Celebre/
+curriculos_vulcano/
+landing_celebre/
+Ruan/
+Tenant/
+backup-estrutura-anterior-20260810/
+*.lnk
+*.bat
+*.appref-ms
+desktop.ini
