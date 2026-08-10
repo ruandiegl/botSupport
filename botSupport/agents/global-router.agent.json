@@ -1,0 +1,30 @@
+{
+  "agentId": "gtf-global-router",
+  "name": "Roteador Global de Intenções GTF-Bot",
+  "version": "1.0.0",
+  "description": "Agente responsável por analisar as mensagens recebidas no WhatsApp e encaminhar para os departamentos ou disparar o fluxo correto.",
+  "routingRules": [
+    {
+      "intent": "RESET_PASSWORD",
+      "keywords": ["senha", "login", "acesso", "bloqueado", "esqueci", "domínio", "email"],
+      "targetDepartment": "Suporte Geral",
+      "action": "ENQUEUE_WITH_PROCEDURE"
+    },
+    {
+      "intent": "NETWORK_VPN_ISSUES",
+      "keywords": ["wifi", "internet", "vpn", "sem conexao", "lenta", "forticlient", "cabo", "rede"],
+      "targetDepartment": "Rede e Internet",
+      "action": "ENQUEUE_WITH_PROCEDURE"
+    },
+    {
+      "intent": "AUDIO_VIDEO_LIVE",
+      "keywords": ["som", "microfone", "obs", "estudio", "transmissao", "video", "mesa", "caixa"],
+      "targetDepartment": "Áudio e Vídeo",
+      "action": "ENQUEUE_WITH_PROCEDURE"
+    }
+  ],
+  "fallback": {
+    "action": "SHOW_MAIN_MENU",
+    "message": "Desculpe, não consegui entender exatamente sua necessidade. Por favor, escolha uma das opções abaixo:"
+  }
+}
