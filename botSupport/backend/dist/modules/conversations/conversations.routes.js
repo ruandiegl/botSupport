@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { conversationsController } from "./conversations.controller.js";
+const router = Router();
+router.get("/conversations", (req, res) => conversationsController.list(req, res));
+router.get("/conversations/stream", (req, res) => conversationsController.streamEvents(req, res));
+router.get("/conversations/:id", (req, res) => conversationsController.getById(req, res));
+router.post("/conversations/:id/assume", (req, res) => conversationsController.assume(req, res));
+router.post("/conversations/:id/transfer", (req, res) => conversationsController.transfer(req, res));
+router.post("/conversations/:id/close", (req, res) => conversationsController.close(req, res));
+router.post("/conversations/:id", (req, res) => conversationsController.sendMessage(req, res));
+export default router;
