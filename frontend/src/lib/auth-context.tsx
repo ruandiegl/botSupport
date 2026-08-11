@@ -7,6 +7,11 @@ export interface User {
   role: string;
   departmentId?: string | null;
   isOnline?: boolean;
+  isActive?: boolean;
+  permissions?: {
+    resources: Record<string, Record<string, boolean>>;
+    screens: Record<string, boolean>;
+  };
 }
 
 interface AuthContextType {
@@ -15,6 +20,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isLoading: boolean;
+  can: (resource: string, action: string) => boolean;
+  canViewScreen: (path: string) => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -75,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     localStorage.setItem("gtfbot_token", data.token);
     setToken(data.token);
-    setUser(data.agent);
+    setUser({ ...data.agent, permissions: data.permissions });
   };
 
   const logout = () => {
@@ -93,6 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isAdmin = user?.role === "ADMIN";
+  const can = (resource: string, action: string) => isAdmin || Boolean(user?.permissions?.resources[resource]?.[action]);
+  const canViewScreen = (path: string) => isAdmin || Boolean(user?.permissions?.screens[path] || (path.startsWith("/conversation/") && user?.permissions?.screens["/conversation/:id"]));
 
   return (
     <AuthContext.Provider
@@ -102,6 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user && !!token,
         isAdmin,
         isLoading,
+        can,
+        canViewScreen,
         login,
         logout,
       }}

@@ -9,6 +9,8 @@ import agentsRoutes from "./modules/agents/agents.routes.js";
 import flowRoutes from "./modules/flow/flow.routes.js";
 import zapiRoutes from "./modules/zapi/zapi.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import rbacRoutes from "./modules/rbac/rbac.routes.js";
+import shortcutsRoutes from "./modules/shortcuts/shortcuts.routes.js";
 
 export const app = express();
 
@@ -24,6 +26,8 @@ app.use("/api", departmentsRoutes);
 app.use("/api", agentsRoutes);
 app.use("/api", flowRoutes);
 app.use("/api", zapiRoutes);
+app.use("/api", rbacRoutes);
+app.use("/api", shortcutsRoutes);
 
 // Global Error Handler
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

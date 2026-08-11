@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/prisma/index.js";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -7,6 +7,8 @@ async function main() {
   console.log("Limpando banco de dados e preparando ambiente de produção limpo...");
 
   // Limpar tabelas mantendo ordem de chave estrangeira
+  await prisma.shortcutAudit.deleteMany();
+  await prisma.shortcut.deleteMany();
   await prisma.message.deleteMany();
   await prisma.conversation.deleteMany();
   await prisma.procedure.deleteMany();
@@ -15,6 +17,7 @@ async function main() {
   await prisma.contact.deleteMany();
   await prisma.flowDefinition.deleteMany();
   await prisma.zApiConfig.deleteMany();
+  await prisma.rolePermission.deleteMany();
 
   // 1. Departamentos Reais da Operação
   const deptGeral = await prisma.department.create({
@@ -63,9 +66,9 @@ async function main() {
   });
 
   // 3. Atendentes de T.I. e Administrador
-  const adminPasswordHash = bcrypt.hashSync("admin123", 10);
+  const adminPasswordHash = bcrypt.hashSync("admin123", 12);
 
-  await prisma.agent.create({
+  const admin = await prisma.agent.create({
     data: {
       name: "Administrador Sistema",
       email: "admin@torreforte.org",
@@ -75,7 +78,7 @@ async function main() {
     },
   });
 
-  await prisma.agent.create({
+  const marina = await prisma.agent.create({
     data: {
       id: "agent-marina",
       name: "Marina Costa",
@@ -107,6 +110,15 @@ async function main() {
       departmentId: deptAudio.id,
       isOnline: false,
     },
+  });
+
+  await prisma.shortcut.createMany({
+    data: [
+      { title: "Saudação inicial", message: "Olá! Estou acompanhando seu atendimento e vou ajudar com isso.", type: "GREETING", scope: "GLOBAL", sortOrder: 1, createdById: admin.id },
+      { title: "Encerramento cordial", message: "Seu atendimento foi concluído. Se precisar de algo mais, estamos à disposição!", type: "CLOSING", scope: "GLOBAL", sortOrder: 2, createdById: admin.id },
+      { title: "Validação de acesso", message: "Por favor, confirme seu nome completo e o equipamento em que o erro acontece.", type: "DEPARTMENT", scope: "DEPARTMENT", departmentId: deptGeral.id, sortOrder: 3, createdById: admin.id },
+      { title: "Retorno em instantes", message: "Estou verificando os detalhes e retorno em instantes.", type: "PERSONAL", scope: "PERSONAL", ownerId: marina.id, sortOrder: 1, createdById: marina.id },
+    ],
   });
 
   // 4. Fluxo Padrão do Bot
@@ -148,6 +160,21 @@ async function main() {
       },
     });
   }
+
+  const screenPaths = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/flow", "/admin/zapi", "/admin/rbac"];
+  const roleActions: Record<string, Record<string, string[]>> = {
+    ADMIN: {
+      conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
+    },
+    SUPERVISOR: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], reports: ["view"] },
+    AGENT: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"] },
+  };
+  await prisma.rolePermission.createMany({
+    data: Object.entries(roleActions).flatMap(([role, resources]) => [
+      ...Object.entries(resources).map(([resource, actions]) => ({ role, resource, actions })),
+      ...screenPaths.map((path) => ({ role, resource: `screen:${path}`, actions: role === "ADMIN" || ["/", "/my-conversations", "/conversation/:id", "/admin/shortcuts"].includes(path) ? ["view"] : [] })),
+    ]),
+  });
 
   console.log("Banco de dados limpo e populado com dados de produção reais!");
 }

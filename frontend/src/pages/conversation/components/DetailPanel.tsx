@@ -1,25 +1,55 @@
-import { FileText, Clock3, Zap } from "lucide-react";
-import type { Conversation } from "@/types";
+import { Clock3, Sparkles, TrendingUp } from "lucide-react";
+import type { Conversation, Shortcut } from "@/types";
 import { getInitials } from "@/app/Shell";
 import { Status } from "@/pages/queue/components/ConversationRow";
-import { useQuery } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api-client";
-import type { Department } from "@/types";
+import { useAvailableShortcuts } from "../hooks/use-shortcuts";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export function DetailPanel({
   conversation,
-  onInsertPreset,
+  canUseShortcuts,
+  onInsertShortcut,
 }: {
   conversation: Conversation;
-  onInsertPreset: (text: string) => void;
+  canUseShortcuts: boolean;
+  onInsertShortcut: (shortcut: Shortcut) => void;
 }) {
-  const { data: departments = [] } = useQuery<Department[]>({
-    queryKey: ["departments"],
-    queryFn: () => apiFetch<Department[]>("/departments"),
-  });
+  const { data: shortcuts = [], isLoading } = useAvailableShortcuts(
+    conversation.id,
+    "",
+    "ALL",
+    canUseShortcuts
+  );
+  const mostUsed = [...shortcuts]
+    .filter((shortcut) => shortcut.usageCount > 0)
+    .sort((a, b) => b.usageCount - a.usageCount)
+    .slice(0, 3);
+  const mostUsedIds = new Set(mostUsed.map((shortcut) => shortcut.id));
+  const recent = [...shortcuts]
+    .filter((shortcut) => shortcut.lastUsedAt && !mostUsedIds.has(shortcut.id))
+    .sort((a, b) => new Date(b.lastUsedAt!).getTime() - new Date(a.lastUsedAt!).getTime())
+    .slice(0, 3);
+  const available = shortcuts.slice(0, 4);
 
-  const dept = departments.find((d) => d.id === conversation.departmentId);
-  const procedures = dept?.procedures || [];
+  const renderShortcut = (shortcut: Shortcut) => (
+    <Button
+      key={shortcut.id}
+      variant="ghost"
+      size="sm"
+      className="detail-shortcut-button"
+      onClick={() => onInsertShortcut(shortcut)}
+      title={shortcut.message}
+    >
+      <Sparkles data-icon="inline-start" />
+      <span className="detail-shortcut-copy">
+        <strong>{shortcut.title}</strong>
+        <small>{shortcut.message}</small>
+      </span>
+      {shortcut.usageCount > 0 && <Badge variant="secondary">{shortcut.usageCount}</Badge>}
+    </Button>
+  );
 
   return (
     <aside className="detail-panel">
@@ -51,49 +81,46 @@ export function DetailPanel({
         </div>
       </div>
 
-      <div className="detail-section">
-        <div className="detail-label">Procedimentos e Atalhos</div>
-        <div className="detail-actions">
-          <button
-            className="btn btn-muted"
-            onClick={() =>
-              onInsertPreset("Olá! Estou acompanhando seu atendimento e vou ajudar com isso.")
-            }
-            data-testid="button-insert-greeting"
-          >
-            <FileText size={14} /> Inserir saudação
-          </button>
-          <button
-            className="btn btn-muted"
-            onClick={() =>
-              onInsertPreset("Recebi sua mensagem. Vou verificar os detalhes e retorno em seguida.")
-            }
-            data-testid="button-insert-followup"
-          >
-            <Clock3 size={14} /> Inserir acompanhamento
-          </button>
+      {canUseShortcuts && (
+        <div className="detail-shortcuts">
+          <div className="detail-shortcuts-heading">
+            <div>
+              <div className="detail-label">Atalhos rápidos</div>
+              <p>Insira uma mensagem no chat com um clique.</p>
+            </div>
+            <Sparkles />
+          </div>
 
-          {procedures.map((p) => (
-            <button
-              key={p.id}
-              className="btn btn-muted"
-              onClick={() => onInsertPreset(`*Procedimento: ${p.title}*\n${p.content}`)}
-              title={p.content}
-              data-testid={`button-insert-procedure-${p.id}`}
-            >
-              <Zap size={14} /> {p.title}
-            </button>
-          ))}
+          {isLoading ? (
+            <p className="detail-shortcut-empty">Carregando atalhos...</p>
+          ) : shortcuts.length === 0 ? (
+            <p className="detail-shortcut-empty">Nenhum atalho disponível para esta conversa.</p>
+          ) : mostUsed.length === 0 && recent.length === 0 ? (
+            <div className="detail-shortcut-group">
+              <div className="detail-shortcut-group-title"><Sparkles /> Disponíveis</div>
+              {available.map(renderShortcut)}
+            </div>
+          ) : (
+            <>
+              {mostUsed.length > 0 && (
+                <div className="detail-shortcut-group">
+                  <div className="detail-shortcut-group-title"><TrendingUp /> Mais usados</div>
+                  {mostUsed.map(renderShortcut)}
+                </div>
+              )}
+              {recent.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="detail-shortcut-group">
+                    <div className="detail-shortcut-group-title"><Clock3 /> Usados recentemente</div>
+                    {recent.map(renderShortcut)}
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
-      </div>
-
-      <div>
-        <div className="detail-label">Identificação</div>
-        <span className="tag">WhatsApp</span>
-        <span className="tag" style={{ marginLeft: 5 }}>
-          {conversation.id}
-        </span>
-      </div>
+      )}
     </aside>
   );
 }

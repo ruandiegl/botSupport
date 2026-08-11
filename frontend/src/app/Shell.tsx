@@ -12,11 +12,16 @@ import {
   Menu,
   Radio,
   LogOut,
+  ShieldCheck,
+  MessagesSquare,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import type { Conversation, Agent } from "@/types";
+import { Brand } from "@/components/ui/Brand";
+import { Button } from "@/components/ui/button";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export interface AgentContextType {
   activeAgent: Agent | null;
@@ -40,22 +45,11 @@ export const getInitials = (name: string) =>
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
 
-function Logo() {
-  return (
-    <div className="brand">
-      <div className="brand-mark">TF</div>
-      <div>
-        <div className="brand-name">GTF·Bot</div>
-        <div className="brand-kicker">Torre Forte / Operação</div>
-      </div>
-    </div>
-  );
-}
-
 export function Shell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, logout, isAdmin, isAuthenticated } = useAuth();
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
 
   // Buscar lista de atendentes reais do banco de dados
   const { data: agents = [] } = useQuery<Agent[]>({
@@ -72,6 +66,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         role: (user.role as any) || "AGENT",
         departmentId: user.departmentId || undefined,
         isOnline: true,
+        isActive: user.isActive ?? true,
       }
     : agents[0] || null;
 
@@ -90,22 +85,26 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const nav = [
     { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
     { href: "/my-conversations", label: "Meus atendimentos", icon: Headphones },
-  ];
+  ].filter((item) => canViewScreen(item.href));
 
   const admin = [
     { href: "/admin/departments", label: "Departamentos", icon: LayoutDashboard },
     { href: "/admin/agents", label: "Atendentes", icon: Users },
+    { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
     { href: "/admin/flow", label: "Fluxo do bot", icon: Bot },
     { href: "/admin/zapi", label: "Conexão Z-API", icon: Radio },
-  ];
+    { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
+  ].filter((item) => canViewScreen(item.href));
 
   const getPageTitle = () => {
     if (location === "/") return "Fila de atendimento";
     if (location.includes("conversation")) return "Conversa";
     if (location.includes("departments")) return "Departamentos";
     if (location.includes("agents")) return "Atendentes";
+    if (location.includes("shortcuts")) return "Atalhos e procedimentos";
     if (location.includes("flow")) return "Fluxo do bot";
     if (location.includes("zapi")) return "Conexão Z-API";
+    if (location.includes("rbac")) return "Controle de Acesso (RBAC)";
     return "Meus atendimentos";
   };
 
@@ -118,7 +117,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <AgentContext.Provider value={{ activeAgent, agents, setActiveAgentId }}>
       <div className="app-shell">
         <aside className="sidebar" style={{ display: mobileOpen ? "flex" : undefined }}>
-          <Logo />
+          <Brand />
           <div className="nav-label">Atendimento</div>
           {nav.map(({ href, label, icon: Icon, badge }) => (
             <Link
@@ -133,7 +132,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
 
-          {isAdmin && (
+          {admin.length > 0 && (
             <>
               <div className="nav-label">Administração</div>
               {admin.map(({ href, label, icon: Icon }) => (
@@ -167,52 +166,68 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 {activeAgent?.role === "ADMIN" ? "Administrador" : "Atendente"} · Online
               </div>
             </div>
-            <button
-              onClick={handleLogout}
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setLogoutConfirmOpen(true)}
               title="Sair da plataforma"
               className="icon-btn text-slate-400 hover:text-red-400 transition-colors"
             >
               <LogOut size={16} />
-            </button>
+            </Button>
           </div>
         </aside>
 
         <main className="main">
           <header className="topbar">
             <div className="crumb">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 className="icon-btn mobile-menu"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 data-testid="button-open-menu"
               >
                 <Menu size={16} />
-              </button>
+              </Button>
               <span>GTF-Bot</span>
               <ChevronRight size={13} />
               <strong>{getPageTitle()}</strong>
             </div>
             <div className="top-actions">
-              <button className="icon-btn" data-testid="button-help">
+              <Button variant="ghost" size="icon" className="icon-btn" data-testid="button-help">
                 <HelpCircle size={16} />
-              </button>
-              <button className="icon-btn" data-testid="button-settings">
+              </Button>
+              <Button variant="ghost" size="icon" className="icon-btn" data-testid="button-settings">
                 <Settings2 size={16} />
-              </button>
+              </Button>
               <div className="avatar coral" style={{ width: 32, height: 32 }}>
                 {getInitials(activeAgent?.name || "AT")}
               </div>
-              <button
-                onClick={handleLogout}
-                className="btn btn-secondary"
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLogoutConfirmOpen(true)}
+                className="btn btn-muted"
                 style={{ height: 32, fontSize: 12, padding: "0 10px" }}
               >
                 <LogOut size={14} /> Sair
-              </button>
+              </Button>
             </div>
           </header>
 
           {children}
         </main>
+        <ConfirmationDialog
+          open={logoutConfirmOpen}
+          onOpenChange={setLogoutConfirmOpen}
+          tone="warning"
+          title="Sair da plataforma?"
+          description="Sua sessão atual será encerrada e será necessário entrar novamente para acessar o sistema."
+          confirmLabel="Sair da conta"
+          onConfirm={handleLogout}
+          testId="button-confirm-logout"
+        />
       </div>
     </AgentContext.Provider>
   );

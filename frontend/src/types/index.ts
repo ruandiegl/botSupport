@@ -53,6 +53,7 @@ export interface Agent {
   email: string;
   role: AgentRole;
   isOnline: boolean;
+  isActive: boolean;
   departmentId?: string | null;
   departmentName?: string | null;
 }
@@ -70,4 +71,28 @@ export interface FlowDefinition {
   menuMessage: string;
   options: FlowOption[];
   updatedAt: string;
+}
+
+export type ShortcutType = "GREETING" | "CLOSING" | "DEPARTMENT" | "PERSONAL" | "GENERAL";
+export type ShortcutScope = "GLOBAL" | "DEPARTMENT" | "PERSONAL";
+
+export interface Shortcut {
+  id: string;
+  title: string;
+  message: string;
+  type: ShortcutType;
+  scope: ShortcutScope;
+  departmentId: string | null;
+  department?: { id: string; name: string } | null;
+  ownerId: string | null;
+  owner?: { id: string; name: string } | null;
+  createdBy: { id: string; name: string };
+  updatedBy?: { id: string; name: string } | null;
+  isActive: boolean;
+  sortOrder: number;
+  usageCount: number;
+  lastUsedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  archivedAt: string | null;
 }

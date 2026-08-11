@@ -46,7 +46,7 @@ export function ConversationRow({
         <div className="last-message">{conversation.lastMessage || "Sem mensagens recentes"}</div>
         <div style={{ marginTop: 7, display: "flex", gap: 7, alignItems: "center" }}>
           <Status status={conversation.status} />
-          <span style={{ color: "#89939a", fontSize: 10 }}>
+          <span style={{ color: "hsl(var(--muted-foreground))", fontSize: 10 }}>
             {conversation.departmentName || "Sem departamento"}
           </span>
         </div>

@@ -13,6 +13,8 @@ import DepartmentAdmin from "@/pages/admin/departments";
 import AgentsAdmin from "@/pages/admin/agents";
 import FlowAdmin from "@/pages/admin/flow";
 import ZApiAdmin from "@/pages/admin/zapi";
+import RbacAdmin from "@/pages/admin/rbac";
+import ShortcutsAdmin from "@/pages/admin/shortcuts";
 import "@/styles.css";
 
 function NotFoundPage() {
@@ -35,8 +37,8 @@ function NotFoundPage() {
   );
 }
 
-function ProtectedRoute({ component: Component, requireAdmin = false }: { component: React.ComponentType; requireAdmin?: boolean }) {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+function ProtectedRoute({ component: Component, screen }: { component: React.ComponentType; screen?: string }) {
+  const { isAuthenticated, canViewScreen, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
   if (isLoading) {
@@ -53,7 +55,7 @@ function ProtectedRoute({ component: Component, requireAdmin = false }: { compon
     return null;
   }
 
-  if (requireAdmin && !isAdmin) {
+  if (screen && !canViewScreen(screen)) {
     return (
       <div className="p-8 max-w-lg mx-auto text-center mt-12 bg-slate-900 border border-slate-800 rounded-2xl">
         <div className="inline-flex p-4 rounded-full bg-amber-500/10 text-amber-400 mb-4">
@@ -61,7 +63,7 @@ function ProtectedRoute({ component: Component, requireAdmin = false }: { compon
         </div>
         <h2 className="text-xl font-bold text-slate-100 mb-2">Acesso Restrito</h2>
         <p className="text-sm text-slate-400 mb-6">
-          Esta área é restrita a administradores. Entre em contato com a gestão de T.I. para solicitar acesso.
+          Você não possui permissão para acessar esta tela.
         </p>
         <Link href="/" className="btn btn-primary">
           Voltar para a Fila
@@ -102,16 +104,22 @@ function Router() {
                 {() => <ProtectedRoute component={MyConversationsPage} />}
               </Route>
               <Route path="/admin/departments">
-                {() => <ProtectedRoute component={DepartmentAdmin} requireAdmin />}
+                {() => <ProtectedRoute component={DepartmentAdmin} screen="/admin/departments" />}
               </Route>
               <Route path="/admin/agents">
-                {() => <ProtectedRoute component={AgentsAdmin} requireAdmin />}
+                {() => <ProtectedRoute component={AgentsAdmin} screen="/admin/agents" />}
               </Route>
               <Route path="/admin/flow">
-                {() => <ProtectedRoute component={FlowAdmin} requireAdmin />}
+                {() => <ProtectedRoute component={FlowAdmin} screen="/admin/flow" />}
+              </Route>
+              <Route path="/admin/shortcuts">
+                {() => <ProtectedRoute component={ShortcutsAdmin} screen="/admin/shortcuts" />}
               </Route>
               <Route path="/admin/zapi">
-                {() => <ProtectedRoute component={ZApiAdmin} requireAdmin />}
+                {() => <ProtectedRoute component={ZApiAdmin} screen="/admin/zapi" />}
+              </Route>
+              <Route path="/admin/rbac">
+                {() => <ProtectedRoute component={RbacAdmin} screen="/admin/rbac" />}
               </Route>
               <Route component={NotFoundPage} />
             </Switch>

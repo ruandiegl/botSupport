@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "wouter";
 import { ArrowLeft, Check, Archive, Send, RefreshCw } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import {
   useGetConversation,
+  useMarkConversationRead,
   useSendMessage,
   useAssumeConversation,
   useCloseConversation,
 } from "./hooks/use-conversation";
 import { DetailPanel } from "./components/DetailPanel";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ShortcutPicker } from "./components/ShortcutPicker";
+import { useRegisterShortcutUse } from "./hooks/use-shortcuts";
+import { useAuth } from "@/lib/auth-context";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 const timeLabel = (date?: string) =>
   date
@@ -24,15 +31,42 @@ export default function ConversationPage() {
   const { id = "" } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const [message, setMessage] = useState("");
+  const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
+  const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
+  const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const lastReadAttemptRef = useRef<string | null>(null);
   const { activeAgent } = useActiveAgent();
+  const { can } = useAuth();
 
   const activeAgentId = activeAgent?.id || "agent-marina";
   const activeAgentName = activeAgent?.name || "Atendente";
 
   const { data: conversation, isLoading, isError, refetch } = useGetConversation(id);
+  const markAsRead = useMarkConversationRead(id);
   const sendMessage = useSendMessage(id);
   const assume = useAssumeConversation(id);
   const close = useCloseConversation(id);
+  const registerShortcutUse = useRegisterShortcutUse();
+
+  useEffect(() => {
+    const container = messagesRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [conversation?.messages?.length]);
+
+  useEffect(() => {
+    const unreadCount = conversation?.unreadCount ?? 0;
+    if (!unreadCount) {
+      lastReadAttemptRef.current = null;
+      return;
+    }
+
+    const attemptKey = `${id}:${unreadCount}`;
+    if (!id || lastReadAttemptRef.current === attemptKey) return;
+    lastReadAttemptRef.current = attemptKey;
+    markAsRead.mutate();
+  }, [id, conversation?.unreadCount]);
 
   if (isLoading)
     return (
@@ -51,31 +85,38 @@ export default function ConversationPage() {
           <RefreshCw size={24} />
           <h3>Não foi possível carregar a conversa</h3>
           <p className="subtle">Verifique se o backend está ativo e o banco de dados conectado.</p>
-          <button className="btn btn-muted" onClick={() => refetch()}>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       </div>
     );
 
   const send = () => {
     if (!message.trim()) return;
+    const signature = `-- ${activeAgentName}`;
+    const body = message.trim().replace(/\n+$/, "");
+    const formattedContent = body.endsWith(signature) ? body : `${body}\n\n${signature}`;
+
+    const shortcutId = selectedShortcutId;
     sendMessage.mutate(
-      { content: message.trim() },
+      { content: formattedContent },
       {
         onSuccess: () => {
           setMessage("");
+          setSelectedShortcutId(null);
+          if (shortcutId) registerShortcutUse.mutate({ id: shortcutId, conversationId: id });
         },
       }
     );
   };
 
-  const handleAssume = () => {
-    assume.mutate({ agentId: activeAgentId });
+  const handleAssume = async () => {
+    await assume.mutateAsync({ agentId: activeAgentId });
   };
 
-  const handleClose = () => {
-    close.mutate();
+  const handleClose = async () => {
+    await close.mutateAsync();
   };
 
   return (
@@ -83,13 +124,15 @@ export default function ConversationPage() {
       <section className="thread">
         <div className="thread-head">
           <div className="contact-block">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               className="icon-btn"
               onClick={() => setLocation("/")}
               data-testid="button-back-conversations"
             >
               <ArrowLeft size={16} />
-            </button>
+            </Button>
             <div className="avatar coral">{conversation.contact.initials}</div>
             <div>
               <h1>{conversation.contact.name}</h1>
@@ -101,44 +144,54 @@ export default function ConversationPage() {
 
           <div className="thread-actions">
             {conversation.status === "QUEUED" && (
-              <button
-                className="btn btn-accent"
+              <Button
+                variant="default"
+                size="sm"
                 disabled={assume.isPending}
-                onClick={handleAssume}
+                onClick={() => setAssumeConfirmOpen(true)}
                 data-testid="button-assume-conversation"
               >
                 <Check size={14} /> Assumir
-              </button>
+              </Button>
             )}
             {conversation.status !== "CLOSED" && (
-              <button
-                className="btn btn-muted"
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={close.isPending}
-                onClick={handleClose}
+                onClick={() => setCloseConfirmOpen(true)}
                 data-testid="button-close-conversation"
               >
                 <Archive size={14} /> Encerrar
-              </button>
+              </Button>
             )}
           </div>
         </div>
 
-        <div className="messages">
+        <div className="messages" ref={messagesRef}>
           <div className="day-divider">Hoje</div>
           {conversation.messages?.map((item) => (
             <div className={`message-wrap ${item.direction === "OUT" ? "out" : "in"}`} key={item.id}>
-              <div className="bubble">{item.content}</div>
+              <div className="bubble">
+                {item.content.split(/(\n\n-- .+)$/s).map((part, index) => index === 1 ? <span className="bubble-signature" key={index}>{part}</span> : part)}
+              </div>
               <div className="bubble-meta">
-                {item.senderName ||
-                  (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)}{" "}
-                · {timeLabel(item.createdAt)}
+                {item.direction === "OUT"
+                  ? timeLabel(item.createdAt)
+                  : `${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)} · ${timeLabel(item.createdAt)}`}
               </div>
             </div>
           ))}
         </div>
 
         <div className="composer">
-          <textarea
+          {can("shortcuts", "use") && (
+            <div className="composer-toolbar">
+              <ShortcutPicker conversationId={id} onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} />
+              <span>Selecione uma mensagem pronta e ajuste antes de enviar.</span>
+            </div>
+          )}
+          <Textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             onKeyDown={(event) => {
@@ -154,21 +207,48 @@ export default function ConversationPage() {
             <span className="signature">
               Assinatura: <b>— {activeAgentName}</b>
             </span>
-            <button
-              className="btn btn-primary"
+            <Button
+              variant="default"
+              size="lg"
               onClick={send}
               disabled={!message.trim() || sendMessage.isPending}
               data-testid="button-send-message"
             >
               <Send size={14} /> Enviar
-            </button>
+            </Button>
           </div>
         </div>
       </section>
 
       <DetailPanel
         conversation={conversation}
-        onInsertPreset={(text) => setMessage(text)}
+        canUseShortcuts={can("shortcuts", "use")}
+        onInsertShortcut={(shortcut) => {
+          setMessage(shortcut.message);
+          setSelectedShortcutId(shortcut.id);
+        }}
+      />
+      <ConfirmationDialog
+        open={assumeConfirmOpen}
+        onOpenChange={setAssumeConfirmOpen}
+        tone="warning"
+        title="Assumir este atendimento?"
+        description="Você passará a ser responsável pela conversa e o cliente será informado da mudança."
+        confirmLabel="Assumir atendimento"
+        details={<strong>{conversation.contact.name}</strong>}
+        onConfirm={handleAssume}
+        testId="button-confirm-assume-conversation"
+      />
+      <ConfirmationDialog
+        open={closeConfirmOpen}
+        onOpenChange={setCloseConfirmOpen}
+        tone="danger"
+        title="Encerrar este chamado?"
+        description="O atendimento será marcado como encerrado e deixará a lista de conversas ativas."
+        confirmLabel="Encerrar chamado"
+        details={<strong>{conversation.contact.name}</strong>}
+        onConfirm={handleClose}
+        testId="button-confirm-close-conversation"
       />
     </div>
   );

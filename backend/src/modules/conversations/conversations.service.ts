@@ -18,7 +18,7 @@ export class ConversationsService {
 
     const messages = conversation.messages || [];
     const lastMessage = messages.at(-1)?.content ?? "Nenhuma mensagem ainda";
-    const unreadCount = messages.filter((m) => m.direction === "IN").length;
+    const unreadCount = messages.filter((m) => m.direction === "IN" && !m.readAt).length;
 
     return {
       id: conversation.id,
@@ -58,6 +58,16 @@ export class ConversationsService {
   }
 
   async getById(id: string) {
+    return this.formatConversation(id);
+  }
+
+  async markAsRead(id: string) {
+    const conversation = await conversationsRepository.findById(id);
+    if (!conversation) return null;
+
+    await conversationsRepository.markIncomingMessagesAsRead(id);
+    conversationEvents.emit("conversation_updated", { conversationId: id, unreadCount: 0 });
+
     return this.formatConversation(id);
   }
 

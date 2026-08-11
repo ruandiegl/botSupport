@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { authRepository } from "./auth.repository.js";
 import { LoginInput } from "./auth.schemas.js";
 import { logger } from "../../shared/logger.js";
+import { rbacService } from "../rbac/rbac.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "gtfbot_super_secret_jwt_key_2026";
 
@@ -12,6 +13,10 @@ export class AuthService {
 
     if (!agent) {
       throw new Error("Credenciais inválidas. E-mail não encontrado.");
+    }
+
+    if (!agent.isActive) {
+      throw new Error("Usuário inativo. Procure um administrador.");
     }
 
     let isPasswordValid = false;
@@ -51,6 +56,7 @@ export class AuthService {
 
     return {
       agent: agentWithoutPassword,
+      permissions: await rbacService.getPermissions(agent.role),
       token,
     };
   }
@@ -62,7 +68,7 @@ export class AuthService {
     }
 
     const { password, ...agentWithoutPassword } = agent;
-    return agentWithoutPassword;
+    return { ...agentWithoutPassword, permissions: await rbacService.getPermissions(agent.role) };
   }
 
   async logout(agentId: string) {

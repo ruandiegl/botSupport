@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, Clock3, Search, Headphones, RefreshCw } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import { useListConversations, useListDepartments } from "./hooks/use-queue";
@@ -7,6 +7,14 @@ import { QueueCard } from "./components/QueueCard";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import type { Agent } from "@/types";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
+const CONVERSATIONS_PER_PAGE = 5;
 
 function QueryState({
   loading,
@@ -35,14 +43,15 @@ function QueryState({
         <RefreshCw size={24} />
         <h3>Não foi possível carregar as conversas</h3>
         <p className="subtle">Verifique a conexão com o servidor backend ou banco de dados.</p>
-        <button
-          className="btn btn-muted"
+        <Button
+          variant="outline"
+          size="sm"
           style={{ marginTop: 15 }}
           onClick={retry}
           data-testid="button-retry"
         >
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   if (empty)
@@ -64,6 +73,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const [status, setStatus] = useState("ALL");
   const [department, setDepartment] = useState("ALL");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: conversations, isLoading, isError, refetch } = useListConversations(status, department);
   const { data: departments } = useListDepartments();
@@ -85,6 +95,26 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     });
   }, [all, department, onlyMine, search, currentAgentId]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / CONVERSATIONS_PER_PAGE));
+  const paginatedConversations = useMemo(() => {
+    const start = (currentPage - 1) * CONVERSATIONS_PER_PAGE;
+    return filtered.slice(start, start + CONVERSATIONS_PER_PAGE);
+  }, [filtered, currentPage]);
+  const firstVisible = filtered.length ? (currentPage - 1) * CONVERSATIONS_PER_PAGE + 1 : 0;
+  const lastVisible = Math.min(currentPage * CONVERSATIONS_PER_PAGE, filtered.length);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [status, department, search, onlyMine, currentAgentId]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+  };
+
   // Métricas 100% dinâmicas extraídas do banco
   const active = all.filter((item) => item.status !== "CLOSED").length;
   const queue = all.filter((item) => item.status === "QUEUED").length;
@@ -95,94 +125,82 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
   const onlineAgents = agents.filter((a) => a.isOnline);
   const onlineNames = onlineAgents.map((a) => a.name).join(", ");
+  const statusLabels: Record<string, string> = {
+    ALL: "Todos os status",
+    QUEUED: "Na fila",
+    IN_PROGRESS: "Em atendimento",
+    BOT: "No bot",
+    CLOSED: "Encerradas",
+  };
+  const departmentLabel = department === "ALL"
+    ? "Todos os departamentos"
+    : departments?.find((item) => item.id === department)?.name || "Todos os departamentos";
 
   return (
     <div className="content">
-      <div className="page-heading">
-        <div>
-          <div className="eyebrow">
-            {onlyMine ? "Seu turno / acompanhamento" : "Central de atendimento / agora"}
-          </div>
-          <h1>{onlyMine ? "Meus atendimentos" : "Fila de atendimento"}</h1>
-          <p className="subtle" style={{ marginTop: 9 }}>
-            {onlyMine
-              ? "Acompanhe os contatos que estão sob sua responsabilidade."
-              : "Visão em tempo real do fluxo de atendimento e triagem do WhatsApp."}
-          </p>
-        </div>
-        {!onlyMine && (
-          <button
-            className="btn btn-primary"
+      <PageHeader
+        eyebrow={onlyMine ? "Seu turno / acompanhamento" : "Central de atendimento / agora"}
+        title={onlyMine ? "Meus atendimentos" : "Fila de atendimento"}
+        description={
+          onlyMine
+            ? "Acompanhe os contatos que estão sob sua responsabilidade."
+            : "Visão em tempo real do fluxo de atendimento e triagem do WhatsApp."
+        }
+        action={!onlyMine ? (
+          <Button
+            variant="default"
+            size="lg"
             onClick={() => setStatus(status === "QUEUED" ? "ALL" : "QUEUED")}
             data-testid="button-focus-queue"
           >
             <Clock3 size={15} /> {status === "QUEUED" ? "Ver tudo" : "Focar na fila"}
-          </button>
-        )}
-      </div>
+          </Button>
+        ) : undefined}
+      />
 
       <div className="stats">
-        <div className="panel stat">
-          <div className="stat-label">Em aberto</div>
-          <div className="stat-value">{active}</div>
-          <div className="stat-note">
-            <b>{all.length}</b> total de chamados
-          </div>
-        </div>
-        <div className="panel stat">
-          <div className="stat-label">Na fila</div>
-          <div className="stat-value">{queue}</div>
-          <div className="stat-note">
-            aguardando atendimento
-          </div>
-        </div>
-        <div className="panel stat">
-          <div className="stat-label">Com você</div>
-          <div className="stat-value">{mine}</div>
-          <div className="stat-note">atendimentos sob sua gestão</div>
-        </div>
-        <div className="panel stat">
-          <div className="stat-label">Não lidas</div>
-          <div className="stat-value">{unread}</div>
-          <div className="stat-note">mensagens recebidas</div>
-        </div>
+        <MetricCard label="Em aberto" value={active} note={<><b>{all.length}</b> total de chamados</>} />
+        <MetricCard label="Na fila" value={queue} note="aguardando atendimento" tone="warning" />
+        <MetricCard label="Com você" value={mine} note="atendimentos sob sua gestão" tone="success" />
+        <MetricCard label="Não lidas" value={unread} note="mensagens recebidas" tone="info" />
       </div>
 
       <div className="toolbar">
         <div className="search">
           <Search size={15} />
-          <input
+          <Input
+            className="search-input"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Buscar por nome, telefone ou mensagem"
             data-testid="input-search-conversations"
           />
         </div>
-        <select
-          className="select"
-          value={status}
-          onChange={(event) => setStatus(event.target.value)}
-          data-testid="select-status"
-        >
-          <option value="ALL">Todos os status</option>
-          <option value="QUEUED">Na fila</option>
-          <option value="IN_PROGRESS">Em atendimento</option>
-          <option value="BOT">No bot</option>
-          <option value="CLOSED">Encerradas</option>
-        </select>
-        <select
-          className="select"
-          value={department}
-          onChange={(event) => setDepartment(event.target.value)}
-          data-testid="select-department"
-        >
-          <option value="ALL">Todos os departamentos</option>
-          {(departments || []).map((item) => (
-            <option value={item.id} key={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
+        <Select value={status} onValueChange={(value) => setStatus(value ?? "ALL")}>
+          <SelectTrigger className="select" data-testid="select-status-filter">
+            <SelectValue>{statusLabels[status] || "Todos os status"}</SelectValue>
+          </SelectTrigger>
+          <SelectContent side="bottom" align="start" alignItemWithTrigger={false}>
+            <SelectGroup>
+              <SelectItem value="ALL">Todos os status</SelectItem>
+              <SelectItem value="QUEUED">Na fila</SelectItem>
+              <SelectItem value="IN_PROGRESS">Em atendimento</SelectItem>
+              <SelectItem value="BOT">No bot</SelectItem>
+              <SelectItem value="CLOSED">Encerradas</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select value={department} onValueChange={(value) => setDepartment(value ?? "ALL")}>
+          <SelectTrigger className="select" data-testid="select-department-filter">
+            <SelectValue>{departmentLabel}</SelectValue>
+          </SelectTrigger>
+          <SelectContent side="bottom" align="start" alignItemWithTrigger={false}>
+            <SelectGroup>
+              <SelectItem value="ALL">Todos os departamentos</SelectItem>
+              {(departments || []).map((item) => <SelectItem value={item.id} key={item.id}>{item.name}</SelectItem>)}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="split-layout">
@@ -200,9 +218,41 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
             empty={!filtered.length}
             retry={() => refetch()}
           >
-            {filtered.map((item) => (
+            {paginatedConversations.map((item) => (
               <ConversationRow key={item.id} conversation={item} />
             ))}
+            {filtered.length > 0 ? (
+              <div className="conversation-pagination">
+                <span className="subtle">Exibindo {firstVisible}–{lastVisible} de {filtered.length}</span>
+                <Pagination className="sm:w-auto sm:justify-end">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={currentPage === 1}
+                        tabIndex={currentPage === 1 ? -1 : 0}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
+                        onClick={(event) => { event.preventDefault(); goToPage(currentPage - 1); }}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink href="#" isActive={page === currentPage} aria-label={`Ir para a página ${page}`} onClick={(event) => { event.preventDefault(); goToPage(page); }}>{page}</PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={currentPage === totalPages}
+                        tabIndex={currentPage === totalPages ? -1 : 0}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
+                        onClick={(event) => { event.preventDefault(); goToPage(currentPage + 1); }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            ) : null}
           </QueryState>
         </div>
 

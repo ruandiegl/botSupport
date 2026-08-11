@@ -10,6 +10,20 @@ export function useGetConversation(id: string) {
   });
 }
 
+export function useMarkConversationRead(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<Conversation, Error, void>({
+    mutationFn: () =>
+      apiFetch<Conversation>(`/conversations/${id}/read`, {
+        method: "POST",
+      }),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["conversation", id], updated);
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    },
+  });
+}
+
 export function useSendMessage(id: string) {
   const queryClient = useQueryClient();
   return useMutation<Message, Error, { content: string }>({

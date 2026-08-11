@@ -33,6 +33,16 @@ export class ConversationsController {
     res.json(conversation);
   }
 
+  async markAsRead(req: Request, res: Response): Promise<void> {
+    const id = getParam(req, "id");
+    const conversation = await conversationsService.markAsRead(id);
+    if (!conversation) {
+      res.status(404).json({ error: "Conversa não encontrada" });
+      return;
+    }
+    res.json(conversation);
+  }
+
   async assume(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
     const body = AssumeConversationBodySchema.safeParse(req.body);

@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import { agentsService } from "./agents.service.js";
+import { agentIdSchema, createAgentSchema, resetPasswordSchema, updateAgentSchema } from "./agents.schemas.js";
+import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 
 function getParam(req: Request, key: string): string {
   const val = req.params[key];
@@ -13,14 +15,9 @@ export class AgentsController {
   }
 
   async create(req: Request, res: Response): Promise<void> {
-    const { name, email, password, role, departmentId } = req.body;
-    if (!name || !email) {
-      res.status(400).json({ error: "Nome e e-mail são obrigatórios" });
-      return;
-    }
-
     try {
-      const agent = await agentsService.create({ name, email, password, role, departmentId });
+      const data = createAgentSchema.parse(req.body);
+      const agent = await agentsService.create(data);
       res.status(201).json(agent);
     } catch (err: any) {
       res.status(400).json({ error: err.message || "Erro ao criar atendente" });
@@ -30,7 +27,9 @@ export class AgentsController {
   async update(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
     try {
-      const agent = await agentsService.update(id, req.body);
+      const { id: validId } = agentIdSchema.parse({ id });
+      const data = updateAgentSchema.parse(req.body);
+      const agent = await agentsService.update(validId, data, (req as AuthenticatedRequest).user!.id);
       res.json(agent);
     } catch (err: any) {
       res.status(400).json({ error: err.message || "Erro ao atualizar atendente" });
@@ -40,10 +39,21 @@ export class AgentsController {
   async delete(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
     try {
-      const result = await agentsService.delete(id);
+      const { id: validId } = agentIdSchema.parse({ id });
+      const result = await agentsService.delete(validId, (req as AuthenticatedRequest).user!.id);
       res.json(result);
     } catch (err: any) {
       res.status(400).json({ error: err.message || "Erro ao remover atendente" });
+    }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = agentIdSchema.parse({ id: getParam(req, "id") });
+      const { password } = resetPasswordSchema.parse(req.body);
+      res.json(await agentsService.resetPassword(id, password));
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || "Erro ao redefinir senha" });
     }
   }
 }

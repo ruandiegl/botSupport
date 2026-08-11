@@ -69,6 +69,17 @@ export class ConversationsRepository {
     });
   }
 
+  async markIncomingMessagesAsRead(conversationId: string) {
+    return prisma.message.updateMany({
+      where: {
+        conversationId,
+        direction: "IN",
+        readAt: null,
+      },
+      data: { readAt: new Date() },
+    });
+  }
+
   async findFirstAgent() {
     return prisma.agent.findFirst({
       orderBy: { name: "asc" },

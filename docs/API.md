@@ -72,14 +72,87 @@ Remove um departamento.
 ## 4. Atendentes (`/agents`)
 
 ### `GET /agents`
-Lista todos os atendentes e o status de presença (Online/Offline).
+Lista todos os atendentes e os status de presença e ativação. Requer permissão `agents:view`.
+
+### `POST /agents`
+Cria atendente. Requer `ADMIN`. Body: `name`, `email`, `password` (mínimo 8), `role` e `departmentId` opcional.
+
+### `PATCH /agents/:id`
+Atualiza dados, departamento, função ou `isActive`. Requer `ADMIN`.
+
+### `POST /agents/:id/reset-password`
+Redefine a senha com body `{ "password": "..." }`. Requer `ADMIN`.
+
+### `DELETE /agents/:id`
+Exclui atendente, exceto o próprio usuário ou o último administrador ativo. Requer `ADMIN`.
+
+## 5. RBAC (`/rbac`)
+
+### `GET /rbac/roles`
+Lista as funções disponíveis. Requer autenticação.
+
+### `GET /rbac/permissions/:role`
+Retorna permissões persistidas por recurso e tela. Requer autenticação.
+
+### `PUT /rbac/permissions/:role`
+Atualiza permissões por recurso/tela. Requer `rbac:manage`.
 
 ---
 
-## 5. Fluxo do Bot (`/flow`)
+## 6. Fluxo do Bot (`/flow`)
 
 ### `GET /flow`
 Obtém o fluxo ativo do bot WhatsApp.
 
 ### `PUT /flow`
 Cria ou atualiza a mensagem de saudação, menu principal e opções de roteamento do bot.
+
+---
+
+## 7. Atalhos e procedimentos (`/shortcuts`)
+
+Todas as rotas exigem autenticação. A API aplica visibilidade por escopo no servidor: global, departamento da conversa e proprietário do atalho pessoal.
+
+### `GET /shortcuts`
+
+Lista os atalhos que o usuário pode administrar. Requer `shortcuts:view`.
+
+Query params opcionais: `q`, `type`, `scope`, `departmentId`, `active`, `page` e `limit` (máximo 100).
+
+### `GET /shortcuts/available`
+
+Lista somente atalhos ativos disponíveis no chat. Requer `shortcuts:use` e `conversationId` como query param. Aceita também `q` e `type`.
+
+### `POST /shortcuts`
+
+Cria um atalho. Requer `shortcuts:create`.
+
+```json
+{
+  "title": "Saudação inicial",
+  "message": "Olá! Como posso ajudar?",
+  "type": "GREETING",
+  "scope": "GLOBAL",
+  "departmentId": null,
+  "isActive": true,
+  "sortOrder": 1
+}
+```
+
+Tipos: `GREETING`, `CLOSING`, `DEPARTMENT`, `PERSONAL`, `GENERAL`. Escopos: `GLOBAL`, `DEPARTMENT`, `PERSONAL`.
+
+### `PATCH /shortcuts/:id`
+
+Atualiza campos do atalho. Requer `shortcuts:update` e respeita propriedade/escopo.
+
+### `POST /shortcuts/:id/activate`
+
+Ativa ou desativa com body `{ "isActive": true }`. Requer `shortcuts:publish`.
+
+### `POST /shortcuts/:id/use`
+
+Registra uso após o envio da mensagem, com body `{ "conversationId": "uuid" }`. Requer `shortcuts:use`.
+
+### `DELETE /shortcuts/:id`
+
+Faz arquivamento lógico e preserva a auditoria. Requer `shortcuts:delete`.

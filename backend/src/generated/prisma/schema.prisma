@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id            String         @id @default(uuid())
+  name          String
+  description   String?
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  procedures    Procedure[]
+  agents        Agent[]
+  conversations Conversation[]
+  shortcuts     Shortcut[]
+
+  @@map("gtf_departments")
+}
+
+model Procedure {
+  id           String     @id @default(uuid())
+  departmentId String     @map("department_id")
+  title        String
+  content      String
+  order        Int        @default(0)
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@map("gtf_procedures")
+}
+
+model Agent {
+  id               String          @id @default(uuid())
+  name             String
+  email            String          @unique
+  password         String          @default("$2a$10$e8Tj4yqgO.tL5zD6.e8Tj.e8Tj4yqgO.tL5zD6")
+  role             String          @default("AGENT")
+  isActive         Boolean         @default(true) @map("is_active")
+  departmentId     String?         @map("department_id")
+  isOnline         Boolean         @default(false) @map("is_online")
+  createdAt        DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  department       Department?     @relation(fields: [departmentId], references: [id])
+  conversations    Conversation[]
+  messages         Message[]
+  ownedShortcuts   Shortcut[]      @relation("ShortcutOwner")
+  createdShortcuts Shortcut[]      @relation("ShortcutCreatedBy")
+  updatedShortcuts Shortcut[]      @relation("ShortcutUpdatedBy")
+  shortcutAudits   ShortcutAudit[]
+
+  @@map("gtf_agents")
+}
+
+model RolePermission {
+  id        String   @id @default(uuid())
+  role      String
+  resource  String
+  actions   String[]
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([role, resource])
+  @@index([role])
+  @@map("gtf_role_permissions")
+}
+
+model Contact {
+  id            String         @id @default(uuid())
+  phone         String         @unique
+  name          String
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  conversations Conversation[]
+
+  @@map("gtf_contacts")
+}
+
+model Conversation {
+  id              String      @id @default(uuid())
+  contactId       String      @map("contact_id")
+  status          String      @default("BOT")
+  departmentId    String?     @map("department_id")
+  assignedAgentId String?     @map("assigned_agent_id")
+  currentStep     String?     @map("current_step")
+  startedAt       DateTime    @default(now()) @map("started_at") @db.Timestamptz
+  closedAt        DateTime?   @map("closed_at") @db.Timestamptz
+  contact         Contact     @relation(fields: [contactId], references: [id])
+  department      Department? @relation(fields: [departmentId], references: [id])
+  assignedAgent   Agent?      @relation(fields: [assignedAgentId], references: [id])
+  messages        Message[]
+
+  @@map("gtf_conversations")
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String       @map("conversation_id")
+  direction      String
+  senderType     String       @map("sender_type")
+  senderAgentId  String?      @map("sender_agent_id")
+  content        String
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  readAt         DateTime?    @map("read_at") @db.Timestamptz
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderAgent    Agent?       @relation(fields: [senderAgentId], references: [id])
+
+  @@index([conversationId, direction, readAt])
+  @@map("gtf_messages")
+}
+
+model FlowDefinition {
+  id          String   @id @default(uuid())
+  name        String
+  greeting    String
+  menuMessage String   @map("menu_message")
+  options     Json
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("gtf_flow_definitions")
+}
+
+model ZApiConfig {
+  id          String   @id @default(uuid())
+  instanceId  String   @map("instance_id")
+  token       String
+  clientToken String?  @map("client_token")
+  webhookUrl  String?  @map("webhook_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  autoReply   Boolean  @default(true) @map("auto_reply")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("gtf_zapi_config")
+}
+
+enum ShortcutType {
+  GREETING
+  CLOSING
+  DEPARTMENT
+  PERSONAL
+  GENERAL
+}
+
+enum ShortcutScope {
+  GLOBAL
+  DEPARTMENT
+  PERSONAL
+}
+
+model Shortcut {
+  id           String          @id @default(uuid())
+  title        String
+  message      String
+  type         ShortcutType
+  scope        ShortcutScope
+  departmentId String?         @map("department_id")
+  ownerId      String?         @map("owner_id")
+  isActive     Boolean         @default(true) @map("is_active")
+  sortOrder    Int             @default(0) @map("sort_order")
+  createdById  String          @map("created_by_id")
+  updatedById  String?         @map("updated_by_id")
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  archivedAt   DateTime?       @map("archived_at") @db.Timestamptz
+  department   Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  owner        Agent?          @relation("ShortcutOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy    Agent           @relation("ShortcutCreatedBy", fields: [createdById], references: [id])
+  updatedBy    Agent?          @relation("ShortcutUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  audits       ShortcutAudit[]
+
+  @@index([isActive, scope, type])
+  @@index([departmentId, isActive])
+  @@index([ownerId, isActive])
+  @@map("gtf_shortcuts")
+}
+
+model ShortcutAudit {
+  id         String    @id @default(uuid())
+  shortcutId String?   @map("shortcut_id")
+  actorId    String    @map("actor_id")
+  action     String
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  shortcut   Shortcut? @relation(fields: [shortcutId], references: [id], onDelete: SetNull)
+  actor      Agent     @relation(fields: [actorId], references: [id])
+
+  @@index([shortcutId, action])
+  @@index([actorId, createdAt])
+  @@map("gtf_shortcut_audits")
+}

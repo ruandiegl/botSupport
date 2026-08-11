@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { rbacService } from "../rbac/rbac.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "gtfbot_super_secret_jwt_key_2026";
 
@@ -10,6 +11,7 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     role: string;
     departmentId?: string | null;
+    isActive?: boolean;
   };
 }
 
@@ -48,5 +50,18 @@ export function requireRole(allowedRoles: string[]) {
     }
 
     next();
+  };
+}
+
+export function requirePermission(resource: string, action: string) {
+  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user) return res.status(401).json({ error: "Não autenticado." });
+    try {
+      const allowed = await rbacService.hasPermission(req.user.role, resource, action);
+      if (!allowed) return res.status(403).json({ error: "Você não possui permissão para esta ação." });
+      next();
+    } catch {
+      res.status(500).json({ error: "Não foi possível validar a permissão." });
+    }
   };
 }

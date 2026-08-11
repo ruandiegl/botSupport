@@ -67,3 +67,24 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 1. **Responsividade**: Todos os painéis de atendimento (ex: Lista de Conversas vs Detalhes do Chat) devem se adaptar de layouts de 2/3 colunas no Desktop para drawer/tabs no Mobile.
 2. **Estados nulos e de carregamento**: Exibir skeletons ou spinners (`lucide-react Loader2`) durante requisições de backend, e estados vazios amigáveis quando a fila estiver limpa.
 3. **Animações Fluidas**: Transições suaves com Framer Motion ou utilitários CSS para troca de tabs e abertura de gavetas laterais.
+
+---
+
+## 6. Confirmações de ações críticas
+
+- A paleta operacional clara de `docs/paleta.md` prevalece para novos componentes: superfície branca opaca, borda neutra e primária `#2D89C8`.
+- Confirmações devem usar o `ConfirmationDialog`, composto sobre o `AlertDialog` do shadcn/ui. Formulários continuam usando `Dialog`.
+- Use `warning` para criar, editar, publicar, ativar/desativar, assumir atendimento, alterar credenciais, permissões ou sessão.
+- Use `danger` para excluir, arquivar, desconectar integrações e encerrar chamados.
+- O botão de confirmação deve informar a ação concreta, por exemplo `Excluir departamento`; não usar apenas `Confirmar`.
+- A mutação só pode ser disparada pelo botão de confirmação. Cancelamento nunca chama a API.
+- Durante a requisição, desabilite os controles e componha o botão com `Spinner`. Em erro, mantenha o modal e o rascunho abertos.
+- Todo diálogo deve possuir título e descrição acessíveis, restaurar foco ao acionador e oferecer operação por teclado.
+- Não empilhe diálogos. Formulários complexos devem avançar para uma etapa interna de revisão antes da persistência.
+- Senhas, tokens e segredos nunca devem aparecer no resumo da confirmação.
+
+### RBAC
+
+- Cada linha da matriz possui um checkbox para selecionar ou limpar todas as permissões exibidas naquele recurso.
+- O checkbox deve representar os estados marcado, desmarcado e indeterminado.
+- A seleção altera somente o rascunho local; a persistência ocorre em `Salvar permissões`, após confirmação `warning`.

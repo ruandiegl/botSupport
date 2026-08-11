@@ -15,7 +15,10 @@ export class FlowController {
   async update(req: Request, res: Response): Promise<void> {
     const parsed = UpdateFlowBodySchema.safeParse(req.body);
     if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.message });
+      res.status(400).json({
+        error: "Dados do fluxo inválidos",
+        fields: parsed.error.flatten().fieldErrors,
+      });
       return;
     }
 
