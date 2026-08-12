@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
+function apiUrl(path: string) {
+  return `${API_BASE}${path}`;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -42,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const response = await fetch("/api/auth/me", {
+        const response = await fetch(apiUrl("/api/auth/me"), {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
@@ -68,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/api/auth/login", {
+    const response = await fetch(apiUrl("/api/auth/login"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -88,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     const storedToken = localStorage.getItem("gtfbot_token");
     if (storedToken) {
-      fetch("/api/auth/logout", {
+      fetch(apiUrl("/api/auth/logout"), {
         method: "POST",
         headers: { Authorization: `Bearer ${storedToken}` },
       }).catch(() => {});

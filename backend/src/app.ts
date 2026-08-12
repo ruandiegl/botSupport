@@ -14,12 +14,30 @@ import shortcutsRoutes from "./modules/shortcuts/shortcuts.routes.js";
 
 export const app = express();
 
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origem não autorizada pelo CORS"));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(pinoHttp({ logger: logger as any }));
 
 // API Router Prefix
 app.use("/api", healthRoutes);
+app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", conversationsRoutes);
 app.use("/api", departmentsRoutes);
