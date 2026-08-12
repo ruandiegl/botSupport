@@ -7,10 +7,13 @@ if (backup.format !== "gtfbot-logical-backup-v1" || !Array.isArray(backup.tables
 const prisma = new PrismaClient();
 const qi = (v) => `\"${String(v).replaceAll('"', '""')}\"`;
 const qs = (v) => `'${String(v).replaceAll("'", "''")}'`;
-const lit = (v, type) => {
+const lit = (v, type, udtName) => {
   if (v === null || v === undefined) return "NULL";
   if (type === "jsonb" || type === "json") return `${qs(JSON.stringify(v))}::${type}`;
-  if (type === "ARRAY") return `ARRAY[${v.map(qs).join(",")}]`;
+  if (type === "ARRAY") {
+    const elementType = String(udtName || "_text").replace(/^_/, "");
+    return `ARRAY[${v.map(qs).join(",")}]::${elementType}[]`;
+  }
   if (["integer", "bigint", "numeric", "double precision", "real", "boolean"].includes(type)) return typeof v === "boolean" ? (v ? "TRUE" : "FALSE") : String(v);
   return qs(v);
 };
@@ -24,7 +27,7 @@ try {
     const columns = metadata[table.name];
     if (!columns || !table.rows.length) continue;
     for (const row of table.rows) {
-      const values = columns.map((c) => lit(row[c.column_name], c.data_type === "ARRAY" ? "ARRAY" : c.udt_name));
+      const values = columns.map((c) => lit(row[c.column_name], c.data_type === "ARRAY" ? "ARRAY" : c.udt_name, c.udt_name));
       await prisma.$executeRawUnsafe(`INSERT INTO ${qi(table.name)} (${columns.map((c) => qi(c.column_name)).join(", ")}) VALUES (${values.join(", ")})`);
     }
   }
