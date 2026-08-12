@@ -26,6 +26,21 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
+function normalizeWebhookUrl(webhookUrl: string): string {
+  const trimmed = webhookUrl.trim();
+  if (!trimmed) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.pathname === "/" || parsed.pathname === "") {
+      parsed.pathname = "/api/webhooks/z-api";
+    }
+    return parsed.toString();
+  } catch {
+    return trimmed;
+  }
+}
+
 export default function ZApiAdmin() {
   const { data: config, isLoading: isConfigLoading, refetch: refetchConfig } = useGetZApiConfig();
   const { data: qrData, isLoading: isQrLoading, refetch: refetchQr } = useGetZApiQrCode();
@@ -50,7 +65,7 @@ export default function ZApiAdmin() {
       setInstanceId(config.instanceId || "");
       setToken(config.token || "");
       setClientToken(config.clientToken || "");
-      setWebhookUrl(config.webhookUrl || "");
+      setWebhookUrl(normalizeWebhookUrl(config.webhookUrl || ""));
       setIsActive(config.isActive ?? true);
       setAutoReply(config.autoReply ?? true);
     }
@@ -72,7 +87,7 @@ export default function ZApiAdmin() {
         instanceId: instanceId.trim(),
         token: token.trim(),
         clientToken: clientToken.trim(),
-        webhookUrl: webhookUrl.trim(),
+        webhookUrl: normalizeWebhookUrl(webhookUrl),
         isActive,
         autoReply,
       },
@@ -92,11 +107,13 @@ export default function ZApiAdmin() {
   };
 
   const handleRegisterWebhook = async () => {
-    await setWebhook.mutateAsync({ webhookUrl: webhookUrl.trim() });
+    const normalizedWebhookUrl = normalizeWebhookUrl(webhookUrl);
+    setWebhookUrl(normalizedWebhookUrl);
+    await setWebhook.mutateAsync({ webhookUrl: normalizedWebhookUrl });
   };
 
   const handleCopyWebhook = () => {
-    navigator.clipboard.writeText(webhookUrl);
+    navigator.clipboard.writeText(normalizeWebhookUrl(webhookUrl));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

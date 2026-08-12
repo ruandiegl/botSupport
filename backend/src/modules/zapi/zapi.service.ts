@@ -129,6 +129,21 @@ export function buildButtonListPayload(phone: string, message: string, options: 
   };
 }
 
+function normalizeWebhookUrl(webhookUrl: string): string {
+  const trimmed = webhookUrl.trim();
+  if (!trimmed) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.pathname === "/" || parsed.pathname === "") {
+      parsed.pathname = "/api/webhooks/z-api";
+    }
+    return parsed.toString();
+  } catch {
+    return trimmed;
+  }
+}
+
 export class ZApiService {
   private formatPhone(phone: string): string {
     const cleaned = phone.replace(/\D/g, "");
@@ -145,7 +160,9 @@ export class ZApiService {
     const envInstanceId = process.env.ZAPI_INSTANCE_ID || "";
     const envToken = process.env.ZAPI_TOKEN || "";
     const envClientToken = process.env.ZAPI_CLIENT_TOKEN || "";
-    const envWebhookUrl = process.env.ZAPI_WEBHOOK_URL || "http://localhost:3001/api/webhooks/z-api";
+    const envWebhookUrl = normalizeWebhookUrl(
+      process.env.ZAPI_WEBHOOK_URL || "http://localhost:3001/api/webhooks/z-api",
+    );
 
     if (!dbConfig) {
       dbConfig = await zApiRepository.upsertConfig({
@@ -168,7 +185,7 @@ export class ZApiService {
       instanceId: dbConfig.instanceId || envInstanceId,
       token: dbConfig.token || envToken,
       clientToken: dbConfig.clientToken ?? envClientToken,
-      webhookUrl: dbConfig.webhookUrl || envWebhookUrl,
+      webhookUrl: normalizeWebhookUrl(dbConfig.webhookUrl || envWebhookUrl),
     };
   }
 
@@ -385,9 +402,10 @@ export class ZApiService {
       throw new Error("Credenciais da Z-API não configuradas.");
     }
 
+    const normalizedWebhookUrl = normalizeWebhookUrl(webhookUrl);
     let parsedWebhookUrl: URL;
     try {
-      parsedWebhookUrl = new URL(webhookUrl);
+      parsedWebhookUrl = new URL(normalizedWebhookUrl);
     } catch {
       throw new Error("Informe uma URL pública HTTPS válida para o webhook.");
     }
@@ -407,7 +425,7 @@ export class ZApiService {
           "Content-Type": "application/json",
           ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
         },
-        body: JSON.stringify({ value: webhookUrl }),
+        body: JSON.stringify({ value: normalizedWebhookUrl }),
       });
 
       const data = (await response.json().catch(() => ({}))) as any;
@@ -420,7 +438,7 @@ export class ZApiService {
       await zApiRepository.upsertConfig({
         instanceId: config.instanceId,
         token: config.token,
-        webhookUrl,
+        webhookUrl: normalizedWebhookUrl,
       });
 
       return { success: true, message: "URL de Webhook registrada com sucesso na Z-API!" };
