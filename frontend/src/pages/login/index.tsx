@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,10 +37,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      className="login-screen min-h-screen w-full flex items-center justify-center p-4 relative"
-    >
-      {/* Botão flutuante de ajuda no canto inferior direito */}
+    <div className="login-screen min-h-screen w-full flex items-center justify-center p-4 relative">
       <Button
         variant="ghost"
         size="icon"
@@ -50,29 +48,44 @@ export default function LoginPage() {
         ?
       </Button>
 
-      {/* Card principal dividido em 2 colunas */}
       <div className="login-panel w-full max-w-[880px] min-h-[490px] rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
-        
-        {/* COLUNA ESQUERDA - PAINEL ESCURO DE BRANDING */}
         <div className="login-brand-panel p-9 flex flex-col justify-between relative overflow-hidden">
-          
-          {/* Logo do Grupo Torre Forte */}
           <div>
-            <img
-              src="/grupogtf-logo.svg"
-              alt="Grupo GTF — Torre Forte"
-              className="block w-[196px] h-auto max-w-full"
-            />
+            {logoFailed ? (
+              <div
+                className="inline-flex items-center gap-3"
+                aria-label="Grupo GTF - Torre Forte"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-white/15 bg-white text-lg font-black text-[#0F2A55]">
+                  GTF
+                </div>
+                <div className="leading-tight">
+                  <div className="text-sm font-extrabold uppercase tracking-[0.16em] text-white">
+                    Grupo GTF
+                  </div>
+                  <div className="text-xs font-semibold text-slate-300">
+                    Torre Forte
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <img
+                src="/grupogtf-logo.svg"
+                alt="Grupo GTF - Torre Forte"
+                className="block w-[196px] h-auto max-w-full"
+                onError={() => setLogoFailed(true)}
+              />
+            )}
           </div>
 
-          {/* Título Principal */}
           <div className="my-8">
             <div className="text-[11px] font-mono font-semibold text-blue-400 tracking-[0.2em] uppercase mb-3">
               GTF-BOT
             </div>
             <h1 className="text-3xl lg:text-[31px] font-black tracking-tight leading-[1.12] uppercase font-sans">
               <span className="text-[#2D89C8]">
-                CENTRAL DE<br />
+                CENTRAL DE
+                <br />
                 ATENDIMENTO
               </span>
               <br />
@@ -80,16 +93,13 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          {/* Rodapé da Coluna Esquerda */}
           <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
             <span>Torre Forte - Operações</span>
           </div>
         </div>
 
-        {/* COLUNA DIREITA - FORMULÁRIO BRANCO */}
         <div className="bg-white p-9 flex flex-col justify-center relative">
-          
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
               Entrar no painel
@@ -107,9 +117,11 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col">
-            {/* Campo E-mail */}
             <div className="mb-4">
-              <label htmlFor="email-input" className="block text-[11px] font-extrabold text-slate-400 tracking-wider uppercase mb-1.5">
+              <label
+                htmlFor="email-input"
+                className="block text-[11px] font-extrabold text-slate-400 tracking-wider uppercase mb-1.5"
+              >
                 EMAIL
               </label>
               <Input
@@ -124,9 +136,11 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Campo Senha */}
-            <div className="mb-2">
-              <label htmlFor="password-input" className="block text-[11px] font-extrabold text-slate-400 tracking-wider uppercase mb-1.5">
+            <div className="mb-5">
+              <label
+                htmlFor="password-input"
+                className="block text-[11px] font-extrabold text-slate-400 tracking-wider uppercase mb-1.5"
+              >
                 SENHA
               </label>
               <div className="relative w-full">
@@ -153,21 +167,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Link Esqueci minha senha */}
-            <div className="text-right mb-5">
-              <a
-                href="#esqueci-senha"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert("Entre em contato com o suporte interno para redefinir sua senha.");
-                }}
-                className="text-xs text-blue-600 font-medium hover:underline inline-block"
-              >
-                Esqueci minha senha
-              </a>
-            </div>
-
-            {/* Botão Entrar */}
             <Button
               variant="default"
               size="lg"
@@ -186,30 +185,7 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          {/* Divisor */}
-          <div className="flex items-center my-5">
-            <div className="flex-1 h-px bg-slate-100" />
-            <span className="px-3 text-[11px] text-slate-400 font-medium">ou</span>
-            <div className="flex-1 h-px bg-slate-100" />
-          </div>
-
-          {/* Rodapé / Suporte */}
-          <div className="text-center text-xs text-slate-400 font-medium">
-            Problemas para acessar?{" "}
-            <Button
-              variant="link"
-              size="sm"
-              type="button"
-              onClick={() => alert("Suporte Interno Torre Forte: admin@torreforte.org (Senha padrão: admin123)")}
-              className="text-[#2563EB] font-semibold hover:underline bg-transparent border-0 p-0 cursor-pointer"
-            >
-              Fale com o suporte interno
-            </Button>
-          </div>
-
         </div>
-
       </div>
     </div>
   );
