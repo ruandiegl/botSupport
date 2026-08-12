@@ -12,7 +12,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [logoFailed, setLogoFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -51,31 +50,11 @@ export default function LoginPage() {
       <div className="login-panel w-full max-w-[880px] min-h-[490px] rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
         <div className="login-brand-panel p-9 flex flex-col justify-between relative overflow-hidden">
           <div>
-            {logoFailed ? (
-              <div
-                className="inline-flex items-center gap-3"
-                aria-label="Grupo GTF - Torre Forte"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-white/15 bg-white text-lg font-black text-[#0F2A55]">
-                  GTF
-                </div>
-                <div className="leading-tight">
-                  <div className="text-sm font-extrabold uppercase tracking-[0.16em] text-white">
-                    Grupo GTF
-                  </div>
-                  <div className="text-xs font-semibold text-slate-300">
-                    Torre Forte
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <img
-                src="/grupogtf-logo.svg"
-                alt="Grupo GTF - Torre Forte"
-                className="block w-[196px] h-auto max-w-full"
-                onError={() => setLogoFailed(true)}
-              />
-            )}
+            <img
+              src="/grupogtf-logo.svg?v=20260812"
+              alt="Grupo GTF - Torre Forte"
+              className="block w-[196px] h-auto max-w-full"
+            />
           </div>
 
           <div className="my-8">
