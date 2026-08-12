@@ -1,6 +1,8 @@
 import { zApiRepository } from "./zapi.repository.js";
 import { logger } from "../../shared/logger.js";
 import { conversationEvents } from "../../shared/events.js";
+import { socketEmitter } from "../../shared/socket.js";
+import { flowExecutionService } from "../flow-execution/flow-execution.service.js";
 
 function parseZApiError(status: number, data: any): string {
   const rawMsg = data?.error || data?.message || data?.reason || "";
@@ -24,6 +26,7 @@ function parseZApiError(status: number, data: any): string {
 }
 
 export type BotOption = {
+  optionKey?: string;
   label: string;
   departmentId: string;
   procedureMessage?: string;
@@ -34,6 +37,7 @@ export type ParsedIncomingMessage = {
   senderName: string;
   content: string;
   selectedOptionId?: string;
+  externalEventId?: string;
 };
 
 export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null {
@@ -69,11 +73,13 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
       "Mensagem recebida"
   ).trim();
 
+  const externalEventId = String(payload.messageId || payload.ids?.[0] || payload.id || "").trim() || undefined;
   return {
     phone,
     senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
     content,
     selectedOptionId,
+    ...(externalEventId ? { externalEventId } : {}),
   };
 }
 
@@ -92,6 +98,8 @@ export function findSelectedOption(
   selectedOptionId?: string
 ): BotOption | undefined {
   if (selectedOptionId) {
+    const stableMatch = options.find((option) => option.optionKey === selectedOptionId);
+    if (stableMatch) return stableMatch;
     const numericIndex = Number(selectedOptionId) - 1;
     if (Number.isInteger(numericIndex) && options[numericIndex]) return options[numericIndex];
   }
@@ -114,7 +122,7 @@ export function buildButtonListPayload(phone: string, message: string, options: 
     message,
     buttonList: {
       buttons: options.map((option, index) => ({
-        id: String(index + 1),
+        id: option.optionKey || String(index + 1),
         label: option.label,
       })),
     },
@@ -320,14 +328,14 @@ export class ZApiService {
 
       if (!response.ok) {
         const errorMsg = parseZApiError(response.status, data);
-        logger.error({ phone: formattedPhone, errorMsg }, "Erro retornado pela Z-API ao enviar texto");
+        logger.error({ status: response.status, errorMsg }, "Erro retornado pela Z-API ao enviar texto");
         return { error: errorMsg };
       }
 
-      logger.info({ phone: formattedPhone, data }, "Mensagem Z-API enviada com sucesso");
+      logger.info({ status: response.status }, "Mensagem Z-API enviada com sucesso");
       return data;
     } catch (err: any) {
-      logger.error(err, `Erro ao enviar mensagem Z-API para ${formattedPhone}`);
+      logger.error({ err }, "Erro ao enviar mensagem Z-API");
       return { error: err.message || "Falha na requisição Z-API" };
     }
   }
@@ -360,7 +368,7 @@ export class ZApiService {
         return this.sendText(phone, fallbackText);
       }
 
-      logger.info({ phone: formattedPhone, data }, "Botões Z-API enviados com sucesso");
+      logger.info({ status: response.status, optionCount: options.length }, "Botões Z-API enviados com sucesso");
       return data;
     } catch (err) {
       logger.error(err, "Falha ao enviar lista de opções Z-API. Usando fallback de texto.");
@@ -422,7 +430,7 @@ export class ZApiService {
   }
 
   async handleIncomingWebhook(payload: any) {
-    logger.info({ payload }, "Webhook recebido da Z-API");
+    logger.info({ callbackType: payload?.type, externalEventId: payload?.messageId || payload?.id }, "Webhook recebido da Z-API");
 
     const incoming = parseIncomingMessage(payload);
     if (!incoming) return { status: "ignored" };
@@ -437,13 +445,28 @@ export class ZApiService {
       activeConversation = await zApiRepository.createConversation(contact.id, "BOT", "AWAITING_TEAM");
     }
 
+    if (incoming.externalEventId && !await zApiRepository.claimExternalEvent(activeConversation.id, incoming.externalEventId)) return { status: "duplicate_event" };
+
     const conversationId = activeConversation.id;
-    await zApiRepository.addMessage({
+    const savedMsg = await zApiRepository.addMessage({
       conversationId,
       direction: "IN",
       senderType: "CLIENT",
       content: incoming.content,
     });
+
+    socketEmitter.emitToConversation(conversationId, "message:new", {
+      conversationId,
+      message: {
+        id: savedMsg.id,
+        direction: savedMsg.direction,
+        senderType: savedMsg.senderType,
+        senderName: incoming.senderName,
+        content: savedMsg.content,
+        createdAt: savedMsg.createdAt.toISOString(),
+      },
+    });
+
     conversationEvents.emit("conversation_updated", {
       conversationId,
       status: activeConversation.status,
@@ -452,6 +475,33 @@ export class ZApiService {
     const config = await this.getConfig();
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
     if (activeConversation.status !== "BOT") return { status: "message_logged" };
+
+    const execution = await flowExecutionService.execute({ conversationId, content: incoming.content, selectedOptionId: incoming.selectedOptionId, isNewConversation });
+    if (execution.status !== "no_flow_configured") {
+      for (const action of execution.actions) {
+        if (action.type === "SEND_TEXT") {
+          const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
+          const delivery = await this.sendText(phone, action.content);
+          if (delivery?.error) {
+            await zApiRepository.deleteMessage(storedMessage.id);
+            await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
+            logger.error({ error: delivery.error }, "Falha de entrega; avanço do fluxo revertido");
+            return { status: "delivery_failed" };
+          }
+        } else if (action.type === "SEND_OPTIONS") {
+          const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
+          const delivery = await this.sendButtonList(phone, action.content, action.options);
+          if (delivery?.error) {
+            await zApiRepository.deleteMessage(storedMessage.id);
+            await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
+            logger.error({ error: delivery.error }, "Falha de entrega; avanço do fluxo revertido");
+            return { status: "delivery_failed" };
+          }
+        }
+      }
+      conversationEvents.emit("conversation_updated", { conversationId, status: execution.status === "routed_to_department" ? "QUEUED" : "BOT" });
+      return { status: execution.status };
+    }
 
     const flow = await zApiRepository.getLatestFlow();
     if (!flow) return { status: "no_flow_configured" };
@@ -465,7 +515,7 @@ export class ZApiService {
     if (selectedOption) {
       const department = await zApiRepository.getDepartmentById(selectedOption.departmentId);
       const teamName = selectedOption.label || department?.name || "Suporte";
-      const replyMessage = `Você selecionou a equipe ${teamName}.\n\nPor favor, informe-nos Sua necessidade de suporte bem detalhada, para que possamos entrar em contato com você em breve.`;
+      const replyMessage = selectedOption.procedureMessage || `Você selecionou a equipe ${teamName}.`;
 
       await zApiRepository.updateConversationStatus(conversationId, {
         status: "QUEUED",
@@ -492,7 +542,7 @@ export class ZApiService {
     });
     const textResult = await this.sendText(phone, menuMessage);
     if (textResult?.error) {
-      logger.error({ phone, error: textResult.error }, "Falha ao enviar saudação do bot");
+      logger.error({ error: textResult.error }, "Falha ao enviar saudação do bot");
     }
 
     const buttonMessage = "Escolha uma equipe para iniciar o atendimento:";
@@ -504,7 +554,7 @@ export class ZApiService {
     });
     const buttonResult = await this.sendButtonList(phone, buttonMessage, options);
     if (buttonResult?.error) {
-      logger.error({ phone, error: buttonResult.error }, "Falha ao enviar botões do bot");
+      logger.error({ error: buttonResult.error }, "Falha ao enviar botões do bot");
     }
     conversationEvents.emit("conversation_updated", { conversationId, status: "BOT" });
 

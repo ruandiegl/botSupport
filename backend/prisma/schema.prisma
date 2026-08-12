@@ -17,6 +17,7 @@ model Department {
   agents        Agent[]
   conversations Conversation[]
   shortcuts     Shortcut[]
+  flowNodes     FlowNode[]
 
   @@map("gtf_departments")
 }
@@ -33,22 +34,23 @@ model Procedure {
 }
 
 model Agent {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  password      String         @default("$2a$10$e8Tj4yqgO.tL5zD6.e8Tj.e8Tj4yqgO.tL5zD6")
-  role          String         @default("AGENT")
-  isActive      Boolean        @default(true) @map("is_active")
-  departmentId  String?        @map("department_id")
-  isOnline      Boolean        @default(false) @map("is_online")
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  department    Department?    @relation(fields: [departmentId], references: [id])
-  conversations Conversation[]
-  messages      Message[]
-  ownedShortcuts   Shortcut[]      @relation("ShortcutOwner")
-  createdShortcuts Shortcut[]      @relation("ShortcutCreatedBy")
-  updatedShortcuts Shortcut[]      @relation("ShortcutUpdatedBy")
-  shortcutAudits  ShortcutAudit[]
+  id                     String          @id @default(uuid())
+  name                   String
+  email                  String          @unique
+  password               String          @default("$2a$10$e8Tj4yqgO.tL5zD6.e8Tj.e8Tj4yqgO.tL5zD6")
+  role                   String          @default("AGENT")
+  isActive               Boolean         @default(true) @map("is_active")
+  departmentId           String?         @map("department_id")
+  isOnline               Boolean         @default(false) @map("is_online")
+  createdAt              DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  department             Department?     @relation(fields: [departmentId], references: [id])
+  conversations          Conversation[]
+  messages               Message[]
+  ownedShortcuts         Shortcut[]      @relation("ShortcutOwner")
+  createdShortcuts       Shortcut[]      @relation("ShortcutCreatedBy")
+  updatedShortcuts       Shortcut[]      @relation("ShortcutUpdatedBy")
+  shortcutAudits         ShortcutAudit[]
+  publishedFlowRevisions FlowRevision[]  @relation("FlowRevisionPublisher")
 
   @@map("gtf_agents")
 }
@@ -76,19 +78,27 @@ model Contact {
 }
 
 model Conversation {
-  id              String      @id @default(uuid())
-  contactId       String      @map("contact_id")
-  status          String      @default("BOT")
-  departmentId    String?     @map("department_id")
-  assignedAgentId String?     @map("assigned_agent_id")
-  currentStep     String?     @map("current_step")
-  startedAt       DateTime    @default(now()) @map("started_at") @db.Timestamptz
-  closedAt        DateTime?   @map("closed_at") @db.Timestamptz
-  contact         Contact     @relation(fields: [contactId], references: [id])
-  department      Department? @relation(fields: [departmentId], references: [id])
-  assignedAgent   Agent?      @relation(fields: [assignedAgentId], references: [id])
-  messages        Message[]
+  id                String               @id @default(uuid())
+  contactId         String               @map("contact_id")
+  status            String               @default("BOT")
+  departmentId      String?              @map("department_id")
+  assignedAgentId   String?              @map("assigned_agent_id")
+  currentStep       String?              @map("current_step")
+  flowRevisionId    String?              @map("flow_revision_id")
+  currentFlowNodeId String?              @map("current_flow_node_id")
+  flowContext       Json?                @map("flow_context")
+  startedAt         DateTime             @default(now()) @map("started_at") @db.Timestamptz
+  closedAt          DateTime?            @map("closed_at") @db.Timestamptz
+  contact           Contact              @relation(fields: [contactId], references: [id])
+  department        Department?          @relation(fields: [departmentId], references: [id])
+  assignedAgent     Agent?               @relation(fields: [assignedAgentId], references: [id])
+  messages          Message[]
+  flowRevision      FlowRevision?        @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
+  currentFlowNode   FlowNode?            @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
+  flowEvents        FlowExecutionEvent[]
 
+  @@index([flowRevisionId])
+  @@index([currentFlowNodeId])
   @@map("gtf_conversations")
 }
 
@@ -109,12 +119,13 @@ model Message {
 }
 
 model FlowDefinition {
-  id          String   @id @default(uuid())
+  id          String         @id @default(uuid())
   name        String
   greeting    String
-  menuMessage String   @map("menu_message")
+  menuMessage String         @map("menu_message")
   options     Json
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  revisions   FlowRevision[]
 
   @@map("gtf_flow_definitions")
 }
@@ -132,6 +143,104 @@ model ZApiConfig {
   @@map("gtf_zapi_config")
 }
 
+enum FlowRevisionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum FlowNodeType {
+  ENTRY
+  MESSAGE
+  DECISION
+  ROUTE
+  TRIAGE
+  HANDOFF
+  END
+}
+
+model FlowRevision {
+  id               String               @id @default(uuid())
+  flowDefinitionId String               @map("flow_definition_id")
+  version          Int
+  status           FlowRevisionStatus   @default(DRAFT)
+  schemaVersion    Int                  @default(2) @map("schema_version")
+  revision         Int                  @default(1)
+  publishedAt      DateTime?            @map("published_at") @db.Timestamptz
+  publishedById    String?              @map("published_by_id")
+  createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  flowDefinition   FlowDefinition       @relation(fields: [flowDefinitionId], references: [id], onDelete: Cascade)
+  publishedBy      Agent?               @relation("FlowRevisionPublisher", fields: [publishedById], references: [id], onDelete: SetNull)
+  nodes            FlowNode[]
+  transitions      FlowTransition[]
+  conversations    Conversation[]
+  executionEvents  FlowExecutionEvent[]
+
+  @@unique([flowDefinitionId, version])
+  @@index([flowDefinitionId, status])
+  @@map("gtf_flow_revisions")
+}
+
+model FlowNode {
+  id              String               @id @default(uuid())
+  stableKey       String               @map("stable_key")
+  flowRevisionId  String               @map("flow_revision_id")
+  type            FlowNodeType
+  name            String
+  content         String               @default("")
+  sortOrder       Int                  @default(0) @map("sort_order")
+  config          Json?
+  departmentId    String?              @map("department_id")
+  flowRevision    FlowRevision         @relation(fields: [flowRevisionId], references: [id], onDelete: Cascade)
+  department      Department?          @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  outgoing        FlowTransition[]     @relation("FlowTransitionFrom")
+  incoming        FlowTransition[]     @relation("FlowTransitionTo")
+  conversations   Conversation[]
+  executionEvents FlowExecutionEvent[]
+
+  @@unique([flowRevisionId, stableKey])
+  @@index([flowRevisionId, type, sortOrder])
+  @@index([departmentId])
+  @@map("gtf_flow_nodes")
+}
+
+model FlowTransition {
+  id             String       @id @default(uuid())
+  flowRevisionId String       @map("flow_revision_id")
+  fromNodeId     String       @map("from_node_id")
+  toNodeId       String       @map("to_node_id")
+  optionKey      String?      @map("option_key")
+  label          String?
+  sortOrder      Int          @default(0) @map("sort_order")
+  flowRevision   FlowRevision @relation(fields: [flowRevisionId], references: [id], onDelete: Cascade)
+  fromNode       FlowNode     @relation("FlowTransitionFrom", fields: [fromNodeId], references: [id], onDelete: Cascade)
+  toNode         FlowNode     @relation("FlowTransitionTo", fields: [toNodeId], references: [id], onDelete: Cascade)
+
+  @@unique([flowRevisionId, optionKey])
+  @@index([fromNodeId, sortOrder])
+  @@index([toNodeId])
+  @@map("gtf_flow_transitions")
+}
+
+model FlowExecutionEvent {
+  id              String       @id @default(uuid())
+  conversationId  String       @map("conversation_id")
+  flowRevisionId  String       @map("flow_revision_id")
+  flowNodeId      String?      @map("flow_node_id")
+  externalEventId String?      @unique @map("external_event_id")
+  type            String
+  metadata        Json?
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  flowRevision    FlowRevision @relation(fields: [flowRevisionId], references: [id], onDelete: Cascade)
+  flowNode        FlowNode?    @relation(fields: [flowNodeId], references: [id], onDelete: SetNull)
+
+  @@index([conversationId, createdAt])
+  @@index([flowRevisionId, flowNodeId])
+  @@map("gtf_flow_execution_events")
+}
+
 enum ShortcutType {
   GREETING
   CLOSING
@@ -147,24 +256,24 @@ enum ShortcutScope {
 }
 
 model Shortcut {
-  id           String        @id @default(uuid())
+  id           String          @id @default(uuid())
   title        String
   message      String
   type         ShortcutType
   scope        ShortcutScope
-  departmentId String?       @map("department_id")
-  ownerId      String?       @map("owner_id")
-  isActive     Boolean       @default(true) @map("is_active")
-  sortOrder    Int           @default(0) @map("sort_order")
-  createdById  String        @map("created_by_id")
-  updatedById  String?       @map("updated_by_id")
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-  archivedAt   DateTime?     @map("archived_at") @db.Timestamptz
-  department   Department?   @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  owner        Agent?        @relation("ShortcutOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-  createdBy    Agent         @relation("ShortcutCreatedBy", fields: [createdById], references: [id])
-  updatedBy    Agent?        @relation("ShortcutUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  departmentId String?         @map("department_id")
+  ownerId      String?         @map("owner_id")
+  isActive     Boolean         @default(true) @map("is_active")
+  sortOrder    Int             @default(0) @map("sort_order")
+  createdById  String          @map("created_by_id")
+  updatedById  String?         @map("updated_by_id")
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  archivedAt   DateTime?       @map("archived_at") @db.Timestamptz
+  department   Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  owner        Agent?          @relation("ShortcutOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy    Agent           @relation("ShortcutCreatedBy", fields: [createdById], references: [id])
+  updatedBy    Agent?          @relation("ShortcutUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   audits       ShortcutAudit[]
 
   @@index([isActive, scope, type])

@@ -101,11 +101,91 @@ Atualiza permissões por recurso/tela. Requer `rbac:manage`.
 
 ## 6. Fluxo do Bot (`/flow`)
 
-### `GET /flow`
-Obtém o fluxo ativo do bot WhatsApp.
+Todas as rotas v2 exigem autenticação. Leitura requer `flow:view`, edição de rascunho requer `flow:edit` e publicação/restauração requer `flow:publish`.
 
-### `PUT /flow`
-Cria ou atualiza a mensagem de saudação, menu principal e opções de roteamento do bot.
+### `GET /flow/published`
+
+Retorna a revisão publicada ativa, incluindo nós e transições ordenados. Responde `404` quando não existe revisão publicada.
+
+### `GET /flow/draft`
+
+Retorna o rascunho atual. A implementação pode criar um rascunho a partir do publicado quando nenhum existir, desde que a resposta identifique a nova revisão.
+
+### `POST /flow/draft`
+
+Cria um rascunho a partir da revisão publicada. Para partir de uma revisão histórica, use o endpoint de restauração.
+
+### `PUT /flow/draft/:id`
+
+Salva atomicamente o documento completo. O campo `revision` implementa controle otimista.
+
+```json
+{
+  "revision": 4,
+  "nodes": [
+    {
+      "id": "uuid",
+      "stableKey": "support-triage",
+      "type": "TRIAGE",
+      "name": "Dados para contato",
+      "content": "Por favor, informe seu nome, emissora, cidade/UF e necessidade.",
+      "sortOrder": 2,
+      "config": { "responseKey": "supportDetails" },
+      "departmentId": null
+    }
+  ],
+  "transitions": [
+    {
+      "id": "uuid",
+      "fromNodeId": "uuid",
+      "toNodeId": "uuid",
+      "optionKey": null,
+      "label": null,
+      "sortOrder": 0
+    }
+  ]
+}
+```
+
+Retorna `409 Conflict` quando `revision` estiver desatualizado, sem sobrescrever o rascunho do outro editor.
+
+### `POST /flow/draft/:id/validate`
+
+Valida estrutura, grafo, limites e referências sem publicar. Um documento carregado retorna `200` com `{ "valid": true, "issues": [] }` ou `{ "valid": false, "issues": [...] }`. Cada issue possui `code`, `message` e, quando aplicável, `nodeId` ou `transitionId`. UUID/payload malformado retorna `400`.
+
+### `POST /flow/draft/:id/publish`
+
+Valida e publica em uma transação. Arquiva a revisão anteriormente publicada sem alterar conversas vinculadas a ela. Requer `flow:publish`.
+
+### Planejado: `POST /flow/draft/:id/preview`
+
+Ainda não exposto pela API. Quando implementado, simulará um ramo e retornará as ações que seriam executadas, sem enviar mensagens ao WhatsApp e sem alterar conversas.
+
+### `GET /flow/revisions`
+
+Lista o histórico de revisões com versão, estado, autor e datas.
+
+### `POST /flow/revisions/:id/restore`
+
+Cria um novo rascunho a partir da revisão histórica. Nunca modifica nem republica diretamente o snapshot antigo.
+
+### Compatibilidade legada
+
+- `GET /flow`: leitura v1 temporária;
+- `PUT /flow`: escrita v1 temporária, restrita à janela de compatibilidade.
+
+Clientes novos devem usar exclusivamente os endpoints v2. A remoção do legado segue `RUNBOOK_MIGRACAO_FLUXO_V2.md`.
+
+### Erros do fluxo
+
+| Status | Condição |
+|---|---|
+| `400` | UUID, payload, grafo, limite ou referência inválida |
+| `401` | autenticação ausente/inválida |
+| `403` | permissão ausente |
+| `404` | fluxo, revisão, nó ou departamento não encontrado |
+| `409` | revisão otimista desatualizada ou publicação concorrente |
+| `422` | documento sintaticamente válido, mas impossível de publicar |
 
 ---
 

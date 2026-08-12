@@ -1,6 +1,18 @@
 import { prisma } from "../../shared/prisma.js";
 
 export class ZApiRepository {
+  async claimExternalEvent(conversationId: string, externalEventId: string) {
+    const conversation = await prisma.conversation.findUnique({ where: { id: conversationId }, select: { flowRevisionId: true } });
+    const revisionId = conversation?.flowRevisionId ?? (await prisma.flowRevision.findFirst({ where: { status: "PUBLISHED" }, select: { id: true }, orderBy: [{ publishedAt: "desc" }, { updatedAt: "desc" }] }))?.id;
+    if (!revisionId) return true;
+    try {
+      await prisma.flowExecutionEvent.create({ data: { conversationId, flowRevisionId: revisionId, externalEventId, type: "RECEIVED" } });
+      return true;
+    } catch (error: any) {
+      if (error?.code === "P2002") return false;
+      throw error;
+    }
+  }
   async getConfig() {
     return prisma.zApiConfig.findFirst({
       orderBy: { updatedAt: "desc" },
@@ -116,6 +128,10 @@ export class ZApiRepository {
         content: data.content,
       },
     });
+  }
+
+  async deleteMessage(id: string) {
+    return prisma.message.delete({ where: { id } });
   }
 
   async getLatestFlow() {

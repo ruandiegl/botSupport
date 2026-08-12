@@ -171,6 +171,9 @@ exports.Prisma.ConversationScalarFieldEnum = {
   departmentId: 'departmentId',
   assignedAgentId: 'assignedAgentId',
   currentStep: 'currentStep',
+  flowRevisionId: 'flowRevisionId',
+  currentFlowNodeId: 'currentFlowNodeId',
+  flowContext: 'flowContext',
   startedAt: 'startedAt',
   closedAt: 'closedAt'
 };
@@ -206,6 +209,52 @@ exports.Prisma.ZApiConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FlowRevisionScalarFieldEnum = {
+  id: 'id',
+  flowDefinitionId: 'flowDefinitionId',
+  version: 'version',
+  status: 'status',
+  schemaVersion: 'schemaVersion',
+  revision: 'revision',
+  publishedAt: 'publishedAt',
+  publishedById: 'publishedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FlowNodeScalarFieldEnum = {
+  id: 'id',
+  stableKey: 'stableKey',
+  flowRevisionId: 'flowRevisionId',
+  type: 'type',
+  name: 'name',
+  content: 'content',
+  sortOrder: 'sortOrder',
+  config: 'config',
+  departmentId: 'departmentId'
+};
+
+exports.Prisma.FlowTransitionScalarFieldEnum = {
+  id: 'id',
+  flowRevisionId: 'flowRevisionId',
+  fromNodeId: 'fromNodeId',
+  toNodeId: 'toNodeId',
+  optionKey: 'optionKey',
+  label: 'label',
+  sortOrder: 'sortOrder'
+};
+
+exports.Prisma.FlowExecutionEventScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  flowRevisionId: 'flowRevisionId',
+  flowNodeId: 'flowNodeId',
+  externalEventId: 'externalEventId',
+  type: 'type',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ShortcutScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -237,12 +286,12 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -261,6 +310,22 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.FlowRevisionStatus = exports.$Enums.FlowRevisionStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.FlowNodeType = exports.$Enums.FlowNodeType = {
+  ENTRY: 'ENTRY',
+  MESSAGE: 'MESSAGE',
+  DECISION: 'DECISION',
+  ROUTE: 'ROUTE',
+  TRIAGE: 'TRIAGE',
+  HANDOFF: 'HANDOFF',
+  END: 'END'
+};
+
 exports.ShortcutType = exports.$Enums.ShortcutType = {
   GREETING: 'GREETING',
   CLOSING: 'CLOSING',
@@ -285,6 +350,10 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',
+  FlowRevision: 'FlowRevision',
+  FlowNode: 'FlowNode',
+  FlowTransition: 'FlowTransition',
+  FlowExecutionEvent: 'FlowExecutionEvent',
   Shortcut: 'Shortcut',
   ShortcutAudit: 'ShortcutAudit'
 };

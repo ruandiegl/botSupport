@@ -8,7 +8,7 @@ type PermissionMap = Record<string, string[]>;
 const defaults: Record<string, PermissionMap> = {
   ADMIN: {
     conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
-    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
+    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
   },
   SUPERVISOR: {
     conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], reports: ["view"],

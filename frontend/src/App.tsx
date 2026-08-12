@@ -4,6 +4,7 @@ import { Route, Switch, Router as WouterRouter, Link, useLocation } from "wouter
 import { X, ShieldAlert, Loader2 } from "lucide-react";
 import { queryClient } from "@/lib/query-client";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { SocketProvider } from "@/lib/socket-context";
 import { Shell } from "@/app/Shell";
 import LoginPage from "@/pages/login";
 import QueuePage from "@/pages/queue";
@@ -76,7 +77,7 @@ function ProtectedRoute({ component: Component, screen }: { component: React.Com
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -134,9 +135,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <WouterRouter>
-          <Router />
-        </WouterRouter>
+        <SocketProvider>
+          <WouterRouter>
+            <Router />
+          </WouterRouter>
+        </SocketProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

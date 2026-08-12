@@ -122,7 +122,7 @@ async function main() {
   });
 
   // 4. Fluxo Padrão do Bot
-  await prisma.flowDefinition.create({
+  const flowDefinition = await prisma.flowDefinition.create({
     data: {
       name: "Atendimento Suporte TI - Grupo GTF",
       greeting: "Olá, você está falando com Suporte TI - Grupo GTF! Qual sua necessidade?\n\nNós do Grupo GTF temos o prazer de atendê-lo(a).",
@@ -164,7 +164,7 @@ async function main() {
   const screenPaths = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/flow", "/admin/zapi", "/admin/rbac"];
   const roleActions: Record<string, Record<string, string[]>> = {
     ADMIN: {
-      conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
+      conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
     },
     SUPERVISOR: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], reports: ["view"] },
     AGENT: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"] },
@@ -175,6 +175,27 @@ async function main() {
       ...screenPaths.map((path) => ({ role, resource: `screen:${path}`, actions: role === "ADMIN" || ["/", "/my-conversations", "/conversation/:id", "/admin/shortcuts"].includes(path) ? ["view"] : [] })),
     ]),
   });
+
+  const flowRevision = await prisma.flowRevision.create({ data: { flowDefinitionId: flowDefinition.id, version: 1, status: "PUBLISHED", schemaVersion: 2, publishedAt: new Date(), publishedById: admin.id } });
+  const entry = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: "entry", type: "ENTRY", name: "Entrada" } });
+  const greeting = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: "greeting", type: "MESSAGE", name: "Saudação", content: flowDefinition.greeting, sortOrder: 1 } });
+  const decision = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: "team-decision", type: "DECISION", name: "Escolha da equipe", content: flowDefinition.menuMessage, sortOrder: 2, config: { buttonMessage: "Escolha uma equipe para iniciar o atendimento:" } } });
+  await prisma.flowTransition.createMany({ data: [{ flowRevisionId: flowRevision.id, fromNodeId: entry.id, toNodeId: greeting.id }, { flowRevisionId: flowRevision.id, fromNodeId: greeting.id, toNodeId: decision.id }] });
+  const routeSeeds = [
+    { key: "support", label: "Suporte", departmentId: deptGeral.id, triage: "Você selecionou a equipe Suporte.\nPor favor, informe-nos os dados abaixo para que possamos entrar em contato com você em breve:\n\nSeu nome\nSua emissora\nSua cidade/UF\nSua necessidade de suporte" },
+    { key: "network", label: "Rede / Internet", departmentId: deptRede.id, triage: "Você selecionou a equipe Rede / Internet.\nInforme os detalhes necessários para o atendimento." },
+    { key: "audio-video", label: "Áudio / Vídeo", departmentId: deptAudio.id, triage: "Você selecionou a equipe Áudio / Vídeo.\nInforme os detalhes necessários para o atendimento." },
+  ];
+  for (const [index, item] of routeSeeds.entries()) {
+    const route = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: `route-${item.key}`, type: "ROUTE", name: item.label, sortOrder: index, departmentId: item.departmentId } });
+    const triage = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: `triage-${item.key}`, type: "TRIAGE", name: `Triagem ${item.label}`, content: item.triage, config: { responseKey: "triageDetails" }, departmentId: item.departmentId } });
+    const handoff = await prisma.flowNode.create({ data: { flowRevisionId: flowRevision.id, stableKey: `handoff-${item.key}`, type: "HANDOFF", name: `Encaminhar para ${item.label}`, sortOrder: 1, departmentId: item.departmentId } });
+    await prisma.flowTransition.createMany({ data: [
+      { flowRevisionId: flowRevision.id, fromNodeId: decision.id, toNodeId: route.id, optionKey: `team-${item.key}`, label: item.label, sortOrder: index },
+      { flowRevisionId: flowRevision.id, fromNodeId: route.id, toNodeId: triage.id },
+      { flowRevisionId: flowRevision.id, fromNodeId: triage.id, toNodeId: handoff.id },
+    ] });
+  }
 
   console.log("Banco de dados limpo e populado com dados de produção reais!");
 }

@@ -6,6 +6,7 @@ import { useAvailableShortcuts } from "../hooks/use-shortcuts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { formatShortcutMessage } from "@/lib/utils";
 
 export function DetailPanel({
   conversation,
@@ -33,23 +34,30 @@ export function DetailPanel({
     .slice(0, 3);
   const available = shortcuts.slice(0, 4);
 
-  const renderShortcut = (shortcut: Shortcut) => (
-    <Button
-      key={shortcut.id}
-      variant="ghost"
-      size="sm"
-      className="detail-shortcut-button"
-      onClick={() => onInsertShortcut(shortcut)}
-      title={shortcut.message}
-    >
-      <Sparkles data-icon="inline-start" />
-      <span className="detail-shortcut-copy">
-        <strong>{shortcut.title}</strong>
-        <small>{shortcut.message}</small>
-      </span>
-      {shortcut.usageCount > 0 && <Badge variant="secondary">{shortcut.usageCount}</Badge>}
-    </Button>
-  );
+  const agentName = conversation.assignedAgentName || "Atendente";
+  const contactName = conversation.contact.name || "Cliente";
+  const departmentName = conversation.departmentName || "Suporte";
+
+  const renderShortcut = (shortcut: Shortcut) => {
+    const formattedMessage = formatShortcutMessage(shortcut.message, { agentName, contactName, departmentName });
+    return (
+      <Button
+        key={shortcut.id}
+        variant="ghost"
+        size="sm"
+        className="detail-shortcut-button"
+        onClick={() => onInsertShortcut({ ...shortcut, message: formattedMessage })}
+        title={formattedMessage}
+      >
+        <Sparkles data-icon="inline-start" />
+        <span className="detail-shortcut-copy">
+          <strong>{shortcut.title}</strong>
+          <small>{formattedMessage}</small>
+        </span>
+        {shortcut.usageCount > 0 && <Badge variant="secondary">{shortcut.usageCount}</Badge>}
+      </Button>
+    );
+  };
 
   return (
     <aside className="detail-panel">

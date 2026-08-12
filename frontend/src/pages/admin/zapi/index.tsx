@@ -262,7 +262,7 @@ export default function ZApiAdmin() {
                     id="zapi-instance-id"
                     value={instanceId}
                     onChange={(e) => setInstanceId(e.target.value)}
-                    placeholder="Ex: 3F76E8DC789C31AF53FC1677F7E30103"
+                    placeholder="Ex.: seu-id-de-instancia-zapi"
                     style={{ fontSize: 12 }}
                     data-testid="input-zapi-instance-id"
                   />
@@ -275,7 +275,7 @@ export default function ZApiAdmin() {
                     type="password"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
-                    placeholder="Ex: 19558090B4D4E3CDBCF6D8A0"
+                    placeholder="Informe o token da instância"
                     style={{ fontSize: 12 }}
                     data-testid="input-zapi-token"
                   />

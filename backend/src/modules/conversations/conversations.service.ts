@@ -1,6 +1,7 @@
 import { conversationsRepository } from "./conversations.repository.js";
 import { zApiService } from "../zapi/zapi.service.js";
 import { conversationEvents } from "../../shared/events.js";
+import { socketEmitter } from "../../shared/socket.js";
 
 function getInitials(name: string): string {
   return name
@@ -75,27 +76,7 @@ export class ConversationsService {
     const conversation = await conversationsRepository.findById(id);
     if (!conversation) return null;
 
-    const agent = await conversationsRepository.findAgentById(agentId);
-    const agentName = agent?.name ?? "Atendente";
-
     await conversationsRepository.updateStatusAndAgent(id, "IN_PROGRESS", agentId);
-
-    // Mensagem de notificação ao cliente no WhatsApp via Z-API
-    const notificationText = `O atendente *${agentName}* assumiu o seu atendimento. Como posso te ajudar hoje?`;
-
-    // Registrar no histórico da conversa
-    await conversationsRepository.addMessage({
-      conversationId: id,
-      direction: "OUT",
-      senderType: "AGENT",
-      senderAgentId: agentId,
-      content: notificationText,
-    });
-
-    // Disparar no WhatsApp real via Z-API se houver telefone do contato
-    if (conversation.contact?.phone) {
-      await zApiService.sendText(conversation.contact.phone, notificationText);
-    }
 
     conversationEvents.emit("conversation_updated", { conversationId: id });
 
@@ -107,12 +88,6 @@ export class ConversationsService {
     if (!conversation) return null;
 
     await conversationsRepository.close(id);
-
-    // Notificação opcional de encerramento via Z-API
-    if (conversation.contact?.phone) {
-      const closeText = "Seu atendimento foi encerrado. Caso precise de mais ajuda, basta nos enviar uma nova mensagem! Agradecemos o contato.";
-      await zApiService.sendText(conversation.contact.phone, closeText);
-    }
 
     conversationEvents.emit("conversation_updated", { conversationId: id });
 
@@ -132,9 +107,12 @@ export class ConversationsService {
     }
 
     const agentName = agent?.name ?? "Atendente";
-    const content = rawContent.includes("— ")
-      ? rawContent
-      : `*${agentName} - Suporte T.I.*\n${rawContent}\n\n— ${agentName}`;
+    const deptName = conversation.department?.name ?? "Suporte T.I.";
+    const cleanContent = rawContent.trim();
+
+    const content = cleanContent.startsWith("*")
+      ? cleanContent
+      : `*${agentName} - ${deptName}:*\n\n${cleanContent}`;
 
     const message = await conversationsRepository.addMessage({
       conversationId: id,
@@ -149,9 +127,7 @@ export class ConversationsService {
       await zApiService.sendText(conversation.contact.phone, content);
     }
 
-    conversationEvents.emit("conversation_updated", { conversationId: id });
-
-    return {
+    const formattedMsg = {
       id: message.id,
       direction: message.direction,
       senderType: message.senderType,
@@ -159,6 +135,15 @@ export class ConversationsService {
       content: message.content,
       createdAt: message.createdAt.toISOString(),
     };
+
+    socketEmitter.emitToConversation(id, "message:new", {
+      conversationId: id,
+      message: formattedMsg,
+    });
+
+    conversationEvents.emit("conversation_updated", { conversationId: id });
+
+    return formattedMsg;
   }
 
   async transfer(id: string, departmentId: string) {

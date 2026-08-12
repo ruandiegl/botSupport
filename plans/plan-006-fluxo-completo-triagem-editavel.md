@@ -1,7 +1,8 @@
 # Plano 006 — Editor Completo do Fluxo com Triagem Pós-Rota
 
-> **Status:** Planejado
-> **Data:** 2026-08-11
+> **Status:** Concluído
+> **Data:** 2026-08-12
+> **Execução:** concluída com migração v2, motor de estados, editor visual, triagem pós-rota, publicação versionada, testes integrados e homologação visual.
 > **Relacionamento:** `docs/PRD.md`, `docs/PRD_ZAPI.md`, `docs/ARCHITECTURE.md`, `docs/GUIDELINES.md`, `docs/DESIGN_SYSTEM.md`, `docs/paleta.md`, `docs/API.md` e `plans/plan-003-crud-fluxo-bot-mapa-interativo.md`
 > **Escopo:** produto, banco de dados, API, motor do bot, integração Z-API, editor visual, RBAC, testes, migração e documentação
 

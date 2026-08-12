@@ -15,10 +15,9 @@ Este documento especifica a integração oficial do **GTF-Bot** com a plataforma
 
 ---
 
-## 3. Credenciais Padrão da Instância
-- **ID da Instância**: `3F76E8DC789C31AF53FC1677F7E30103`
-- **Token da Instância**: `19558090B4D4E3CDBCF6D8A0`
-- **Endpoint Base Z-API**: `https://api.z-api.io/instances/3F76E8DC789C31AF53FC1677F7E30103/token/19558090B4D4E3CDBCF6D8A0`
+## 3. Credenciais da Instância
+
+Credenciais são segredos operacionais e nunca devem aparecer em documentação, commits, respostas da API ou logs. Use variáveis de ambiente ou o armazenamento administrativo protegido. Exemplos devem conter somente placeholders como `ZAPI_INSTANCE_ID`, `ZAPI_INSTANCE_TOKEN` e `ZAPI_CLIENT_TOKEN`. Qualquer credencial anteriormente exposta deve ser revogada e rotacionada antes do rollout.
 
 ---
 
@@ -37,9 +36,11 @@ Este documento especifica a integração oficial do **GTF-Bot** com a plataforma
 - Ignorar mensagens de grupos ou mensagens enviadas pelo próprio número (`fromMe: true`).
 - Execução do fluxo de decisão do bot:
   - Se status da conversa = `BOT`:
-    - Processar escolha de departamento (ex: `1`, `2`, `3` ou botão selecionado).
-    - Encaminhar conversa para a fila do departamento com status `QUEUED`.
-    - Enviar mensagem de confirmação do procedimento via Z-API.
+    - Delegar o evento ao motor do fluxo vinculado à revisão da conversa.
+    - Resolver a escolha por `optionKey` estável; número ou texto são apenas fallback compatível.
+    - Executar mensagens e triagens configuradas na rota, persistindo respostas em `flowContext`.
+    - Manter a conversa em `BOT` enquanto aguarda decisão ou triagem.
+    - Encaminhar para `QUEUED` apenas quando o motor executar `HANDOFF`.
   - Se status = `QUEUED` ou `IN_PROGRESS`:
     - Adicionar mensagem à thread sem intervenção automatizada do bot.
 
@@ -66,9 +67,25 @@ Este documento especifica a integração oficial do **GTF-Bot** com a plataforma
 | Verificar Status | `/status` | `GET` |
 | Configurar Webhook | `/update-webhook-received` | `PUT` |
 
+> O endpoint de botões efetivamente configurado no cliente Z-API deve ser a fonte de verdade. O adaptador de transporte pode usar `send-option-list` ou `send-button-list` conforme o contrato suportado pela instância, mas o motor recebe e devolve um modelo interno único. Essa escolha não pode ficar espalhada na regra de negócio.
+
+## 7. Contrato do motor e garantias do webhook
+
+1. O webhook valida token, forma e limites do payload antes de persistir ou executar o fluxo.
+2. Eventos de grupo, `fromMe` e eventos sem identidade válida são ignorados segundo a política vigente.
+3. O identificador externo do evento/mensagem é usado como chave de idempotência.
+4. A integração Z-API normaliza entrada e executa as ações retornadas pelo motor; ela não contém textos de triagem ou decisões de departamento hardcoded.
+5. Falhas transitórias usam retentativa limitada com backoff. A conversa não avança sem registro recuperável do envio.
+6. Logs incluem IDs técnicos, tipo de evento, revisão, nó e resultado, mas nunca token, telefone completo, texto de triagem ou respostas do cliente.
+7. `autoReply=false`, `QUEUED` e `IN_PROGRESS` impedem que mensagens recebidas reiniciem o bot.
+
+## 8. Triagem pós-rota
+
+Ao selecionar Suporte, a revisão inicial deve poder enviar a mensagem configurada e aguardar a resposta antes do handoff. O conteúdo vem exclusivamente do nó `TRIAGE` publicado. Respostas são persistidas sob a chave configurada e ficam vinculadas à revisão da conversa; não devem ser reproduzidas em logs operacionais.
+
 ---
 
-## 6. Modelo de Dados (`schema.prisma`)
+## 9. Modelo de Dados (`schema.prisma`)
 
 ```prisma
 model ZApiConfig {

@@ -48,11 +48,97 @@ export default function ShortcutsAdmin() {
   };
   const invalid = form.title.trim().length < 2 || !form.message.trim() || (form.scope === "DEPARTMENT" && !form.departmentId);
 
+  const insertVariable = (varName: string) => {
+    setForm((prev) => ({
+      ...prev,
+      message: prev.message + (prev.message && !prev.message.endsWith(" ") ? " " : "") + varName,
+    }));
+  };
+
+  const systemGreeting = useMemo(() => data?.items.find((item) => item.type === "GREETING" && item.scope === "GLOBAL"), [data?.items]);
+  const systemClosing = useMemo(() => data?.items.find((item) => item.type === "CLOSING" && item.scope === "GLOBAL"), [data?.items]);
+
+  const setupSystemGreeting = () => {
+    if (systemGreeting) {
+      edit(systemGreeting);
+    } else {
+      setSelected(null);
+      setForm({
+        title: "Saudação ao Assumir Chamado",
+        message: "Olá, {contactName}! Meu nome é {agentName}, sou da equipe {departmentName} e assumi o seu atendimento. Como posso te ajudar hoje?",
+        type: "GREETING",
+        scope: "GLOBAL",
+        departmentId: "",
+        isActive: true,
+        sortOrder: 0,
+      });
+    }
+  };
+
+  const setupSystemClosing = () => {
+    if (systemClosing) {
+      edit(systemClosing);
+    } else {
+      setSelected(null);
+      setForm({
+        title: "Encerramento de Chamado",
+        message: "Olá, {contactName}! O seu chamado foi encerrado por {agentName}. Caso precise de novo suporte, estamos à disposição. Obrigado pelo contato!",
+        type: "CLOSING",
+        scope: "GLOBAL",
+        departmentId: "",
+        isActive: true,
+        sortOrder: 0,
+      });
+    }
+  };
+
   return (
     <div className="content shortcuts-admin">
       <PageHeader eyebrow="Administração / atendimento" title="Atalhos e procedimentos" description="Centralize mensagens rápidas globais, por departamento e pessoais para uso nos chats." action={
         <Button variant="default" size="lg" onClick={reset}><Plus data-icon="inline-start" /> Novo atalho</Button>
       } />
+
+      <Card className="system-messages-banner mb-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-sky-500" /> Mensagens de Sistema (Assumir e Encerrar Chamado)
+          </CardTitle>
+          <CardDescription>
+            Configure as mensagens automáticas ou pré-definidas enviadas ao assumir ou encerrar chamados. Use variáveis como &#123;agentName&#125;, &#123;contactName&#125; e &#123;departmentName&#125;.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-3 border rounded-lg bg-card/60 flex flex-col justify-between gap-3">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <strong className="text-xs font-bold uppercase tracking-wider text-sky-500">Saudação ao Assumir</strong>
+                <Badge variant={systemGreeting?.isActive ? "default" : "outline"}>{systemGreeting ? (systemGreeting.isActive ? "Ativo" : "Inativo") : "Não criado"}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-3 italic">
+                "{systemGreeting?.message || "Olá, {contactName}! Meu nome é {agentName}, sou da equipe {departmentName} e assumi o seu atendimento. Como posso te ajudar hoje?"}"
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={setupSystemGreeting}>
+              <Pencil data-icon="inline-start" /> {systemGreeting ? "Editar saudação" : "Configurar saudação"}
+            </Button>
+          </div>
+
+          <div className="p-3 border rounded-lg bg-card/60 flex flex-col justify-between gap-3">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <strong className="text-xs font-bold uppercase tracking-wider text-amber-500">Encerramento de Chamado</strong>
+                <Badge variant={systemClosing?.isActive ? "default" : "outline"}>{systemClosing ? (systemClosing.isActive ? "Ativo" : "Inativo") : "Não criado"}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-3 italic">
+                "{systemClosing?.message || "Olá, {contactName}! O seu chamado foi encerrado por {agentName}. Caso precise de novo suporte, estamos à disposição. Obrigado pelo contato!"}"
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={setupSystemClosing}>
+              <Pencil data-icon="inline-start" /> {systemClosing ? "Editar encerramento" : "Configurar encerramento"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="shortcut-filter-card">
         <CardContent className="shortcut-filter-grid">
@@ -99,7 +185,19 @@ export default function ShortcutsAdmin() {
           <CardHeader><CardTitle>{selected ? "Editar atalho" : "Novo atalho"}</CardTitle><CardDescription>A mensagem será inserida no chat sem envio automático.</CardDescription></CardHeader>
           <CardContent className="form-stack">
             <div className="field"><label htmlFor="shortcut-title">Título</label><Input id="shortcut-title" maxLength={80} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Ex.: Saudação para primeiro contato" /></div>
-            <div className="field"><label htmlFor="shortcut-message">Mensagem</label><Textarea id="shortcut-message" maxLength={4000} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Digite a mensagem que ficará disponível no chat" className="min-h-36" /><span className="field-hint">{form.message.length}/4000 caracteres</span></div>
+            <div className="field">
+              <label htmlFor="shortcut-message">Mensagem</label>
+              <Textarea id="shortcut-message" maxLength={4000} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Digite a mensagem que ficará disponível no chat" className="min-h-36" />
+              <div className="flex flex-col gap-1 mt-1">
+                <span className="field-hint">Clique para inserir variável no texto:</span>
+                <div className="flex flex-wrap gap-1">
+                  <Button type="button" variant="outline" size="xs" onClick={() => insertVariable("{agentName}")} title="Nome do Atendente">+ &#123;agentName&#125;</Button>
+                  <Button type="button" variant="outline" size="xs" onClick={() => insertVariable("{contactName}")} title="Nome do Cliente">+ &#123;contactName&#125;</Button>
+                  <Button type="button" variant="outline" size="xs" onClick={() => insertVariable("{departmentName}")} title="Nome do Departamento">+ &#123;departmentName&#125;</Button>
+                </div>
+                <span className="field-hint self-end">{form.message.length}/4000 caracteres</span>
+              </div>
+            </div>
             <div className="shortcut-form-row">
               <div className="field"><label>Tipo</label><Select value={form.type} onValueChange={(value) => setForm({ ...form, type: value as ShortcutType })}><SelectTrigger className="w-full"><SelectValue>{typeLabels[form.type]}</SelectValue></SelectTrigger><SelectContent side="bottom">{Object.entries(typeLabels).map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></div>
               <div className="field"><label>Escopo</label><Select value={form.scope} onValueChange={(value) => setForm({ ...form, scope: value as ShortcutScope, departmentId: value === "DEPARTMENT" ? form.departmentId : "" })}><SelectTrigger className="w-full"><SelectValue>{scopeLabels[form.scope]}</SelectValue></SelectTrigger><SelectContent side="bottom">{visibleScopes.map((value) => <SelectItem key={value} value={value}>{scopeLabels[value]}</SelectItem>)}</SelectContent></Select></div>

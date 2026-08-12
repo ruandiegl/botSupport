@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
 import { ArrowLeft, Check, Archive, Send, RefreshCw } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
@@ -13,9 +13,13 @@ import { DetailPanel } from "./components/DetailPanel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ShortcutPicker } from "./components/ShortcutPicker";
-import { useRegisterShortcutUse } from "./hooks/use-shortcuts";
+import { useAvailableShortcuts, useRegisterShortcutUse } from "./hooks/use-shortcuts";
 import { useAuth } from "@/lib/auth-context";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { formatShortcutMessage } from "@/lib/utils";
+import { useSocket } from "@/lib/socket-context";
+import { useSocketEvent } from "@/lib/use-socket-events";
+import { queryClient } from "@/lib/query-client";
 
 const timeLabel = (date?: string) =>
   date
@@ -37,17 +41,42 @@ export default function ConversationPage() {
   const messagesRef = useRef<HTMLDivElement>(null);
   const lastReadAttemptRef = useRef<string | null>(null);
   const { activeAgent } = useActiveAgent();
-  const { can } = useAuth();
+  const { can, user } = useAuth();
+  const { joinConversation, leaveConversation } = useSocket();
 
-  const activeAgentId = activeAgent?.id || "agent-marina";
-  const activeAgentName = activeAgent?.name || "Atendente";
+  const activeAgentId = activeAgent?.id || user?.id || "agent-marina";
+  const activeAgentName = activeAgent?.name || user?.name || "Atendente";
 
   const { data: conversation, isLoading, isError, refetch } = useGetConversation(id);
+  const { data: availableShortcuts = [] } = useAvailableShortcuts(id, "", "ALL", can("shortcuts", "use"));
   const markAsRead = useMarkConversationRead(id);
   const sendMessage = useSendMessage(id);
   const assume = useAssumeConversation(id);
   const close = useCloseConversation(id);
   const registerShortcutUse = useRegisterShortcutUse();
+
+  // Socket.IO: Entrar na sala da conversa para receber mensagens e atualizações em tempo real
+  useEffect(() => {
+    if (id) {
+      joinConversation(id);
+      return () => {
+        leaveConversation(id);
+      };
+    }
+  }, [id, joinConversation, leaveConversation]);
+
+  // Escutar novas mensagens em tempo real no chat
+  useSocketEvent("message:new", useCallback((data: any) => {
+    if (data.conversationId === id) {
+      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+    }
+  }, [id]));
+
+  useSocketEvent("conversation:updated", useCallback((data: any) => {
+    if (data.conversationId === id) {
+      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+    }
+  }, [id]));
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -94,34 +123,61 @@ export default function ConversationPage() {
 
   const send = () => {
     if (!message.trim()) return;
-    const signature = `-- ${activeAgentName}`;
-    const body = message.trim().replace(/\n+$/, "");
-    const formattedContent = body.endsWith(signature) ? body : `${body}\n\n${signature}`;
-
-    const shortcutId = selectedShortcutId;
-    sendMessage.mutate(
-      { content: formattedContent },
-      {
-        onSuccess: () => {
-          setMessage("");
+    const body = message.trim();
+    sendMessage.mutate({ content: body }, {
+      onSuccess: () => {
+        setMessage("");
+        if (selectedShortcutId) {
+          registerShortcutUse.mutate({ id: selectedShortcutId, conversationId: id });
           setSelectedShortcutId(null);
-          if (shortcutId) registerShortcutUse.mutate({ id: shortcutId, conversationId: id });
-        },
-      }
-    );
+        }
+      },
+    });
   };
 
-  const handleAssume = async () => {
-    await assume.mutateAsync({ agentId: activeAgentId });
+  const handleAssume = () => {
+    setAssumeConfirmOpen(false);
+    assume.mutate({ agentId: activeAgentId }, {
+      onSuccess: () => {
+        const greetingShortcut = availableShortcuts.find(
+          (s) => s.type === "GREETING" && s.scope === "GLOBAL"
+        );
+        if (greetingShortcut) {
+          const formatted = formatShortcutMessage(greetingShortcut.message, {
+            agentName: activeAgentName,
+            contactName: conversation.contact.name,
+            departmentName: conversation.departmentName || "Suporte",
+          });
+          setMessage(formatted);
+          setSelectedShortcutId(greetingShortcut.id);
+        }
+      },
+    });
   };
 
-  const handleClose = async () => {
-    await close.mutateAsync();
+  const handleClose = () => {
+    setCloseConfirmOpen(false);
+    close.mutate(undefined, {
+      onSuccess: () => {
+        const closingShortcut = availableShortcuts.find(
+          (s) => s.type === "CLOSING" && s.scope === "GLOBAL"
+        );
+        if (closingShortcut) {
+          const formatted = formatShortcutMessage(closingShortcut.message, {
+            agentName: activeAgentName,
+            contactName: conversation.contact.name,
+            departmentName: conversation.departmentName || "Suporte",
+          });
+          setMessage(formatted);
+          setSelectedShortcutId(closingShortcut.id);
+        }
+      },
+    });
   };
 
   return (
-    <div className="conversation-page">
-      <section className="thread">
+    <div className="content conversation-page">
+      <section className="panel thread">
         <div className="thread-head">
           <div className="contact-block">
             <Button
@@ -173,7 +229,7 @@ export default function ConversationPage() {
           {conversation.messages?.map((item) => (
             <div className={`message-wrap ${item.direction === "OUT" ? "out" : "in"}`} key={item.id}>
               <div className="bubble">
-                {item.content.split(/(\n\n-- .+)$/s).map((part, index) => index === 1 ? <span className="bubble-signature" key={index}>{part}</span> : part)}
+                {item.content}
               </div>
               <div className="bubble-meta">
                 {item.direction === "OUT"
@@ -187,7 +243,13 @@ export default function ConversationPage() {
         <div className="composer">
           {can("shortcuts", "use") && (
             <div className="composer-toolbar">
-              <ShortcutPicker conversationId={id} onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} />
+              <ShortcutPicker 
+                conversationId={id} 
+                agentName={activeAgentName}
+                contactName={conversation.contact.name}
+                departmentName={conversation.departmentName || "Suporte"}
+                onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} 
+              />
               <span>Selecione uma mensagem pronta e ajuste antes de enviar.</span>
             </div>
           )}
@@ -204,9 +266,7 @@ export default function ConversationPage() {
             data-testid="textarea-message"
           />
           <div className="composer-foot">
-            <span className="signature">
-              Assinatura: <b>— {activeAgentName}</b>
-            </span>
+            <div />
             <Button
               variant="default"
               size="lg"
@@ -233,7 +293,7 @@ export default function ConversationPage() {
         onOpenChange={setAssumeConfirmOpen}
         tone="warning"
         title="Assumir este atendimento?"
-        description="Você passará a ser responsável pela conversa e o cliente será informado da mudança."
+        description="Você passará a ser responsável pela conversa e a mensagem de saudação inicial será inserida no campo."
         confirmLabel="Assumir atendimento"
         details={<strong>{conversation.contact.name}</strong>}
         onConfirm={handleAssume}
@@ -244,7 +304,7 @@ export default function ConversationPage() {
         onOpenChange={setCloseConfirmOpen}
         tone="danger"
         title="Encerrar este chamado?"
-        description="O atendimento será marcado como encerrado e deixará a lista de conversas ativas."
+        description="A mensagem de encerramento será enviada ao cliente e o atendimento será marcado como encerrado."
         confirmLabel="Encerrar chamado"
         details={<strong>{conversation.contact.name}</strong>}
         onConfirm={handleClose}

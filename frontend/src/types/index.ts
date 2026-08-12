@@ -73,6 +73,63 @@ export interface FlowDefinition {
   updatedAt: string;
 }
 
+export type FlowRevisionStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+export type FlowNodeType = "ENTRY" | "MESSAGE" | "DECISION" | "ROUTE" | "TRIAGE" | "HANDOFF" | "END";
+
+export interface FlowNodeConfig {
+  parentRouteId?: string;
+  responseKey?: string;
+  optionKey?: string;
+  legacyOptionIndex?: number;
+  [key: string]: unknown;
+}
+
+export interface FlowNode {
+  id: string;
+  stableKey: string;
+  type: FlowNodeType;
+  name: string;
+  content: string;
+  sortOrder: number;
+  config: FlowNodeConfig;
+  departmentId: string | null;
+}
+
+export interface FlowTransition {
+  id: string;
+  fromNodeId: string;
+  toNodeId: string;
+  optionKey: string | null;
+  label: string | null;
+  sortOrder: number;
+}
+
+export interface FlowRevision {
+  id: string;
+  flowDefinitionId: string;
+  name?: string;
+  version: number;
+  status: FlowRevisionStatus;
+  schemaVersion: number;
+  revision: number;
+  nodes: FlowNode[];
+  transitions: FlowTransition[];
+  publishedAt?: string | null;
+  updatedAt?: string;
+  legacyDefinition?: FlowDefinition;
+}
+
+export interface FlowValidationIssue {
+  nodeId?: string;
+  field?: string;
+  message: string;
+}
+
+export interface FlowValidationResult {
+  valid: boolean;
+  issues: FlowValidationIssue[];
+}
+
 export type ShortcutType = "GREETING" | "CLOSING" | "DEPARTMENT" | "PERSONAL" | "GENERAL";
 export type ShortcutScope = "GLOBAL" | "DEPARTMENT" | "PERSONAL";
 

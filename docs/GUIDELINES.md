@@ -105,3 +105,30 @@ Antes de solicitar code review ou fazer merge de uma funcionalidade:
 - [ ] Todas as rotas de API possuem validação Zod para os dados recebidos.
 - [ ] A interface responde de forma adaptativa/responsiva a telas menores.
 - [ ] A documentação da API em `docs/API.md` foi atualizada se novos endpoints foram adicionados.
+
+---
+
+## 6. Fluxos versionados e segurança operacional
+
+### 6.1 Regras de implementação
+
+- O editor grava somente `DRAFT`; publicar é uma operação explícita, validada e transacional.
+- Nunca use posição do array como identidade. Nós usam `stableKey` e escolhas externas usam `optionKey` imutável.
+- Toda conversa iniciada no bot recebe `flowRevisionId` e não migra automaticamente para outra revisão.
+- A transição `BOT -> QUEUED` pertence exclusivamente ao `HANDOFF`.
+- Textos, departamentos e triagens pertencem à revisão; o adaptador Z-API não contém regra de negócio hardcoded.
+- Persistência de resposta e avanço de nó devem ser idempotentes e protegidos contra callbacks concorrentes.
+
+### 6.2 Fronteiras de segurança
+
+- Valide payload, params e query com Zod, incluindo limites de tamanho, tipos discriminados, UUIDs e chaves permitidas.
+- Aplique `flow:view`, `flow:edit` e `flow:publish` no backend; esconder controles no frontend não substitui autorização.
+- Webhooks exigem validação do segredo/token e chave idempotente do provedor.
+- Não renderize HTML vindo de mensagens ou configuração do fluxo. React deve tratar o conteúdo como texto; Markdown exige sanitização explícita.
+- Não registre tokens, telefones completos, conteúdo das mensagens, prompts de triagem ou respostas em `flowContext`.
+- Respostas de API administrativas não expõem credenciais Z-API. Tokens armazenados devem ser rotacionáveis e protegidos fora do repositório.
+- Limite nós, transições, comprimento de textos, quantidade de botões e profundidade de execução para evitar abuso de recursos.
+
+### 6.3 Observabilidade segura
+
+Logs estruturados podem conter `conversationId`, `flowRevisionId`, `flowNodeId`, `eventId`, tipo de ação, duração e resultado. Métricas devem cobrir falha de publicação, conflito `409`, eventos duplicados, falha/retry Z-API, tempo em `BOT`, abandono e handoffs. Dados pessoais e segredos são proibidos em logs, métricas e traces.

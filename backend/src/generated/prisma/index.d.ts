@@ -59,6 +59,26 @@ export type FlowDefinition = $Result.DefaultSelection<Prisma.$FlowDefinitionPayl
  */
 export type ZApiConfig = $Result.DefaultSelection<Prisma.$ZApiConfigPayload>
 /**
+ * Model FlowRevision
+ * 
+ */
+export type FlowRevision = $Result.DefaultSelection<Prisma.$FlowRevisionPayload>
+/**
+ * Model FlowNode
+ * 
+ */
+export type FlowNode = $Result.DefaultSelection<Prisma.$FlowNodePayload>
+/**
+ * Model FlowTransition
+ * 
+ */
+export type FlowTransition = $Result.DefaultSelection<Prisma.$FlowTransitionPayload>
+/**
+ * Model FlowExecutionEvent
+ * 
+ */
+export type FlowExecutionEvent = $Result.DefaultSelection<Prisma.$FlowExecutionEventPayload>
+/**
  * Model Shortcut
  * 
  */
@@ -73,7 +93,29 @@ export type ShortcutAudit = $Result.DefaultSelection<Prisma.$ShortcutAuditPayloa
  * Enums
  */
 export namespace $Enums {
-  export const ShortcutType: {
+  export const FlowRevisionStatus: {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type FlowRevisionStatus = (typeof FlowRevisionStatus)[keyof typeof FlowRevisionStatus]
+
+
+export const FlowNodeType: {
+  ENTRY: 'ENTRY',
+  MESSAGE: 'MESSAGE',
+  DECISION: 'DECISION',
+  ROUTE: 'ROUTE',
+  TRIAGE: 'TRIAGE',
+  HANDOFF: 'HANDOFF',
+  END: 'END'
+};
+
+export type FlowNodeType = (typeof FlowNodeType)[keyof typeof FlowNodeType]
+
+
+export const ShortcutType: {
   GREETING: 'GREETING',
   CLOSING: 'CLOSING',
   DEPARTMENT: 'DEPARTMENT',
@@ -93,6 +135,14 @@ export const ShortcutScope: {
 export type ShortcutScope = (typeof ShortcutScope)[keyof typeof ShortcutScope]
 
 }
+
+export type FlowRevisionStatus = $Enums.FlowRevisionStatus
+
+export const FlowRevisionStatus: typeof $Enums.FlowRevisionStatus
+
+export type FlowNodeType = $Enums.FlowNodeType
+
+export const FlowNodeType: typeof $Enums.FlowNodeType
 
 export type ShortcutType = $Enums.ShortcutType
 
@@ -314,6 +364,46 @@ export class PrismaClient<
     * ```
     */
   get zApiConfig(): Prisma.ZApiConfigDelegate<ExtArgs>;
+
+  /**
+   * `prisma.flowRevision`: Exposes CRUD operations for the **FlowRevision** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FlowRevisions
+    * const flowRevisions = await prisma.flowRevision.findMany()
+    * ```
+    */
+  get flowRevision(): Prisma.FlowRevisionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.flowNode`: Exposes CRUD operations for the **FlowNode** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FlowNodes
+    * const flowNodes = await prisma.flowNode.findMany()
+    * ```
+    */
+  get flowNode(): Prisma.FlowNodeDelegate<ExtArgs>;
+
+  /**
+   * `prisma.flowTransition`: Exposes CRUD operations for the **FlowTransition** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FlowTransitions
+    * const flowTransitions = await prisma.flowTransition.findMany()
+    * ```
+    */
+  get flowTransition(): Prisma.FlowTransitionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.flowExecutionEvent`: Exposes CRUD operations for the **FlowExecutionEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FlowExecutionEvents
+    * const flowExecutionEvents = await prisma.flowExecutionEvent.findMany()
+    * ```
+    */
+  get flowExecutionEvent(): Prisma.FlowExecutionEventDelegate<ExtArgs>;
 
   /**
    * `prisma.shortcut`: Exposes CRUD operations for the **Shortcut** model.
@@ -784,6 +874,10 @@ export namespace Prisma {
     Message: 'Message',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
+    FlowRevision: 'FlowRevision',
+    FlowNode: 'FlowNode',
+    FlowTransition: 'FlowTransition',
+    FlowExecutionEvent: 'FlowExecutionEvent',
     Shortcut: 'Shortcut',
     ShortcutAudit: 'ShortcutAudit'
   };
@@ -801,7 +895,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "flowDefinition" | "zApiConfig" | "shortcut" | "shortcutAudit"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "flowDefinition" | "zApiConfig" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1435,6 +1529,286 @@ export namespace Prisma {
           }
         }
       }
+      FlowRevision: {
+        payload: Prisma.$FlowRevisionPayload<ExtArgs>
+        fields: Prisma.FlowRevisionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FlowRevisionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FlowRevisionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          findFirst: {
+            args: Prisma.FlowRevisionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FlowRevisionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          findMany: {
+            args: Prisma.FlowRevisionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>[]
+          }
+          create: {
+            args: Prisma.FlowRevisionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          createMany: {
+            args: Prisma.FlowRevisionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FlowRevisionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>[]
+          }
+          delete: {
+            args: Prisma.FlowRevisionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          update: {
+            args: Prisma.FlowRevisionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          deleteMany: {
+            args: Prisma.FlowRevisionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FlowRevisionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FlowRevisionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowRevisionPayload>
+          }
+          aggregate: {
+            args: Prisma.FlowRevisionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFlowRevision>
+          }
+          groupBy: {
+            args: Prisma.FlowRevisionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FlowRevisionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FlowRevisionCountArgs<ExtArgs>
+            result: $Utils.Optional<FlowRevisionCountAggregateOutputType> | number
+          }
+        }
+      }
+      FlowNode: {
+        payload: Prisma.$FlowNodePayload<ExtArgs>
+        fields: Prisma.FlowNodeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FlowNodeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FlowNodeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          findFirst: {
+            args: Prisma.FlowNodeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FlowNodeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          findMany: {
+            args: Prisma.FlowNodeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>[]
+          }
+          create: {
+            args: Prisma.FlowNodeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          createMany: {
+            args: Prisma.FlowNodeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FlowNodeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>[]
+          }
+          delete: {
+            args: Prisma.FlowNodeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          update: {
+            args: Prisma.FlowNodeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          deleteMany: {
+            args: Prisma.FlowNodeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FlowNodeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FlowNodeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowNodePayload>
+          }
+          aggregate: {
+            args: Prisma.FlowNodeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFlowNode>
+          }
+          groupBy: {
+            args: Prisma.FlowNodeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FlowNodeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FlowNodeCountArgs<ExtArgs>
+            result: $Utils.Optional<FlowNodeCountAggregateOutputType> | number
+          }
+        }
+      }
+      FlowTransition: {
+        payload: Prisma.$FlowTransitionPayload<ExtArgs>
+        fields: Prisma.FlowTransitionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FlowTransitionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FlowTransitionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          findFirst: {
+            args: Prisma.FlowTransitionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FlowTransitionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          findMany: {
+            args: Prisma.FlowTransitionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>[]
+          }
+          create: {
+            args: Prisma.FlowTransitionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          createMany: {
+            args: Prisma.FlowTransitionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FlowTransitionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>[]
+          }
+          delete: {
+            args: Prisma.FlowTransitionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          update: {
+            args: Prisma.FlowTransitionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          deleteMany: {
+            args: Prisma.FlowTransitionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FlowTransitionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FlowTransitionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowTransitionPayload>
+          }
+          aggregate: {
+            args: Prisma.FlowTransitionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFlowTransition>
+          }
+          groupBy: {
+            args: Prisma.FlowTransitionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FlowTransitionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FlowTransitionCountArgs<ExtArgs>
+            result: $Utils.Optional<FlowTransitionCountAggregateOutputType> | number
+          }
+        }
+      }
+      FlowExecutionEvent: {
+        payload: Prisma.$FlowExecutionEventPayload<ExtArgs>
+        fields: Prisma.FlowExecutionEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FlowExecutionEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FlowExecutionEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          findFirst: {
+            args: Prisma.FlowExecutionEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FlowExecutionEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          findMany: {
+            args: Prisma.FlowExecutionEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>[]
+          }
+          create: {
+            args: Prisma.FlowExecutionEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          createMany: {
+            args: Prisma.FlowExecutionEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FlowExecutionEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>[]
+          }
+          delete: {
+            args: Prisma.FlowExecutionEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          update: {
+            args: Prisma.FlowExecutionEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.FlowExecutionEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FlowExecutionEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FlowExecutionEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowExecutionEventPayload>
+          }
+          aggregate: {
+            args: Prisma.FlowExecutionEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFlowExecutionEvent>
+          }
+          groupBy: {
+            args: Prisma.FlowExecutionEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FlowExecutionEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FlowExecutionEventCountArgs<ExtArgs>
+            result: $Utils.Optional<FlowExecutionEventCountAggregateOutputType> | number
+          }
+        }
+      }
       Shortcut: {
         payload: Prisma.$ShortcutPayload<ExtArgs>
         fields: Prisma.ShortcutFieldRefs
@@ -1740,6 +2114,7 @@ export namespace Prisma {
     agents: number
     conversations: number
     shortcuts: number
+    flowNodes: number
   }
 
   export type DepartmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1747,6 +2122,7 @@ export namespace Prisma {
     agents?: boolean | DepartmentCountOutputTypeCountAgentsArgs
     conversations?: boolean | DepartmentCountOutputTypeCountConversationsArgs
     shortcuts?: boolean | DepartmentCountOutputTypeCountShortcutsArgs
+    flowNodes?: boolean | DepartmentCountOutputTypeCountFlowNodesArgs
   }
 
   // Custom InputTypes
@@ -1788,6 +2164,13 @@ export namespace Prisma {
     where?: ShortcutWhereInput
   }
 
+  /**
+   * DepartmentCountOutputType without action
+   */
+  export type DepartmentCountOutputTypeCountFlowNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowNodeWhereInput
+  }
+
 
   /**
    * Count Type AgentCountOutputType
@@ -1800,6 +2183,7 @@ export namespace Prisma {
     createdShortcuts: number
     updatedShortcuts: number
     shortcutAudits: number
+    publishedFlowRevisions: number
   }
 
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1809,6 +2193,7 @@ export namespace Prisma {
     createdShortcuts?: boolean | AgentCountOutputTypeCountCreatedShortcutsArgs
     updatedShortcuts?: boolean | AgentCountOutputTypeCountUpdatedShortcutsArgs
     shortcutAudits?: boolean | AgentCountOutputTypeCountShortcutAuditsArgs
+    publishedFlowRevisions?: boolean | AgentCountOutputTypeCountPublishedFlowRevisionsArgs
   }
 
   // Custom InputTypes
@@ -1864,6 +2249,13 @@ export namespace Prisma {
     where?: ShortcutAuditWhereInput
   }
 
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountPublishedFlowRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowRevisionWhereInput
+  }
+
 
   /**
    * Count Type ContactCountOutputType
@@ -1902,10 +2294,12 @@ export namespace Prisma {
 
   export type ConversationCountOutputType = {
     messages: number
+    flowEvents: number
   }
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+    flowEvents?: boolean | ConversationCountOutputTypeCountFlowEventsArgs
   }
 
   // Custom InputTypes
@@ -1924,6 +2318,160 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountFlowEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowExecutionEventWhereInput
+  }
+
+
+  /**
+   * Count Type FlowDefinitionCountOutputType
+   */
+
+  export type FlowDefinitionCountOutputType = {
+    revisions: number
+  }
+
+  export type FlowDefinitionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    revisions?: boolean | FlowDefinitionCountOutputTypeCountRevisionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FlowDefinitionCountOutputType without action
+   */
+  export type FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowDefinitionCountOutputType
+     */
+    select?: FlowDefinitionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FlowDefinitionCountOutputType without action
+   */
+  export type FlowDefinitionCountOutputTypeCountRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowRevisionWhereInput
+  }
+
+
+  /**
+   * Count Type FlowRevisionCountOutputType
+   */
+
+  export type FlowRevisionCountOutputType = {
+    nodes: number
+    transitions: number
+    conversations: number
+    executionEvents: number
+  }
+
+  export type FlowRevisionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    nodes?: boolean | FlowRevisionCountOutputTypeCountNodesArgs
+    transitions?: boolean | FlowRevisionCountOutputTypeCountTransitionsArgs
+    conversations?: boolean | FlowRevisionCountOutputTypeCountConversationsArgs
+    executionEvents?: boolean | FlowRevisionCountOutputTypeCountExecutionEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FlowRevisionCountOutputType without action
+   */
+  export type FlowRevisionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevisionCountOutputType
+     */
+    select?: FlowRevisionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FlowRevisionCountOutputType without action
+   */
+  export type FlowRevisionCountOutputTypeCountNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowNodeWhereInput
+  }
+
+  /**
+   * FlowRevisionCountOutputType without action
+   */
+  export type FlowRevisionCountOutputTypeCountTransitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowTransitionWhereInput
+  }
+
+  /**
+   * FlowRevisionCountOutputType without action
+   */
+  export type FlowRevisionCountOutputTypeCountConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationWhereInput
+  }
+
+  /**
+   * FlowRevisionCountOutputType without action
+   */
+  export type FlowRevisionCountOutputTypeCountExecutionEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowExecutionEventWhereInput
+  }
+
+
+  /**
+   * Count Type FlowNodeCountOutputType
+   */
+
+  export type FlowNodeCountOutputType = {
+    outgoing: number
+    incoming: number
+    conversations: number
+    executionEvents: number
+  }
+
+  export type FlowNodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outgoing?: boolean | FlowNodeCountOutputTypeCountOutgoingArgs
+    incoming?: boolean | FlowNodeCountOutputTypeCountIncomingArgs
+    conversations?: boolean | FlowNodeCountOutputTypeCountConversationsArgs
+    executionEvents?: boolean | FlowNodeCountOutputTypeCountExecutionEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FlowNodeCountOutputType without action
+   */
+  export type FlowNodeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNodeCountOutputType
+     */
+    select?: FlowNodeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FlowNodeCountOutputType without action
+   */
+  export type FlowNodeCountOutputTypeCountOutgoingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowTransitionWhereInput
+  }
+
+  /**
+   * FlowNodeCountOutputType without action
+   */
+  export type FlowNodeCountOutputTypeCountIncomingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowTransitionWhereInput
+  }
+
+  /**
+   * FlowNodeCountOutputType without action
+   */
+  export type FlowNodeCountOutputTypeCountConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationWhereInput
+  }
+
+  /**
+   * FlowNodeCountOutputType without action
+   */
+  export type FlowNodeCountOutputTypeCountExecutionEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowExecutionEventWhereInput
   }
 
 
@@ -2122,6 +2670,7 @@ export namespace Prisma {
     agents?: boolean | Department$agentsArgs<ExtArgs>
     conversations?: boolean | Department$conversationsArgs<ExtArgs>
     shortcuts?: boolean | Department$shortcutsArgs<ExtArgs>
+    flowNodes?: boolean | Department$flowNodesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["department"]>
 
@@ -2144,6 +2693,7 @@ export namespace Prisma {
     agents?: boolean | Department$agentsArgs<ExtArgs>
     conversations?: boolean | Department$conversationsArgs<ExtArgs>
     shortcuts?: boolean | Department$shortcutsArgs<ExtArgs>
+    flowNodes?: boolean | Department$flowNodesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2155,6 +2705,7 @@ export namespace Prisma {
       agents: Prisma.$AgentPayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       shortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
+      flowNodes: Prisma.$FlowNodePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2529,6 +3080,7 @@ export namespace Prisma {
     agents<T extends Department$agentsArgs<ExtArgs> = {}>(args?: Subset<T, Department$agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findMany"> | Null>
     conversations<T extends Department$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Department$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     shortcuts<T extends Department$shortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Department$shortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
+    flowNodes<T extends Department$flowNodesArgs<ExtArgs> = {}>(args?: Subset<T, Department$flowNodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2953,6 +3505,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ShortcutScalarFieldEnum | ShortcutScalarFieldEnum[]
+  }
+
+  /**
+   * Department.flowNodes
+   */
+  export type Department$flowNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    where?: FlowNodeWhereInput
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    cursor?: FlowNodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
   }
 
   /**
@@ -4140,6 +4712,7 @@ export namespace Prisma {
     createdShortcuts?: boolean | Agent$createdShortcutsArgs<ExtArgs>
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
     shortcutAudits?: boolean | Agent$shortcutAuditsArgs<ExtArgs>
+    publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agent"]>
 
@@ -4176,6 +4749,7 @@ export namespace Prisma {
     createdShortcuts?: boolean | Agent$createdShortcutsArgs<ExtArgs>
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
     shortcutAudits?: boolean | Agent$shortcutAuditsArgs<ExtArgs>
+    publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4192,6 +4766,7 @@ export namespace Prisma {
       createdShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       updatedShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       shortcutAudits: Prisma.$ShortcutAuditPayload<ExtArgs>[]
+      publishedFlowRevisions: Prisma.$FlowRevisionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4574,6 +5149,7 @@ export namespace Prisma {
     createdShortcuts<T extends Agent$createdShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$createdShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     updatedShortcuts<T extends Agent$updatedShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$updatedShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     shortcutAudits<T extends Agent$shortcutAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$shortcutAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutAuditPayload<ExtArgs>, T, "findMany"> | Null>
+    publishedFlowRevisions<T extends Agent$publishedFlowRevisionsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$publishedFlowRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5062,6 +5638,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ShortcutAuditScalarFieldEnum | ShortcutAuditScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.publishedFlowRevisions
+   */
+  export type Agent$publishedFlowRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    where?: FlowRevisionWhereInput
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    cursor?: FlowRevisionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
   }
 
   /**
@@ -6906,6 +7502,8 @@ export namespace Prisma {
     departmentId: string | null
     assignedAgentId: string | null
     currentStep: string | null
+    flowRevisionId: string | null
+    currentFlowNodeId: string | null
     startedAt: Date | null
     closedAt: Date | null
   }
@@ -6917,6 +7515,8 @@ export namespace Prisma {
     departmentId: string | null
     assignedAgentId: string | null
     currentStep: string | null
+    flowRevisionId: string | null
+    currentFlowNodeId: string | null
     startedAt: Date | null
     closedAt: Date | null
   }
@@ -6928,6 +7528,9 @@ export namespace Prisma {
     departmentId: number
     assignedAgentId: number
     currentStep: number
+    flowRevisionId: number
+    currentFlowNodeId: number
+    flowContext: number
     startedAt: number
     closedAt: number
     _all: number
@@ -6941,6 +7544,8 @@ export namespace Prisma {
     departmentId?: true
     assignedAgentId?: true
     currentStep?: true
+    flowRevisionId?: true
+    currentFlowNodeId?: true
     startedAt?: true
     closedAt?: true
   }
@@ -6952,6 +7557,8 @@ export namespace Prisma {
     departmentId?: true
     assignedAgentId?: true
     currentStep?: true
+    flowRevisionId?: true
+    currentFlowNodeId?: true
     startedAt?: true
     closedAt?: true
   }
@@ -6963,6 +7570,9 @@ export namespace Prisma {
     departmentId?: true
     assignedAgentId?: true
     currentStep?: true
+    flowRevisionId?: true
+    currentFlowNodeId?: true
+    flowContext?: true
     startedAt?: true
     closedAt?: true
     _all?: true
@@ -7047,6 +7657,9 @@ export namespace Prisma {
     departmentId: string | null
     assignedAgentId: string | null
     currentStep: string | null
+    flowRevisionId: string | null
+    currentFlowNodeId: string | null
+    flowContext: JsonValue | null
     startedAt: Date
     closedAt: Date | null
     _count: ConversationCountAggregateOutputType | null
@@ -7075,12 +7688,18 @@ export namespace Prisma {
     departmentId?: boolean
     assignedAgentId?: boolean
     currentStep?: boolean
+    flowRevisionId?: boolean
+    currentFlowNodeId?: boolean
+    flowContext?: boolean
     startedAt?: boolean
     closedAt?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
+    currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
+    flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -7091,11 +7710,16 @@ export namespace Prisma {
     departmentId?: boolean
     assignedAgentId?: boolean
     currentStep?: boolean
+    flowRevisionId?: boolean
+    currentFlowNodeId?: boolean
+    flowContext?: boolean
     startedAt?: boolean
     closedAt?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
+    flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
+    currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
   export type ConversationSelectScalar = {
@@ -7105,6 +7729,9 @@ export namespace Prisma {
     departmentId?: boolean
     assignedAgentId?: boolean
     currentStep?: boolean
+    flowRevisionId?: boolean
+    currentFlowNodeId?: boolean
+    flowContext?: boolean
     startedAt?: boolean
     closedAt?: boolean
   }
@@ -7114,12 +7741,17 @@ export namespace Prisma {
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
+    currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
+    flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
+    flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
+    currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
   }
 
   export type $ConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7129,6 +7761,9 @@ export namespace Prisma {
       department: Prisma.$DepartmentPayload<ExtArgs> | null
       assignedAgent: Prisma.$AgentPayload<ExtArgs> | null
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      flowRevision: Prisma.$FlowRevisionPayload<ExtArgs> | null
+      currentFlowNode: Prisma.$FlowNodePayload<ExtArgs> | null
+      flowEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7137,6 +7772,9 @@ export namespace Prisma {
       departmentId: string | null
       assignedAgentId: string | null
       currentStep: string | null
+      flowRevisionId: string | null
+      currentFlowNodeId: string | null
+      flowContext: Prisma.JsonValue | null
       startedAt: Date
       closedAt: Date | null
     }, ExtArgs["result"]["conversation"]>
@@ -7507,6 +8145,9 @@ export namespace Prisma {
     department<T extends Conversation$departmentArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     assignedAgent<T extends Conversation$assignedAgentArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$assignedAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     messages<T extends Conversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    flowRevision<T extends Conversation$flowRevisionArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowRevisionArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    currentFlowNode<T extends Conversation$currentFlowNodeArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$currentFlowNodeArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    flowEvents<T extends Conversation$flowEventsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7542,6 +8183,9 @@ export namespace Prisma {
     readonly departmentId: FieldRef<"Conversation", 'String'>
     readonly assignedAgentId: FieldRef<"Conversation", 'String'>
     readonly currentStep: FieldRef<"Conversation", 'String'>
+    readonly flowRevisionId: FieldRef<"Conversation", 'String'>
+    readonly currentFlowNodeId: FieldRef<"Conversation", 'String'>
+    readonly flowContext: FieldRef<"Conversation", 'Json'>
     readonly startedAt: FieldRef<"Conversation", 'DateTime'>
     readonly closedAt: FieldRef<"Conversation", 'DateTime'>
   }
@@ -7909,6 +8553,56 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation.flowRevision
+   */
+  export type Conversation$flowRevisionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    where?: FlowRevisionWhereInput
+  }
+
+  /**
+   * Conversation.currentFlowNode
+   */
+  export type Conversation$currentFlowNodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    where?: FlowNodeWhereInput
+  }
+
+  /**
+   * Conversation.flowEvents
+   */
+  export type Conversation$flowEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    where?: FlowExecutionEventWhereInput
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    cursor?: FlowExecutionEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
   }
 
   /**
@@ -9084,6 +9778,8 @@ export namespace Prisma {
     menuMessage?: boolean
     options?: boolean
     updatedAt?: boolean
+    revisions?: boolean | FlowDefinition$revisionsArgs<ExtArgs>
+    _count?: boolean | FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["flowDefinition"]>
 
   export type FlowDefinitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9104,10 +9800,17 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
+  export type FlowDefinitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    revisions?: boolean | FlowDefinition$revisionsArgs<ExtArgs>
+    _count?: boolean | FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FlowDefinitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $FlowDefinitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "FlowDefinition"
-    objects: {}
+    objects: {
+      revisions: Prisma.$FlowRevisionPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -9479,6 +10182,7 @@ export namespace Prisma {
    */
   export interface Prisma__FlowDefinitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    revisions<T extends FlowDefinition$revisionsArgs<ExtArgs> = {}>(args?: Subset<T, FlowDefinition$revisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9527,6 +10231,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * Filter, which FlowDefinition to fetch.
      */
     where: FlowDefinitionWhereUniqueInput
@@ -9541,6 +10249,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * Filter, which FlowDefinition to fetch.
      */
     where: FlowDefinitionWhereUniqueInput
@@ -9554,6 +10266,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the FlowDefinition
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
     /**
      * Filter, which FlowDefinition to fetch.
      */
@@ -9599,6 +10315,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * Filter, which FlowDefinition to fetch.
      */
     where?: FlowDefinitionWhereInput
@@ -9643,6 +10363,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * Filter, which FlowDefinitions to fetch.
      */
     where?: FlowDefinitionWhereInput
@@ -9681,6 +10405,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the FlowDefinition
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
     /**
      * The data needed to create a FlowDefinition.
      */
@@ -9722,6 +10450,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * The data needed to update a FlowDefinition.
      */
     data: XOR<FlowDefinitionUpdateInput, FlowDefinitionUncheckedUpdateInput>
@@ -9754,6 +10486,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * The filter to search for the FlowDefinition to update in case it exists.
      */
     where: FlowDefinitionWhereUniqueInput
@@ -9776,6 +10512,10 @@ export namespace Prisma {
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
+    /**
      * Filter which FlowDefinition to delete.
      */
     where: FlowDefinitionWhereUniqueInput
@@ -9792,6 +10532,26 @@ export namespace Prisma {
   }
 
   /**
+   * FlowDefinition.revisions
+   */
+  export type FlowDefinition$revisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    where?: FlowRevisionWhereInput
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    cursor?: FlowRevisionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
+  }
+
+  /**
    * FlowDefinition without action
    */
   export type FlowDefinitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9799,6 +10559,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the FlowDefinition
      */
     select?: FlowDefinitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowDefinitionInclude<ExtArgs> | null
   }
 
 
@@ -10713,6 +11477,4285 @@ export namespace Prisma {
      * Select specific fields to fetch from the ZApiConfig
      */
     select?: ZApiConfigSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FlowRevision
+   */
+
+  export type AggregateFlowRevision = {
+    _count: FlowRevisionCountAggregateOutputType | null
+    _avg: FlowRevisionAvgAggregateOutputType | null
+    _sum: FlowRevisionSumAggregateOutputType | null
+    _min: FlowRevisionMinAggregateOutputType | null
+    _max: FlowRevisionMaxAggregateOutputType | null
+  }
+
+  export type FlowRevisionAvgAggregateOutputType = {
+    version: number | null
+    schemaVersion: number | null
+    revision: number | null
+  }
+
+  export type FlowRevisionSumAggregateOutputType = {
+    version: number | null
+    schemaVersion: number | null
+    revision: number | null
+  }
+
+  export type FlowRevisionMinAggregateOutputType = {
+    id: string | null
+    flowDefinitionId: string | null
+    version: number | null
+    status: $Enums.FlowRevisionStatus | null
+    schemaVersion: number | null
+    revision: number | null
+    publishedAt: Date | null
+    publishedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FlowRevisionMaxAggregateOutputType = {
+    id: string | null
+    flowDefinitionId: string | null
+    version: number | null
+    status: $Enums.FlowRevisionStatus | null
+    schemaVersion: number | null
+    revision: number | null
+    publishedAt: Date | null
+    publishedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FlowRevisionCountAggregateOutputType = {
+    id: number
+    flowDefinitionId: number
+    version: number
+    status: number
+    schemaVersion: number
+    revision: number
+    publishedAt: number
+    publishedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FlowRevisionAvgAggregateInputType = {
+    version?: true
+    schemaVersion?: true
+    revision?: true
+  }
+
+  export type FlowRevisionSumAggregateInputType = {
+    version?: true
+    schemaVersion?: true
+    revision?: true
+  }
+
+  export type FlowRevisionMinAggregateInputType = {
+    id?: true
+    flowDefinitionId?: true
+    version?: true
+    status?: true
+    schemaVersion?: true
+    revision?: true
+    publishedAt?: true
+    publishedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FlowRevisionMaxAggregateInputType = {
+    id?: true
+    flowDefinitionId?: true
+    version?: true
+    status?: true
+    schemaVersion?: true
+    revision?: true
+    publishedAt?: true
+    publishedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FlowRevisionCountAggregateInputType = {
+    id?: true
+    flowDefinitionId?: true
+    version?: true
+    status?: true
+    schemaVersion?: true
+    revision?: true
+    publishedAt?: true
+    publishedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FlowRevisionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowRevision to aggregate.
+     */
+    where?: FlowRevisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowRevisions to fetch.
+     */
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FlowRevisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowRevisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowRevisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FlowRevisions
+    **/
+    _count?: true | FlowRevisionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FlowRevisionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FlowRevisionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FlowRevisionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FlowRevisionMaxAggregateInputType
+  }
+
+  export type GetFlowRevisionAggregateType<T extends FlowRevisionAggregateArgs> = {
+        [P in keyof T & keyof AggregateFlowRevision]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFlowRevision[P]>
+      : GetScalarType<T[P], AggregateFlowRevision[P]>
+  }
+
+
+
+
+  export type FlowRevisionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowRevisionWhereInput
+    orderBy?: FlowRevisionOrderByWithAggregationInput | FlowRevisionOrderByWithAggregationInput[]
+    by: FlowRevisionScalarFieldEnum[] | FlowRevisionScalarFieldEnum
+    having?: FlowRevisionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FlowRevisionCountAggregateInputType | true
+    _avg?: FlowRevisionAvgAggregateInputType
+    _sum?: FlowRevisionSumAggregateInputType
+    _min?: FlowRevisionMinAggregateInputType
+    _max?: FlowRevisionMaxAggregateInputType
+  }
+
+  export type FlowRevisionGroupByOutputType = {
+    id: string
+    flowDefinitionId: string
+    version: number
+    status: $Enums.FlowRevisionStatus
+    schemaVersion: number
+    revision: number
+    publishedAt: Date | null
+    publishedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FlowRevisionCountAggregateOutputType | null
+    _avg: FlowRevisionAvgAggregateOutputType | null
+    _sum: FlowRevisionSumAggregateOutputType | null
+    _min: FlowRevisionMinAggregateOutputType | null
+    _max: FlowRevisionMaxAggregateOutputType | null
+  }
+
+  type GetFlowRevisionGroupByPayload<T extends FlowRevisionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FlowRevisionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FlowRevisionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FlowRevisionGroupByOutputType[P]>
+            : GetScalarType<T[P], FlowRevisionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FlowRevisionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    flowDefinitionId?: boolean
+    version?: boolean
+    status?: boolean
+    schemaVersion?: boolean
+    revision?: boolean
+    publishedAt?: boolean
+    publishedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    flowDefinition?: boolean | FlowDefinitionDefaultArgs<ExtArgs>
+    publishedBy?: boolean | FlowRevision$publishedByArgs<ExtArgs>
+    nodes?: boolean | FlowRevision$nodesArgs<ExtArgs>
+    transitions?: boolean | FlowRevision$transitionsArgs<ExtArgs>
+    conversations?: boolean | FlowRevision$conversationsArgs<ExtArgs>
+    executionEvents?: boolean | FlowRevision$executionEventsArgs<ExtArgs>
+    _count?: boolean | FlowRevisionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowRevision"]>
+
+  export type FlowRevisionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    flowDefinitionId?: boolean
+    version?: boolean
+    status?: boolean
+    schemaVersion?: boolean
+    revision?: boolean
+    publishedAt?: boolean
+    publishedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    flowDefinition?: boolean | FlowDefinitionDefaultArgs<ExtArgs>
+    publishedBy?: boolean | FlowRevision$publishedByArgs<ExtArgs>
+  }, ExtArgs["result"]["flowRevision"]>
+
+  export type FlowRevisionSelectScalar = {
+    id?: boolean
+    flowDefinitionId?: boolean
+    version?: boolean
+    status?: boolean
+    schemaVersion?: boolean
+    revision?: boolean
+    publishedAt?: boolean
+    publishedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FlowRevisionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowDefinition?: boolean | FlowDefinitionDefaultArgs<ExtArgs>
+    publishedBy?: boolean | FlowRevision$publishedByArgs<ExtArgs>
+    nodes?: boolean | FlowRevision$nodesArgs<ExtArgs>
+    transitions?: boolean | FlowRevision$transitionsArgs<ExtArgs>
+    conversations?: boolean | FlowRevision$conversationsArgs<ExtArgs>
+    executionEvents?: boolean | FlowRevision$executionEventsArgs<ExtArgs>
+    _count?: boolean | FlowRevisionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FlowRevisionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowDefinition?: boolean | FlowDefinitionDefaultArgs<ExtArgs>
+    publishedBy?: boolean | FlowRevision$publishedByArgs<ExtArgs>
+  }
+
+  export type $FlowRevisionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FlowRevision"
+    objects: {
+      flowDefinition: Prisma.$FlowDefinitionPayload<ExtArgs>
+      publishedBy: Prisma.$AgentPayload<ExtArgs> | null
+      nodes: Prisma.$FlowNodePayload<ExtArgs>[]
+      transitions: Prisma.$FlowTransitionPayload<ExtArgs>[]
+      conversations: Prisma.$ConversationPayload<ExtArgs>[]
+      executionEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      flowDefinitionId: string
+      version: number
+      status: $Enums.FlowRevisionStatus
+      schemaVersion: number
+      revision: number
+      publishedAt: Date | null
+      publishedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["flowRevision"]>
+    composites: {}
+  }
+
+  type FlowRevisionGetPayload<S extends boolean | null | undefined | FlowRevisionDefaultArgs> = $Result.GetResult<Prisma.$FlowRevisionPayload, S>
+
+  type FlowRevisionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FlowRevisionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: FlowRevisionCountAggregateInputType | true
+    }
+
+  export interface FlowRevisionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FlowRevision'], meta: { name: 'FlowRevision' } }
+    /**
+     * Find zero or one FlowRevision that matches the filter.
+     * @param {FlowRevisionFindUniqueArgs} args - Arguments to find a FlowRevision
+     * @example
+     * // Get one FlowRevision
+     * const flowRevision = await prisma.flowRevision.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FlowRevisionFindUniqueArgs>(args: SelectSubset<T, FlowRevisionFindUniqueArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one FlowRevision that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {FlowRevisionFindUniqueOrThrowArgs} args - Arguments to find a FlowRevision
+     * @example
+     * // Get one FlowRevision
+     * const flowRevision = await prisma.flowRevision.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FlowRevisionFindUniqueOrThrowArgs>(args: SelectSubset<T, FlowRevisionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first FlowRevision that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionFindFirstArgs} args - Arguments to find a FlowRevision
+     * @example
+     * // Get one FlowRevision
+     * const flowRevision = await prisma.flowRevision.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FlowRevisionFindFirstArgs>(args?: SelectSubset<T, FlowRevisionFindFirstArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first FlowRevision that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionFindFirstOrThrowArgs} args - Arguments to find a FlowRevision
+     * @example
+     * // Get one FlowRevision
+     * const flowRevision = await prisma.flowRevision.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FlowRevisionFindFirstOrThrowArgs>(args?: SelectSubset<T, FlowRevisionFindFirstOrThrowArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more FlowRevisions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FlowRevisions
+     * const flowRevisions = await prisma.flowRevision.findMany()
+     * 
+     * // Get first 10 FlowRevisions
+     * const flowRevisions = await prisma.flowRevision.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const flowRevisionWithIdOnly = await prisma.flowRevision.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FlowRevisionFindManyArgs>(args?: SelectSubset<T, FlowRevisionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a FlowRevision.
+     * @param {FlowRevisionCreateArgs} args - Arguments to create a FlowRevision.
+     * @example
+     * // Create one FlowRevision
+     * const FlowRevision = await prisma.flowRevision.create({
+     *   data: {
+     *     // ... data to create a FlowRevision
+     *   }
+     * })
+     * 
+     */
+    create<T extends FlowRevisionCreateArgs>(args: SelectSubset<T, FlowRevisionCreateArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many FlowRevisions.
+     * @param {FlowRevisionCreateManyArgs} args - Arguments to create many FlowRevisions.
+     * @example
+     * // Create many FlowRevisions
+     * const flowRevision = await prisma.flowRevision.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FlowRevisionCreateManyArgs>(args?: SelectSubset<T, FlowRevisionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FlowRevisions and returns the data saved in the database.
+     * @param {FlowRevisionCreateManyAndReturnArgs} args - Arguments to create many FlowRevisions.
+     * @example
+     * // Create many FlowRevisions
+     * const flowRevision = await prisma.flowRevision.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FlowRevisions and only return the `id`
+     * const flowRevisionWithIdOnly = await prisma.flowRevision.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FlowRevisionCreateManyAndReturnArgs>(args?: SelectSubset<T, FlowRevisionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a FlowRevision.
+     * @param {FlowRevisionDeleteArgs} args - Arguments to delete one FlowRevision.
+     * @example
+     * // Delete one FlowRevision
+     * const FlowRevision = await prisma.flowRevision.delete({
+     *   where: {
+     *     // ... filter to delete one FlowRevision
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FlowRevisionDeleteArgs>(args: SelectSubset<T, FlowRevisionDeleteArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one FlowRevision.
+     * @param {FlowRevisionUpdateArgs} args - Arguments to update one FlowRevision.
+     * @example
+     * // Update one FlowRevision
+     * const flowRevision = await prisma.flowRevision.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FlowRevisionUpdateArgs>(args: SelectSubset<T, FlowRevisionUpdateArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more FlowRevisions.
+     * @param {FlowRevisionDeleteManyArgs} args - Arguments to filter FlowRevisions to delete.
+     * @example
+     * // Delete a few FlowRevisions
+     * const { count } = await prisma.flowRevision.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FlowRevisionDeleteManyArgs>(args?: SelectSubset<T, FlowRevisionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowRevisions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FlowRevisions
+     * const flowRevision = await prisma.flowRevision.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FlowRevisionUpdateManyArgs>(args: SelectSubset<T, FlowRevisionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FlowRevision.
+     * @param {FlowRevisionUpsertArgs} args - Arguments to update or create a FlowRevision.
+     * @example
+     * // Update or create a FlowRevision
+     * const flowRevision = await prisma.flowRevision.upsert({
+     *   create: {
+     *     // ... data to create a FlowRevision
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FlowRevision we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FlowRevisionUpsertArgs>(args: SelectSubset<T, FlowRevisionUpsertArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of FlowRevisions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionCountArgs} args - Arguments to filter FlowRevisions to count.
+     * @example
+     * // Count the number of FlowRevisions
+     * const count = await prisma.flowRevision.count({
+     *   where: {
+     *     // ... the filter for the FlowRevisions we want to count
+     *   }
+     * })
+    **/
+    count<T extends FlowRevisionCountArgs>(
+      args?: Subset<T, FlowRevisionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FlowRevisionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FlowRevision.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FlowRevisionAggregateArgs>(args: Subset<T, FlowRevisionAggregateArgs>): Prisma.PrismaPromise<GetFlowRevisionAggregateType<T>>
+
+    /**
+     * Group by FlowRevision.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowRevisionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FlowRevisionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FlowRevisionGroupByArgs['orderBy'] }
+        : { orderBy?: FlowRevisionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FlowRevisionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFlowRevisionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FlowRevision model
+   */
+  readonly fields: FlowRevisionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FlowRevision.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FlowRevisionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    flowDefinition<T extends FlowDefinitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowDefinitionDefaultArgs<ExtArgs>>): Prisma__FlowDefinitionClient<$Result.GetResult<Prisma.$FlowDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    publishedBy<T extends FlowRevision$publishedByArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevision$publishedByArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    nodes<T extends FlowRevision$nodesArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevision$nodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findMany"> | Null>
+    transitions<T extends FlowRevision$transitionsArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevision$transitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findMany"> | Null>
+    conversations<T extends FlowRevision$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevision$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
+    executionEvents<T extends FlowRevision$executionEventsArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevision$executionEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FlowRevision model
+   */ 
+  interface FlowRevisionFieldRefs {
+    readonly id: FieldRef<"FlowRevision", 'String'>
+    readonly flowDefinitionId: FieldRef<"FlowRevision", 'String'>
+    readonly version: FieldRef<"FlowRevision", 'Int'>
+    readonly status: FieldRef<"FlowRevision", 'FlowRevisionStatus'>
+    readonly schemaVersion: FieldRef<"FlowRevision", 'Int'>
+    readonly revision: FieldRef<"FlowRevision", 'Int'>
+    readonly publishedAt: FieldRef<"FlowRevision", 'DateTime'>
+    readonly publishedById: FieldRef<"FlowRevision", 'String'>
+    readonly createdAt: FieldRef<"FlowRevision", 'DateTime'>
+    readonly updatedAt: FieldRef<"FlowRevision", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FlowRevision findUnique
+   */
+  export type FlowRevisionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowRevision to fetch.
+     */
+    where: FlowRevisionWhereUniqueInput
+  }
+
+  /**
+   * FlowRevision findUniqueOrThrow
+   */
+  export type FlowRevisionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowRevision to fetch.
+     */
+    where: FlowRevisionWhereUniqueInput
+  }
+
+  /**
+   * FlowRevision findFirst
+   */
+  export type FlowRevisionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowRevision to fetch.
+     */
+    where?: FlowRevisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowRevisions to fetch.
+     */
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowRevisions.
+     */
+    cursor?: FlowRevisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowRevisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowRevisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowRevisions.
+     */
+    distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision findFirstOrThrow
+   */
+  export type FlowRevisionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowRevision to fetch.
+     */
+    where?: FlowRevisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowRevisions to fetch.
+     */
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowRevisions.
+     */
+    cursor?: FlowRevisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowRevisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowRevisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowRevisions.
+     */
+    distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision findMany
+   */
+  export type FlowRevisionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowRevisions to fetch.
+     */
+    where?: FlowRevisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowRevisions to fetch.
+     */
+    orderBy?: FlowRevisionOrderByWithRelationInput | FlowRevisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FlowRevisions.
+     */
+    cursor?: FlowRevisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowRevisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowRevisions.
+     */
+    skip?: number
+    distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision create
+   */
+  export type FlowRevisionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FlowRevision.
+     */
+    data: XOR<FlowRevisionCreateInput, FlowRevisionUncheckedCreateInput>
+  }
+
+  /**
+   * FlowRevision createMany
+   */
+  export type FlowRevisionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FlowRevisions.
+     */
+    data: FlowRevisionCreateManyInput | FlowRevisionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FlowRevision createManyAndReturn
+   */
+  export type FlowRevisionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many FlowRevisions.
+     */
+    data: FlowRevisionCreateManyInput | FlowRevisionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowRevision update
+   */
+  export type FlowRevisionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FlowRevision.
+     */
+    data: XOR<FlowRevisionUpdateInput, FlowRevisionUncheckedUpdateInput>
+    /**
+     * Choose, which FlowRevision to update.
+     */
+    where: FlowRevisionWhereUniqueInput
+  }
+
+  /**
+   * FlowRevision updateMany
+   */
+  export type FlowRevisionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FlowRevisions.
+     */
+    data: XOR<FlowRevisionUpdateManyMutationInput, FlowRevisionUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowRevisions to update
+     */
+    where?: FlowRevisionWhereInput
+  }
+
+  /**
+   * FlowRevision upsert
+   */
+  export type FlowRevisionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FlowRevision to update in case it exists.
+     */
+    where: FlowRevisionWhereUniqueInput
+    /**
+     * In case the FlowRevision found by the `where` argument doesn't exist, create a new FlowRevision with this data.
+     */
+    create: XOR<FlowRevisionCreateInput, FlowRevisionUncheckedCreateInput>
+    /**
+     * In case the FlowRevision was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FlowRevisionUpdateInput, FlowRevisionUncheckedUpdateInput>
+  }
+
+  /**
+   * FlowRevision delete
+   */
+  export type FlowRevisionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+    /**
+     * Filter which FlowRevision to delete.
+     */
+    where: FlowRevisionWhereUniqueInput
+  }
+
+  /**
+   * FlowRevision deleteMany
+   */
+  export type FlowRevisionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowRevisions to delete
+     */
+    where?: FlowRevisionWhereInput
+  }
+
+  /**
+   * FlowRevision.publishedBy
+   */
+  export type FlowRevision$publishedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * FlowRevision.nodes
+   */
+  export type FlowRevision$nodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    where?: FlowNodeWhereInput
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    cursor?: FlowNodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision.transitions
+   */
+  export type FlowRevision$transitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    where?: FlowTransitionWhereInput
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    cursor?: FlowTransitionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision.conversations
+   */
+  export type FlowRevision$conversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    cursor?: ConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision.executionEvents
+   */
+  export type FlowRevision$executionEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    where?: FlowExecutionEventWhereInput
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    cursor?: FlowExecutionEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
+  }
+
+  /**
+   * FlowRevision without action
+   */
+  export type FlowRevisionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowRevision
+     */
+    select?: FlowRevisionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowRevisionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FlowNode
+   */
+
+  export type AggregateFlowNode = {
+    _count: FlowNodeCountAggregateOutputType | null
+    _avg: FlowNodeAvgAggregateOutputType | null
+    _sum: FlowNodeSumAggregateOutputType | null
+    _min: FlowNodeMinAggregateOutputType | null
+    _max: FlowNodeMaxAggregateOutputType | null
+  }
+
+  export type FlowNodeAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FlowNodeSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FlowNodeMinAggregateOutputType = {
+    id: string | null
+    stableKey: string | null
+    flowRevisionId: string | null
+    type: $Enums.FlowNodeType | null
+    name: string | null
+    content: string | null
+    sortOrder: number | null
+    departmentId: string | null
+  }
+
+  export type FlowNodeMaxAggregateOutputType = {
+    id: string | null
+    stableKey: string | null
+    flowRevisionId: string | null
+    type: $Enums.FlowNodeType | null
+    name: string | null
+    content: string | null
+    sortOrder: number | null
+    departmentId: string | null
+  }
+
+  export type FlowNodeCountAggregateOutputType = {
+    id: number
+    stableKey: number
+    flowRevisionId: number
+    type: number
+    name: number
+    content: number
+    sortOrder: number
+    config: number
+    departmentId: number
+    _all: number
+  }
+
+
+  export type FlowNodeAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FlowNodeSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FlowNodeMinAggregateInputType = {
+    id?: true
+    stableKey?: true
+    flowRevisionId?: true
+    type?: true
+    name?: true
+    content?: true
+    sortOrder?: true
+    departmentId?: true
+  }
+
+  export type FlowNodeMaxAggregateInputType = {
+    id?: true
+    stableKey?: true
+    flowRevisionId?: true
+    type?: true
+    name?: true
+    content?: true
+    sortOrder?: true
+    departmentId?: true
+  }
+
+  export type FlowNodeCountAggregateInputType = {
+    id?: true
+    stableKey?: true
+    flowRevisionId?: true
+    type?: true
+    name?: true
+    content?: true
+    sortOrder?: true
+    config?: true
+    departmentId?: true
+    _all?: true
+  }
+
+  export type FlowNodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowNode to aggregate.
+     */
+    where?: FlowNodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowNodes to fetch.
+     */
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FlowNodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowNodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowNodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FlowNodes
+    **/
+    _count?: true | FlowNodeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FlowNodeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FlowNodeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FlowNodeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FlowNodeMaxAggregateInputType
+  }
+
+  export type GetFlowNodeAggregateType<T extends FlowNodeAggregateArgs> = {
+        [P in keyof T & keyof AggregateFlowNode]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFlowNode[P]>
+      : GetScalarType<T[P], AggregateFlowNode[P]>
+  }
+
+
+
+
+  export type FlowNodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowNodeWhereInput
+    orderBy?: FlowNodeOrderByWithAggregationInput | FlowNodeOrderByWithAggregationInput[]
+    by: FlowNodeScalarFieldEnum[] | FlowNodeScalarFieldEnum
+    having?: FlowNodeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FlowNodeCountAggregateInputType | true
+    _avg?: FlowNodeAvgAggregateInputType
+    _sum?: FlowNodeSumAggregateInputType
+    _min?: FlowNodeMinAggregateInputType
+    _max?: FlowNodeMaxAggregateInputType
+  }
+
+  export type FlowNodeGroupByOutputType = {
+    id: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content: string
+    sortOrder: number
+    config: JsonValue | null
+    departmentId: string | null
+    _count: FlowNodeCountAggregateOutputType | null
+    _avg: FlowNodeAvgAggregateOutputType | null
+    _sum: FlowNodeSumAggregateOutputType | null
+    _min: FlowNodeMinAggregateOutputType | null
+    _max: FlowNodeMaxAggregateOutputType | null
+  }
+
+  type GetFlowNodeGroupByPayload<T extends FlowNodeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FlowNodeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FlowNodeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FlowNodeGroupByOutputType[P]>
+            : GetScalarType<T[P], FlowNodeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FlowNodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    stableKey?: boolean
+    flowRevisionId?: boolean
+    type?: boolean
+    name?: boolean
+    content?: boolean
+    sortOrder?: boolean
+    config?: boolean
+    departmentId?: boolean
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    department?: boolean | FlowNode$departmentArgs<ExtArgs>
+    outgoing?: boolean | FlowNode$outgoingArgs<ExtArgs>
+    incoming?: boolean | FlowNode$incomingArgs<ExtArgs>
+    conversations?: boolean | FlowNode$conversationsArgs<ExtArgs>
+    executionEvents?: boolean | FlowNode$executionEventsArgs<ExtArgs>
+    _count?: boolean | FlowNodeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowNode"]>
+
+  export type FlowNodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    stableKey?: boolean
+    flowRevisionId?: boolean
+    type?: boolean
+    name?: boolean
+    content?: boolean
+    sortOrder?: boolean
+    config?: boolean
+    departmentId?: boolean
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    department?: boolean | FlowNode$departmentArgs<ExtArgs>
+  }, ExtArgs["result"]["flowNode"]>
+
+  export type FlowNodeSelectScalar = {
+    id?: boolean
+    stableKey?: boolean
+    flowRevisionId?: boolean
+    type?: boolean
+    name?: boolean
+    content?: boolean
+    sortOrder?: boolean
+    config?: boolean
+    departmentId?: boolean
+  }
+
+  export type FlowNodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    department?: boolean | FlowNode$departmentArgs<ExtArgs>
+    outgoing?: boolean | FlowNode$outgoingArgs<ExtArgs>
+    incoming?: boolean | FlowNode$incomingArgs<ExtArgs>
+    conversations?: boolean | FlowNode$conversationsArgs<ExtArgs>
+    executionEvents?: boolean | FlowNode$executionEventsArgs<ExtArgs>
+    _count?: boolean | FlowNodeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FlowNodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    department?: boolean | FlowNode$departmentArgs<ExtArgs>
+  }
+
+  export type $FlowNodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FlowNode"
+    objects: {
+      flowRevision: Prisma.$FlowRevisionPayload<ExtArgs>
+      department: Prisma.$DepartmentPayload<ExtArgs> | null
+      outgoing: Prisma.$FlowTransitionPayload<ExtArgs>[]
+      incoming: Prisma.$FlowTransitionPayload<ExtArgs>[]
+      conversations: Prisma.$ConversationPayload<ExtArgs>[]
+      executionEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      stableKey: string
+      flowRevisionId: string
+      type: $Enums.FlowNodeType
+      name: string
+      content: string
+      sortOrder: number
+      config: Prisma.JsonValue | null
+      departmentId: string | null
+    }, ExtArgs["result"]["flowNode"]>
+    composites: {}
+  }
+
+  type FlowNodeGetPayload<S extends boolean | null | undefined | FlowNodeDefaultArgs> = $Result.GetResult<Prisma.$FlowNodePayload, S>
+
+  type FlowNodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FlowNodeFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: FlowNodeCountAggregateInputType | true
+    }
+
+  export interface FlowNodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FlowNode'], meta: { name: 'FlowNode' } }
+    /**
+     * Find zero or one FlowNode that matches the filter.
+     * @param {FlowNodeFindUniqueArgs} args - Arguments to find a FlowNode
+     * @example
+     * // Get one FlowNode
+     * const flowNode = await prisma.flowNode.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FlowNodeFindUniqueArgs>(args: SelectSubset<T, FlowNodeFindUniqueArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one FlowNode that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {FlowNodeFindUniqueOrThrowArgs} args - Arguments to find a FlowNode
+     * @example
+     * // Get one FlowNode
+     * const flowNode = await prisma.flowNode.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FlowNodeFindUniqueOrThrowArgs>(args: SelectSubset<T, FlowNodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first FlowNode that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeFindFirstArgs} args - Arguments to find a FlowNode
+     * @example
+     * // Get one FlowNode
+     * const flowNode = await prisma.flowNode.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FlowNodeFindFirstArgs>(args?: SelectSubset<T, FlowNodeFindFirstArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first FlowNode that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeFindFirstOrThrowArgs} args - Arguments to find a FlowNode
+     * @example
+     * // Get one FlowNode
+     * const flowNode = await prisma.flowNode.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FlowNodeFindFirstOrThrowArgs>(args?: SelectSubset<T, FlowNodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more FlowNodes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FlowNodes
+     * const flowNodes = await prisma.flowNode.findMany()
+     * 
+     * // Get first 10 FlowNodes
+     * const flowNodes = await prisma.flowNode.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const flowNodeWithIdOnly = await prisma.flowNode.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FlowNodeFindManyArgs>(args?: SelectSubset<T, FlowNodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a FlowNode.
+     * @param {FlowNodeCreateArgs} args - Arguments to create a FlowNode.
+     * @example
+     * // Create one FlowNode
+     * const FlowNode = await prisma.flowNode.create({
+     *   data: {
+     *     // ... data to create a FlowNode
+     *   }
+     * })
+     * 
+     */
+    create<T extends FlowNodeCreateArgs>(args: SelectSubset<T, FlowNodeCreateArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many FlowNodes.
+     * @param {FlowNodeCreateManyArgs} args - Arguments to create many FlowNodes.
+     * @example
+     * // Create many FlowNodes
+     * const flowNode = await prisma.flowNode.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FlowNodeCreateManyArgs>(args?: SelectSubset<T, FlowNodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FlowNodes and returns the data saved in the database.
+     * @param {FlowNodeCreateManyAndReturnArgs} args - Arguments to create many FlowNodes.
+     * @example
+     * // Create many FlowNodes
+     * const flowNode = await prisma.flowNode.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FlowNodes and only return the `id`
+     * const flowNodeWithIdOnly = await prisma.flowNode.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FlowNodeCreateManyAndReturnArgs>(args?: SelectSubset<T, FlowNodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a FlowNode.
+     * @param {FlowNodeDeleteArgs} args - Arguments to delete one FlowNode.
+     * @example
+     * // Delete one FlowNode
+     * const FlowNode = await prisma.flowNode.delete({
+     *   where: {
+     *     // ... filter to delete one FlowNode
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FlowNodeDeleteArgs>(args: SelectSubset<T, FlowNodeDeleteArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one FlowNode.
+     * @param {FlowNodeUpdateArgs} args - Arguments to update one FlowNode.
+     * @example
+     * // Update one FlowNode
+     * const flowNode = await prisma.flowNode.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FlowNodeUpdateArgs>(args: SelectSubset<T, FlowNodeUpdateArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more FlowNodes.
+     * @param {FlowNodeDeleteManyArgs} args - Arguments to filter FlowNodes to delete.
+     * @example
+     * // Delete a few FlowNodes
+     * const { count } = await prisma.flowNode.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FlowNodeDeleteManyArgs>(args?: SelectSubset<T, FlowNodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowNodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FlowNodes
+     * const flowNode = await prisma.flowNode.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FlowNodeUpdateManyArgs>(args: SelectSubset<T, FlowNodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FlowNode.
+     * @param {FlowNodeUpsertArgs} args - Arguments to update or create a FlowNode.
+     * @example
+     * // Update or create a FlowNode
+     * const flowNode = await prisma.flowNode.upsert({
+     *   create: {
+     *     // ... data to create a FlowNode
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FlowNode we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FlowNodeUpsertArgs>(args: SelectSubset<T, FlowNodeUpsertArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of FlowNodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeCountArgs} args - Arguments to filter FlowNodes to count.
+     * @example
+     * // Count the number of FlowNodes
+     * const count = await prisma.flowNode.count({
+     *   where: {
+     *     // ... the filter for the FlowNodes we want to count
+     *   }
+     * })
+    **/
+    count<T extends FlowNodeCountArgs>(
+      args?: Subset<T, FlowNodeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FlowNodeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FlowNode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FlowNodeAggregateArgs>(args: Subset<T, FlowNodeAggregateArgs>): Prisma.PrismaPromise<GetFlowNodeAggregateType<T>>
+
+    /**
+     * Group by FlowNode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowNodeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FlowNodeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FlowNodeGroupByArgs['orderBy'] }
+        : { orderBy?: FlowNodeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FlowNodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFlowNodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FlowNode model
+   */
+  readonly fields: FlowNodeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FlowNode.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FlowNodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    flowRevision<T extends FlowRevisionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevisionDefaultArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    department<T extends FlowNode$departmentArgs<ExtArgs> = {}>(args?: Subset<T, FlowNode$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    outgoing<T extends FlowNode$outgoingArgs<ExtArgs> = {}>(args?: Subset<T, FlowNode$outgoingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findMany"> | Null>
+    incoming<T extends FlowNode$incomingArgs<ExtArgs> = {}>(args?: Subset<T, FlowNode$incomingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findMany"> | Null>
+    conversations<T extends FlowNode$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, FlowNode$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
+    executionEvents<T extends FlowNode$executionEventsArgs<ExtArgs> = {}>(args?: Subset<T, FlowNode$executionEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FlowNode model
+   */ 
+  interface FlowNodeFieldRefs {
+    readonly id: FieldRef<"FlowNode", 'String'>
+    readonly stableKey: FieldRef<"FlowNode", 'String'>
+    readonly flowRevisionId: FieldRef<"FlowNode", 'String'>
+    readonly type: FieldRef<"FlowNode", 'FlowNodeType'>
+    readonly name: FieldRef<"FlowNode", 'String'>
+    readonly content: FieldRef<"FlowNode", 'String'>
+    readonly sortOrder: FieldRef<"FlowNode", 'Int'>
+    readonly config: FieldRef<"FlowNode", 'Json'>
+    readonly departmentId: FieldRef<"FlowNode", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FlowNode findUnique
+   */
+  export type FlowNodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowNode to fetch.
+     */
+    where: FlowNodeWhereUniqueInput
+  }
+
+  /**
+   * FlowNode findUniqueOrThrow
+   */
+  export type FlowNodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowNode to fetch.
+     */
+    where: FlowNodeWhereUniqueInput
+  }
+
+  /**
+   * FlowNode findFirst
+   */
+  export type FlowNodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowNode to fetch.
+     */
+    where?: FlowNodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowNodes to fetch.
+     */
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowNodes.
+     */
+    cursor?: FlowNodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowNodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowNodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowNodes.
+     */
+    distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode findFirstOrThrow
+   */
+  export type FlowNodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowNode to fetch.
+     */
+    where?: FlowNodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowNodes to fetch.
+     */
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowNodes.
+     */
+    cursor?: FlowNodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowNodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowNodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowNodes.
+     */
+    distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode findMany
+   */
+  export type FlowNodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowNodes to fetch.
+     */
+    where?: FlowNodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowNodes to fetch.
+     */
+    orderBy?: FlowNodeOrderByWithRelationInput | FlowNodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FlowNodes.
+     */
+    cursor?: FlowNodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowNodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowNodes.
+     */
+    skip?: number
+    distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode create
+   */
+  export type FlowNodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FlowNode.
+     */
+    data: XOR<FlowNodeCreateInput, FlowNodeUncheckedCreateInput>
+  }
+
+  /**
+   * FlowNode createMany
+   */
+  export type FlowNodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FlowNodes.
+     */
+    data: FlowNodeCreateManyInput | FlowNodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FlowNode createManyAndReturn
+   */
+  export type FlowNodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many FlowNodes.
+     */
+    data: FlowNodeCreateManyInput | FlowNodeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowNode update
+   */
+  export type FlowNodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FlowNode.
+     */
+    data: XOR<FlowNodeUpdateInput, FlowNodeUncheckedUpdateInput>
+    /**
+     * Choose, which FlowNode to update.
+     */
+    where: FlowNodeWhereUniqueInput
+  }
+
+  /**
+   * FlowNode updateMany
+   */
+  export type FlowNodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FlowNodes.
+     */
+    data: XOR<FlowNodeUpdateManyMutationInput, FlowNodeUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowNodes to update
+     */
+    where?: FlowNodeWhereInput
+  }
+
+  /**
+   * FlowNode upsert
+   */
+  export type FlowNodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FlowNode to update in case it exists.
+     */
+    where: FlowNodeWhereUniqueInput
+    /**
+     * In case the FlowNode found by the `where` argument doesn't exist, create a new FlowNode with this data.
+     */
+    create: XOR<FlowNodeCreateInput, FlowNodeUncheckedCreateInput>
+    /**
+     * In case the FlowNode was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FlowNodeUpdateInput, FlowNodeUncheckedUpdateInput>
+  }
+
+  /**
+   * FlowNode delete
+   */
+  export type FlowNodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    /**
+     * Filter which FlowNode to delete.
+     */
+    where: FlowNodeWhereUniqueInput
+  }
+
+  /**
+   * FlowNode deleteMany
+   */
+  export type FlowNodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowNodes to delete
+     */
+    where?: FlowNodeWhereInput
+  }
+
+  /**
+   * FlowNode.department
+   */
+  export type FlowNode$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    where?: DepartmentWhereInput
+  }
+
+  /**
+   * FlowNode.outgoing
+   */
+  export type FlowNode$outgoingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    where?: FlowTransitionWhereInput
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    cursor?: FlowTransitionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode.incoming
+   */
+  export type FlowNode$incomingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    where?: FlowTransitionWhereInput
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    cursor?: FlowTransitionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode.conversations
+   */
+  export type FlowNode$conversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    cursor?: ConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode.executionEvents
+   */
+  export type FlowNode$executionEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    where?: FlowExecutionEventWhereInput
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    cursor?: FlowExecutionEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
+  }
+
+  /**
+   * FlowNode without action
+   */
+  export type FlowNodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FlowTransition
+   */
+
+  export type AggregateFlowTransition = {
+    _count: FlowTransitionCountAggregateOutputType | null
+    _avg: FlowTransitionAvgAggregateOutputType | null
+    _sum: FlowTransitionSumAggregateOutputType | null
+    _min: FlowTransitionMinAggregateOutputType | null
+    _max: FlowTransitionMaxAggregateOutputType | null
+  }
+
+  export type FlowTransitionAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FlowTransitionSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FlowTransitionMinAggregateOutputType = {
+    id: string | null
+    flowRevisionId: string | null
+    fromNodeId: string | null
+    toNodeId: string | null
+    optionKey: string | null
+    label: string | null
+    sortOrder: number | null
+  }
+
+  export type FlowTransitionMaxAggregateOutputType = {
+    id: string | null
+    flowRevisionId: string | null
+    fromNodeId: string | null
+    toNodeId: string | null
+    optionKey: string | null
+    label: string | null
+    sortOrder: number | null
+  }
+
+  export type FlowTransitionCountAggregateOutputType = {
+    id: number
+    flowRevisionId: number
+    fromNodeId: number
+    toNodeId: number
+    optionKey: number
+    label: number
+    sortOrder: number
+    _all: number
+  }
+
+
+  export type FlowTransitionAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FlowTransitionSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FlowTransitionMinAggregateInputType = {
+    id?: true
+    flowRevisionId?: true
+    fromNodeId?: true
+    toNodeId?: true
+    optionKey?: true
+    label?: true
+    sortOrder?: true
+  }
+
+  export type FlowTransitionMaxAggregateInputType = {
+    id?: true
+    flowRevisionId?: true
+    fromNodeId?: true
+    toNodeId?: true
+    optionKey?: true
+    label?: true
+    sortOrder?: true
+  }
+
+  export type FlowTransitionCountAggregateInputType = {
+    id?: true
+    flowRevisionId?: true
+    fromNodeId?: true
+    toNodeId?: true
+    optionKey?: true
+    label?: true
+    sortOrder?: true
+    _all?: true
+  }
+
+  export type FlowTransitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowTransition to aggregate.
+     */
+    where?: FlowTransitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowTransitions to fetch.
+     */
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FlowTransitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowTransitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowTransitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FlowTransitions
+    **/
+    _count?: true | FlowTransitionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FlowTransitionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FlowTransitionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FlowTransitionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FlowTransitionMaxAggregateInputType
+  }
+
+  export type GetFlowTransitionAggregateType<T extends FlowTransitionAggregateArgs> = {
+        [P in keyof T & keyof AggregateFlowTransition]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFlowTransition[P]>
+      : GetScalarType<T[P], AggregateFlowTransition[P]>
+  }
+
+
+
+
+  export type FlowTransitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowTransitionWhereInput
+    orderBy?: FlowTransitionOrderByWithAggregationInput | FlowTransitionOrderByWithAggregationInput[]
+    by: FlowTransitionScalarFieldEnum[] | FlowTransitionScalarFieldEnum
+    having?: FlowTransitionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FlowTransitionCountAggregateInputType | true
+    _avg?: FlowTransitionAvgAggregateInputType
+    _sum?: FlowTransitionSumAggregateInputType
+    _min?: FlowTransitionMinAggregateInputType
+    _max?: FlowTransitionMaxAggregateInputType
+  }
+
+  export type FlowTransitionGroupByOutputType = {
+    id: string
+    flowRevisionId: string
+    fromNodeId: string
+    toNodeId: string
+    optionKey: string | null
+    label: string | null
+    sortOrder: number
+    _count: FlowTransitionCountAggregateOutputType | null
+    _avg: FlowTransitionAvgAggregateOutputType | null
+    _sum: FlowTransitionSumAggregateOutputType | null
+    _min: FlowTransitionMinAggregateOutputType | null
+    _max: FlowTransitionMaxAggregateOutputType | null
+  }
+
+  type GetFlowTransitionGroupByPayload<T extends FlowTransitionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FlowTransitionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FlowTransitionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FlowTransitionGroupByOutputType[P]>
+            : GetScalarType<T[P], FlowTransitionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FlowTransitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    flowRevisionId?: boolean
+    fromNodeId?: boolean
+    toNodeId?: boolean
+    optionKey?: boolean
+    label?: boolean
+    sortOrder?: boolean
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    fromNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+    toNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowTransition"]>
+
+  export type FlowTransitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    flowRevisionId?: boolean
+    fromNodeId?: boolean
+    toNodeId?: boolean
+    optionKey?: boolean
+    label?: boolean
+    sortOrder?: boolean
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    fromNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+    toNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowTransition"]>
+
+  export type FlowTransitionSelectScalar = {
+    id?: boolean
+    flowRevisionId?: boolean
+    fromNodeId?: boolean
+    toNodeId?: boolean
+    optionKey?: boolean
+    label?: boolean
+    sortOrder?: boolean
+  }
+
+  export type FlowTransitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    fromNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+    toNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+  }
+  export type FlowTransitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    fromNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+    toNode?: boolean | FlowNodeDefaultArgs<ExtArgs>
+  }
+
+  export type $FlowTransitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FlowTransition"
+    objects: {
+      flowRevision: Prisma.$FlowRevisionPayload<ExtArgs>
+      fromNode: Prisma.$FlowNodePayload<ExtArgs>
+      toNode: Prisma.$FlowNodePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      flowRevisionId: string
+      fromNodeId: string
+      toNodeId: string
+      optionKey: string | null
+      label: string | null
+      sortOrder: number
+    }, ExtArgs["result"]["flowTransition"]>
+    composites: {}
+  }
+
+  type FlowTransitionGetPayload<S extends boolean | null | undefined | FlowTransitionDefaultArgs> = $Result.GetResult<Prisma.$FlowTransitionPayload, S>
+
+  type FlowTransitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FlowTransitionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: FlowTransitionCountAggregateInputType | true
+    }
+
+  export interface FlowTransitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FlowTransition'], meta: { name: 'FlowTransition' } }
+    /**
+     * Find zero or one FlowTransition that matches the filter.
+     * @param {FlowTransitionFindUniqueArgs} args - Arguments to find a FlowTransition
+     * @example
+     * // Get one FlowTransition
+     * const flowTransition = await prisma.flowTransition.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FlowTransitionFindUniqueArgs>(args: SelectSubset<T, FlowTransitionFindUniqueArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one FlowTransition that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {FlowTransitionFindUniqueOrThrowArgs} args - Arguments to find a FlowTransition
+     * @example
+     * // Get one FlowTransition
+     * const flowTransition = await prisma.flowTransition.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FlowTransitionFindUniqueOrThrowArgs>(args: SelectSubset<T, FlowTransitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first FlowTransition that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionFindFirstArgs} args - Arguments to find a FlowTransition
+     * @example
+     * // Get one FlowTransition
+     * const flowTransition = await prisma.flowTransition.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FlowTransitionFindFirstArgs>(args?: SelectSubset<T, FlowTransitionFindFirstArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first FlowTransition that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionFindFirstOrThrowArgs} args - Arguments to find a FlowTransition
+     * @example
+     * // Get one FlowTransition
+     * const flowTransition = await prisma.flowTransition.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FlowTransitionFindFirstOrThrowArgs>(args?: SelectSubset<T, FlowTransitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more FlowTransitions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FlowTransitions
+     * const flowTransitions = await prisma.flowTransition.findMany()
+     * 
+     * // Get first 10 FlowTransitions
+     * const flowTransitions = await prisma.flowTransition.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const flowTransitionWithIdOnly = await prisma.flowTransition.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FlowTransitionFindManyArgs>(args?: SelectSubset<T, FlowTransitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a FlowTransition.
+     * @param {FlowTransitionCreateArgs} args - Arguments to create a FlowTransition.
+     * @example
+     * // Create one FlowTransition
+     * const FlowTransition = await prisma.flowTransition.create({
+     *   data: {
+     *     // ... data to create a FlowTransition
+     *   }
+     * })
+     * 
+     */
+    create<T extends FlowTransitionCreateArgs>(args: SelectSubset<T, FlowTransitionCreateArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many FlowTransitions.
+     * @param {FlowTransitionCreateManyArgs} args - Arguments to create many FlowTransitions.
+     * @example
+     * // Create many FlowTransitions
+     * const flowTransition = await prisma.flowTransition.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FlowTransitionCreateManyArgs>(args?: SelectSubset<T, FlowTransitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FlowTransitions and returns the data saved in the database.
+     * @param {FlowTransitionCreateManyAndReturnArgs} args - Arguments to create many FlowTransitions.
+     * @example
+     * // Create many FlowTransitions
+     * const flowTransition = await prisma.flowTransition.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FlowTransitions and only return the `id`
+     * const flowTransitionWithIdOnly = await prisma.flowTransition.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FlowTransitionCreateManyAndReturnArgs>(args?: SelectSubset<T, FlowTransitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a FlowTransition.
+     * @param {FlowTransitionDeleteArgs} args - Arguments to delete one FlowTransition.
+     * @example
+     * // Delete one FlowTransition
+     * const FlowTransition = await prisma.flowTransition.delete({
+     *   where: {
+     *     // ... filter to delete one FlowTransition
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FlowTransitionDeleteArgs>(args: SelectSubset<T, FlowTransitionDeleteArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one FlowTransition.
+     * @param {FlowTransitionUpdateArgs} args - Arguments to update one FlowTransition.
+     * @example
+     * // Update one FlowTransition
+     * const flowTransition = await prisma.flowTransition.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FlowTransitionUpdateArgs>(args: SelectSubset<T, FlowTransitionUpdateArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more FlowTransitions.
+     * @param {FlowTransitionDeleteManyArgs} args - Arguments to filter FlowTransitions to delete.
+     * @example
+     * // Delete a few FlowTransitions
+     * const { count } = await prisma.flowTransition.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FlowTransitionDeleteManyArgs>(args?: SelectSubset<T, FlowTransitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowTransitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FlowTransitions
+     * const flowTransition = await prisma.flowTransition.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FlowTransitionUpdateManyArgs>(args: SelectSubset<T, FlowTransitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FlowTransition.
+     * @param {FlowTransitionUpsertArgs} args - Arguments to update or create a FlowTransition.
+     * @example
+     * // Update or create a FlowTransition
+     * const flowTransition = await prisma.flowTransition.upsert({
+     *   create: {
+     *     // ... data to create a FlowTransition
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FlowTransition we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FlowTransitionUpsertArgs>(args: SelectSubset<T, FlowTransitionUpsertArgs<ExtArgs>>): Prisma__FlowTransitionClient<$Result.GetResult<Prisma.$FlowTransitionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of FlowTransitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionCountArgs} args - Arguments to filter FlowTransitions to count.
+     * @example
+     * // Count the number of FlowTransitions
+     * const count = await prisma.flowTransition.count({
+     *   where: {
+     *     // ... the filter for the FlowTransitions we want to count
+     *   }
+     * })
+    **/
+    count<T extends FlowTransitionCountArgs>(
+      args?: Subset<T, FlowTransitionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FlowTransitionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FlowTransition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FlowTransitionAggregateArgs>(args: Subset<T, FlowTransitionAggregateArgs>): Prisma.PrismaPromise<GetFlowTransitionAggregateType<T>>
+
+    /**
+     * Group by FlowTransition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowTransitionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FlowTransitionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FlowTransitionGroupByArgs['orderBy'] }
+        : { orderBy?: FlowTransitionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FlowTransitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFlowTransitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FlowTransition model
+   */
+  readonly fields: FlowTransitionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FlowTransition.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FlowTransitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    flowRevision<T extends FlowRevisionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevisionDefaultArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    fromNode<T extends FlowNodeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowNodeDefaultArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    toNode<T extends FlowNodeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowNodeDefaultArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FlowTransition model
+   */ 
+  interface FlowTransitionFieldRefs {
+    readonly id: FieldRef<"FlowTransition", 'String'>
+    readonly flowRevisionId: FieldRef<"FlowTransition", 'String'>
+    readonly fromNodeId: FieldRef<"FlowTransition", 'String'>
+    readonly toNodeId: FieldRef<"FlowTransition", 'String'>
+    readonly optionKey: FieldRef<"FlowTransition", 'String'>
+    readonly label: FieldRef<"FlowTransition", 'String'>
+    readonly sortOrder: FieldRef<"FlowTransition", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FlowTransition findUnique
+   */
+  export type FlowTransitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowTransition to fetch.
+     */
+    where: FlowTransitionWhereUniqueInput
+  }
+
+  /**
+   * FlowTransition findUniqueOrThrow
+   */
+  export type FlowTransitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowTransition to fetch.
+     */
+    where: FlowTransitionWhereUniqueInput
+  }
+
+  /**
+   * FlowTransition findFirst
+   */
+  export type FlowTransitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowTransition to fetch.
+     */
+    where?: FlowTransitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowTransitions to fetch.
+     */
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowTransitions.
+     */
+    cursor?: FlowTransitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowTransitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowTransitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowTransitions.
+     */
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowTransition findFirstOrThrow
+   */
+  export type FlowTransitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowTransition to fetch.
+     */
+    where?: FlowTransitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowTransitions to fetch.
+     */
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowTransitions.
+     */
+    cursor?: FlowTransitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowTransitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowTransitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowTransitions.
+     */
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowTransition findMany
+   */
+  export type FlowTransitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowTransitions to fetch.
+     */
+    where?: FlowTransitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowTransitions to fetch.
+     */
+    orderBy?: FlowTransitionOrderByWithRelationInput | FlowTransitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FlowTransitions.
+     */
+    cursor?: FlowTransitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowTransitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowTransitions.
+     */
+    skip?: number
+    distinct?: FlowTransitionScalarFieldEnum | FlowTransitionScalarFieldEnum[]
+  }
+
+  /**
+   * FlowTransition create
+   */
+  export type FlowTransitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FlowTransition.
+     */
+    data: XOR<FlowTransitionCreateInput, FlowTransitionUncheckedCreateInput>
+  }
+
+  /**
+   * FlowTransition createMany
+   */
+  export type FlowTransitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FlowTransitions.
+     */
+    data: FlowTransitionCreateManyInput | FlowTransitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FlowTransition createManyAndReturn
+   */
+  export type FlowTransitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many FlowTransitions.
+     */
+    data: FlowTransitionCreateManyInput | FlowTransitionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowTransition update
+   */
+  export type FlowTransitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FlowTransition.
+     */
+    data: XOR<FlowTransitionUpdateInput, FlowTransitionUncheckedUpdateInput>
+    /**
+     * Choose, which FlowTransition to update.
+     */
+    where: FlowTransitionWhereUniqueInput
+  }
+
+  /**
+   * FlowTransition updateMany
+   */
+  export type FlowTransitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FlowTransitions.
+     */
+    data: XOR<FlowTransitionUpdateManyMutationInput, FlowTransitionUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowTransitions to update
+     */
+    where?: FlowTransitionWhereInput
+  }
+
+  /**
+   * FlowTransition upsert
+   */
+  export type FlowTransitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FlowTransition to update in case it exists.
+     */
+    where: FlowTransitionWhereUniqueInput
+    /**
+     * In case the FlowTransition found by the `where` argument doesn't exist, create a new FlowTransition with this data.
+     */
+    create: XOR<FlowTransitionCreateInput, FlowTransitionUncheckedCreateInput>
+    /**
+     * In case the FlowTransition was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FlowTransitionUpdateInput, FlowTransitionUncheckedUpdateInput>
+  }
+
+  /**
+   * FlowTransition delete
+   */
+  export type FlowTransitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+    /**
+     * Filter which FlowTransition to delete.
+     */
+    where: FlowTransitionWhereUniqueInput
+  }
+
+  /**
+   * FlowTransition deleteMany
+   */
+  export type FlowTransitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowTransitions to delete
+     */
+    where?: FlowTransitionWhereInput
+  }
+
+  /**
+   * FlowTransition without action
+   */
+  export type FlowTransitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowTransition
+     */
+    select?: FlowTransitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowTransitionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FlowExecutionEvent
+   */
+
+  export type AggregateFlowExecutionEvent = {
+    _count: FlowExecutionEventCountAggregateOutputType | null
+    _min: FlowExecutionEventMinAggregateOutputType | null
+    _max: FlowExecutionEventMaxAggregateOutputType | null
+  }
+
+  export type FlowExecutionEventMinAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    flowRevisionId: string | null
+    flowNodeId: string | null
+    externalEventId: string | null
+    type: string | null
+    createdAt: Date | null
+  }
+
+  export type FlowExecutionEventMaxAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    flowRevisionId: string | null
+    flowNodeId: string | null
+    externalEventId: string | null
+    type: string | null
+    createdAt: Date | null
+  }
+
+  export type FlowExecutionEventCountAggregateOutputType = {
+    id: number
+    conversationId: number
+    flowRevisionId: number
+    flowNodeId: number
+    externalEventId: number
+    type: number
+    metadata: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FlowExecutionEventMinAggregateInputType = {
+    id?: true
+    conversationId?: true
+    flowRevisionId?: true
+    flowNodeId?: true
+    externalEventId?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type FlowExecutionEventMaxAggregateInputType = {
+    id?: true
+    conversationId?: true
+    flowRevisionId?: true
+    flowNodeId?: true
+    externalEventId?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type FlowExecutionEventCountAggregateInputType = {
+    id?: true
+    conversationId?: true
+    flowRevisionId?: true
+    flowNodeId?: true
+    externalEventId?: true
+    type?: true
+    metadata?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FlowExecutionEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowExecutionEvent to aggregate.
+     */
+    where?: FlowExecutionEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowExecutionEvents to fetch.
+     */
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FlowExecutionEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowExecutionEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowExecutionEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FlowExecutionEvents
+    **/
+    _count?: true | FlowExecutionEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FlowExecutionEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FlowExecutionEventMaxAggregateInputType
+  }
+
+  export type GetFlowExecutionEventAggregateType<T extends FlowExecutionEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateFlowExecutionEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFlowExecutionEvent[P]>
+      : GetScalarType<T[P], AggregateFlowExecutionEvent[P]>
+  }
+
+
+
+
+  export type FlowExecutionEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowExecutionEventWhereInput
+    orderBy?: FlowExecutionEventOrderByWithAggregationInput | FlowExecutionEventOrderByWithAggregationInput[]
+    by: FlowExecutionEventScalarFieldEnum[] | FlowExecutionEventScalarFieldEnum
+    having?: FlowExecutionEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FlowExecutionEventCountAggregateInputType | true
+    _min?: FlowExecutionEventMinAggregateInputType
+    _max?: FlowExecutionEventMaxAggregateInputType
+  }
+
+  export type FlowExecutionEventGroupByOutputType = {
+    id: string
+    conversationId: string
+    flowRevisionId: string
+    flowNodeId: string | null
+    externalEventId: string | null
+    type: string
+    metadata: JsonValue | null
+    createdAt: Date
+    _count: FlowExecutionEventCountAggregateOutputType | null
+    _min: FlowExecutionEventMinAggregateOutputType | null
+    _max: FlowExecutionEventMaxAggregateOutputType | null
+  }
+
+  type GetFlowExecutionEventGroupByPayload<T extends FlowExecutionEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FlowExecutionEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FlowExecutionEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FlowExecutionEventGroupByOutputType[P]>
+            : GetScalarType<T[P], FlowExecutionEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FlowExecutionEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    flowRevisionId?: boolean
+    flowNodeId?: boolean
+    externalEventId?: boolean
+    type?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    flowNode?: boolean | FlowExecutionEvent$flowNodeArgs<ExtArgs>
+  }, ExtArgs["result"]["flowExecutionEvent"]>
+
+  export type FlowExecutionEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    flowRevisionId?: boolean
+    flowNodeId?: boolean
+    externalEventId?: boolean
+    type?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    flowNode?: boolean | FlowExecutionEvent$flowNodeArgs<ExtArgs>
+  }, ExtArgs["result"]["flowExecutionEvent"]>
+
+  export type FlowExecutionEventSelectScalar = {
+    id?: boolean
+    conversationId?: boolean
+    flowRevisionId?: boolean
+    flowNodeId?: boolean
+    externalEventId?: boolean
+    type?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }
+
+  export type FlowExecutionEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    flowNode?: boolean | FlowExecutionEvent$flowNodeArgs<ExtArgs>
+  }
+  export type FlowExecutionEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    flowRevision?: boolean | FlowRevisionDefaultArgs<ExtArgs>
+    flowNode?: boolean | FlowExecutionEvent$flowNodeArgs<ExtArgs>
+  }
+
+  export type $FlowExecutionEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FlowExecutionEvent"
+    objects: {
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+      flowRevision: Prisma.$FlowRevisionPayload<ExtArgs>
+      flowNode: Prisma.$FlowNodePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      conversationId: string
+      flowRevisionId: string
+      flowNodeId: string | null
+      externalEventId: string | null
+      type: string
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["flowExecutionEvent"]>
+    composites: {}
+  }
+
+  type FlowExecutionEventGetPayload<S extends boolean | null | undefined | FlowExecutionEventDefaultArgs> = $Result.GetResult<Prisma.$FlowExecutionEventPayload, S>
+
+  type FlowExecutionEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FlowExecutionEventFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: FlowExecutionEventCountAggregateInputType | true
+    }
+
+  export interface FlowExecutionEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FlowExecutionEvent'], meta: { name: 'FlowExecutionEvent' } }
+    /**
+     * Find zero or one FlowExecutionEvent that matches the filter.
+     * @param {FlowExecutionEventFindUniqueArgs} args - Arguments to find a FlowExecutionEvent
+     * @example
+     * // Get one FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FlowExecutionEventFindUniqueArgs>(args: SelectSubset<T, FlowExecutionEventFindUniqueArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one FlowExecutionEvent that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {FlowExecutionEventFindUniqueOrThrowArgs} args - Arguments to find a FlowExecutionEvent
+     * @example
+     * // Get one FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FlowExecutionEventFindUniqueOrThrowArgs>(args: SelectSubset<T, FlowExecutionEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first FlowExecutionEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventFindFirstArgs} args - Arguments to find a FlowExecutionEvent
+     * @example
+     * // Get one FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FlowExecutionEventFindFirstArgs>(args?: SelectSubset<T, FlowExecutionEventFindFirstArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first FlowExecutionEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventFindFirstOrThrowArgs} args - Arguments to find a FlowExecutionEvent
+     * @example
+     * // Get one FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FlowExecutionEventFindFirstOrThrowArgs>(args?: SelectSubset<T, FlowExecutionEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more FlowExecutionEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FlowExecutionEvents
+     * const flowExecutionEvents = await prisma.flowExecutionEvent.findMany()
+     * 
+     * // Get first 10 FlowExecutionEvents
+     * const flowExecutionEvents = await prisma.flowExecutionEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const flowExecutionEventWithIdOnly = await prisma.flowExecutionEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FlowExecutionEventFindManyArgs>(args?: SelectSubset<T, FlowExecutionEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a FlowExecutionEvent.
+     * @param {FlowExecutionEventCreateArgs} args - Arguments to create a FlowExecutionEvent.
+     * @example
+     * // Create one FlowExecutionEvent
+     * const FlowExecutionEvent = await prisma.flowExecutionEvent.create({
+     *   data: {
+     *     // ... data to create a FlowExecutionEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends FlowExecutionEventCreateArgs>(args: SelectSubset<T, FlowExecutionEventCreateArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many FlowExecutionEvents.
+     * @param {FlowExecutionEventCreateManyArgs} args - Arguments to create many FlowExecutionEvents.
+     * @example
+     * // Create many FlowExecutionEvents
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FlowExecutionEventCreateManyArgs>(args?: SelectSubset<T, FlowExecutionEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FlowExecutionEvents and returns the data saved in the database.
+     * @param {FlowExecutionEventCreateManyAndReturnArgs} args - Arguments to create many FlowExecutionEvents.
+     * @example
+     * // Create many FlowExecutionEvents
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FlowExecutionEvents and only return the `id`
+     * const flowExecutionEventWithIdOnly = await prisma.flowExecutionEvent.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FlowExecutionEventCreateManyAndReturnArgs>(args?: SelectSubset<T, FlowExecutionEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a FlowExecutionEvent.
+     * @param {FlowExecutionEventDeleteArgs} args - Arguments to delete one FlowExecutionEvent.
+     * @example
+     * // Delete one FlowExecutionEvent
+     * const FlowExecutionEvent = await prisma.flowExecutionEvent.delete({
+     *   where: {
+     *     // ... filter to delete one FlowExecutionEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FlowExecutionEventDeleteArgs>(args: SelectSubset<T, FlowExecutionEventDeleteArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one FlowExecutionEvent.
+     * @param {FlowExecutionEventUpdateArgs} args - Arguments to update one FlowExecutionEvent.
+     * @example
+     * // Update one FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FlowExecutionEventUpdateArgs>(args: SelectSubset<T, FlowExecutionEventUpdateArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more FlowExecutionEvents.
+     * @param {FlowExecutionEventDeleteManyArgs} args - Arguments to filter FlowExecutionEvents to delete.
+     * @example
+     * // Delete a few FlowExecutionEvents
+     * const { count } = await prisma.flowExecutionEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FlowExecutionEventDeleteManyArgs>(args?: SelectSubset<T, FlowExecutionEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowExecutionEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FlowExecutionEvents
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FlowExecutionEventUpdateManyArgs>(args: SelectSubset<T, FlowExecutionEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FlowExecutionEvent.
+     * @param {FlowExecutionEventUpsertArgs} args - Arguments to update or create a FlowExecutionEvent.
+     * @example
+     * // Update or create a FlowExecutionEvent
+     * const flowExecutionEvent = await prisma.flowExecutionEvent.upsert({
+     *   create: {
+     *     // ... data to create a FlowExecutionEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FlowExecutionEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FlowExecutionEventUpsertArgs>(args: SelectSubset<T, FlowExecutionEventUpsertArgs<ExtArgs>>): Prisma__FlowExecutionEventClient<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of FlowExecutionEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventCountArgs} args - Arguments to filter FlowExecutionEvents to count.
+     * @example
+     * // Count the number of FlowExecutionEvents
+     * const count = await prisma.flowExecutionEvent.count({
+     *   where: {
+     *     // ... the filter for the FlowExecutionEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends FlowExecutionEventCountArgs>(
+      args?: Subset<T, FlowExecutionEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FlowExecutionEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FlowExecutionEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FlowExecutionEventAggregateArgs>(args: Subset<T, FlowExecutionEventAggregateArgs>): Prisma.PrismaPromise<GetFlowExecutionEventAggregateType<T>>
+
+    /**
+     * Group by FlowExecutionEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowExecutionEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FlowExecutionEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FlowExecutionEventGroupByArgs['orderBy'] }
+        : { orderBy?: FlowExecutionEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FlowExecutionEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFlowExecutionEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FlowExecutionEvent model
+   */
+  readonly fields: FlowExecutionEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FlowExecutionEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FlowExecutionEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    flowRevision<T extends FlowRevisionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowRevisionDefaultArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    flowNode<T extends FlowExecutionEvent$flowNodeArgs<ExtArgs> = {}>(args?: Subset<T, FlowExecutionEvent$flowNodeArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FlowExecutionEvent model
+   */ 
+  interface FlowExecutionEventFieldRefs {
+    readonly id: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly conversationId: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly flowRevisionId: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly flowNodeId: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly externalEventId: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly type: FieldRef<"FlowExecutionEvent", 'String'>
+    readonly metadata: FieldRef<"FlowExecutionEvent", 'Json'>
+    readonly createdAt: FieldRef<"FlowExecutionEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FlowExecutionEvent findUnique
+   */
+  export type FlowExecutionEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowExecutionEvent to fetch.
+     */
+    where: FlowExecutionEventWhereUniqueInput
+  }
+
+  /**
+   * FlowExecutionEvent findUniqueOrThrow
+   */
+  export type FlowExecutionEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowExecutionEvent to fetch.
+     */
+    where: FlowExecutionEventWhereUniqueInput
+  }
+
+  /**
+   * FlowExecutionEvent findFirst
+   */
+  export type FlowExecutionEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowExecutionEvent to fetch.
+     */
+    where?: FlowExecutionEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowExecutionEvents to fetch.
+     */
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowExecutionEvents.
+     */
+    cursor?: FlowExecutionEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowExecutionEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowExecutionEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowExecutionEvents.
+     */
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
+  }
+
+  /**
+   * FlowExecutionEvent findFirstOrThrow
+   */
+  export type FlowExecutionEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowExecutionEvent to fetch.
+     */
+    where?: FlowExecutionEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowExecutionEvents to fetch.
+     */
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowExecutionEvents.
+     */
+    cursor?: FlowExecutionEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowExecutionEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowExecutionEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowExecutionEvents.
+     */
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
+  }
+
+  /**
+   * FlowExecutionEvent findMany
+   */
+  export type FlowExecutionEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowExecutionEvents to fetch.
+     */
+    where?: FlowExecutionEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowExecutionEvents to fetch.
+     */
+    orderBy?: FlowExecutionEventOrderByWithRelationInput | FlowExecutionEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FlowExecutionEvents.
+     */
+    cursor?: FlowExecutionEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowExecutionEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowExecutionEvents.
+     */
+    skip?: number
+    distinct?: FlowExecutionEventScalarFieldEnum | FlowExecutionEventScalarFieldEnum[]
+  }
+
+  /**
+   * FlowExecutionEvent create
+   */
+  export type FlowExecutionEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FlowExecutionEvent.
+     */
+    data: XOR<FlowExecutionEventCreateInput, FlowExecutionEventUncheckedCreateInput>
+  }
+
+  /**
+   * FlowExecutionEvent createMany
+   */
+  export type FlowExecutionEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FlowExecutionEvents.
+     */
+    data: FlowExecutionEventCreateManyInput | FlowExecutionEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FlowExecutionEvent createManyAndReturn
+   */
+  export type FlowExecutionEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many FlowExecutionEvents.
+     */
+    data: FlowExecutionEventCreateManyInput | FlowExecutionEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowExecutionEvent update
+   */
+  export type FlowExecutionEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FlowExecutionEvent.
+     */
+    data: XOR<FlowExecutionEventUpdateInput, FlowExecutionEventUncheckedUpdateInput>
+    /**
+     * Choose, which FlowExecutionEvent to update.
+     */
+    where: FlowExecutionEventWhereUniqueInput
+  }
+
+  /**
+   * FlowExecutionEvent updateMany
+   */
+  export type FlowExecutionEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FlowExecutionEvents.
+     */
+    data: XOR<FlowExecutionEventUpdateManyMutationInput, FlowExecutionEventUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowExecutionEvents to update
+     */
+    where?: FlowExecutionEventWhereInput
+  }
+
+  /**
+   * FlowExecutionEvent upsert
+   */
+  export type FlowExecutionEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FlowExecutionEvent to update in case it exists.
+     */
+    where: FlowExecutionEventWhereUniqueInput
+    /**
+     * In case the FlowExecutionEvent found by the `where` argument doesn't exist, create a new FlowExecutionEvent with this data.
+     */
+    create: XOR<FlowExecutionEventCreateInput, FlowExecutionEventUncheckedCreateInput>
+    /**
+     * In case the FlowExecutionEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FlowExecutionEventUpdateInput, FlowExecutionEventUncheckedUpdateInput>
+  }
+
+  /**
+   * FlowExecutionEvent delete
+   */
+  export type FlowExecutionEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
+    /**
+     * Filter which FlowExecutionEvent to delete.
+     */
+    where: FlowExecutionEventWhereUniqueInput
+  }
+
+  /**
+   * FlowExecutionEvent deleteMany
+   */
+  export type FlowExecutionEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowExecutionEvents to delete
+     */
+    where?: FlowExecutionEventWhereInput
+  }
+
+  /**
+   * FlowExecutionEvent.flowNode
+   */
+  export type FlowExecutionEvent$flowNodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowNode
+     */
+    select?: FlowNodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowNodeInclude<ExtArgs> | null
+    where?: FlowNodeWhereInput
+  }
+
+  /**
+   * FlowExecutionEvent without action
+   */
+  export type FlowExecutionEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowExecutionEvent
+     */
+    select?: FlowExecutionEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowExecutionEventInclude<ExtArgs> | null
   }
 
 
@@ -12920,6 +17963,9 @@ export namespace Prisma {
     departmentId: 'departmentId',
     assignedAgentId: 'assignedAgentId',
     currentStep: 'currentStep',
+    flowRevisionId: 'flowRevisionId',
+    currentFlowNodeId: 'currentFlowNodeId',
+    flowContext: 'flowContext',
     startedAt: 'startedAt',
     closedAt: 'closedAt'
   };
@@ -12967,6 +18013,64 @@ export namespace Prisma {
   export type ZApiConfigScalarFieldEnum = (typeof ZApiConfigScalarFieldEnum)[keyof typeof ZApiConfigScalarFieldEnum]
 
 
+  export const FlowRevisionScalarFieldEnum: {
+    id: 'id',
+    flowDefinitionId: 'flowDefinitionId',
+    version: 'version',
+    status: 'status',
+    schemaVersion: 'schemaVersion',
+    revision: 'revision',
+    publishedAt: 'publishedAt',
+    publishedById: 'publishedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FlowRevisionScalarFieldEnum = (typeof FlowRevisionScalarFieldEnum)[keyof typeof FlowRevisionScalarFieldEnum]
+
+
+  export const FlowNodeScalarFieldEnum: {
+    id: 'id',
+    stableKey: 'stableKey',
+    flowRevisionId: 'flowRevisionId',
+    type: 'type',
+    name: 'name',
+    content: 'content',
+    sortOrder: 'sortOrder',
+    config: 'config',
+    departmentId: 'departmentId'
+  };
+
+  export type FlowNodeScalarFieldEnum = (typeof FlowNodeScalarFieldEnum)[keyof typeof FlowNodeScalarFieldEnum]
+
+
+  export const FlowTransitionScalarFieldEnum: {
+    id: 'id',
+    flowRevisionId: 'flowRevisionId',
+    fromNodeId: 'fromNodeId',
+    toNodeId: 'toNodeId',
+    optionKey: 'optionKey',
+    label: 'label',
+    sortOrder: 'sortOrder'
+  };
+
+  export type FlowTransitionScalarFieldEnum = (typeof FlowTransitionScalarFieldEnum)[keyof typeof FlowTransitionScalarFieldEnum]
+
+
+  export const FlowExecutionEventScalarFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    flowRevisionId: 'flowRevisionId',
+    flowNodeId: 'flowNodeId',
+    externalEventId: 'externalEventId',
+    type: 'type',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+  };
+
+  export type FlowExecutionEventScalarFieldEnum = (typeof FlowExecutionEventScalarFieldEnum)[keyof typeof FlowExecutionEventScalarFieldEnum]
+
+
   export const ShortcutScalarFieldEnum: {
     id: 'id',
     title: 'title',
@@ -13007,19 +18111,19 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
   export const NullableJsonNullValueInput: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -13109,6 +18213,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FlowRevisionStatus'
+   */
+  export type EnumFlowRevisionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlowRevisionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FlowRevisionStatus[]'
+   */
+  export type ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlowRevisionStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FlowNodeType'
+   */
+  export type EnumFlowNodeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlowNodeType'>
+    
+
+
+  /**
+   * Reference to a field of type 'FlowNodeType[]'
+   */
+  export type ListEnumFlowNodeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlowNodeType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ShortcutType'
    */
   export type EnumShortcutTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShortcutType'>
@@ -13165,6 +18297,7 @@ export namespace Prisma {
     agents?: AgentListRelationFilter
     conversations?: ConversationListRelationFilter
     shortcuts?: ShortcutListRelationFilter
+    flowNodes?: FlowNodeListRelationFilter
   }
 
   export type DepartmentOrderByWithRelationInput = {
@@ -13176,6 +18309,7 @@ export namespace Prisma {
     agents?: AgentOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
     shortcuts?: ShortcutOrderByRelationAggregateInput
+    flowNodes?: FlowNodeOrderByRelationAggregateInput
   }
 
   export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -13190,6 +18324,7 @@ export namespace Prisma {
     agents?: AgentListRelationFilter
     conversations?: ConversationListRelationFilter
     shortcuts?: ShortcutListRelationFilter
+    flowNodes?: FlowNodeListRelationFilter
   }, "id">
 
   export type DepartmentOrderByWithAggregationInput = {
@@ -13289,6 +18424,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutListRelationFilter
     updatedShortcuts?: ShortcutListRelationFilter
     shortcutAudits?: ShortcutAuditListRelationFilter
+    publishedFlowRevisions?: FlowRevisionListRelationFilter
   }
 
   export type AgentOrderByWithRelationInput = {
@@ -13308,6 +18444,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutOrderByRelationAggregateInput
     updatedShortcuts?: ShortcutOrderByRelationAggregateInput
     shortcutAudits?: ShortcutAuditOrderByRelationAggregateInput
+    publishedFlowRevisions?: FlowRevisionOrderByRelationAggregateInput
   }
 
   export type AgentWhereUniqueInput = Prisma.AtLeast<{
@@ -13330,6 +18467,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutListRelationFilter
     updatedShortcuts?: ShortcutListRelationFilter
     shortcutAudits?: ShortcutAuditListRelationFilter
+    publishedFlowRevisions?: FlowRevisionListRelationFilter
   }, "id" | "email">
 
   export type AgentOrderByWithAggregationInput = {
@@ -13475,12 +18613,18 @@ export namespace Prisma {
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
     currentStep?: StringNullableFilter<"Conversation"> | string | null
+    flowRevisionId?: StringNullableFilter<"Conversation"> | string | null
+    currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
+    flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     messages?: MessageListRelationFilter
+    flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
+    currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
+    flowEvents?: FlowExecutionEventListRelationFilter
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -13490,12 +18634,18 @@ export namespace Prisma {
     departmentId?: SortOrderInput | SortOrder
     assignedAgentId?: SortOrderInput | SortOrder
     currentStep?: SortOrderInput | SortOrder
+    flowRevisionId?: SortOrderInput | SortOrder
+    currentFlowNodeId?: SortOrderInput | SortOrder
+    flowContext?: SortOrderInput | SortOrder
     startedAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
     contact?: ContactOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
     assignedAgent?: AgentOrderByWithRelationInput
     messages?: MessageOrderByRelationAggregateInput
+    flowRevision?: FlowRevisionOrderByWithRelationInput
+    currentFlowNode?: FlowNodeOrderByWithRelationInput
+    flowEvents?: FlowExecutionEventOrderByRelationAggregateInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -13508,12 +18658,18 @@ export namespace Prisma {
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
     currentStep?: StringNullableFilter<"Conversation"> | string | null
+    flowRevisionId?: StringNullableFilter<"Conversation"> | string | null
+    currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
+    flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     messages?: MessageListRelationFilter
+    flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
+    currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
+    flowEvents?: FlowExecutionEventListRelationFilter
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -13523,6 +18679,9 @@ export namespace Prisma {
     departmentId?: SortOrderInput | SortOrder
     assignedAgentId?: SortOrderInput | SortOrder
     currentStep?: SortOrderInput | SortOrder
+    flowRevisionId?: SortOrderInput | SortOrder
+    currentFlowNodeId?: SortOrderInput | SortOrder
+    flowContext?: SortOrderInput | SortOrder
     startedAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
     _count?: ConversationCountOrderByAggregateInput
@@ -13540,6 +18699,9 @@ export namespace Prisma {
     departmentId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     currentStep?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    flowRevisionId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    currentFlowNodeId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    flowContext?: JsonNullableWithAggregatesFilter<"Conversation">
     startedAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
   }
@@ -13627,6 +18789,7 @@ export namespace Prisma {
     menuMessage?: StringFilter<"FlowDefinition"> | string
     options?: JsonFilter<"FlowDefinition">
     updatedAt?: DateTimeFilter<"FlowDefinition"> | Date | string
+    revisions?: FlowRevisionListRelationFilter
   }
 
   export type FlowDefinitionOrderByWithRelationInput = {
@@ -13636,6 +18799,7 @@ export namespace Prisma {
     menuMessage?: SortOrder
     options?: SortOrder
     updatedAt?: SortOrder
+    revisions?: FlowRevisionOrderByRelationAggregateInput
   }
 
   export type FlowDefinitionWhereUniqueInput = Prisma.AtLeast<{
@@ -13648,6 +18812,7 @@ export namespace Prisma {
     menuMessage?: StringFilter<"FlowDefinition"> | string
     options?: JsonFilter<"FlowDefinition">
     updatedAt?: DateTimeFilter<"FlowDefinition"> | Date | string
+    revisions?: FlowRevisionListRelationFilter
   }, "id">
 
   export type FlowDefinitionOrderByWithAggregationInput = {
@@ -13739,6 +18904,347 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     autoReply?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"ZApiConfig"> | Date | string
+  }
+
+  export type FlowRevisionWhereInput = {
+    AND?: FlowRevisionWhereInput | FlowRevisionWhereInput[]
+    OR?: FlowRevisionWhereInput[]
+    NOT?: FlowRevisionWhereInput | FlowRevisionWhereInput[]
+    id?: StringFilter<"FlowRevision"> | string
+    flowDefinitionId?: StringFilter<"FlowRevision"> | string
+    version?: IntFilter<"FlowRevision"> | number
+    status?: EnumFlowRevisionStatusFilter<"FlowRevision"> | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFilter<"FlowRevision"> | number
+    revision?: IntFilter<"FlowRevision"> | number
+    publishedAt?: DateTimeNullableFilter<"FlowRevision"> | Date | string | null
+    publishedById?: StringNullableFilter<"FlowRevision"> | string | null
+    createdAt?: DateTimeFilter<"FlowRevision"> | Date | string
+    updatedAt?: DateTimeFilter<"FlowRevision"> | Date | string
+    flowDefinition?: XOR<FlowDefinitionRelationFilter, FlowDefinitionWhereInput>
+    publishedBy?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    nodes?: FlowNodeListRelationFilter
+    transitions?: FlowTransitionListRelationFilter
+    conversations?: ConversationListRelationFilter
+    executionEvents?: FlowExecutionEventListRelationFilter
+  }
+
+  export type FlowRevisionOrderByWithRelationInput = {
+    id?: SortOrder
+    flowDefinitionId?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    publishedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    flowDefinition?: FlowDefinitionOrderByWithRelationInput
+    publishedBy?: AgentOrderByWithRelationInput
+    nodes?: FlowNodeOrderByRelationAggregateInput
+    transitions?: FlowTransitionOrderByRelationAggregateInput
+    conversations?: ConversationOrderByRelationAggregateInput
+    executionEvents?: FlowExecutionEventOrderByRelationAggregateInput
+  }
+
+  export type FlowRevisionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    flowDefinitionId_version?: FlowRevisionFlowDefinitionIdVersionCompoundUniqueInput
+    AND?: FlowRevisionWhereInput | FlowRevisionWhereInput[]
+    OR?: FlowRevisionWhereInput[]
+    NOT?: FlowRevisionWhereInput | FlowRevisionWhereInput[]
+    flowDefinitionId?: StringFilter<"FlowRevision"> | string
+    version?: IntFilter<"FlowRevision"> | number
+    status?: EnumFlowRevisionStatusFilter<"FlowRevision"> | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFilter<"FlowRevision"> | number
+    revision?: IntFilter<"FlowRevision"> | number
+    publishedAt?: DateTimeNullableFilter<"FlowRevision"> | Date | string | null
+    publishedById?: StringNullableFilter<"FlowRevision"> | string | null
+    createdAt?: DateTimeFilter<"FlowRevision"> | Date | string
+    updatedAt?: DateTimeFilter<"FlowRevision"> | Date | string
+    flowDefinition?: XOR<FlowDefinitionRelationFilter, FlowDefinitionWhereInput>
+    publishedBy?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    nodes?: FlowNodeListRelationFilter
+    transitions?: FlowTransitionListRelationFilter
+    conversations?: ConversationListRelationFilter
+    executionEvents?: FlowExecutionEventListRelationFilter
+  }, "id" | "flowDefinitionId_version">
+
+  export type FlowRevisionOrderByWithAggregationInput = {
+    id?: SortOrder
+    flowDefinitionId?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    publishedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FlowRevisionCountOrderByAggregateInput
+    _avg?: FlowRevisionAvgOrderByAggregateInput
+    _max?: FlowRevisionMaxOrderByAggregateInput
+    _min?: FlowRevisionMinOrderByAggregateInput
+    _sum?: FlowRevisionSumOrderByAggregateInput
+  }
+
+  export type FlowRevisionScalarWhereWithAggregatesInput = {
+    AND?: FlowRevisionScalarWhereWithAggregatesInput | FlowRevisionScalarWhereWithAggregatesInput[]
+    OR?: FlowRevisionScalarWhereWithAggregatesInput[]
+    NOT?: FlowRevisionScalarWhereWithAggregatesInput | FlowRevisionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FlowRevision"> | string
+    flowDefinitionId?: StringWithAggregatesFilter<"FlowRevision"> | string
+    version?: IntWithAggregatesFilter<"FlowRevision"> | number
+    status?: EnumFlowRevisionStatusWithAggregatesFilter<"FlowRevision"> | $Enums.FlowRevisionStatus
+    schemaVersion?: IntWithAggregatesFilter<"FlowRevision"> | number
+    revision?: IntWithAggregatesFilter<"FlowRevision"> | number
+    publishedAt?: DateTimeNullableWithAggregatesFilter<"FlowRevision"> | Date | string | null
+    publishedById?: StringNullableWithAggregatesFilter<"FlowRevision"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FlowRevision"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FlowRevision"> | Date | string
+  }
+
+  export type FlowNodeWhereInput = {
+    AND?: FlowNodeWhereInput | FlowNodeWhereInput[]
+    OR?: FlowNodeWhereInput[]
+    NOT?: FlowNodeWhereInput | FlowNodeWhereInput[]
+    id?: StringFilter<"FlowNode"> | string
+    stableKey?: StringFilter<"FlowNode"> | string
+    flowRevisionId?: StringFilter<"FlowNode"> | string
+    type?: EnumFlowNodeTypeFilter<"FlowNode"> | $Enums.FlowNodeType
+    name?: StringFilter<"FlowNode"> | string
+    content?: StringFilter<"FlowNode"> | string
+    sortOrder?: IntFilter<"FlowNode"> | number
+    config?: JsonNullableFilter<"FlowNode">
+    departmentId?: StringNullableFilter<"FlowNode"> | string | null
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
+    outgoing?: FlowTransitionListRelationFilter
+    incoming?: FlowTransitionListRelationFilter
+    conversations?: ConversationListRelationFilter
+    executionEvents?: FlowExecutionEventListRelationFilter
+  }
+
+  export type FlowNodeOrderByWithRelationInput = {
+    id?: SortOrder
+    stableKey?: SortOrder
+    flowRevisionId?: SortOrder
+    type?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    sortOrder?: SortOrder
+    config?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    flowRevision?: FlowRevisionOrderByWithRelationInput
+    department?: DepartmentOrderByWithRelationInput
+    outgoing?: FlowTransitionOrderByRelationAggregateInput
+    incoming?: FlowTransitionOrderByRelationAggregateInput
+    conversations?: ConversationOrderByRelationAggregateInput
+    executionEvents?: FlowExecutionEventOrderByRelationAggregateInput
+  }
+
+  export type FlowNodeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    flowRevisionId_stableKey?: FlowNodeFlowRevisionIdStableKeyCompoundUniqueInput
+    AND?: FlowNodeWhereInput | FlowNodeWhereInput[]
+    OR?: FlowNodeWhereInput[]
+    NOT?: FlowNodeWhereInput | FlowNodeWhereInput[]
+    stableKey?: StringFilter<"FlowNode"> | string
+    flowRevisionId?: StringFilter<"FlowNode"> | string
+    type?: EnumFlowNodeTypeFilter<"FlowNode"> | $Enums.FlowNodeType
+    name?: StringFilter<"FlowNode"> | string
+    content?: StringFilter<"FlowNode"> | string
+    sortOrder?: IntFilter<"FlowNode"> | number
+    config?: JsonNullableFilter<"FlowNode">
+    departmentId?: StringNullableFilter<"FlowNode"> | string | null
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
+    outgoing?: FlowTransitionListRelationFilter
+    incoming?: FlowTransitionListRelationFilter
+    conversations?: ConversationListRelationFilter
+    executionEvents?: FlowExecutionEventListRelationFilter
+  }, "id" | "flowRevisionId_stableKey">
+
+  export type FlowNodeOrderByWithAggregationInput = {
+    id?: SortOrder
+    stableKey?: SortOrder
+    flowRevisionId?: SortOrder
+    type?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    sortOrder?: SortOrder
+    config?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    _count?: FlowNodeCountOrderByAggregateInput
+    _avg?: FlowNodeAvgOrderByAggregateInput
+    _max?: FlowNodeMaxOrderByAggregateInput
+    _min?: FlowNodeMinOrderByAggregateInput
+    _sum?: FlowNodeSumOrderByAggregateInput
+  }
+
+  export type FlowNodeScalarWhereWithAggregatesInput = {
+    AND?: FlowNodeScalarWhereWithAggregatesInput | FlowNodeScalarWhereWithAggregatesInput[]
+    OR?: FlowNodeScalarWhereWithAggregatesInput[]
+    NOT?: FlowNodeScalarWhereWithAggregatesInput | FlowNodeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FlowNode"> | string
+    stableKey?: StringWithAggregatesFilter<"FlowNode"> | string
+    flowRevisionId?: StringWithAggregatesFilter<"FlowNode"> | string
+    type?: EnumFlowNodeTypeWithAggregatesFilter<"FlowNode"> | $Enums.FlowNodeType
+    name?: StringWithAggregatesFilter<"FlowNode"> | string
+    content?: StringWithAggregatesFilter<"FlowNode"> | string
+    sortOrder?: IntWithAggregatesFilter<"FlowNode"> | number
+    config?: JsonNullableWithAggregatesFilter<"FlowNode">
+    departmentId?: StringNullableWithAggregatesFilter<"FlowNode"> | string | null
+  }
+
+  export type FlowTransitionWhereInput = {
+    AND?: FlowTransitionWhereInput | FlowTransitionWhereInput[]
+    OR?: FlowTransitionWhereInput[]
+    NOT?: FlowTransitionWhereInput | FlowTransitionWhereInput[]
+    id?: StringFilter<"FlowTransition"> | string
+    flowRevisionId?: StringFilter<"FlowTransition"> | string
+    fromNodeId?: StringFilter<"FlowTransition"> | string
+    toNodeId?: StringFilter<"FlowTransition"> | string
+    optionKey?: StringNullableFilter<"FlowTransition"> | string | null
+    label?: StringNullableFilter<"FlowTransition"> | string | null
+    sortOrder?: IntFilter<"FlowTransition"> | number
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    fromNode?: XOR<FlowNodeRelationFilter, FlowNodeWhereInput>
+    toNode?: XOR<FlowNodeRelationFilter, FlowNodeWhereInput>
+  }
+
+  export type FlowTransitionOrderByWithRelationInput = {
+    id?: SortOrder
+    flowRevisionId?: SortOrder
+    fromNodeId?: SortOrder
+    toNodeId?: SortOrder
+    optionKey?: SortOrderInput | SortOrder
+    label?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
+    flowRevision?: FlowRevisionOrderByWithRelationInput
+    fromNode?: FlowNodeOrderByWithRelationInput
+    toNode?: FlowNodeOrderByWithRelationInput
+  }
+
+  export type FlowTransitionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    flowRevisionId_optionKey?: FlowTransitionFlowRevisionIdOptionKeyCompoundUniqueInput
+    AND?: FlowTransitionWhereInput | FlowTransitionWhereInput[]
+    OR?: FlowTransitionWhereInput[]
+    NOT?: FlowTransitionWhereInput | FlowTransitionWhereInput[]
+    flowRevisionId?: StringFilter<"FlowTransition"> | string
+    fromNodeId?: StringFilter<"FlowTransition"> | string
+    toNodeId?: StringFilter<"FlowTransition"> | string
+    optionKey?: StringNullableFilter<"FlowTransition"> | string | null
+    label?: StringNullableFilter<"FlowTransition"> | string | null
+    sortOrder?: IntFilter<"FlowTransition"> | number
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    fromNode?: XOR<FlowNodeRelationFilter, FlowNodeWhereInput>
+    toNode?: XOR<FlowNodeRelationFilter, FlowNodeWhereInput>
+  }, "id" | "flowRevisionId_optionKey">
+
+  export type FlowTransitionOrderByWithAggregationInput = {
+    id?: SortOrder
+    flowRevisionId?: SortOrder
+    fromNodeId?: SortOrder
+    toNodeId?: SortOrder
+    optionKey?: SortOrderInput | SortOrder
+    label?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
+    _count?: FlowTransitionCountOrderByAggregateInput
+    _avg?: FlowTransitionAvgOrderByAggregateInput
+    _max?: FlowTransitionMaxOrderByAggregateInput
+    _min?: FlowTransitionMinOrderByAggregateInput
+    _sum?: FlowTransitionSumOrderByAggregateInput
+  }
+
+  export type FlowTransitionScalarWhereWithAggregatesInput = {
+    AND?: FlowTransitionScalarWhereWithAggregatesInput | FlowTransitionScalarWhereWithAggregatesInput[]
+    OR?: FlowTransitionScalarWhereWithAggregatesInput[]
+    NOT?: FlowTransitionScalarWhereWithAggregatesInput | FlowTransitionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FlowTransition"> | string
+    flowRevisionId?: StringWithAggregatesFilter<"FlowTransition"> | string
+    fromNodeId?: StringWithAggregatesFilter<"FlowTransition"> | string
+    toNodeId?: StringWithAggregatesFilter<"FlowTransition"> | string
+    optionKey?: StringNullableWithAggregatesFilter<"FlowTransition"> | string | null
+    label?: StringNullableWithAggregatesFilter<"FlowTransition"> | string | null
+    sortOrder?: IntWithAggregatesFilter<"FlowTransition"> | number
+  }
+
+  export type FlowExecutionEventWhereInput = {
+    AND?: FlowExecutionEventWhereInput | FlowExecutionEventWhereInput[]
+    OR?: FlowExecutionEventWhereInput[]
+    NOT?: FlowExecutionEventWhereInput | FlowExecutionEventWhereInput[]
+    id?: StringFilter<"FlowExecutionEvent"> | string
+    conversationId?: StringFilter<"FlowExecutionEvent"> | string
+    flowRevisionId?: StringFilter<"FlowExecutionEvent"> | string
+    flowNodeId?: StringNullableFilter<"FlowExecutionEvent"> | string | null
+    externalEventId?: StringNullableFilter<"FlowExecutionEvent"> | string | null
+    type?: StringFilter<"FlowExecutionEvent"> | string
+    metadata?: JsonNullableFilter<"FlowExecutionEvent">
+    createdAt?: DateTimeFilter<"FlowExecutionEvent"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    flowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
+  }
+
+  export type FlowExecutionEventOrderByWithRelationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    flowRevisionId?: SortOrder
+    flowNodeId?: SortOrderInput | SortOrder
+    externalEventId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    conversation?: ConversationOrderByWithRelationInput
+    flowRevision?: FlowRevisionOrderByWithRelationInput
+    flowNode?: FlowNodeOrderByWithRelationInput
+  }
+
+  export type FlowExecutionEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    externalEventId?: string
+    AND?: FlowExecutionEventWhereInput | FlowExecutionEventWhereInput[]
+    OR?: FlowExecutionEventWhereInput[]
+    NOT?: FlowExecutionEventWhereInput | FlowExecutionEventWhereInput[]
+    conversationId?: StringFilter<"FlowExecutionEvent"> | string
+    flowRevisionId?: StringFilter<"FlowExecutionEvent"> | string
+    flowNodeId?: StringNullableFilter<"FlowExecutionEvent"> | string | null
+    type?: StringFilter<"FlowExecutionEvent"> | string
+    metadata?: JsonNullableFilter<"FlowExecutionEvent">
+    createdAt?: DateTimeFilter<"FlowExecutionEvent"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    flowRevision?: XOR<FlowRevisionRelationFilter, FlowRevisionWhereInput>
+    flowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
+  }, "id" | "externalEventId">
+
+  export type FlowExecutionEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    flowRevisionId?: SortOrder
+    flowNodeId?: SortOrderInput | SortOrder
+    externalEventId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: FlowExecutionEventCountOrderByAggregateInput
+    _max?: FlowExecutionEventMaxOrderByAggregateInput
+    _min?: FlowExecutionEventMinOrderByAggregateInput
+  }
+
+  export type FlowExecutionEventScalarWhereWithAggregatesInput = {
+    AND?: FlowExecutionEventScalarWhereWithAggregatesInput | FlowExecutionEventScalarWhereWithAggregatesInput[]
+    OR?: FlowExecutionEventScalarWhereWithAggregatesInput[]
+    NOT?: FlowExecutionEventScalarWhereWithAggregatesInput | FlowExecutionEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FlowExecutionEvent"> | string
+    conversationId?: StringWithAggregatesFilter<"FlowExecutionEvent"> | string
+    flowRevisionId?: StringWithAggregatesFilter<"FlowExecutionEvent"> | string
+    flowNodeId?: StringNullableWithAggregatesFilter<"FlowExecutionEvent"> | string | null
+    externalEventId?: StringNullableWithAggregatesFilter<"FlowExecutionEvent"> | string | null
+    type?: StringWithAggregatesFilter<"FlowExecutionEvent"> | string
+    metadata?: JsonNullableWithAggregatesFilter<"FlowExecutionEvent">
+    createdAt?: DateTimeWithAggregatesFilter<"FlowExecutionEvent"> | Date | string
   }
 
   export type ShortcutWhereInput = {
@@ -13927,6 +19433,7 @@ export namespace Prisma {
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateInput = {
@@ -13938,6 +19445,7 @@ export namespace Prisma {
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUpdateInput = {
@@ -13949,6 +19457,7 @@ export namespace Prisma {
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateInput = {
@@ -13960,6 +19469,7 @@ export namespace Prisma {
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentCreateManyInput = {
@@ -14054,6 +19564,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateInput = {
@@ -14072,6 +19583,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUpdateInput = {
@@ -14090,6 +19602,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateInput = {
@@ -14108,6 +19621,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentCreateManyInput = {
@@ -14258,12 +19772,16 @@ export namespace Prisma {
     id?: string
     status?: string
     currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -14273,21 +19791,29 @@ export namespace Prisma {
     departmentId?: string | null
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -14297,9 +19823,13 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -14309,6 +19839,9 @@ export namespace Prisma {
     departmentId?: string | null
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
   }
@@ -14317,6 +19850,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -14328,6 +19862,9 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -14414,6 +19951,7 @@ export namespace Prisma {
     menuMessage: string
     options: JsonNullValueInput | InputJsonValue
     updatedAt?: Date | string
+    revisions?: FlowRevisionCreateNestedManyWithoutFlowDefinitionInput
   }
 
   export type FlowDefinitionUncheckedCreateInput = {
@@ -14423,6 +19961,7 @@ export namespace Prisma {
     menuMessage: string
     options: JsonNullValueInput | InputJsonValue
     updatedAt?: Date | string
+    revisions?: FlowRevisionUncheckedCreateNestedManyWithoutFlowDefinitionInput
   }
 
   export type FlowDefinitionUpdateInput = {
@@ -14432,6 +19971,7 @@ export namespace Prisma {
     menuMessage?: StringFieldUpdateOperationsInput | string
     options?: JsonNullValueInput | InputJsonValue
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revisions?: FlowRevisionUpdateManyWithoutFlowDefinitionNestedInput
   }
 
   export type FlowDefinitionUncheckedUpdateInput = {
@@ -14441,6 +19981,7 @@ export namespace Prisma {
     menuMessage?: StringFieldUpdateOperationsInput | string
     options?: JsonNullValueInput | InputJsonValue
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revisions?: FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionNestedInput
   }
 
   export type FlowDefinitionCreateManyInput = {
@@ -14545,6 +20086,350 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowRevisionCreateInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionCreateManyInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FlowRevisionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowRevisionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowNodeCreateInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeCreateManyInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+  }
+
+  export type FlowNodeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type FlowNodeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FlowTransitionCreateInput = {
+    id?: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+    flowRevision: FlowRevisionCreateNestedOneWithoutTransitionsInput
+    fromNode: FlowNodeCreateNestedOneWithoutOutgoingInput
+    toNode: FlowNodeCreateNestedOneWithoutIncomingInput
+  }
+
+  export type FlowTransitionUncheckedCreateInput = {
+    id?: string
+    flowRevisionId: string
+    fromNodeId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutTransitionsNestedInput
+    fromNode?: FlowNodeUpdateOneRequiredWithoutOutgoingNestedInput
+    toNode?: FlowNodeUpdateOneRequiredWithoutIncomingNestedInput
+  }
+
+  export type FlowTransitionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionCreateManyInput = {
+    id?: string
+    flowRevisionId: string
+    fromNodeId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowExecutionEventCreateInput = {
+    id?: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutFlowEventsInput
+    flowRevision: FlowRevisionCreateNestedOneWithoutExecutionEventsInput
+    flowNode?: FlowNodeCreateNestedOneWithoutExecutionEventsInput
+  }
+
+  export type FlowExecutionEventUncheckedCreateInput = {
+    id?: string
+    conversationId: string
+    flowRevisionId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowExecutionEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutFlowEventsNestedInput
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutExecutionEventsNestedInput
+    flowNode?: FlowNodeUpdateOneWithoutExecutionEventsNestedInput
+  }
+
+  export type FlowExecutionEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowExecutionEventCreateManyInput = {
+    id?: string
+    conversationId: string
+    flowRevisionId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowExecutionEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShortcutCreateInput = {
@@ -14792,6 +20677,12 @@ export namespace Prisma {
     none?: ShortcutWhereInput
   }
 
+  export type FlowNodeListRelationFilter = {
+    every?: FlowNodeWhereInput
+    some?: FlowNodeWhereInput
+    none?: FlowNodeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -14810,6 +20701,10 @@ export namespace Prisma {
   }
 
   export type ShortcutOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FlowNodeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14970,11 +20865,21 @@ export namespace Prisma {
     none?: ShortcutAuditWhereInput
   }
 
+  export type FlowRevisionListRelationFilter = {
+    every?: FlowRevisionWhereInput
+    some?: FlowRevisionWhereInput
+    none?: FlowRevisionWhereInput
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ShortcutAuditOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FlowRevisionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15077,6 +20982,28 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrder
   }
+  export type JsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
@@ -15099,6 +21026,26 @@ export namespace Prisma {
     isNot?: AgentWhereInput | null
   }
 
+  export type FlowRevisionNullableRelationFilter = {
+    is?: FlowRevisionWhereInput | null
+    isNot?: FlowRevisionWhereInput | null
+  }
+
+  export type FlowNodeNullableRelationFilter = {
+    is?: FlowNodeWhereInput | null
+    isNot?: FlowNodeWhereInput | null
+  }
+
+  export type FlowExecutionEventListRelationFilter = {
+    every?: FlowExecutionEventWhereInput
+    some?: FlowExecutionEventWhereInput
+    none?: FlowExecutionEventWhereInput
+  }
+
+  export type FlowExecutionEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ConversationCountOrderByAggregateInput = {
     id?: SortOrder
     contactId?: SortOrder
@@ -15106,6 +21053,9 @@ export namespace Prisma {
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
     currentStep?: SortOrder
+    flowRevisionId?: SortOrder
+    currentFlowNodeId?: SortOrder
+    flowContext?: SortOrder
     startedAt?: SortOrder
     closedAt?: SortOrder
   }
@@ -15117,6 +21067,8 @@ export namespace Prisma {
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
     currentStep?: SortOrder
+    flowRevisionId?: SortOrder
+    currentFlowNodeId?: SortOrder
     startedAt?: SortOrder
     closedAt?: SortOrder
   }
@@ -15128,8 +21080,35 @@ export namespace Prisma {
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
     currentStep?: SortOrder
+    flowRevisionId?: SortOrder
+    currentFlowNodeId?: SortOrder
     startedAt?: SortOrder
     closedAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15289,6 +21268,242 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumFlowRevisionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowRevisionStatus | EnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowRevisionStatusFilter<$PrismaModel> | $Enums.FlowRevisionStatus
+  }
+
+  export type FlowDefinitionRelationFilter = {
+    is?: FlowDefinitionWhereInput
+    isNot?: FlowDefinitionWhereInput
+  }
+
+  export type FlowTransitionListRelationFilter = {
+    every?: FlowTransitionWhereInput
+    some?: FlowTransitionWhereInput
+    none?: FlowTransitionWhereInput
+  }
+
+  export type FlowTransitionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FlowRevisionFlowDefinitionIdVersionCompoundUniqueInput = {
+    flowDefinitionId: string
+    version: number
+  }
+
+  export type FlowRevisionCountOrderByAggregateInput = {
+    id?: SortOrder
+    flowDefinitionId?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+    publishedAt?: SortOrder
+    publishedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FlowRevisionAvgOrderByAggregateInput = {
+    version?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+  }
+
+  export type FlowRevisionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    flowDefinitionId?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+    publishedAt?: SortOrder
+    publishedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FlowRevisionMinOrderByAggregateInput = {
+    id?: SortOrder
+    flowDefinitionId?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+    publishedAt?: SortOrder
+    publishedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FlowRevisionSumOrderByAggregateInput = {
+    version?: SortOrder
+    schemaVersion?: SortOrder
+    revision?: SortOrder
+  }
+
+  export type EnumFlowRevisionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowRevisionStatus | EnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowRevisionStatusWithAggregatesFilter<$PrismaModel> | $Enums.FlowRevisionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFlowRevisionStatusFilter<$PrismaModel>
+    _max?: NestedEnumFlowRevisionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumFlowNodeTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowNodeType | EnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowNodeTypeFilter<$PrismaModel> | $Enums.FlowNodeType
+  }
+
+  export type FlowRevisionRelationFilter = {
+    is?: FlowRevisionWhereInput
+    isNot?: FlowRevisionWhereInput
+  }
+
+  export type FlowNodeFlowRevisionIdStableKeyCompoundUniqueInput = {
+    flowRevisionId: string
+    stableKey: string
+  }
+
+  export type FlowNodeCountOrderByAggregateInput = {
+    id?: SortOrder
+    stableKey?: SortOrder
+    flowRevisionId?: SortOrder
+    type?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    sortOrder?: SortOrder
+    config?: SortOrder
+    departmentId?: SortOrder
+  }
+
+  export type FlowNodeAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type FlowNodeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    stableKey?: SortOrder
+    flowRevisionId?: SortOrder
+    type?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    sortOrder?: SortOrder
+    departmentId?: SortOrder
+  }
+
+  export type FlowNodeMinOrderByAggregateInput = {
+    id?: SortOrder
+    stableKey?: SortOrder
+    flowRevisionId?: SortOrder
+    type?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    sortOrder?: SortOrder
+    departmentId?: SortOrder
+  }
+
+  export type FlowNodeSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type EnumFlowNodeTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowNodeType | EnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowNodeTypeWithAggregatesFilter<$PrismaModel> | $Enums.FlowNodeType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFlowNodeTypeFilter<$PrismaModel>
+    _max?: NestedEnumFlowNodeTypeFilter<$PrismaModel>
+  }
+
+  export type FlowNodeRelationFilter = {
+    is?: FlowNodeWhereInput
+    isNot?: FlowNodeWhereInput
+  }
+
+  export type FlowTransitionFlowRevisionIdOptionKeyCompoundUniqueInput = {
+    flowRevisionId: string
+    optionKey: string
+  }
+
+  export type FlowTransitionCountOrderByAggregateInput = {
+    id?: SortOrder
+    flowRevisionId?: SortOrder
+    fromNodeId?: SortOrder
+    toNodeId?: SortOrder
+    optionKey?: SortOrder
+    label?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type FlowTransitionAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type FlowTransitionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    flowRevisionId?: SortOrder
+    fromNodeId?: SortOrder
+    toNodeId?: SortOrder
+    optionKey?: SortOrder
+    label?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type FlowTransitionMinOrderByAggregateInput = {
+    id?: SortOrder
+    flowRevisionId?: SortOrder
+    fromNodeId?: SortOrder
+    toNodeId?: SortOrder
+    optionKey?: SortOrder
+    label?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type FlowTransitionSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type FlowExecutionEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    flowRevisionId?: SortOrder
+    flowNodeId?: SortOrder
+    externalEventId?: SortOrder
+    type?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FlowExecutionEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    flowRevisionId?: SortOrder
+    flowNodeId?: SortOrder
+    externalEventId?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FlowExecutionEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    flowRevisionId?: SortOrder
+    flowNodeId?: SortOrder
+    externalEventId?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EnumShortcutTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ShortcutType | EnumShortcutTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ShortcutType[] | ListEnumShortcutTypeFieldRefInput<$PrismaModel>
@@ -15386,28 +21601,6 @@ export namespace Prisma {
     _min?: NestedEnumShortcutScopeFilter<$PrismaModel>
     _max?: NestedEnumShortcutScopeFilter<$PrismaModel>
   }
-  export type JsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type ShortcutNullableRelationFilter = {
     is?: ShortcutWhereInput | null
@@ -15438,31 +21631,6 @@ export namespace Prisma {
     action?: SortOrder
     createdAt?: SortOrder
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
 
   export type ProcedureCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
@@ -15492,6 +21660,13 @@ export namespace Prisma {
     connect?: ShortcutWhereUniqueInput | ShortcutWhereUniqueInput[]
   }
 
+  export type FlowNodeCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput> | FlowNodeCreateWithoutDepartmentInput[] | FlowNodeUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutDepartmentInput | FlowNodeCreateOrConnectWithoutDepartmentInput[]
+    createMany?: FlowNodeCreateManyDepartmentInputEnvelope
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+  }
+
   export type ProcedureUncheckedCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: ProcedureCreateOrConnectWithoutDepartmentInput | ProcedureCreateOrConnectWithoutDepartmentInput[]
@@ -15518,6 +21693,13 @@ export namespace Prisma {
     connectOrCreate?: ShortcutCreateOrConnectWithoutDepartmentInput | ShortcutCreateOrConnectWithoutDepartmentInput[]
     createMany?: ShortcutCreateManyDepartmentInputEnvelope
     connect?: ShortcutWhereUniqueInput | ShortcutWhereUniqueInput[]
+  }
+
+  export type FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput> | FlowNodeCreateWithoutDepartmentInput[] | FlowNodeUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutDepartmentInput | FlowNodeCreateOrConnectWithoutDepartmentInput[]
+    createMany?: FlowNodeCreateManyDepartmentInputEnvelope
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -15588,6 +21770,20 @@ export namespace Prisma {
     deleteMany?: ShortcutScalarWhereInput | ShortcutScalarWhereInput[]
   }
 
+  export type FlowNodeUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput> | FlowNodeCreateWithoutDepartmentInput[] | FlowNodeUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutDepartmentInput | FlowNodeCreateOrConnectWithoutDepartmentInput[]
+    upsert?: FlowNodeUpsertWithWhereUniqueWithoutDepartmentInput | FlowNodeUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: FlowNodeCreateManyDepartmentInputEnvelope
+    set?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    disconnect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    delete?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    update?: FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput | FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: FlowNodeUpdateManyWithWhereWithoutDepartmentInput | FlowNodeUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+  }
+
   export type ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: ProcedureCreateOrConnectWithoutDepartmentInput | ProcedureCreateOrConnectWithoutDepartmentInput[]
@@ -15642,6 +21838,20 @@ export namespace Prisma {
     update?: ShortcutUpdateWithWhereUniqueWithoutDepartmentInput | ShortcutUpdateWithWhereUniqueWithoutDepartmentInput[]
     updateMany?: ShortcutUpdateManyWithWhereWithoutDepartmentInput | ShortcutUpdateManyWithWhereWithoutDepartmentInput[]
     deleteMany?: ShortcutScalarWhereInput | ShortcutScalarWhereInput[]
+  }
+
+  export type FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput> | FlowNodeCreateWithoutDepartmentInput[] | FlowNodeUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutDepartmentInput | FlowNodeCreateOrConnectWithoutDepartmentInput[]
+    upsert?: FlowNodeUpsertWithWhereUniqueWithoutDepartmentInput | FlowNodeUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: FlowNodeCreateManyDepartmentInputEnvelope
+    set?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    disconnect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    delete?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    update?: FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput | FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: FlowNodeUpdateManyWithWhereWithoutDepartmentInput | FlowNodeUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
   }
 
   export type DepartmentCreateNestedOneWithoutProceduresInput = {
@@ -15714,6 +21924,13 @@ export namespace Prisma {
     connect?: ShortcutAuditWhereUniqueInput | ShortcutAuditWhereUniqueInput[]
   }
 
+  export type FlowRevisionCreateNestedManyWithoutPublishedByInput = {
+    create?: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput> | FlowRevisionCreateWithoutPublishedByInput[] | FlowRevisionUncheckedCreateWithoutPublishedByInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutPublishedByInput | FlowRevisionCreateOrConnectWithoutPublishedByInput[]
+    createMany?: FlowRevisionCreateManyPublishedByInputEnvelope
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -15754,6 +21971,13 @@ export namespace Prisma {
     connectOrCreate?: ShortcutAuditCreateOrConnectWithoutActorInput | ShortcutAuditCreateOrConnectWithoutActorInput[]
     createMany?: ShortcutAuditCreateManyActorInputEnvelope
     connect?: ShortcutAuditWhereUniqueInput | ShortcutAuditWhereUniqueInput[]
+  }
+
+  export type FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput = {
+    create?: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput> | FlowRevisionCreateWithoutPublishedByInput[] | FlowRevisionUncheckedCreateWithoutPublishedByInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutPublishedByInput | FlowRevisionCreateOrConnectWithoutPublishedByInput[]
+    createMany?: FlowRevisionCreateManyPublishedByInputEnvelope
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -15854,6 +22078,20 @@ export namespace Prisma {
     deleteMany?: ShortcutAuditScalarWhereInput | ShortcutAuditScalarWhereInput[]
   }
 
+  export type FlowRevisionUpdateManyWithoutPublishedByNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput> | FlowRevisionCreateWithoutPublishedByInput[] | FlowRevisionUncheckedCreateWithoutPublishedByInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutPublishedByInput | FlowRevisionCreateOrConnectWithoutPublishedByInput[]
+    upsert?: FlowRevisionUpsertWithWhereUniqueWithoutPublishedByInput | FlowRevisionUpsertWithWhereUniqueWithoutPublishedByInput[]
+    createMany?: FlowRevisionCreateManyPublishedByInputEnvelope
+    set?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    disconnect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    delete?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    update?: FlowRevisionUpdateWithWhereUniqueWithoutPublishedByInput | FlowRevisionUpdateWithWhereUniqueWithoutPublishedByInput[]
+    updateMany?: FlowRevisionUpdateManyWithWhereWithoutPublishedByInput | FlowRevisionUpdateManyWithWhereWithoutPublishedByInput[]
+    deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -15938,6 +22176,20 @@ export namespace Prisma {
     deleteMany?: ShortcutAuditScalarWhereInput | ShortcutAuditScalarWhereInput[]
   }
 
+  export type FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput> | FlowRevisionCreateWithoutPublishedByInput[] | FlowRevisionUncheckedCreateWithoutPublishedByInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutPublishedByInput | FlowRevisionCreateOrConnectWithoutPublishedByInput[]
+    upsert?: FlowRevisionUpsertWithWhereUniqueWithoutPublishedByInput | FlowRevisionUpsertWithWhereUniqueWithoutPublishedByInput[]
+    createMany?: FlowRevisionCreateManyPublishedByInputEnvelope
+    set?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    disconnect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    delete?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    update?: FlowRevisionUpdateWithWhereUniqueWithoutPublishedByInput | FlowRevisionUpdateWithWhereUniqueWithoutPublishedByInput[]
+    updateMany?: FlowRevisionUpdateManyWithWhereWithoutPublishedByInput | FlowRevisionUpdateManyWithWhereWithoutPublishedByInput[]
+    deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
   export type RolePermissionCreateactionsInput = {
     set: string[]
   }
@@ -16014,11 +22266,37 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type FlowRevisionCreateNestedOneWithoutConversationsInput = {
+    create?: XOR<FlowRevisionCreateWithoutConversationsInput, FlowRevisionUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutConversationsInput
+    connect?: FlowRevisionWhereUniqueInput
+  }
+
+  export type FlowNodeCreateNestedOneWithoutConversationsInput = {
+    create?: XOR<FlowNodeCreateWithoutConversationsInput, FlowNodeUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutConversationsInput
+    connect?: FlowNodeWhereUniqueInput
+  }
+
+  export type FlowExecutionEventCreateNestedManyWithoutConversationInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput> | FlowExecutionEventCreateWithoutConversationInput[] | FlowExecutionEventUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutConversationInput | FlowExecutionEventCreateOrConnectWithoutConversationInput[]
+    createMany?: FlowExecutionEventCreateManyConversationInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
     createMany?: MessageCreateManyConversationInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput> | FlowExecutionEventCreateWithoutConversationInput[] | FlowExecutionEventUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutConversationInput | FlowExecutionEventCreateOrConnectWithoutConversationInput[]
+    createMany?: FlowExecutionEventCreateManyConversationInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -16067,6 +22345,40 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type FlowRevisionUpdateOneWithoutConversationsNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutConversationsInput, FlowRevisionUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutConversationsInput
+    upsert?: FlowRevisionUpsertWithoutConversationsInput
+    disconnect?: FlowRevisionWhereInput | boolean
+    delete?: FlowRevisionWhereInput | boolean
+    connect?: FlowRevisionWhereUniqueInput
+    update?: XOR<XOR<FlowRevisionUpdateToOneWithWhereWithoutConversationsInput, FlowRevisionUpdateWithoutConversationsInput>, FlowRevisionUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type FlowNodeUpdateOneWithoutConversationsNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutConversationsInput, FlowNodeUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutConversationsInput
+    upsert?: FlowNodeUpsertWithoutConversationsInput
+    disconnect?: FlowNodeWhereInput | boolean
+    delete?: FlowNodeWhereInput | boolean
+    connect?: FlowNodeWhereUniqueInput
+    update?: XOR<XOR<FlowNodeUpdateToOneWithWhereWithoutConversationsInput, FlowNodeUpdateWithoutConversationsInput>, FlowNodeUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type FlowExecutionEventUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput> | FlowExecutionEventCreateWithoutConversationInput[] | FlowExecutionEventUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutConversationInput | FlowExecutionEventCreateOrConnectWithoutConversationInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutConversationInput | FlowExecutionEventUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: FlowExecutionEventCreateManyConversationInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutConversationInput | FlowExecutionEventUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutConversationInput | FlowExecutionEventUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -16079,6 +22391,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput> | FlowExecutionEventCreateWithoutConversationInput[] | FlowExecutionEventUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutConversationInput | FlowExecutionEventCreateOrConnectWithoutConversationInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutConversationInput | FlowExecutionEventUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: FlowExecutionEventCreateManyConversationInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutConversationInput | FlowExecutionEventUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutConversationInput | FlowExecutionEventUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
   }
 
   export type ConversationCreateNestedOneWithoutMessagesInput = {
@@ -16109,6 +22435,538 @@ export namespace Prisma {
     delete?: AgentWhereInput | boolean
     connect?: AgentWhereUniqueInput
     update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutMessagesInput, AgentUpdateWithoutMessagesInput>, AgentUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type FlowRevisionCreateNestedManyWithoutFlowDefinitionInput = {
+    create?: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput> | FlowRevisionCreateWithoutFlowDefinitionInput[] | FlowRevisionUncheckedCreateWithoutFlowDefinitionInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutFlowDefinitionInput | FlowRevisionCreateOrConnectWithoutFlowDefinitionInput[]
+    createMany?: FlowRevisionCreateManyFlowDefinitionInputEnvelope
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+  }
+
+  export type FlowRevisionUncheckedCreateNestedManyWithoutFlowDefinitionInput = {
+    create?: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput> | FlowRevisionCreateWithoutFlowDefinitionInput[] | FlowRevisionUncheckedCreateWithoutFlowDefinitionInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutFlowDefinitionInput | FlowRevisionCreateOrConnectWithoutFlowDefinitionInput[]
+    createMany?: FlowRevisionCreateManyFlowDefinitionInputEnvelope
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+  }
+
+  export type FlowRevisionUpdateManyWithoutFlowDefinitionNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput> | FlowRevisionCreateWithoutFlowDefinitionInput[] | FlowRevisionUncheckedCreateWithoutFlowDefinitionInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutFlowDefinitionInput | FlowRevisionCreateOrConnectWithoutFlowDefinitionInput[]
+    upsert?: FlowRevisionUpsertWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpsertWithWhereUniqueWithoutFlowDefinitionInput[]
+    createMany?: FlowRevisionCreateManyFlowDefinitionInputEnvelope
+    set?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    disconnect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    delete?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    update?: FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput[]
+    updateMany?: FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput | FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput[]
+    deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
+  export type FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput> | FlowRevisionCreateWithoutFlowDefinitionInput[] | FlowRevisionUncheckedCreateWithoutFlowDefinitionInput[]
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutFlowDefinitionInput | FlowRevisionCreateOrConnectWithoutFlowDefinitionInput[]
+    upsert?: FlowRevisionUpsertWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpsertWithWhereUniqueWithoutFlowDefinitionInput[]
+    createMany?: FlowRevisionCreateManyFlowDefinitionInputEnvelope
+    set?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    disconnect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    delete?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+    update?: FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput[]
+    updateMany?: FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput | FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput[]
+    deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
+  export type FlowDefinitionCreateNestedOneWithoutRevisionsInput = {
+    create?: XOR<FlowDefinitionCreateWithoutRevisionsInput, FlowDefinitionUncheckedCreateWithoutRevisionsInput>
+    connectOrCreate?: FlowDefinitionCreateOrConnectWithoutRevisionsInput
+    connect?: FlowDefinitionWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutPublishedFlowRevisionsInput = {
+    create?: XOR<AgentCreateWithoutPublishedFlowRevisionsInput, AgentUncheckedCreateWithoutPublishedFlowRevisionsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutPublishedFlowRevisionsInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type FlowNodeCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput> | FlowNodeCreateWithoutFlowRevisionInput[] | FlowNodeUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutFlowRevisionInput | FlowNodeCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowNodeCreateManyFlowRevisionInputEnvelope
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+  }
+
+  export type FlowTransitionCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput> | FlowTransitionCreateWithoutFlowRevisionInput[] | FlowTransitionUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFlowRevisionInput | FlowTransitionCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowTransitionCreateManyFlowRevisionInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type ConversationCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput> | ConversationCreateWithoutFlowRevisionInput[] | ConversationUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowRevisionInput | ConversationCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: ConversationCreateManyFlowRevisionInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput> | FlowExecutionEventCreateWithoutFlowRevisionInput[] | FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput | FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowExecutionEventCreateManyFlowRevisionInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
+  export type FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput> | FlowNodeCreateWithoutFlowRevisionInput[] | FlowNodeUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutFlowRevisionInput | FlowNodeCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowNodeCreateManyFlowRevisionInputEnvelope
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+  }
+
+  export type FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput> | FlowTransitionCreateWithoutFlowRevisionInput[] | FlowTransitionUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFlowRevisionInput | FlowTransitionCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowTransitionCreateManyFlowRevisionInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput> | ConversationCreateWithoutFlowRevisionInput[] | ConversationUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowRevisionInput | ConversationCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: ConversationCreateManyFlowRevisionInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput> | FlowExecutionEventCreateWithoutFlowRevisionInput[] | FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput | FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput[]
+    createMany?: FlowExecutionEventCreateManyFlowRevisionInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
+  export type EnumFlowRevisionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FlowRevisionStatus
+  }
+
+  export type FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput = {
+    create?: XOR<FlowDefinitionCreateWithoutRevisionsInput, FlowDefinitionUncheckedCreateWithoutRevisionsInput>
+    connectOrCreate?: FlowDefinitionCreateOrConnectWithoutRevisionsInput
+    upsert?: FlowDefinitionUpsertWithoutRevisionsInput
+    connect?: FlowDefinitionWhereUniqueInput
+    update?: XOR<XOR<FlowDefinitionUpdateToOneWithWhereWithoutRevisionsInput, FlowDefinitionUpdateWithoutRevisionsInput>, FlowDefinitionUncheckedUpdateWithoutRevisionsInput>
+  }
+
+  export type AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput = {
+    create?: XOR<AgentCreateWithoutPublishedFlowRevisionsInput, AgentUncheckedCreateWithoutPublishedFlowRevisionsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutPublishedFlowRevisionsInput
+    upsert?: AgentUpsertWithoutPublishedFlowRevisionsInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutPublishedFlowRevisionsInput, AgentUpdateWithoutPublishedFlowRevisionsInput>, AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput>
+  }
+
+  export type FlowNodeUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput> | FlowNodeCreateWithoutFlowRevisionInput[] | FlowNodeUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutFlowRevisionInput | FlowNodeCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowNodeCreateManyFlowRevisionInputEnvelope
+    set?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    disconnect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    delete?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    update?: FlowNodeUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowNodeUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowNodeUpdateManyWithWhereWithoutFlowRevisionInput | FlowNodeUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+  }
+
+  export type FlowTransitionUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput> | FlowTransitionCreateWithoutFlowRevisionInput[] | FlowTransitionUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFlowRevisionInput | FlowTransitionCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowTransitionUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowTransitionCreateManyFlowRevisionInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowTransitionUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutFlowRevisionInput | FlowTransitionUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type ConversationUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput> | ConversationCreateWithoutFlowRevisionInput[] | ConversationUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowRevisionInput | ConversationCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutFlowRevisionInput | ConversationUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: ConversationCreateManyFlowRevisionInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutFlowRevisionInput | ConversationUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutFlowRevisionInput | ConversationUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput> | FlowExecutionEventCreateWithoutFlowRevisionInput[] | FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput | FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowExecutionEventUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowExecutionEventCreateManyFlowRevisionInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowExecutionEventUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutFlowRevisionInput | FlowExecutionEventUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+  }
+
+  export type FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput> | FlowNodeCreateWithoutFlowRevisionInput[] | FlowNodeUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutFlowRevisionInput | FlowNodeCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowNodeCreateManyFlowRevisionInputEnvelope
+    set?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    disconnect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    delete?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+    update?: FlowNodeUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowNodeUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowNodeUpdateManyWithWhereWithoutFlowRevisionInput | FlowNodeUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput> | FlowTransitionCreateWithoutFlowRevisionInput[] | FlowTransitionUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFlowRevisionInput | FlowTransitionCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowTransitionUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowTransitionCreateManyFlowRevisionInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowTransitionUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutFlowRevisionInput | FlowTransitionUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput> | ConversationCreateWithoutFlowRevisionInput[] | ConversationUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowRevisionInput | ConversationCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutFlowRevisionInput | ConversationUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: ConversationCreateManyFlowRevisionInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutFlowRevisionInput | ConversationUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutFlowRevisionInput | ConversationUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput> | FlowExecutionEventCreateWithoutFlowRevisionInput[] | FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput | FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutFlowRevisionInput | FlowExecutionEventUpsertWithWhereUniqueWithoutFlowRevisionInput[]
+    createMany?: FlowExecutionEventCreateManyFlowRevisionInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutFlowRevisionInput | FlowExecutionEventUpdateWithWhereUniqueWithoutFlowRevisionInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutFlowRevisionInput | FlowExecutionEventUpdateManyWithWhereWithoutFlowRevisionInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+  }
+
+  export type FlowRevisionCreateNestedOneWithoutNodesInput = {
+    create?: XOR<FlowRevisionCreateWithoutNodesInput, FlowRevisionUncheckedCreateWithoutNodesInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutNodesInput
+    connect?: FlowRevisionWhereUniqueInput
+  }
+
+  export type DepartmentCreateNestedOneWithoutFlowNodesInput = {
+    create?: XOR<DepartmentCreateWithoutFlowNodesInput, DepartmentUncheckedCreateWithoutFlowNodesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutFlowNodesInput
+    connect?: DepartmentWhereUniqueInput
+  }
+
+  export type FlowTransitionCreateNestedManyWithoutFromNodeInput = {
+    create?: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput> | FlowTransitionCreateWithoutFromNodeInput[] | FlowTransitionUncheckedCreateWithoutFromNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFromNodeInput | FlowTransitionCreateOrConnectWithoutFromNodeInput[]
+    createMany?: FlowTransitionCreateManyFromNodeInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type FlowTransitionCreateNestedManyWithoutToNodeInput = {
+    create?: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput> | FlowTransitionCreateWithoutToNodeInput[] | FlowTransitionUncheckedCreateWithoutToNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutToNodeInput | FlowTransitionCreateOrConnectWithoutToNodeInput[]
+    createMany?: FlowTransitionCreateManyToNodeInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type ConversationCreateNestedManyWithoutCurrentFlowNodeInput = {
+    create?: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput> | ConversationCreateWithoutCurrentFlowNodeInput[] | ConversationUncheckedCreateWithoutCurrentFlowNodeInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutCurrentFlowNodeInput | ConversationCreateOrConnectWithoutCurrentFlowNodeInput[]
+    createMany?: ConversationCreateManyCurrentFlowNodeInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type FlowExecutionEventCreateNestedManyWithoutFlowNodeInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput> | FlowExecutionEventCreateWithoutFlowNodeInput[] | FlowExecutionEventUncheckedCreateWithoutFlowNodeInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowNodeInput | FlowExecutionEventCreateOrConnectWithoutFlowNodeInput[]
+    createMany?: FlowExecutionEventCreateManyFlowNodeInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
+  export type FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput = {
+    create?: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput> | FlowTransitionCreateWithoutFromNodeInput[] | FlowTransitionUncheckedCreateWithoutFromNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFromNodeInput | FlowTransitionCreateOrConnectWithoutFromNodeInput[]
+    createMany?: FlowTransitionCreateManyFromNodeInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput = {
+    create?: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput> | FlowTransitionCreateWithoutToNodeInput[] | FlowTransitionUncheckedCreateWithoutToNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutToNodeInput | FlowTransitionCreateOrConnectWithoutToNodeInput[]
+    createMany?: FlowTransitionCreateManyToNodeInputEnvelope
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+  }
+
+  export type ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput = {
+    create?: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput> | ConversationCreateWithoutCurrentFlowNodeInput[] | ConversationUncheckedCreateWithoutCurrentFlowNodeInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutCurrentFlowNodeInput | ConversationCreateOrConnectWithoutCurrentFlowNodeInput[]
+    createMany?: ConversationCreateManyCurrentFlowNodeInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput> | FlowExecutionEventCreateWithoutFlowNodeInput[] | FlowExecutionEventUncheckedCreateWithoutFlowNodeInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowNodeInput | FlowExecutionEventCreateOrConnectWithoutFlowNodeInput[]
+    createMany?: FlowExecutionEventCreateManyFlowNodeInputEnvelope
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
+  export type EnumFlowNodeTypeFieldUpdateOperationsInput = {
+    set?: $Enums.FlowNodeType
+  }
+
+  export type FlowRevisionUpdateOneRequiredWithoutNodesNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutNodesInput, FlowRevisionUncheckedCreateWithoutNodesInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutNodesInput
+    upsert?: FlowRevisionUpsertWithoutNodesInput
+    connect?: FlowRevisionWhereUniqueInput
+    update?: XOR<XOR<FlowRevisionUpdateToOneWithWhereWithoutNodesInput, FlowRevisionUpdateWithoutNodesInput>, FlowRevisionUncheckedUpdateWithoutNodesInput>
+  }
+
+  export type DepartmentUpdateOneWithoutFlowNodesNestedInput = {
+    create?: XOR<DepartmentCreateWithoutFlowNodesInput, DepartmentUncheckedCreateWithoutFlowNodesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutFlowNodesInput
+    upsert?: DepartmentUpsertWithoutFlowNodesInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutFlowNodesInput, DepartmentUpdateWithoutFlowNodesInput>, DepartmentUncheckedUpdateWithoutFlowNodesInput>
+  }
+
+  export type FlowTransitionUpdateManyWithoutFromNodeNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput> | FlowTransitionCreateWithoutFromNodeInput[] | FlowTransitionUncheckedCreateWithoutFromNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFromNodeInput | FlowTransitionCreateOrConnectWithoutFromNodeInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput | FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput[]
+    createMany?: FlowTransitionCreateManyFromNodeInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutFromNodeInput | FlowTransitionUpdateWithWhereUniqueWithoutFromNodeInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutFromNodeInput | FlowTransitionUpdateManyWithWhereWithoutFromNodeInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type FlowTransitionUpdateManyWithoutToNodeNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput> | FlowTransitionCreateWithoutToNodeInput[] | FlowTransitionUncheckedCreateWithoutToNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutToNodeInput | FlowTransitionCreateOrConnectWithoutToNodeInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutToNodeInput | FlowTransitionUpsertWithWhereUniqueWithoutToNodeInput[]
+    createMany?: FlowTransitionCreateManyToNodeInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutToNodeInput | FlowTransitionUpdateWithWhereUniqueWithoutToNodeInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutToNodeInput | FlowTransitionUpdateManyWithWhereWithoutToNodeInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type ConversationUpdateManyWithoutCurrentFlowNodeNestedInput = {
+    create?: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput> | ConversationCreateWithoutCurrentFlowNodeInput[] | ConversationUncheckedCreateWithoutCurrentFlowNodeInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutCurrentFlowNodeInput | ConversationCreateOrConnectWithoutCurrentFlowNodeInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutCurrentFlowNodeInput | ConversationUpsertWithWhereUniqueWithoutCurrentFlowNodeInput[]
+    createMany?: ConversationCreateManyCurrentFlowNodeInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutCurrentFlowNodeInput | ConversationUpdateWithWhereUniqueWithoutCurrentFlowNodeInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutCurrentFlowNodeInput | ConversationUpdateManyWithWhereWithoutCurrentFlowNodeInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput> | FlowExecutionEventCreateWithoutFlowNodeInput[] | FlowExecutionEventUncheckedCreateWithoutFlowNodeInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowNodeInput | FlowExecutionEventCreateOrConnectWithoutFlowNodeInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutFlowNodeInput | FlowExecutionEventUpsertWithWhereUniqueWithoutFlowNodeInput[]
+    createMany?: FlowExecutionEventCreateManyFlowNodeInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutFlowNodeInput | FlowExecutionEventUpdateWithWhereUniqueWithoutFlowNodeInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutFlowNodeInput | FlowExecutionEventUpdateManyWithWhereWithoutFlowNodeInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput> | FlowTransitionCreateWithoutFromNodeInput[] | FlowTransitionUncheckedCreateWithoutFromNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutFromNodeInput | FlowTransitionCreateOrConnectWithoutFromNodeInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput | FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput[]
+    createMany?: FlowTransitionCreateManyFromNodeInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutFromNodeInput | FlowTransitionUpdateWithWhereUniqueWithoutFromNodeInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutFromNodeInput | FlowTransitionUpdateManyWithWhereWithoutFromNodeInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput = {
+    create?: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput> | FlowTransitionCreateWithoutToNodeInput[] | FlowTransitionUncheckedCreateWithoutToNodeInput[]
+    connectOrCreate?: FlowTransitionCreateOrConnectWithoutToNodeInput | FlowTransitionCreateOrConnectWithoutToNodeInput[]
+    upsert?: FlowTransitionUpsertWithWhereUniqueWithoutToNodeInput | FlowTransitionUpsertWithWhereUniqueWithoutToNodeInput[]
+    createMany?: FlowTransitionCreateManyToNodeInputEnvelope
+    set?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    disconnect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    delete?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    connect?: FlowTransitionWhereUniqueInput | FlowTransitionWhereUniqueInput[]
+    update?: FlowTransitionUpdateWithWhereUniqueWithoutToNodeInput | FlowTransitionUpdateWithWhereUniqueWithoutToNodeInput[]
+    updateMany?: FlowTransitionUpdateManyWithWhereWithoutToNodeInput | FlowTransitionUpdateManyWithWhereWithoutToNodeInput[]
+    deleteMany?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput = {
+    create?: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput> | ConversationCreateWithoutCurrentFlowNodeInput[] | ConversationUncheckedCreateWithoutCurrentFlowNodeInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutCurrentFlowNodeInput | ConversationCreateOrConnectWithoutCurrentFlowNodeInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutCurrentFlowNodeInput | ConversationUpsertWithWhereUniqueWithoutCurrentFlowNodeInput[]
+    createMany?: ConversationCreateManyCurrentFlowNodeInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutCurrentFlowNodeInput | ConversationUpdateWithWhereUniqueWithoutCurrentFlowNodeInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutCurrentFlowNodeInput | ConversationUpdateManyWithWhereWithoutCurrentFlowNodeInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput = {
+    create?: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput> | FlowExecutionEventCreateWithoutFlowNodeInput[] | FlowExecutionEventUncheckedCreateWithoutFlowNodeInput[]
+    connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutFlowNodeInput | FlowExecutionEventCreateOrConnectWithoutFlowNodeInput[]
+    upsert?: FlowExecutionEventUpsertWithWhereUniqueWithoutFlowNodeInput | FlowExecutionEventUpsertWithWhereUniqueWithoutFlowNodeInput[]
+    createMany?: FlowExecutionEventCreateManyFlowNodeInputEnvelope
+    set?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    disconnect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    delete?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+    update?: FlowExecutionEventUpdateWithWhereUniqueWithoutFlowNodeInput | FlowExecutionEventUpdateWithWhereUniqueWithoutFlowNodeInput[]
+    updateMany?: FlowExecutionEventUpdateManyWithWhereWithoutFlowNodeInput | FlowExecutionEventUpdateManyWithWhereWithoutFlowNodeInput[]
+    deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+  }
+
+  export type FlowRevisionCreateNestedOneWithoutTransitionsInput = {
+    create?: XOR<FlowRevisionCreateWithoutTransitionsInput, FlowRevisionUncheckedCreateWithoutTransitionsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutTransitionsInput
+    connect?: FlowRevisionWhereUniqueInput
+  }
+
+  export type FlowNodeCreateNestedOneWithoutOutgoingInput = {
+    create?: XOR<FlowNodeCreateWithoutOutgoingInput, FlowNodeUncheckedCreateWithoutOutgoingInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutOutgoingInput
+    connect?: FlowNodeWhereUniqueInput
+  }
+
+  export type FlowNodeCreateNestedOneWithoutIncomingInput = {
+    create?: XOR<FlowNodeCreateWithoutIncomingInput, FlowNodeUncheckedCreateWithoutIncomingInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutIncomingInput
+    connect?: FlowNodeWhereUniqueInput
+  }
+
+  export type FlowRevisionUpdateOneRequiredWithoutTransitionsNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutTransitionsInput, FlowRevisionUncheckedCreateWithoutTransitionsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutTransitionsInput
+    upsert?: FlowRevisionUpsertWithoutTransitionsInput
+    connect?: FlowRevisionWhereUniqueInput
+    update?: XOR<XOR<FlowRevisionUpdateToOneWithWhereWithoutTransitionsInput, FlowRevisionUpdateWithoutTransitionsInput>, FlowRevisionUncheckedUpdateWithoutTransitionsInput>
+  }
+
+  export type FlowNodeUpdateOneRequiredWithoutOutgoingNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutOutgoingInput, FlowNodeUncheckedCreateWithoutOutgoingInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutOutgoingInput
+    upsert?: FlowNodeUpsertWithoutOutgoingInput
+    connect?: FlowNodeWhereUniqueInput
+    update?: XOR<XOR<FlowNodeUpdateToOneWithWhereWithoutOutgoingInput, FlowNodeUpdateWithoutOutgoingInput>, FlowNodeUncheckedUpdateWithoutOutgoingInput>
+  }
+
+  export type FlowNodeUpdateOneRequiredWithoutIncomingNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutIncomingInput, FlowNodeUncheckedCreateWithoutIncomingInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutIncomingInput
+    upsert?: FlowNodeUpsertWithoutIncomingInput
+    connect?: FlowNodeWhereUniqueInput
+    update?: XOR<XOR<FlowNodeUpdateToOneWithWhereWithoutIncomingInput, FlowNodeUpdateWithoutIncomingInput>, FlowNodeUncheckedUpdateWithoutIncomingInput>
+  }
+
+  export type ConversationCreateNestedOneWithoutFlowEventsInput = {
+    create?: XOR<ConversationCreateWithoutFlowEventsInput, ConversationUncheckedCreateWithoutFlowEventsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowEventsInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type FlowRevisionCreateNestedOneWithoutExecutionEventsInput = {
+    create?: XOR<FlowRevisionCreateWithoutExecutionEventsInput, FlowRevisionUncheckedCreateWithoutExecutionEventsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutExecutionEventsInput
+    connect?: FlowRevisionWhereUniqueInput
+  }
+
+  export type FlowNodeCreateNestedOneWithoutExecutionEventsInput = {
+    create?: XOR<FlowNodeCreateWithoutExecutionEventsInput, FlowNodeUncheckedCreateWithoutExecutionEventsInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutExecutionEventsInput
+    connect?: FlowNodeWhereUniqueInput
+  }
+
+  export type ConversationUpdateOneRequiredWithoutFlowEventsNestedInput = {
+    create?: XOR<ConversationCreateWithoutFlowEventsInput, ConversationUncheckedCreateWithoutFlowEventsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutFlowEventsInput
+    upsert?: ConversationUpsertWithoutFlowEventsInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutFlowEventsInput, ConversationUpdateWithoutFlowEventsInput>, ConversationUncheckedUpdateWithoutFlowEventsInput>
+  }
+
+  export type FlowRevisionUpdateOneRequiredWithoutExecutionEventsNestedInput = {
+    create?: XOR<FlowRevisionCreateWithoutExecutionEventsInput, FlowRevisionUncheckedCreateWithoutExecutionEventsInput>
+    connectOrCreate?: FlowRevisionCreateOrConnectWithoutExecutionEventsInput
+    upsert?: FlowRevisionUpsertWithoutExecutionEventsInput
+    connect?: FlowRevisionWhereUniqueInput
+    update?: XOR<XOR<FlowRevisionUpdateToOneWithWhereWithoutExecutionEventsInput, FlowRevisionUpdateWithoutExecutionEventsInput>, FlowRevisionUncheckedUpdateWithoutExecutionEventsInput>
+  }
+
+  export type FlowNodeUpdateOneWithoutExecutionEventsNestedInput = {
+    create?: XOR<FlowNodeCreateWithoutExecutionEventsInput, FlowNodeUncheckedCreateWithoutExecutionEventsInput>
+    connectOrCreate?: FlowNodeCreateOrConnectWithoutExecutionEventsInput
+    upsert?: FlowNodeUpsertWithoutExecutionEventsInput
+    disconnect?: FlowNodeWhereInput | boolean
+    delete?: FlowNodeWhereInput | boolean
+    connect?: FlowNodeWhereUniqueInput
+    update?: XOR<XOR<FlowNodeUpdateToOneWithWhereWithoutExecutionEventsInput, FlowNodeUpdateWithoutExecutionEventsInput>, FlowNodeUncheckedUpdateWithoutExecutionEventsInput>
   }
 
   export type DepartmentCreateNestedOneWithoutShortcutsInput = {
@@ -16412,6 +23270,28 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
@@ -16449,6 +23329,40 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumFlowRevisionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowRevisionStatus | EnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowRevisionStatusFilter<$PrismaModel> | $Enums.FlowRevisionStatus
+  }
+
+  export type NestedEnumFlowRevisionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowRevisionStatus | EnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowRevisionStatusWithAggregatesFilter<$PrismaModel> | $Enums.FlowRevisionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFlowRevisionStatusFilter<$PrismaModel>
+    _max?: NestedEnumFlowRevisionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFlowNodeTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowNodeType | EnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowNodeTypeFilter<$PrismaModel> | $Enums.FlowNodeType
+  }
+
+  export type NestedEnumFlowNodeTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FlowNodeType | EnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FlowNodeType[] | ListEnumFlowNodeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFlowNodeTypeWithAggregatesFilter<$PrismaModel> | $Enums.FlowNodeType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFlowNodeTypeFilter<$PrismaModel>
+    _max?: NestedEnumFlowNodeTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumShortcutTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ShortcutType | EnumShortcutTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ShortcutType[] | ListEnumShortcutTypeFieldRefInput<$PrismaModel>
@@ -16481,28 +23395,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumShortcutScopeFilter<$PrismaModel>
     _max?: NestedEnumShortcutScopeFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type ProcedureCreateWithoutDepartmentInput = {
@@ -16544,6 +23436,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutDepartmentInput = {
@@ -16561,6 +23454,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutDepartmentInput = {
@@ -16577,11 +23471,15 @@ export namespace Prisma {
     id?: string
     status?: string
     currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutDepartmentInput = {
@@ -16590,9 +23488,13 @@ export namespace Prisma {
     status?: string
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutDepartmentInput = {
@@ -16646,6 +23548,46 @@ export namespace Prisma {
 
   export type ShortcutCreateManyDepartmentInputEnvelope = {
     data: ShortcutCreateManyDepartmentInput | ShortcutCreateManyDepartmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowNodeCreateWithoutDepartmentInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutDepartmentInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutDepartmentInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type FlowNodeCreateManyDepartmentInputEnvelope = {
+    data: FlowNodeCreateManyDepartmentInput | FlowNodeCreateManyDepartmentInput[]
     skipDuplicates?: boolean
   }
 
@@ -16733,6 +23675,9 @@ export namespace Prisma {
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
     currentStep?: StringNullableFilter<"Conversation"> | string | null
+    flowRevisionId?: StringNullableFilter<"Conversation"> | string | null
+    currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
+    flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
   }
@@ -16773,6 +23718,37 @@ export namespace Prisma {
     archivedAt?: DateTimeNullableFilter<"Shortcut"> | Date | string | null
   }
 
+  export type FlowNodeUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: FlowNodeWhereUniqueInput
+    update: XOR<FlowNodeUpdateWithoutDepartmentInput, FlowNodeUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<FlowNodeCreateWithoutDepartmentInput, FlowNodeUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: FlowNodeWhereUniqueInput
+    data: XOR<FlowNodeUpdateWithoutDepartmentInput, FlowNodeUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type FlowNodeUpdateManyWithWhereWithoutDepartmentInput = {
+    where: FlowNodeScalarWhereInput
+    data: XOR<FlowNodeUpdateManyMutationInput, FlowNodeUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
+  export type FlowNodeScalarWhereInput = {
+    AND?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+    OR?: FlowNodeScalarWhereInput[]
+    NOT?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+    id?: StringFilter<"FlowNode"> | string
+    stableKey?: StringFilter<"FlowNode"> | string
+    flowRevisionId?: StringFilter<"FlowNode"> | string
+    type?: EnumFlowNodeTypeFilter<"FlowNode"> | $Enums.FlowNodeType
+    name?: StringFilter<"FlowNode"> | string
+    content?: StringFilter<"FlowNode"> | string
+    sortOrder?: IntFilter<"FlowNode"> | number
+    config?: JsonNullableFilter<"FlowNode">
+    departmentId?: StringNullableFilter<"FlowNode"> | string | null
+  }
+
   export type DepartmentCreateWithoutProceduresInput = {
     id?: string
     name: string
@@ -16781,6 +23757,7 @@ export namespace Prisma {
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutProceduresInput = {
@@ -16791,6 +23768,7 @@ export namespace Prisma {
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutProceduresInput = {
@@ -16817,6 +23795,7 @@ export namespace Prisma {
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutProceduresInput = {
@@ -16827,6 +23806,7 @@ export namespace Prisma {
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentCreateWithoutAgentsInput = {
@@ -16837,6 +23817,7 @@ export namespace Prisma {
     procedures?: ProcedureCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutAgentsInput = {
@@ -16847,6 +23828,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutAgentsInput = {
@@ -16858,11 +23840,15 @@ export namespace Prisma {
     id?: string
     status?: string
     currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignedAgentInput = {
@@ -16871,9 +23857,13 @@ export namespace Prisma {
     status?: string
     departmentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutAssignedAgentInput = {
@@ -17074,6 +24064,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FlowRevisionCreateWithoutPublishedByInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutPublishedByInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutPublishedByInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput>
+  }
+
+  export type FlowRevisionCreateManyPublishedByInputEnvelope = {
+    data: FlowRevisionCreateManyPublishedByInput | FlowRevisionCreateManyPublishedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DepartmentUpsertWithoutAgentsInput = {
     update: XOR<DepartmentUpdateWithoutAgentsInput, DepartmentUncheckedUpdateWithoutAgentsInput>
     create: XOR<DepartmentCreateWithoutAgentsInput, DepartmentUncheckedCreateWithoutAgentsInput>
@@ -17093,6 +24125,7 @@ export namespace Prisma {
     procedures?: ProcedureUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutAgentsInput = {
@@ -17103,6 +24136,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type ConversationUpsertWithWhereUniqueWithoutAssignedAgentInput = {
@@ -17227,15 +24261,51 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ShortcutAudit"> | Date | string
   }
 
+  export type FlowRevisionUpsertWithWhereUniqueWithoutPublishedByInput = {
+    where: FlowRevisionWhereUniqueInput
+    update: XOR<FlowRevisionUpdateWithoutPublishedByInput, FlowRevisionUncheckedUpdateWithoutPublishedByInput>
+    create: XOR<FlowRevisionCreateWithoutPublishedByInput, FlowRevisionUncheckedCreateWithoutPublishedByInput>
+  }
+
+  export type FlowRevisionUpdateWithWhereUniqueWithoutPublishedByInput = {
+    where: FlowRevisionWhereUniqueInput
+    data: XOR<FlowRevisionUpdateWithoutPublishedByInput, FlowRevisionUncheckedUpdateWithoutPublishedByInput>
+  }
+
+  export type FlowRevisionUpdateManyWithWhereWithoutPublishedByInput = {
+    where: FlowRevisionScalarWhereInput
+    data: XOR<FlowRevisionUpdateManyMutationInput, FlowRevisionUncheckedUpdateManyWithoutPublishedByInput>
+  }
+
+  export type FlowRevisionScalarWhereInput = {
+    AND?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+    OR?: FlowRevisionScalarWhereInput[]
+    NOT?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+    id?: StringFilter<"FlowRevision"> | string
+    flowDefinitionId?: StringFilter<"FlowRevision"> | string
+    version?: IntFilter<"FlowRevision"> | number
+    status?: EnumFlowRevisionStatusFilter<"FlowRevision"> | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFilter<"FlowRevision"> | number
+    revision?: IntFilter<"FlowRevision"> | number
+    publishedAt?: DateTimeNullableFilter<"FlowRevision"> | Date | string | null
+    publishedById?: StringNullableFilter<"FlowRevision"> | string | null
+    createdAt?: DateTimeFilter<"FlowRevision"> | Date | string
+    updatedAt?: DateTimeFilter<"FlowRevision"> | Date | string
+  }
+
   export type ConversationCreateWithoutContactInput = {
     id?: string
     status?: string
     currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutContactInput = {
@@ -17244,9 +24314,13 @@ export namespace Prisma {
     departmentId?: string | null
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutContactInput = {
@@ -17302,6 +24376,7 @@ export namespace Prisma {
     procedures?: ProcedureCreateNestedManyWithoutDepartmentInput
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutConversationsInput = {
@@ -17312,6 +24387,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedCreateNestedManyWithoutDepartmentInput
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutConversationsInput = {
@@ -17334,6 +24410,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutConversationsInput = {
@@ -17351,6 +24428,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutConversationsInput = {
@@ -17385,6 +24463,108 @@ export namespace Prisma {
 
   export type MessageCreateManyConversationInputEnvelope = {
     data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowRevisionCreateWithoutConversationsInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutConversationsInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutConversationsInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutConversationsInput, FlowRevisionUncheckedCreateWithoutConversationsInput>
+  }
+
+  export type FlowNodeCreateWithoutConversationsInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutConversationsInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutConversationsInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutConversationsInput, FlowNodeUncheckedCreateWithoutConversationsInput>
+  }
+
+  export type FlowExecutionEventCreateWithoutConversationInput = {
+    id?: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    flowRevision: FlowRevisionCreateNestedOneWithoutExecutionEventsInput
+    flowNode?: FlowNodeCreateNestedOneWithoutExecutionEventsInput
+  }
+
+  export type FlowExecutionEventUncheckedCreateWithoutConversationInput = {
+    id?: string
+    flowRevisionId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowExecutionEventCreateOrConnectWithoutConversationInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    create: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput>
+  }
+
+  export type FlowExecutionEventCreateManyConversationInputEnvelope = {
+    data: FlowExecutionEventCreateManyConversationInput | FlowExecutionEventCreateManyConversationInput[]
     skipDuplicates?: boolean
   }
 
@@ -17432,6 +24612,7 @@ export namespace Prisma {
     procedures?: ProcedureUpdateManyWithoutDepartmentNestedInput
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutConversationsInput = {
@@ -17442,6 +24623,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type AgentUpsertWithoutConversationsInput = {
@@ -17470,6 +24652,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutConversationsInput = {
@@ -17487,6 +24670,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -17505,15 +24689,133 @@ export namespace Prisma {
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type FlowRevisionUpsertWithoutConversationsInput = {
+    update: XOR<FlowRevisionUpdateWithoutConversationsInput, FlowRevisionUncheckedUpdateWithoutConversationsInput>
+    create: XOR<FlowRevisionCreateWithoutConversationsInput, FlowRevisionUncheckedCreateWithoutConversationsInput>
+    where?: FlowRevisionWhereInput
+  }
+
+  export type FlowRevisionUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: FlowRevisionWhereInput
+    data: XOR<FlowRevisionUpdateWithoutConversationsInput, FlowRevisionUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type FlowRevisionUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowNodeUpsertWithoutConversationsInput = {
+    update: XOR<FlowNodeUpdateWithoutConversationsInput, FlowNodeUncheckedUpdateWithoutConversationsInput>
+    create: XOR<FlowNodeCreateWithoutConversationsInput, FlowNodeUncheckedCreateWithoutConversationsInput>
+    where?: FlowNodeWhereInput
+  }
+
+  export type FlowNodeUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: FlowNodeWhereInput
+    data: XOR<FlowNodeUpdateWithoutConversationsInput, FlowNodeUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type FlowNodeUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowExecutionEventUpsertWithWhereUniqueWithoutConversationInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    update: XOR<FlowExecutionEventUpdateWithoutConversationInput, FlowExecutionEventUncheckedUpdateWithoutConversationInput>
+    create: XOR<FlowExecutionEventCreateWithoutConversationInput, FlowExecutionEventUncheckedCreateWithoutConversationInput>
+  }
+
+  export type FlowExecutionEventUpdateWithWhereUniqueWithoutConversationInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    data: XOR<FlowExecutionEventUpdateWithoutConversationInput, FlowExecutionEventUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type FlowExecutionEventUpdateManyWithWhereWithoutConversationInput = {
+    where: FlowExecutionEventScalarWhereInput
+    data: XOR<FlowExecutionEventUpdateManyMutationInput, FlowExecutionEventUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type FlowExecutionEventScalarWhereInput = {
+    AND?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+    OR?: FlowExecutionEventScalarWhereInput[]
+    NOT?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
+    id?: StringFilter<"FlowExecutionEvent"> | string
+    conversationId?: StringFilter<"FlowExecutionEvent"> | string
+    flowRevisionId?: StringFilter<"FlowExecutionEvent"> | string
+    flowNodeId?: StringNullableFilter<"FlowExecutionEvent"> | string | null
+    externalEventId?: StringNullableFilter<"FlowExecutionEvent"> | string | null
+    type?: StringFilter<"FlowExecutionEvent"> | string
+    metadata?: JsonNullableFilter<"FlowExecutionEvent">
+    createdAt?: DateTimeFilter<"FlowExecutionEvent"> | Date | string
+  }
+
   export type ConversationCreateWithoutMessagesInput = {
     id?: string
     status?: string
     currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -17523,8 +24825,12 @@ export namespace Prisma {
     departmentId?: string | null
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -17547,6 +24853,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutMessagesInput = {
@@ -17564,6 +24871,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutMessagesInput = {
@@ -17586,11 +24894,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -17600,8 +24912,12 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentUpsertWithoutMessagesInput = {
@@ -17630,6 +24946,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutMessagesInput = {
@@ -17647,6 +24964,1214 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+  }
+
+  export type FlowRevisionCreateWithoutFlowDefinitionInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutFlowDefinitionInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutFlowDefinitionInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput>
+  }
+
+  export type FlowRevisionCreateManyFlowDefinitionInputEnvelope = {
+    data: FlowRevisionCreateManyFlowDefinitionInput | FlowRevisionCreateManyFlowDefinitionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowRevisionUpsertWithWhereUniqueWithoutFlowDefinitionInput = {
+    where: FlowRevisionWhereUniqueInput
+    update: XOR<FlowRevisionUpdateWithoutFlowDefinitionInput, FlowRevisionUncheckedUpdateWithoutFlowDefinitionInput>
+    create: XOR<FlowRevisionCreateWithoutFlowDefinitionInput, FlowRevisionUncheckedCreateWithoutFlowDefinitionInput>
+  }
+
+  export type FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput = {
+    where: FlowRevisionWhereUniqueInput
+    data: XOR<FlowRevisionUpdateWithoutFlowDefinitionInput, FlowRevisionUncheckedUpdateWithoutFlowDefinitionInput>
+  }
+
+  export type FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput = {
+    where: FlowRevisionScalarWhereInput
+    data: XOR<FlowRevisionUpdateManyMutationInput, FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionInput>
+  }
+
+  export type FlowDefinitionCreateWithoutRevisionsInput = {
+    id?: string
+    name: string
+    greeting: string
+    menuMessage: string
+    options: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
+  }
+
+  export type FlowDefinitionUncheckedCreateWithoutRevisionsInput = {
+    id?: string
+    name: string
+    greeting: string
+    menuMessage: string
+    options: JsonNullValueInput | InputJsonValue
+    updatedAt?: Date | string
+  }
+
+  export type FlowDefinitionCreateOrConnectWithoutRevisionsInput = {
+    where: FlowDefinitionWhereUniqueInput
+    create: XOR<FlowDefinitionCreateWithoutRevisionsInput, FlowDefinitionUncheckedCreateWithoutRevisionsInput>
+  }
+
+  export type AgentCreateWithoutPublishedFlowRevisionsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+  }
+
+  export type AgentUncheckedCreateWithoutPublishedFlowRevisionsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+  }
+
+  export type AgentCreateOrConnectWithoutPublishedFlowRevisionsInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutPublishedFlowRevisionsInput, AgentUncheckedCreateWithoutPublishedFlowRevisionsInput>
+  }
+
+  export type FlowNodeCreateWithoutFlowRevisionInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutFlowRevisionInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutFlowRevisionInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowNodeCreateManyFlowRevisionInputEnvelope = {
+    data: FlowNodeCreateManyFlowRevisionInput | FlowNodeCreateManyFlowRevisionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowTransitionCreateWithoutFlowRevisionInput = {
+    id?: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+    fromNode: FlowNodeCreateNestedOneWithoutOutgoingInput
+    toNode: FlowNodeCreateNestedOneWithoutIncomingInput
+  }
+
+  export type FlowTransitionUncheckedCreateWithoutFlowRevisionInput = {
+    id?: string
+    fromNodeId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionCreateOrConnectWithoutFlowRevisionInput = {
+    where: FlowTransitionWhereUniqueInput
+    create: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowTransitionCreateManyFlowRevisionInputEnvelope = {
+    data: FlowTransitionCreateManyFlowRevisionInput | FlowTransitionCreateManyFlowRevisionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationCreateWithoutFlowRevisionInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutFlowRevisionInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutFlowRevisionInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type ConversationCreateManyFlowRevisionInputEnvelope = {
+    data: ConversationCreateManyFlowRevisionInput | ConversationCreateManyFlowRevisionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowExecutionEventCreateWithoutFlowRevisionInput = {
+    id?: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutFlowEventsInput
+    flowNode?: FlowNodeCreateNestedOneWithoutExecutionEventsInput
+  }
+
+  export type FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput = {
+    id?: string
+    conversationId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowExecutionEventCreateOrConnectWithoutFlowRevisionInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    create: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowExecutionEventCreateManyFlowRevisionInputEnvelope = {
+    data: FlowExecutionEventCreateManyFlowRevisionInput | FlowExecutionEventCreateManyFlowRevisionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowDefinitionUpsertWithoutRevisionsInput = {
+    update: XOR<FlowDefinitionUpdateWithoutRevisionsInput, FlowDefinitionUncheckedUpdateWithoutRevisionsInput>
+    create: XOR<FlowDefinitionCreateWithoutRevisionsInput, FlowDefinitionUncheckedCreateWithoutRevisionsInput>
+    where?: FlowDefinitionWhereInput
+  }
+
+  export type FlowDefinitionUpdateToOneWithWhereWithoutRevisionsInput = {
+    where?: FlowDefinitionWhereInput
+    data: XOR<FlowDefinitionUpdateWithoutRevisionsInput, FlowDefinitionUncheckedUpdateWithoutRevisionsInput>
+  }
+
+  export type FlowDefinitionUpdateWithoutRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    greeting?: StringFieldUpdateOperationsInput | string
+    menuMessage?: StringFieldUpdateOperationsInput | string
+    options?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowDefinitionUncheckedUpdateWithoutRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    greeting?: StringFieldUpdateOperationsInput | string
+    menuMessage?: StringFieldUpdateOperationsInput | string
+    options?: JsonNullValueInput | InputJsonValue
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentUpsertWithoutPublishedFlowRevisionsInput = {
+    update: XOR<AgentUpdateWithoutPublishedFlowRevisionsInput, AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput>
+    create: XOR<AgentCreateWithoutPublishedFlowRevisionsInput, AgentUncheckedCreateWithoutPublishedFlowRevisionsInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutPublishedFlowRevisionsInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutPublishedFlowRevisionsInput, AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput>
+  }
+
+  export type AgentUpdateWithoutPublishedFlowRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+  }
+
+  export type FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowNodeWhereUniqueInput
+    update: XOR<FlowNodeUpdateWithoutFlowRevisionInput, FlowNodeUncheckedUpdateWithoutFlowRevisionInput>
+    create: XOR<FlowNodeCreateWithoutFlowRevisionInput, FlowNodeUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowNodeUpdateWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowNodeWhereUniqueInput
+    data: XOR<FlowNodeUpdateWithoutFlowRevisionInput, FlowNodeUncheckedUpdateWithoutFlowRevisionInput>
+  }
+
+  export type FlowNodeUpdateManyWithWhereWithoutFlowRevisionInput = {
+    where: FlowNodeScalarWhereInput
+    data: XOR<FlowNodeUpdateManyMutationInput, FlowNodeUncheckedUpdateManyWithoutFlowRevisionInput>
+  }
+
+  export type FlowTransitionUpsertWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowTransitionWhereUniqueInput
+    update: XOR<FlowTransitionUpdateWithoutFlowRevisionInput, FlowTransitionUncheckedUpdateWithoutFlowRevisionInput>
+    create: XOR<FlowTransitionCreateWithoutFlowRevisionInput, FlowTransitionUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowTransitionUpdateWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowTransitionWhereUniqueInput
+    data: XOR<FlowTransitionUpdateWithoutFlowRevisionInput, FlowTransitionUncheckedUpdateWithoutFlowRevisionInput>
+  }
+
+  export type FlowTransitionUpdateManyWithWhereWithoutFlowRevisionInput = {
+    where: FlowTransitionScalarWhereInput
+    data: XOR<FlowTransitionUpdateManyMutationInput, FlowTransitionUncheckedUpdateManyWithoutFlowRevisionInput>
+  }
+
+  export type FlowTransitionScalarWhereInput = {
+    AND?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+    OR?: FlowTransitionScalarWhereInput[]
+    NOT?: FlowTransitionScalarWhereInput | FlowTransitionScalarWhereInput[]
+    id?: StringFilter<"FlowTransition"> | string
+    flowRevisionId?: StringFilter<"FlowTransition"> | string
+    fromNodeId?: StringFilter<"FlowTransition"> | string
+    toNodeId?: StringFilter<"FlowTransition"> | string
+    optionKey?: StringNullableFilter<"FlowTransition"> | string | null
+    label?: StringNullableFilter<"FlowTransition"> | string | null
+    sortOrder?: IntFilter<"FlowTransition"> | number
+  }
+
+  export type ConversationUpsertWithWhereUniqueWithoutFlowRevisionInput = {
+    where: ConversationWhereUniqueInput
+    update: XOR<ConversationUpdateWithoutFlowRevisionInput, ConversationUncheckedUpdateWithoutFlowRevisionInput>
+    create: XOR<ConversationCreateWithoutFlowRevisionInput, ConversationUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type ConversationUpdateWithWhereUniqueWithoutFlowRevisionInput = {
+    where: ConversationWhereUniqueInput
+    data: XOR<ConversationUpdateWithoutFlowRevisionInput, ConversationUncheckedUpdateWithoutFlowRevisionInput>
+  }
+
+  export type ConversationUpdateManyWithWhereWithoutFlowRevisionInput = {
+    where: ConversationScalarWhereInput
+    data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyWithoutFlowRevisionInput>
+  }
+
+  export type FlowExecutionEventUpsertWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    update: XOR<FlowExecutionEventUpdateWithoutFlowRevisionInput, FlowExecutionEventUncheckedUpdateWithoutFlowRevisionInput>
+    create: XOR<FlowExecutionEventCreateWithoutFlowRevisionInput, FlowExecutionEventUncheckedCreateWithoutFlowRevisionInput>
+  }
+
+  export type FlowExecutionEventUpdateWithWhereUniqueWithoutFlowRevisionInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    data: XOR<FlowExecutionEventUpdateWithoutFlowRevisionInput, FlowExecutionEventUncheckedUpdateWithoutFlowRevisionInput>
+  }
+
+  export type FlowExecutionEventUpdateManyWithWhereWithoutFlowRevisionInput = {
+    where: FlowExecutionEventScalarWhereInput
+    data: XOR<FlowExecutionEventUpdateManyMutationInput, FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionInput>
+  }
+
+  export type FlowRevisionCreateWithoutNodesInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutNodesInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutNodesInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutNodesInput, FlowRevisionUncheckedCreateWithoutNodesInput>
+  }
+
+  export type DepartmentCreateWithoutFlowNodesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    procedures?: ProcedureCreateNestedManyWithoutDepartmentInput
+    agents?: AgentCreateNestedManyWithoutDepartmentInput
+    conversations?: ConversationCreateNestedManyWithoutDepartmentInput
+    shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentUncheckedCreateWithoutFlowNodesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    procedures?: ProcedureUncheckedCreateNestedManyWithoutDepartmentInput
+    agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
+    shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentCreateOrConnectWithoutFlowNodesInput = {
+    where: DepartmentWhereUniqueInput
+    create: XOR<DepartmentCreateWithoutFlowNodesInput, DepartmentUncheckedCreateWithoutFlowNodesInput>
+  }
+
+  export type FlowTransitionCreateWithoutFromNodeInput = {
+    id?: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+    flowRevision: FlowRevisionCreateNestedOneWithoutTransitionsInput
+    toNode: FlowNodeCreateNestedOneWithoutIncomingInput
+  }
+
+  export type FlowTransitionUncheckedCreateWithoutFromNodeInput = {
+    id?: string
+    flowRevisionId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionCreateOrConnectWithoutFromNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    create: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput>
+  }
+
+  export type FlowTransitionCreateManyFromNodeInputEnvelope = {
+    data: FlowTransitionCreateManyFromNodeInput | FlowTransitionCreateManyFromNodeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowTransitionCreateWithoutToNodeInput = {
+    id?: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+    flowRevision: FlowRevisionCreateNestedOneWithoutTransitionsInput
+    fromNode: FlowNodeCreateNestedOneWithoutOutgoingInput
+  }
+
+  export type FlowTransitionUncheckedCreateWithoutToNodeInput = {
+    id?: string
+    flowRevisionId: string
+    fromNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionCreateOrConnectWithoutToNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    create: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput>
+  }
+
+  export type FlowTransitionCreateManyToNodeInputEnvelope = {
+    data: FlowTransitionCreateManyToNodeInput | FlowTransitionCreateManyToNodeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationCreateWithoutCurrentFlowNodeInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutCurrentFlowNodeInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutCurrentFlowNodeInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput>
+  }
+
+  export type ConversationCreateManyCurrentFlowNodeInputEnvelope = {
+    data: ConversationCreateManyCurrentFlowNodeInput | ConversationCreateManyCurrentFlowNodeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowExecutionEventCreateWithoutFlowNodeInput = {
+    id?: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutFlowEventsInput
+    flowRevision: FlowRevisionCreateNestedOneWithoutExecutionEventsInput
+  }
+
+  export type FlowExecutionEventUncheckedCreateWithoutFlowNodeInput = {
+    id?: string
+    conversationId: string
+    flowRevisionId: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowExecutionEventCreateOrConnectWithoutFlowNodeInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    create: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput>
+  }
+
+  export type FlowExecutionEventCreateManyFlowNodeInputEnvelope = {
+    data: FlowExecutionEventCreateManyFlowNodeInput | FlowExecutionEventCreateManyFlowNodeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowRevisionUpsertWithoutNodesInput = {
+    update: XOR<FlowRevisionUpdateWithoutNodesInput, FlowRevisionUncheckedUpdateWithoutNodesInput>
+    create: XOR<FlowRevisionCreateWithoutNodesInput, FlowRevisionUncheckedCreateWithoutNodesInput>
+    where?: FlowRevisionWhereInput
+  }
+
+  export type FlowRevisionUpdateToOneWithWhereWithoutNodesInput = {
+    where?: FlowRevisionWhereInput
+    data: XOR<FlowRevisionUpdateWithoutNodesInput, FlowRevisionUncheckedUpdateWithoutNodesInput>
+  }
+
+  export type FlowRevisionUpdateWithoutNodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutNodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type DepartmentUpsertWithoutFlowNodesInput = {
+    update: XOR<DepartmentUpdateWithoutFlowNodesInput, DepartmentUncheckedUpdateWithoutFlowNodesInput>
+    create: XOR<DepartmentCreateWithoutFlowNodesInput, DepartmentUncheckedCreateWithoutFlowNodesInput>
+    where?: DepartmentWhereInput
+  }
+
+  export type DepartmentUpdateToOneWithWhereWithoutFlowNodesInput = {
+    where?: DepartmentWhereInput
+    data: XOR<DepartmentUpdateWithoutFlowNodesInput, DepartmentUncheckedUpdateWithoutFlowNodesInput>
+  }
+
+  export type DepartmentUpdateWithoutFlowNodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    procedures?: ProcedureUpdateManyWithoutDepartmentNestedInput
+    agents?: AgentUpdateManyWithoutDepartmentNestedInput
+    conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
+    shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type DepartmentUncheckedUpdateWithoutFlowNodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    procedures?: ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput
+    agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
+    shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    update: XOR<FlowTransitionUpdateWithoutFromNodeInput, FlowTransitionUncheckedUpdateWithoutFromNodeInput>
+    create: XOR<FlowTransitionCreateWithoutFromNodeInput, FlowTransitionUncheckedCreateWithoutFromNodeInput>
+  }
+
+  export type FlowTransitionUpdateWithWhereUniqueWithoutFromNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    data: XOR<FlowTransitionUpdateWithoutFromNodeInput, FlowTransitionUncheckedUpdateWithoutFromNodeInput>
+  }
+
+  export type FlowTransitionUpdateManyWithWhereWithoutFromNodeInput = {
+    where: FlowTransitionScalarWhereInput
+    data: XOR<FlowTransitionUpdateManyMutationInput, FlowTransitionUncheckedUpdateManyWithoutFromNodeInput>
+  }
+
+  export type FlowTransitionUpsertWithWhereUniqueWithoutToNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    update: XOR<FlowTransitionUpdateWithoutToNodeInput, FlowTransitionUncheckedUpdateWithoutToNodeInput>
+    create: XOR<FlowTransitionCreateWithoutToNodeInput, FlowTransitionUncheckedCreateWithoutToNodeInput>
+  }
+
+  export type FlowTransitionUpdateWithWhereUniqueWithoutToNodeInput = {
+    where: FlowTransitionWhereUniqueInput
+    data: XOR<FlowTransitionUpdateWithoutToNodeInput, FlowTransitionUncheckedUpdateWithoutToNodeInput>
+  }
+
+  export type FlowTransitionUpdateManyWithWhereWithoutToNodeInput = {
+    where: FlowTransitionScalarWhereInput
+    data: XOR<FlowTransitionUpdateManyMutationInput, FlowTransitionUncheckedUpdateManyWithoutToNodeInput>
+  }
+
+  export type ConversationUpsertWithWhereUniqueWithoutCurrentFlowNodeInput = {
+    where: ConversationWhereUniqueInput
+    update: XOR<ConversationUpdateWithoutCurrentFlowNodeInput, ConversationUncheckedUpdateWithoutCurrentFlowNodeInput>
+    create: XOR<ConversationCreateWithoutCurrentFlowNodeInput, ConversationUncheckedCreateWithoutCurrentFlowNodeInput>
+  }
+
+  export type ConversationUpdateWithWhereUniqueWithoutCurrentFlowNodeInput = {
+    where: ConversationWhereUniqueInput
+    data: XOR<ConversationUpdateWithoutCurrentFlowNodeInput, ConversationUncheckedUpdateWithoutCurrentFlowNodeInput>
+  }
+
+  export type ConversationUpdateManyWithWhereWithoutCurrentFlowNodeInput = {
+    where: ConversationScalarWhereInput
+    data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput>
+  }
+
+  export type FlowExecutionEventUpsertWithWhereUniqueWithoutFlowNodeInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    update: XOR<FlowExecutionEventUpdateWithoutFlowNodeInput, FlowExecutionEventUncheckedUpdateWithoutFlowNodeInput>
+    create: XOR<FlowExecutionEventCreateWithoutFlowNodeInput, FlowExecutionEventUncheckedCreateWithoutFlowNodeInput>
+  }
+
+  export type FlowExecutionEventUpdateWithWhereUniqueWithoutFlowNodeInput = {
+    where: FlowExecutionEventWhereUniqueInput
+    data: XOR<FlowExecutionEventUpdateWithoutFlowNodeInput, FlowExecutionEventUncheckedUpdateWithoutFlowNodeInput>
+  }
+
+  export type FlowExecutionEventUpdateManyWithWhereWithoutFlowNodeInput = {
+    where: FlowExecutionEventScalarWhereInput
+    data: XOR<FlowExecutionEventUpdateManyMutationInput, FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeInput>
+  }
+
+  export type FlowRevisionCreateWithoutTransitionsInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutTransitionsInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutTransitionsInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutTransitionsInput, FlowRevisionUncheckedCreateWithoutTransitionsInput>
+  }
+
+  export type FlowNodeCreateWithoutOutgoingInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutOutgoingInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutOutgoingInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutOutgoingInput, FlowNodeUncheckedCreateWithoutOutgoingInput>
+  }
+
+  export type FlowNodeCreateWithoutIncomingInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutIncomingInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+    executionEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutIncomingInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutIncomingInput, FlowNodeUncheckedCreateWithoutIncomingInput>
+  }
+
+  export type FlowRevisionUpsertWithoutTransitionsInput = {
+    update: XOR<FlowRevisionUpdateWithoutTransitionsInput, FlowRevisionUncheckedUpdateWithoutTransitionsInput>
+    create: XOR<FlowRevisionCreateWithoutTransitionsInput, FlowRevisionUncheckedCreateWithoutTransitionsInput>
+    where?: FlowRevisionWhereInput
+  }
+
+  export type FlowRevisionUpdateToOneWithWhereWithoutTransitionsInput = {
+    where?: FlowRevisionWhereInput
+    data: XOR<FlowRevisionUpdateWithoutTransitionsInput, FlowRevisionUncheckedUpdateWithoutTransitionsInput>
+  }
+
+  export type FlowRevisionUpdateWithoutTransitionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutTransitionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowNodeUpsertWithoutOutgoingInput = {
+    update: XOR<FlowNodeUpdateWithoutOutgoingInput, FlowNodeUncheckedUpdateWithoutOutgoingInput>
+    create: XOR<FlowNodeCreateWithoutOutgoingInput, FlowNodeUncheckedCreateWithoutOutgoingInput>
+    where?: FlowNodeWhereInput
+  }
+
+  export type FlowNodeUpdateToOneWithWhereWithoutOutgoingInput = {
+    where?: FlowNodeWhereInput
+    data: XOR<FlowNodeUpdateWithoutOutgoingInput, FlowNodeUncheckedUpdateWithoutOutgoingInput>
+  }
+
+  export type FlowNodeUpdateWithoutOutgoingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutOutgoingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUpsertWithoutIncomingInput = {
+    update: XOR<FlowNodeUpdateWithoutIncomingInput, FlowNodeUncheckedUpdateWithoutIncomingInput>
+    create: XOR<FlowNodeCreateWithoutIncomingInput, FlowNodeUncheckedCreateWithoutIncomingInput>
+    where?: FlowNodeWhereInput
+  }
+
+  export type FlowNodeUpdateToOneWithWhereWithoutIncomingInput = {
+    where?: FlowNodeWhereInput
+    data: XOR<FlowNodeUpdateWithoutIncomingInput, FlowNodeUncheckedUpdateWithoutIncomingInput>
+  }
+
+  export type FlowNodeUpdateWithoutIncomingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutIncomingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type ConversationCreateWithoutFlowEventsInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+  }
+
+  export type ConversationUncheckedCreateWithoutFlowEventsInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutFlowEventsInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutFlowEventsInput, ConversationUncheckedCreateWithoutFlowEventsInput>
+  }
+
+  export type FlowRevisionCreateWithoutExecutionEventsInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    flowDefinition: FlowDefinitionCreateNestedOneWithoutRevisionsInput
+    publishedBy?: AgentCreateNestedOneWithoutPublishedFlowRevisionsInput
+    nodes?: FlowNodeCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionUncheckedCreateWithoutExecutionEventsInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: FlowNodeUncheckedCreateNestedManyWithoutFlowRevisionInput
+    transitions?: FlowTransitionUncheckedCreateNestedManyWithoutFlowRevisionInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutFlowRevisionInput
+  }
+
+  export type FlowRevisionCreateOrConnectWithoutExecutionEventsInput = {
+    where: FlowRevisionWhereUniqueInput
+    create: XOR<FlowRevisionCreateWithoutExecutionEventsInput, FlowRevisionUncheckedCreateWithoutExecutionEventsInput>
+  }
+
+  export type FlowNodeCreateWithoutExecutionEventsInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision: FlowRevisionCreateNestedOneWithoutNodesInput
+    department?: DepartmentCreateNestedOneWithoutFlowNodesInput
+    outgoing?: FlowTransitionCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationCreateNestedManyWithoutCurrentFlowNodeInput
+  }
+
+  export type FlowNodeUncheckedCreateWithoutExecutionEventsInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+    outgoing?: FlowTransitionUncheckedCreateNestedManyWithoutFromNodeInput
+    incoming?: FlowTransitionUncheckedCreateNestedManyWithoutToNodeInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutCurrentFlowNodeInput
+  }
+
+  export type FlowNodeCreateOrConnectWithoutExecutionEventsInput = {
+    where: FlowNodeWhereUniqueInput
+    create: XOR<FlowNodeCreateWithoutExecutionEventsInput, FlowNodeUncheckedCreateWithoutExecutionEventsInput>
+  }
+
+  export type ConversationUpsertWithoutFlowEventsInput = {
+    update: XOR<ConversationUpdateWithoutFlowEventsInput, ConversationUncheckedUpdateWithoutFlowEventsInput>
+    create: XOR<ConversationCreateWithoutFlowEventsInput, ConversationUncheckedCreateWithoutFlowEventsInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutFlowEventsInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutFlowEventsInput, ConversationUncheckedUpdateWithoutFlowEventsInput>
+  }
+
+  export type ConversationUpdateWithoutFlowEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutFlowEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type FlowRevisionUpsertWithoutExecutionEventsInput = {
+    update: XOR<FlowRevisionUpdateWithoutExecutionEventsInput, FlowRevisionUncheckedUpdateWithoutExecutionEventsInput>
+    create: XOR<FlowRevisionCreateWithoutExecutionEventsInput, FlowRevisionUncheckedCreateWithoutExecutionEventsInput>
+    where?: FlowRevisionWhereInput
+  }
+
+  export type FlowRevisionUpdateToOneWithWhereWithoutExecutionEventsInput = {
+    where?: FlowRevisionWhereInput
+    data: XOR<FlowRevisionUpdateWithoutExecutionEventsInput, FlowRevisionUncheckedUpdateWithoutExecutionEventsInput>
+  }
+
+  export type FlowRevisionUpdateWithoutExecutionEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutExecutionEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowNodeUpsertWithoutExecutionEventsInput = {
+    update: XOR<FlowNodeUpdateWithoutExecutionEventsInput, FlowNodeUncheckedUpdateWithoutExecutionEventsInput>
+    create: XOR<FlowNodeCreateWithoutExecutionEventsInput, FlowNodeUncheckedCreateWithoutExecutionEventsInput>
+    where?: FlowNodeWhereInput
+  }
+
+  export type FlowNodeUpdateToOneWithWhereWithoutExecutionEventsInput = {
+    where?: FlowNodeWhereInput
+    data: XOR<FlowNodeUpdateWithoutExecutionEventsInput, FlowNodeUncheckedUpdateWithoutExecutionEventsInput>
+  }
+
+  export type FlowNodeUpdateWithoutExecutionEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutExecutionEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
   }
 
   export type DepartmentCreateWithoutShortcutsInput = {
@@ -17657,6 +26182,7 @@ export namespace Prisma {
     procedures?: ProcedureCreateNestedManyWithoutDepartmentInput
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutShortcutsInput = {
@@ -17667,6 +26193,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedCreateNestedManyWithoutDepartmentInput
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutShortcutsInput = {
@@ -17689,6 +26216,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutOwnedShortcutsInput = {
@@ -17706,6 +26234,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutOwnedShortcutsInput = {
@@ -17728,6 +26257,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutCreatedShortcutsInput = {
@@ -17745,6 +26275,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutCreatedShortcutsInput = {
@@ -17767,6 +26298,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutUpdatedShortcutsInput = {
@@ -17784,6 +26316,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutUpdatedShortcutsInput = {
@@ -17836,6 +26369,7 @@ export namespace Prisma {
     procedures?: ProcedureUpdateManyWithoutDepartmentNestedInput
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutShortcutsInput = {
@@ -17846,6 +26380,7 @@ export namespace Prisma {
     procedures?: ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type AgentUpsertWithoutOwnedShortcutsInput = {
@@ -17874,6 +26409,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutOwnedShortcutsInput = {
@@ -17891,6 +26427,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUpsertWithoutCreatedShortcutsInput = {
@@ -17919,6 +26456,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutCreatedShortcutsInput = {
@@ -17936,6 +26474,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUpsertWithoutUpdatedShortcutsInput = {
@@ -17964,6 +26503,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutUpdatedShortcutsInput = {
@@ -17981,6 +26521,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type ShortcutAuditUpsertWithWhereUniqueWithoutShortcutInput = {
@@ -18053,6 +26594,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentUncheckedCreateWithoutShortcutAuditsInput = {
@@ -18070,6 +26612,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
   }
 
   export type AgentCreateOrConnectWithoutShortcutAuditsInput = {
@@ -18148,6 +26691,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutShortcutAuditsInput = {
@@ -18165,6 +26709,7 @@ export namespace Prisma {
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type ProcedureCreateManyDepartmentInput = {
@@ -18191,6 +26736,9 @@ export namespace Prisma {
     status?: string
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
   }
@@ -18209,6 +26757,17 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     archivedAt?: Date | string | null
+  }
+
+  export type FlowNodeCreateManyDepartmentInput = {
+    id?: string
+    stableKey: string
+    flowRevisionId: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ProcedureUpdateWithoutDepartmentInput = {
@@ -18247,6 +26806,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutDepartmentInput = {
@@ -18264,6 +26824,7 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
   }
 
   export type AgentUncheckedUpdateManyWithoutDepartmentInput = {
@@ -18281,11 +26842,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutDepartmentInput = {
@@ -18294,9 +26859,13 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutDepartmentInput = {
@@ -18305,6 +26874,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -18359,12 +26931,56 @@ export namespace Prisma {
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type FlowNodeUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
   export type ConversationCreateManyAssignedAgentInput = {
     id?: string
     contactId: string
     status?: string
     departmentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
   }
@@ -18435,15 +27051,31 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type FlowRevisionCreateManyPublishedByInput = {
+    id?: string
+    flowDefinitionId: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ConversationUpdateWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignedAgentInput = {
@@ -18452,9 +27084,13 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentInput = {
@@ -18463,6 +27099,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -18671,12 +27310,59 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FlowRevisionUpdateWithoutPublishedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowDefinition?: FlowDefinitionUpdateOneRequiredWithoutRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutPublishedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateManyWithoutPublishedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowDefinitionId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ConversationCreateManyContactInput = {
     id?: string
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
     currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
     closedAt?: Date | string | null
   }
@@ -18685,11 +27371,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutContactInput = {
@@ -18698,9 +27388,13 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutContactInput = {
@@ -18709,6 +27403,9 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -18721,6 +27418,16 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+  }
+
+  export type FlowExecutionEventCreateManyConversationInput = {
+    id?: string
+    flowRevisionId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
   }
 
   export type MessageUpdateWithoutConversationInput = {
@@ -18751,6 +27458,444 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FlowExecutionEventUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutExecutionEventsNestedInput
+    flowNode?: FlowNodeUpdateOneWithoutExecutionEventsNestedInput
+  }
+
+  export type FlowExecutionEventUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowRevisionCreateManyFlowDefinitionInput = {
+    id?: string
+    version: number
+    status?: $Enums.FlowRevisionStatus
+    schemaVersion?: number
+    revision?: number
+    publishedAt?: Date | string | null
+    publishedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FlowRevisionUpdateWithoutFlowDefinitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedBy?: AgentUpdateOneWithoutPublishedFlowRevisionsNestedInput
+    nodes?: FlowNodeUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateWithoutFlowDefinitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: FlowNodeUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    transitions?: FlowTransitionUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutFlowRevisionNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionNestedInput
+  }
+
+  export type FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    status?: EnumFlowRevisionStatusFieldUpdateOperationsInput | $Enums.FlowRevisionStatus
+    schemaVersion?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowNodeCreateManyFlowRevisionInput = {
+    id?: string
+    stableKey: string
+    type: $Enums.FlowNodeType
+    name: string
+    content?: string
+    sortOrder?: number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: string | null
+  }
+
+  export type FlowTransitionCreateManyFlowRevisionInput = {
+    id?: string
+    fromNodeId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type ConversationCreateManyFlowRevisionInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+  }
+
+  export type FlowExecutionEventCreateManyFlowRevisionInput = {
+    id?: string
+    conversationId: string
+    flowNodeId?: string | null
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowNodeUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    department?: DepartmentUpdateOneWithoutFlowNodesNestedInput
+    outgoing?: FlowTransitionUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    outgoing?: FlowTransitionUncheckedUpdateManyWithoutFromNodeNestedInput
+    incoming?: FlowTransitionUncheckedUpdateManyWithoutToNodeNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutCurrentFlowNodeNestedInput
+    executionEvents?: FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeNestedInput
+  }
+
+  export type FlowNodeUncheckedUpdateManyWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stableKey?: StringFieldUpdateOperationsInput | string
+    type?: EnumFlowNodeTypeFieldUpdateOperationsInput | $Enums.FlowNodeType
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    config?: NullableJsonNullValueInput | InputJsonValue
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FlowTransitionUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    fromNode?: FlowNodeUpdateOneRequiredWithoutOutgoingNestedInput
+    toNode?: FlowNodeUpdateOneRequiredWithoutIncomingNestedInput
+  }
+
+  export type FlowTransitionUncheckedUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ConversationUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FlowExecutionEventUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutFlowEventsNestedInput
+    flowNode?: FlowNodeUpdateOneWithoutExecutionEventsNestedInput
+  }
+
+  export type FlowExecutionEventUncheckedUpdateWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutFlowRevisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowTransitionCreateManyFromNodeInput = {
+    id?: string
+    flowRevisionId: string
+    toNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type FlowTransitionCreateManyToNodeInput = {
+    id?: string
+    flowRevisionId: string
+    fromNodeId: string
+    optionKey?: string | null
+    label?: string | null
+    sortOrder?: number
+  }
+
+  export type ConversationCreateManyCurrentFlowNodeInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    closedAt?: Date | string | null
+  }
+
+  export type FlowExecutionEventCreateManyFlowNodeInput = {
+    id?: string
+    conversationId: string
+    flowRevisionId: string
+    externalEventId?: string | null
+    type: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FlowTransitionUpdateWithoutFromNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutTransitionsNestedInput
+    toNode?: FlowNodeUpdateOneRequiredWithoutIncomingNestedInput
+  }
+
+  export type FlowTransitionUncheckedUpdateWithoutFromNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutFromNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    toNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionUpdateWithoutToNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutTransitionsNestedInput
+    fromNode?: FlowNodeUpdateOneRequiredWithoutOutgoingNestedInput
+  }
+
+  export type FlowTransitionUncheckedUpdateWithoutToNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FlowTransitionUncheckedUpdateManyWithoutToNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    fromNodeId?: StringFieldUpdateOperationsInput | string
+    optionKey?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ConversationUpdateWithoutCurrentFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutCurrentFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FlowExecutionEventUpdateWithoutFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutFlowEventsNestedInput
+    flowRevision?: FlowRevisionUpdateOneRequiredWithoutExecutionEventsNestedInput
+  }
+
+  export type FlowExecutionEventUncheckedUpdateWithoutFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowExecutionEventUncheckedUpdateManyWithoutFlowNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    flowRevisionId?: StringFieldUpdateOperationsInput | string
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShortcutAuditCreateManyShortcutInput = {
@@ -18807,6 +27952,18 @@ export namespace Prisma {
      */
     export type ConversationCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use FlowDefinitionCountOutputTypeDefaultArgs instead
+     */
+    export type FlowDefinitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowRevisionCountOutputTypeDefaultArgs instead
+     */
+    export type FlowRevisionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowRevisionCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowNodeCountOutputTypeDefaultArgs instead
+     */
+    export type FlowNodeCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowNodeCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use ShortcutCountOutputTypeDefaultArgs instead
      */
     export type ShortcutCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ShortcutCountOutputTypeDefaultArgs<ExtArgs>
@@ -18846,6 +28003,22 @@ export namespace Prisma {
      * @deprecated Use ZApiConfigDefaultArgs instead
      */
     export type ZApiConfigArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ZApiConfigDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowRevisionDefaultArgs instead
+     */
+    export type FlowRevisionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowRevisionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowNodeDefaultArgs instead
+     */
+    export type FlowNodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowNodeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowTransitionDefaultArgs instead
+     */
+    export type FlowTransitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowTransitionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FlowExecutionEventDefaultArgs instead
+     */
+    export type FlowExecutionEventArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowExecutionEventDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ShortcutDefaultArgs instead
      */

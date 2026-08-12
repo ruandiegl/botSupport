@@ -41,3 +41,41 @@ src/pages/<pagina>/
 - **React Query (`@tanstack/react-query`)**: Cache inteligente, revalidação e polling automático.
 - **Wouter**: Roteador leve e intuitivo para SPA.
 - **Tailwind CSS v4**: Design system moderno baseado em tokens CSS nativos.
+
+---
+
+## 4. Fluxo do bot versionado
+
+O fluxo é dividido em três responsabilidades independentes:
+
+1. **Definição e publicação (`modules/flow`)**: mantém a identidade do fluxo, revisões, nós e transições; valida e publica snapshots imutáveis.
+2. **Execução (`modules/flow-execution`)**: interpreta a revisão fixada na conversa, persiste contexto e nó atual e produz ações de saída.
+3. **Transporte (`modules/zapi`)**: normaliza webhooks e executa ações na Z-API, sem textos ou regras de roteamento hardcoded.
+
+### Modelo persistido
+
+- `FlowDefinition`: identidade permanente do fluxo;
+- `FlowRevision`: snapshot `DRAFT`, `PUBLISHED` ou `ARCHIVED`, com controle otimista por `revision`;
+- `FlowNode`: etapa com `stableKey`, tipo discriminado, conteúdo, configuração e ordem;
+- `FlowTransition`: ligação ordenada, com `optionKey` estável para saídas de decisão;
+- `Conversation.flowRevisionId`, `currentFlowNodeId` e `flowContext`: estado persistente da execução;
+- `FlowExecutionEvent`: trilha técnica de transições e falhas, sem conteúdo sensível.
+
+### Invariantes de publicação
+
+- exatamente um `ENTRY` e ao menos uma decisão válida;
+- `stableKey` e `optionKey` únicos dentro da revisão;
+- todos os nós são alcançáveis e não há ciclos infinitos;
+- toda decisão tem saída e toda rota termina em `HANDOFF` ou `END`;
+- `TRIAGE` tem prompt, chave de resposta e próxima transição;
+- `HANDOFF` referencia departamento existente e ativo;
+- troca da revisão publicada é transacional;
+- conversas em andamento permanecem na revisão em que começaram.
+
+### Transação de webhook
+
+O webhook deve ser idempotente pelo identificador externo. Persistência da entrada, evolução do estado e registro do evento precisam impedir avanço duplicado. Quando o envio externo não puder participar da mesma transação, use estado recuperável/outbox: falhar ao enviar não pode avançar silenciosamente o nó.
+
+### Compatibilidade
+
+Durante a migração, o backend opera em leitura dupla: revisões v2 têm precedência e o formato legado permanece como fallback. Os endpoints legados `/flow` são temporários e não devem receber novas capacidades. A remoção de colunas e rotas v1 só ocorre depois de não existirem conversas vinculadas ao legado e de uma janela de estabilidade registrada no runbook.

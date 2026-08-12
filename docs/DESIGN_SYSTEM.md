@@ -88,3 +88,17 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 - Cada linha da matriz possui um checkbox para selecionar ou limpar todas as permissões exibidas naquele recurso.
 - O checkbox deve representar os estados marcado, desmarcado e indeterminado.
 - A seleção altera somente o rascunho local; a persistência ocorre em `Salvar permissões`, após confirmação `warning`.
+
+---
+
+## 7. Editor visual do fluxo
+
+- O mapa e o inspector usam superfícies brancas opacas, borda neutra e primária `#2D89C8`; transparência não pode comprometer legibilidade.
+- Cada card exibe tipo, nome, resumo de até duas linhas e estado de validação. UUIDs e chaves técnicas não são apresentados como rótulo principal.
+- O arraste começa somente pelo handle. Inputs, textareas e selects preservam foco; Backspace nunca inicia drag nem seleciona o card.
+- Durante o arraste, os demais cards cedem espaço e um placeholder mostra a posição final, com `DragOverlay` e auto-scroll.
+- A mesma operação deve existir por teclado e pelas ações “Mover para cima” e “Mover para baixo”. Mudanças de posição são anunciadas em uma live region.
+- Erros marcam card e campo, e a ação de publicar leva foco ao primeiro erro.
+- O preview WhatsApp preserva quebras de linha e apresenta o ramo selecionado sem executar envios.
+- Publicação usa confirmação `warning`; exclusão de nó/rota usa `danger`. Em falha, o modal e o rascunho permanecem abertos.
+- No mobile, o inspector abre em `Sheet`; mapa e painéis não podem causar rolagem horizontal da aplicação.

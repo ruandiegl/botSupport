@@ -8,11 +8,25 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { formatShortcutMessage } from "@/lib/utils";
+
 const typeLabels: Record<ShortcutType, string> = {
   GREETING: "Saudação", CLOSING: "Encerramento", DEPARTMENT: "Departamento", PERSONAL: "Pessoal", GENERAL: "Geral",
 };
 
-export function ShortcutPicker({ conversationId, onSelect }: { conversationId: string; onSelect: (shortcut: Shortcut) => void }) {
+export function ShortcutPicker({
+  conversationId,
+  agentName,
+  contactName,
+  departmentName,
+  onSelect,
+}: {
+  conversationId: string;
+  agentName?: string;
+  contactName?: string;
+  departmentName?: string;
+  onSelect: (shortcut: Shortcut) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [type, setType] = useState<ShortcutType | "ALL">("ALL");
@@ -45,13 +59,24 @@ export function ShortcutPicker({ conversationId, onSelect }: { conversationId: s
         <div className="shortcut-picker-list">
           {isLoading ? <p className="subtle">Carregando atalhos...</p> : data.length === 0 ? (
             <div className="shortcut-empty"><Sparkles size={22} /><strong>Nenhum atalho encontrado</strong><span>Ajuste os filtros ou cadastre uma nova mensagem.</span></div>
-          ) : data.map((shortcut) => (
-            <button key={shortcut.id} type="button" className="shortcut-picker-item" onClick={() => { onSelect(shortcut); setOpen(false); }}>
-              <span className="shortcut-picker-icon"><Zap size={15} /></span>
-              <span className="shortcut-picker-copy"><strong>{shortcut.title}</strong><span>{shortcut.message}</span></span>
-              <Badge variant="secondary">{typeLabels[shortcut.type]}</Badge>
-            </button>
-          ))}
+          ) : data.map((shortcut) => {
+            const formattedMessage = formatShortcutMessage(shortcut.message, { agentName, contactName, departmentName });
+            return (
+              <button
+                key={shortcut.id}
+                type="button"
+                className="shortcut-picker-item"
+                onClick={() => {
+                  onSelect({ ...shortcut, message: formattedMessage });
+                  setOpen(false);
+                }}
+              >
+                <span className="shortcut-picker-icon"><Zap size={15} /></span>
+                <span className="shortcut-picker-copy"><strong>{shortcut.title}</strong><span>{formattedMessage}</span></span>
+                <Badge variant="secondary">{typeLabels[shortcut.type]}</Badge>
+              </button>
+            );
+          })}
         </div>
       </DialogContent>
     </Dialog>

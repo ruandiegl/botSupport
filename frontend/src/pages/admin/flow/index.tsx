@@ -1,157 +1,245 @@
-import { useEffect, useState } from "react";
-import { Bot, Check, ChevronDown, MessageCircle, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
-import type { FlowDefinition, FlowOption } from "@/types";
-import { useGetFlow, useListDepartments, useUpdateFlow } from "./hooks/use-flow";
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, Check, RefreshCw, RotateCcw, Save } from "lucide-react";
+import type { FlowNode, FlowNodeType, FlowRevision } from "@/types";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+import { FlowBuilder } from "./components/FlowBuilder";
+import {
+  addRoute,
+  createNode,
+  duplicateNode,
+  insertNode,
+  moveNode,
+  rebuildTransitions,
+  removeNode,
+  reorderContainer,
+  replaceNode,
+  validateFlow,
+} from "./lib/flow-model";
+import {
+  useGetFlow,
+  useListDepartments,
+  usePublishFlowDraft,
+  useSaveFlowDraft,
+} from "./hooks/use-flow";
+import "./styles.css";
 
-type SelectedNode = "greeting" | "menu" | `option-${number}`;
-
-const emptyOption = (): FlowOption => ({ label: "Nova rota", departmentId: "", procedureMessage: "" });
+const cloneRevision = (revision: FlowRevision) => structuredClone(revision);
 
 export default function FlowAdmin() {
-  const { data: flow, isLoading, isError, refetch } = useGetFlow();
+  const { data: serverDraft, isLoading, isError, refetch } = useGetFlow();
   const { data: departments = [] } = useListDepartments();
-  const update = useUpdateFlow();
-  const [draft, setDraft] = useState<FlowDefinition | null>(null);
-  const [selectedNode, setSelectedNode] = useState<SelectedNode>("greeting");
-  const [draggedRoute, setDraggedRoute] = useState<number | null>(null);
-  const [dragOverRoute, setDragOverRoute] = useState<number | null>(null);
-  const [deleteRouteIndex, setDeleteRouteIndex] = useState<number | null>(null);
+  const saveDraft = useSaveFlowDraft();
+  const publishDraft = usePublishFlowDraft();
+  const [draft, setDraft] = useState<FlowRevision | null>(null);
+  const [baseline, setBaseline] = useState<FlowRevision | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState("");
+  const [isDirty, setIsDirty] = useState(false);
+  const [deleteNodeId, setDeleteNodeId] = useState<string | null>(null);
   const [publishConfirmOpen, setPublishConfirmOpen] = useState(false);
-  const current = draft || flow;
-  const hasDraft = Boolean(draft);
+  const [discardConfirmOpen, setDiscardConfirmOpen] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   useEffect(() => {
-    if (flow && !draft) setSelectedNode("greeting");
-  }, [flow, draft]);
+    if (!serverDraft || isDirty) return;
+    const next = cloneRevision(serverDraft);
+    setDraft(next);
+    setBaseline(cloneRevision(serverDraft));
+    setSelectedNodeId((current) => next.nodes.some((node) => node.id === current) ? current : next.nodes[0]?.id ?? "");
+  }, [serverDraft, isDirty]);
 
-  const change = (next: FlowDefinition) => setDraft(next);
-  const updateField = (field: "name" | "greeting" | "menuMessage", value: string) => {
-    if (current) change({ ...current, [field]: value });
+  useEffect(() => {
+    const warnUnsaved = (event: BeforeUnloadEvent) => {
+      if (!isDirty) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnUnsaved);
+    return () => window.removeEventListener("beforeunload", warnUnsaved);
+  }, [isDirty]);
+
+  const validation = useMemo(() => draft ? validateFlow(draft) : { valid: false, issues: [] }, [draft]);
+  const selectedNode = draft?.nodes.find((node) => node.id === selectedNodeId) ?? draft?.nodes[0];
+  const pending = saveDraft.isPending || publishDraft.isPending;
+
+  const commitLocal = (next: FlowRevision, selectedId?: string) => {
+    setDraft(next);
+    setIsDirty(true);
+    setFeedback(null);
+    if (selectedId) setSelectedNodeId(selectedId);
   };
-  const updateOption = (index: number, field: keyof FlowOption, value: string) => {
-    if (!current) return;
-    change({ ...current, options: current.options.map((item, i) => i === index ? { ...item, [field]: value } : item) });
+
+  const changeNode = (node: FlowNode) => {
+    if (!draft) return;
+    let next = replaceNode(draft, node);
+    if (node.type === "ROUTE") {
+      next = {
+        ...next,
+        nodes: next.nodes.map((item) => item.config.parentRouteId === node.id && item.type === "HANDOFF"
+          ? { ...item, departmentId: node.departmentId }
+          : item),
+      };
+    }
+    commitLocal(rebuildTransitions(next));
   };
-  const addRoute = () => {
-    if (!current) return;
-    const options = [...current.options, emptyOption()];
-    change({ ...current, options });
-    setSelectedNode(`option-${options.length - 1}`);
+
+  const addNewRoute = () => {
+    if (!draft) return;
+    const result = addRoute(draft);
+    commitLocal(result.revision, result.routeId);
   };
-  const removeRoute = (index: number) => {
-    if (!current) return;
-    setDeleteRouteIndex(index);
+
+  const addStep = (type: FlowNodeType, parentRouteId?: string) => {
+    if (!draft) return;
+    const node = createNode(type);
+    commitLocal(insertNode(draft, node, parentRouteId), node.id);
   };
-  const confirmRemoveRoute = () => {
-    if (!current || deleteRouteIndex === null) return;
-    const index = deleteRouteIndex;
-    const options = current.options.filter((_, i) => i !== index);
-    change({ ...current, options });
-    setSelectedNode(options.length ? `option-${Math.max(0, index - 1)}` : "menu");
-    setDeleteRouteIndex(null);
+
+  const duplicateSelected = () => {
+    if (!draft || !selectedNode) return;
+    const result = duplicateNode(draft, selectedNode.id);
+    commitLocal(result.revision, result.nodeId);
   };
-  const reorderRoute = (from: number, to: number) => {
-    if (!current || from === to) return;
-    const options = [...current.options];
-    const [moved] = options.splice(from, 1);
-    options.splice(to, 0, moved);
-    change({ ...current, options });
-    setSelectedNode(`option-${to}`);
-    setDragOverRoute(null);
+
+  const confirmDelete = () => {
+    if (!draft || !deleteNodeId) return;
+    const next = removeNode(draft, deleteNodeId);
+    commitLocal(next, next.nodes[0]?.id);
+    setDeleteNodeId(null);
   };
+
+  const save = async () => {
+    if (!draft) return;
+    if (!validation.valid) {
+      const first = validation.issues.find((issue) => issue.nodeId);
+      if (first?.nodeId) setSelectedNodeId(first.nodeId);
+      setFeedback("Corrija as pendências destacadas antes de salvar o rascunho.");
+      return;
+    }
+    try {
+      const saved = await saveDraft.mutateAsync(draft);
+      setDraft(cloneRevision(saved));
+      setBaseline(cloneRevision(saved));
+      setIsDirty(false);
+      setFeedback("Rascunho salvo com sucesso.");
+    } catch (cause) {
+      setFeedback(cause instanceof Error ? cause.message : "Não foi possível salvar o rascunho.");
+    }
+  };
+
   const publish = async () => {
-    if (!current || !hasDraft) return;
-    await update.mutateAsync({ data: { name: current.name, greeting: current.greeting, menuMessage: current.menuMessage, options: current.options } });
-    setDraft(null);
+    if (!draft) return;
+    if (!validation.valid) {
+      const first = validation.issues.find((issue) => issue.nodeId);
+      if (first?.nodeId) setSelectedNodeId(first.nodeId);
+      throw new Error("Existem pendências no fluxo. Corrija os cards destacados antes de publicar.");
+    }
+    const published = await publishDraft.mutateAsync(draft);
+    setDraft(cloneRevision(published));
+    setBaseline(cloneRevision(published));
+    setIsDirty(false);
+    setFeedback("Fluxo publicado. Novas conversas usarão esta versão.");
   };
 
-  const selectedIndex = selectedNode.startsWith("option-") ? Number(selectedNode.slice(7)) : -1;
-  const selectedOption = current?.options[selectedIndex];
-  const departmentName = (id: string) => departments.find((item) => item.id === id)?.name || "Sem departamento";
+  const discard = () => {
+    if (!baseline) return;
+    const restored = cloneRevision(baseline);
+    setDraft(restored);
+    setSelectedNodeId(restored.nodes[0]?.id ?? "");
+    setIsDirty(false);
+    setFeedback("Alterações locais descartadas.");
+  };
 
-  if (isLoading) return <div className="content"><div className="panel loading"><div className="skeleton short" /><div className="skeleton" /></div></div>;
-  if (isError || !current) return <div className="content"><div className="panel error-state"><RefreshCw size={24} /><p>Falha ao carregar fluxo.</p><Button variant="outline" size="sm" onClick={() => refetch()}>Tentar novamente</Button></div></div>;
+  if (isLoading) {
+    return <div className="content flow-admin"><div className="flow-loading"><Skeleton className="h-10 w-80" /><div className="flow-loading-grid"><Skeleton className="h-[620px]" /><Skeleton className="h-[620px]" /></div></div></div>;
+  }
 
+  if (isError || !draft || !selectedNode) {
+    return (
+      <div className="content flow-admin">
+        <Empty className="flow-error-empty">
+          <EmptyHeader><EmptyMedia variant="icon"><AlertCircle /></EmptyMedia><EmptyTitle>Não foi possível carregar o fluxo</EmptyTitle><EmptyDescription>Verifique a conexão com a API e tente novamente.</EmptyDescription></EmptyHeader>
+          <EmptyContent><Button variant="default" onClick={() => refetch()}><RefreshCw data-icon="inline-start" />Tentar novamente</Button></EmptyContent>
+        </Empty>
+      </div>
+    );
+  }
+
+  const deleteTarget = draft.nodes.find((node) => node.id === deleteNodeId);
+  const positiveFeedback = Boolean(feedback && (feedback.includes("sucesso") || feedback.includes("publicado") || feedback.includes("descartadas")));
+  const canPublish = isDirty || draft.status === "DRAFT";
   return (
     <div className="content flow-admin">
       <PageHeader
         eyebrow="Administração / automação"
         title="Fluxo do bot"
-        description="Configure a conversa automática antes de chegar à equipe."
-        action={<div className="flow-page-actions"><span className={`flow-draft-status ${hasDraft ? "is-draft" : ""}`}>{hasDraft ? "Rascunho não publicado" : "Publicado"}</span><Button variant="default" size="lg" disabled={!hasDraft || update.isPending} onClick={() => setPublishConfirmOpen(true)}><Check data-icon="inline-start" />{update.isPending ? "Publicando..." : "Publicar alterações"}</Button></div>}
+        description="Monte a jornada completa, configure a triagem de cada rota e publique quando estiver pronta."
+        action={
+          <div className="flow-page-actions">
+            <Badge variant={isDirty ? "secondary" : "default"}>{isDirty ? "Rascunho alterado" : draft.status === "PUBLISHED" ? "Publicado" : "Rascunho salvo"}</Badge>
+            <Button variant="outline" disabled={!isDirty || pending} onClick={() => setDiscardConfirmOpen(true)}><RotateCcw data-icon="inline-start" />Descartar</Button>
+            <Button variant="secondary" disabled={!isDirty || pending} onClick={save}>{saveDraft.isPending ? <Spinner data-icon="inline-start" /> : <Save data-icon="inline-start" />}{saveDraft.isPending ? "Salvando..." : "Salvar rascunho"}</Button>
+            <Button variant="default" disabled={!canPublish || pending} onClick={() => setPublishConfirmOpen(true)}>{publishDraft.isPending ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{publishDraft.isPending ? "Publicando..." : "Publicar"}</Button>
+          </div>
+        }
       />
 
-      <div className="flow-workspace">
-        <section className="panel flow-map-panel">
-          <div className="panel-header"><div className="panel-title"><Bot /><h2>Mapa da conversa</h2></div><span className="flow-map-status">{hasDraft ? "rascunho" : "versão publicada"}</span></div>
-          <div className="flow-canvas flow-map-canvas">
-            <button className={`flow-node ${selectedNode === "greeting" ? "selected" : ""}`} onClick={() => setSelectedNode("greeting")}><div className="flow-node-head"><h3>Boas-vindas</h3><span>Entrada</span></div><p>{current.greeting || "Mensagem de boas-vindas"}</p></button>
-            <div className="flow-arrow"><ChevronDown /></div>
-            <button className={`flow-node highlight ${selectedNode === "menu" ? "selected" : ""}`} onClick={() => setSelectedNode("menu")}><div className="flow-node-head"><h3>Menu principal</h3><span>Decisão</span></div><p>{current.menuMessage || "Mensagem do menu"}</p></button>
-            {current.options.map((option, index) => <div key={`route-slot-${index}`} className="flow-route-slot" onDragOver={(event) => { event.preventDefault(); if (draggedRoute !== null && draggedRoute !== index) setDragOverRoute(index); }} onDrop={() => { if (draggedRoute !== null) reorderRoute(draggedRoute, index); setDraggedRoute(null); setDragOverRoute(null); }}>
-              {dragOverRoute === index && draggedRoute !== index && <div className="flow-drop-preview"><span>Soltar rota aqui</span></div>}
-              <div className={`flow-route-group ${draggedRoute === index ? "is-dragging" : ""}`}><div className="flow-arrow"><ChevronDown /></div><button draggable className={`flow-node ${selectedNode === `option-${index}` ? "selected" : ""}`} onDragStart={() => { setDraggedRoute(index); setDragOverRoute(null); }} onDragEnd={() => { setDraggedRoute(null); setDragOverRoute(null); }} onClick={() => setSelectedNode(`option-${index}`)}><div className="flow-node-head"><h3>{option.label || "Nova rota"}</h3><span>Rota {index + 1}</span></div><p>{option.procedureMessage || "Mensagem de encaminhamento"}</p><span className="flow-node-department">{departmentName(option.departmentId)}</span></button></div>
-            </div>)}
-            {draggedRoute !== null && dragOverRoute === current.options.length && <div className="flow-drop-preview" onDragOver={(event) => event.preventDefault()} onDrop={() => { reorderRoute(draggedRoute, current.options.length); setDraggedRoute(null); setDragOverRoute(null); }}><span>Soltar rota aqui</span></div>}
-            <Button className="flow-add-route" variant="outline" onClick={addRoute}><Plus data-icon="inline-start" />Adicionar rota</Button>
-          </div>
-        </section>
+      {feedback ? <Alert variant={positiveFeedback ? "default" : "destructive"} className="flow-feedback"><AlertTitle>{positiveFeedback ? "Tudo certo" : "Atenção"}</AlertTitle><AlertDescription>{feedback}</AlertDescription></Alert> : null}
+      {!validation.valid ? <Alert variant="destructive" className="flow-feedback"><AlertTitle>{validation.issues.length} pendência(s) no rascunho</AlertTitle><AlertDescription>Os cards com problemas estão identificados. A publicação permanece bloqueada até a correção.</AlertDescription></Alert> : null}
 
-        <section className="panel flow-editor-panel">
-          <div className="panel-header"><div className="panel-title"><Pencil /><h2>Editar: {selectedNode === "greeting" ? "Boas-vindas" : selectedNode === "menu" ? "Menu principal" : selectedOption?.label || "Rota"}</h2></div></div>
-          <div className="form-stack flow-editor-form">
-            {selectedNode === "greeting" && <>
-              <div className="field"><label htmlFor="flow-name">Nome do fluxo</label><Input id="flow-name" value={current.name} onChange={(e) => updateField("name", e.target.value)} /></div>
-              <div className="field"><label htmlFor="flow-greeting">Mensagem de saudação</label><Textarea id="flow-greeting" value={current.greeting} onChange={(e) => updateField("greeting", e.target.value)} /></div>
-              <WhatsAppPreview title="Prévia no WhatsApp"><div className="whatsapp-bubble">{current.greeting || "Digite uma saudação para visualizar."}</div></WhatsAppPreview>
-            </>}
-            {selectedNode === "menu" && <>
-              <div className="field"><label htmlFor="flow-menu">Mensagem do menu</label><Textarea id="flow-menu" value={current.menuMessage} onChange={(e) => updateField("menuMessage", e.target.value)} /></div>
-              <div className="flow-editor-section"><div className="detail-label">Botões do WhatsApp</div>{current.options.map((option, index) => <div className="flow-route-edit" key={`route-edit-${index}`}><Input value={option.label} onChange={(e) => updateOption(index, "label", e.target.value)} placeholder={`Rota ${index + 1}`} /><Button variant="ghost" size="icon-sm" onClick={() => { setSelectedNode(`option-${index}`); }} aria-label="Editar rota"><Pencil /></Button></div>)}<Button className="flow-add-route" variant="outline" onClick={addRoute}><Plus data-icon="inline-start" />Adicionar rota</Button></div>
-              <WhatsAppPreview title="Prévia completa"><div className="whatsapp-bubble">{current.menuMessage}</div><div className="whatsapp-options">{current.options.map((option, index) => <button key={index} onClick={() => setSelectedNode(`option-${index}`)}>{option.label || `Rota ${index + 1}`}</button>)}</div></WhatsAppPreview>
-            </>}
-            {selectedNode.startsWith("option-") && selectedOption && <>
-              <div className="field"><label htmlFor="route-label">Nome da rota / texto do botão</label><Input id="route-label" value={selectedOption.label} onChange={(e) => updateOption(selectedIndex, "label", e.target.value)} /></div>
-              <div className="field"><label>Departamento</label><Select value={selectedOption.departmentId || undefined} onValueChange={(value) => updateOption(selectedIndex, "departmentId", value || "")}><SelectTrigger><SelectValue>{departmentName(selectedOption.departmentId)}</SelectValue></SelectTrigger><SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup>{departments.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectGroup></SelectContent></Select></div>
-              <div className="field"><label htmlFor="route-message">Mensagem de encaminhamento</label><Textarea id="route-message" value={selectedOption.procedureMessage} onChange={(e) => updateOption(selectedIndex, "procedureMessage", e.target.value)} /></div>
-              <Button className="flow-add-route" variant="outline" onClick={addRoute}><Plus data-icon="inline-start" />Adicionar botão à rota</Button>
-              <Button variant="destructive" onClick={() => removeRoute(selectedIndex)}><Trash2 data-icon="inline-start" />Excluir esta rota</Button>
-            </>}
-          </div>
-        </section>
-      </div>
+      <FlowBuilder
+        revision={draft}
+        selectedNode={selectedNode}
+        departments={departments}
+        issues={validation.issues}
+        onSelect={setSelectedNodeId}
+        onChangeNode={changeNode}
+        onReorder={(containerId, activeId, overId) => commitLocal(reorderContainer(draft, containerId, activeId, overId), activeId)}
+        onMove={(nodeId, direction) => commitLocal(moveNode(draft, nodeId, direction), nodeId)}
+        onAddRoute={addNewRoute}
+        onAddStep={addStep}
+        onDuplicate={duplicateSelected}
+        onDelete={() => setDeleteNodeId(selectedNode.id)}
+      />
+
       <ConfirmationDialog
         open={publishConfirmOpen}
         onOpenChange={setPublishConfirmOpen}
         tone="warning"
-        title="Publicar alterações do fluxo?"
-        description="O rascunho passará a orientar novas conversas no WhatsApp."
+        title="Publicar esta versão do fluxo?"
+        description="O rascunho validado passará a orientar somente as novas conversas. Atendimentos em andamento permanecem na versão anterior."
         confirmLabel="Publicar fluxo"
-        details={<span><strong>{current.name}</strong> · {current.options.length} rota(s)</span>}
+        details={<span><strong>{draft.name ?? "Fluxo principal"}</strong> · {draft.nodes.length} etapas · versão {draft.version}</span>}
         onConfirm={publish}
         testId="button-confirm-publish-flow"
       />
       <ConfirmationDialog
-        open={deleteRouteIndex !== null}
-        onOpenChange={(open) => !open && setDeleteRouteIndex(null)}
+        open={deleteNodeId !== null}
+        onOpenChange={(open) => !open && setDeleteNodeId(null)}
         tone="danger"
-        title="Excluir esta rota?"
-        description="A rota será removida do rascunho. A mudança só chegará aos clientes após a publicação."
-        confirmLabel="Excluir rota"
-        details={<strong>{deleteRouteIndex !== null ? current.options[deleteRouteIndex]?.label : ""}</strong>}
-        onConfirm={confirmRemoveRoute}
-        testId="button-confirm-delete-flow-route"
+        title={deleteTarget?.type === "ROUTE" ? "Excluir rota e suas etapas?" : "Excluir esta etapa?"}
+        description={deleteTarget?.type === "ROUTE" ? "A rota inteira e sua sequência de triagem serão removidas do rascunho." : "A etapa será removida e as etapas restantes serão reconectadas na ordem atual."}
+        confirmLabel={deleteTarget?.type === "ROUTE" ? "Excluir rota" : "Excluir etapa"}
+        details={<strong>{deleteTarget?.name}</strong>}
+        onConfirm={confirmDelete}
+        testId="button-confirm-delete-flow-node"
+      />
+      <ConfirmationDialog
+        open={discardConfirmOpen}
+        onOpenChange={setDiscardConfirmOpen}
+        tone="warning"
+        title="Descartar alterações locais?"
+        description="O editor voltará ao último rascunho salvo. Esta ação não altera a versão publicada."
+        confirmLabel="Descartar alterações"
+        onConfirm={discard}
+        testId="button-confirm-discard-flow"
       />
     </div>
   );
-}
-
-function WhatsAppPreview({ title, children }: { title: string; children: React.ReactNode }) {
-  return <div className="whatsapp-preview"><div className="whatsapp-preview-header"><MessageCircle />{title}</div>{children}<span className="whatsapp-time">agora</span></div>;
 }
