@@ -49,6 +49,7 @@ desktop.ini
 *.lnk
 
 # Arquivos de backup e compactações temporárias
+backups/
 *.bak
 *.tmp
 *.old

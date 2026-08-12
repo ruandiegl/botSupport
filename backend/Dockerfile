@@ -11,6 +11,7 @@ COPY prisma ./prisma/
 RUN npm ci
 
 COPY src ./src
+COPY scripts ./scripts
 RUN npx prisma generate
 RUN npm run build
 
