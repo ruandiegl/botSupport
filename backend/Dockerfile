@@ -11,7 +11,6 @@ COPY prisma ./prisma/
 RUN npm ci
 
 COPY src ./src
-COPY scripts ./scripts
 RUN npx prisma generate
 RUN npm run build
 
@@ -31,7 +30,6 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/scripts ./scripts
 
 EXPOSE 3001
 
