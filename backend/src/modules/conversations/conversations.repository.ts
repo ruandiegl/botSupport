@@ -23,7 +23,9 @@ export class ConversationsRepository {
       include: {
         contact: true,
         department: true,
-        assignedAgent: true,
+        assignedAgent: {
+          include: { department: true },
+        },
         messages: {
           orderBy: { createdAt: "asc" },
         },
@@ -83,12 +85,14 @@ export class ConversationsRepository {
   async findFirstAgent() {
     return prisma.agent.findFirst({
       orderBy: { name: "asc" },
+      include: { department: true },
     });
   }
 
   async findAgentById(id: string) {
     return prisma.agent.findUnique({
       where: { id },
+      include: { department: true },
     });
   }
 

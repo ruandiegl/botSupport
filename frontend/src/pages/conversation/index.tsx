@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Check, Archive, Send, RefreshCw } from "lucide-react";
+import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import {
   useGetConversation,
@@ -16,6 +16,7 @@ import { ShortcutPicker } from "./components/ShortcutPicker";
 import { useAvailableShortcuts, useRegisterShortcutUse } from "./hooks/use-shortcuts";
 import { useAuth } from "@/lib/auth-context";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatShortcutMessage } from "@/lib/utils";
 import { useSocket } from "@/lib/socket-context";
 import { useSocketEvent } from "@/lib/use-socket-events";
@@ -48,6 +49,7 @@ export default function ConversationPage() {
   const activeAgentName = activeAgent?.name || user?.name || "Atendente";
 
   const { data: conversation, isLoading, isError, refetch } = useGetConversation(id);
+  const activeAgentDeptName = activeAgent?.departmentName || (user as any)?.departmentName || conversation?.departmentName || "Suporte";
   const { data: availableShortcuts = [] } = useAvailableShortcuts(id, "", "ALL", can("shortcuts", "use"));
   const markAsRead = useMarkConversationRead(id);
   const sendMessage = useSendMessage(id);
@@ -146,7 +148,7 @@ export default function ConversationPage() {
           const formatted = formatShortcutMessage(greetingShortcut.message, {
             agentName: activeAgentName,
             contactName: conversation.contact.name,
-            departmentName: conversation.departmentName || "Suporte",
+            departmentName: activeAgentDeptName,
           });
           setMessage(formatted);
           setSelectedShortcutId(greetingShortcut.id);
@@ -155,18 +157,44 @@ export default function ConversationPage() {
     });
   };
 
-  const handleClose = () => {
+  const handleClose = (reason: "NORMAL" | "INACTIVITY" = "NORMAL") => {
     setCloseConfirmOpen(false);
     close.mutate(undefined, {
       onSuccess: () => {
-        const closingShortcut = availableShortcuts.find(
-          (s) => s.type === "CLOSING" && s.scope === "GLOBAL"
-        );
+        let closingShortcut: any = null;
+        if (reason === "INACTIVITY") {
+          closingShortcut = availableShortcuts.find(
+            (s) =>
+              s.type === "CLOSING" &&
+              (s.title.toLowerCase().includes("interação") ||
+                s.title.toLowerCase().includes("inativid"))
+          );
+          if (!closingShortcut) {
+            const formatted = formatShortcutMessage(
+              "Olá, {contactName}! Seu atendimento está sendo encerrado por falta de interação/resposta. Caso ainda precise de ajuda, envie uma nova mensagem para iniciar um novo atendimento. Obrigado!",
+              {
+                agentName: activeAgentName,
+                contactName: conversation.contact.name,
+                departmentName: activeAgentDeptName,
+              }
+            );
+            setMessage(formatted);
+            return;
+          }
+        } else {
+          closingShortcut = availableShortcuts.find(
+            (s) =>
+              s.type === "CLOSING" &&
+              !s.title.toLowerCase().includes("interação") &&
+              !s.title.toLowerCase().includes("inativid")
+          );
+        }
+
         if (closingShortcut) {
           const formatted = formatShortcutMessage(closingShortcut.message, {
             agentName: activeAgentName,
             contactName: conversation.contact.name,
-            departmentName: conversation.departmentName || "Suporte",
+            departmentName: activeAgentDeptName,
           });
           setMessage(formatted);
           setSelectedShortcutId(closingShortcut.id);
@@ -247,7 +275,7 @@ export default function ConversationPage() {
                 conversationId={id} 
                 agentName={activeAgentName}
                 contactName={conversation.contact.name}
-                departmentName={conversation.departmentName || "Suporte"}
+                departmentName={activeAgentDeptName}
                 onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} 
               />
               <span>Selecione uma mensagem pronta e ajuste antes de enviar.</span>
@@ -283,6 +311,7 @@ export default function ConversationPage() {
       <DetailPanel
         conversation={conversation}
         canUseShortcuts={can("shortcuts", "use")}
+        agentDeptName={activeAgentDeptName}
         onInsertShortcut={(shortcut) => {
           setMessage(shortcut.message);
           setSelectedShortcutId(shortcut.id);
@@ -299,17 +328,86 @@ export default function ConversationPage() {
         onConfirm={handleAssume}
         testId="button-confirm-assume-conversation"
       />
-      <ConfirmationDialog
-        open={closeConfirmOpen}
-        onOpenChange={setCloseConfirmOpen}
-        tone="danger"
-        title="Encerrar este chamado?"
-        description="A mensagem de encerramento será enviada ao cliente e o atendimento será marcado como encerrado."
-        confirmLabel="Encerrar chamado"
-        details={<strong>{conversation.contact.name}</strong>}
-        onConfirm={handleClose}
-        testId="button-confirm-close-conversation"
-      />
+      <Dialog open={closeConfirmOpen} onOpenChange={setCloseConfirmOpen}>
+        <DialogContent className="bg-card text-card-foreground ring-border sm:max-w-md p-6">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+              <Archive className="size-4 text-warning" />
+              Encerrar Atendimento
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Selecione o motivo do encerramento para o contato:
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm text-foreground">
+            <strong className="font-semibold">{conversation.contact.name}</strong>
+            <span className="text-xs text-muted-foreground ml-2">({conversation.contact.phone})</span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 my-1">
+            <button
+              type="button"
+              disabled={close.isPending}
+              onClick={() => handleClose("NORMAL")}
+              className="flex items-start gap-3 p-3.5 text-left rounded-lg border border-border bg-background hover:bg-muted hover:border-primary/50 transition-all group cursor-pointer"
+              data-testid="button-close-normal"
+            >
+              <div className="p-2 rounded-md bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/20 shrink-0">
+                <CheckCircle2 size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <strong className="text-sm font-medium text-foreground group-hover:text-primary">
+                    Encerramento Normal
+                  </strong>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                    Padrão
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Conclusão bem-sucedida do suporte com mensagem de agradecimento ao cliente.
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              disabled={close.isPending}
+              onClick={() => handleClose("INACTIVITY")}
+              className="flex items-start gap-3 p-3.5 text-left rounded-lg border border-border bg-background hover:bg-muted hover:border-warning/50 transition-all group cursor-pointer"
+              data-testid="button-close-inactivity"
+            >
+              <div className="p-2 rounded-md bg-amber-500/10 text-amber-500 group-hover:bg-amber-500/20 shrink-0">
+                <Clock size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <strong className="text-sm font-medium text-foreground group-hover:text-warning">
+                    Encerramento por Falta de Interação
+                  </strong>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    Inatividade
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Encerra o chamado informando ao cliente que não houve resposta ou interação recente.
+                </p>
+              </div>
+            </button>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCloseConfirmOpen(false)}
+            >
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

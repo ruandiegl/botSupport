@@ -56,7 +56,8 @@ export default function ShortcutsAdmin() {
   };
 
   const systemGreeting = useMemo(() => data?.items.find((item) => item.type === "GREETING" && item.scope === "GLOBAL"), [data?.items]);
-  const systemClosing = useMemo(() => data?.items.find((item) => item.type === "CLOSING" && item.scope === "GLOBAL"), [data?.items]);
+  const systemClosing = useMemo(() => data?.items.find((item) => item.type === "CLOSING" && item.scope === "GLOBAL" && !item.title.toLowerCase().includes("interação") && !item.title.toLowerCase().includes("inativid")), [data?.items]);
+  const systemInactivityClosing = useMemo(() => data?.items.find((item) => item.type === "CLOSING" && item.scope === "GLOBAL" && (item.title.toLowerCase().includes("interação") || item.title.toLowerCase().includes("inativid"))), [data?.items]);
 
   const setupSystemGreeting = () => {
     if (systemGreeting) {
@@ -81,13 +82,30 @@ export default function ShortcutsAdmin() {
     } else {
       setSelected(null);
       setForm({
-        title: "Encerramento de Chamado",
+        title: "Encerramento Normal",
         message: "Olá, {contactName}! O seu chamado foi encerrado por {agentName}. Caso precise de novo suporte, estamos à disposição. Obrigado pelo contato!",
         type: "CLOSING",
         scope: "GLOBAL",
         departmentId: "",
         isActive: true,
         sortOrder: 0,
+      });
+    }
+  };
+
+  const setupSystemInactivityClosing = () => {
+    if (systemInactivityClosing) {
+      edit(systemInactivityClosing);
+    } else {
+      setSelected(null);
+      setForm({
+        title: "Encerramento por Falta de Interação",
+        message: "Olá, {contactName}! Seu atendimento está sendo encerrado por falta de interação/resposta. Caso ainda precise de ajuda, envie uma nova mensagem para iniciar um novo atendimento. Obrigado!",
+        type: "CLOSING",
+        scope: "GLOBAL",
+        departmentId: "",
+        isActive: true,
+        sortOrder: 1,
       });
     }
   };
@@ -107,7 +125,7 @@ export default function ShortcutsAdmin() {
             Configure as mensagens automáticas ou pré-definidas enviadas ao assumir ou encerrar chamados. Use variáveis como &#123;agentName&#125;, &#123;contactName&#125; e &#123;departmentName&#125;.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-3 border rounded-lg bg-card/60 flex flex-col justify-between gap-3">
             <div>
               <div className="flex items-center justify-between gap-2 mb-1">
@@ -126,7 +144,7 @@ export default function ShortcutsAdmin() {
           <div className="p-3 border rounded-lg bg-card/60 flex flex-col justify-between gap-3">
             <div>
               <div className="flex items-center justify-between gap-2 mb-1">
-                <strong className="text-xs font-bold uppercase tracking-wider text-amber-500">Encerramento de Chamado</strong>
+                <strong className="text-xs font-bold uppercase tracking-wider text-emerald-500">Encerramento Normal</strong>
                 <Badge variant={systemClosing?.isActive ? "default" : "outline"}>{systemClosing ? (systemClosing.isActive ? "Ativo" : "Inativo") : "Não criado"}</Badge>
               </div>
               <p className="text-xs text-muted-foreground line-clamp-3 italic">
@@ -135,6 +153,21 @@ export default function ShortcutsAdmin() {
             </div>
             <Button variant="outline" size="sm" onClick={setupSystemClosing}>
               <Pencil data-icon="inline-start" /> {systemClosing ? "Editar encerramento" : "Configurar encerramento"}
+            </Button>
+          </div>
+
+          <div className="p-3 border rounded-lg bg-card/60 flex flex-col justify-between gap-3">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <strong className="text-xs font-bold uppercase tracking-wider text-amber-500">Falta de Interação</strong>
+                <Badge variant={systemInactivityClosing?.isActive ? "default" : "outline"}>{systemInactivityClosing ? (systemInactivityClosing.isActive ? "Ativo" : "Inativo") : "Não criado"}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-3 italic">
+                "{systemInactivityClosing?.message || "Olá, {contactName}! Seu atendimento está sendo encerrado por falta de interação/resposta. Caso ainda precise de ajuda, envie uma nova mensagem. Obrigado!"}"
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={setupSystemInactivityClosing}>
+              <Pencil data-icon="inline-start" /> {systemInactivityClosing ? "Editar inatividade" : "Configurar inatividade"}
             </Button>
           </div>
         </CardContent>

@@ -107,7 +107,7 @@ export class ConversationsService {
     }
 
     const agentName = agent?.name ?? "Atendente";
-    const deptName = conversation.department?.name ?? "Suporte T.I.";
+    const deptName = agent?.department?.name || conversation.department?.name || "Suporte T.I.";
     const cleanContent = rawContent.trim();
 
     const content = cleanContent.startsWith("*")

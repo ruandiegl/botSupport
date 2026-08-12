@@ -12,10 +12,12 @@ export function DetailPanel({
   conversation,
   canUseShortcuts,
   onInsertShortcut,
+  agentDeptName,
 }: {
   conversation: Conversation;
   canUseShortcuts: boolean;
   onInsertShortcut: (shortcut: Shortcut) => void;
+  agentDeptName?: string;
 }) {
   const { data: shortcuts = [], isLoading } = useAvailableShortcuts(
     conversation.id,
@@ -36,7 +38,7 @@ export function DetailPanel({
 
   const agentName = conversation.assignedAgentName || "Atendente";
   const contactName = conversation.contact.name || "Cliente";
-  const departmentName = conversation.departmentName || "Suporte";
+  const departmentName = agentDeptName || conversation.departmentName || "Suporte";
 
   const renderShortcut = (shortcut: Shortcut) => {
     const formattedMessage = formatShortcutMessage(shortcut.message, { agentName, contactName, departmentName });
