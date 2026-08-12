@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "";
+import { API_BASE_URL } from "./api-config";
+
+const BASE_URL = API_BASE_URL;
 
 export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}/api${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;

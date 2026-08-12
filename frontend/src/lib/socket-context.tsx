@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "./auth-context";
+import { API_BASE_URL } from "./api-config";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -31,7 +32,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       return;
     }
 
-    const socketUrl = import.meta.env.VITE_API_URL || window.location.origin;
+    const socketUrl = API_BASE_URL;
 
     const newSocket = io(socketUrl, {
       auth: { token },
