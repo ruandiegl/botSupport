@@ -19,19 +19,29 @@ const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:5173")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
+const apiCors = cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
 
-      callback(new Error("Origem não autorizada pelo CORS"));
-    },
-    credentials: true,
-  }),
-);
+    callback(new Error("Origem não autorizada pelo CORS"));
+  },
+  credentials: true,
+});
+
+// O webhook da Z-API é uma chamada servidor a servidor e não possui uma
+// origem de navegador confiável. Ele precisa chegar ao controller para que
+// a mensagem seja processada; o CORS continua restrito para as rotas do painel.
+app.use((req, res, next) => {
+  if (req.path === "/api/webhooks/z-api") {
+    next();
+    return;
+  }
+
+  apiCors(req, res, next);
+});
 app.use(express.json());
 app.use(pinoHttp({ logger: logger as any }));
 
