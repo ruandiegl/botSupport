@@ -38,6 +38,7 @@ src/pages/<pagina>/
 ```
 
 ### Estado Global e Servidor
+Fila e detalhe usam projeÃ§Ãµes diferentes: a fila recebe `ConversationSummary`, sem histÃ³rico integral ou binÃ¡rios de mÃ­dia; o detalhe carrega mensagens recentes e usa cursor para mensagens anteriores. `message:new` atualiza o cache por `messageId`, enquanto `conversation:updated` cuida de fila/status. Refetch completo fica reservado para reconciliaÃ§Ã£o apÃ³s reconexÃ£o ou payload incompleto.
 - **React Query (`@tanstack/react-query`)**: Cache inteligente, revalidação e polling automático.
 - **Wouter**: Roteador leve e intuitivo para SPA.
 - **Tailwind CSS v4**: Design system moderno baseado em tokens CSS nativos.

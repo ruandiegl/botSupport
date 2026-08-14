@@ -130,6 +130,7 @@ model Message {
   media             ConversationMedia?
 
   @@index([conversationId, direction, readAt])
+  @@index([conversationId, createdAt])
   @@map("gtf_messages")
 }
 

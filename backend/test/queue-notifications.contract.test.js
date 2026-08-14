@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
-import { ListConversationsQuerySchema } from "../dist/modules/conversations/conversations.schemas.js";
+import { ListConversationsQuerySchema, ListMessagesQuerySchema } from "../dist/modules/conversations/conversations.schemas.js";
 import {
   ListNotificationsQuerySchema,
   NotificationIdParamSchema,
@@ -17,10 +17,14 @@ const notificationsRepositorySource = readFileSync(
   join(process.cwd(), "src", "modules", "notifications", "notifications.repository.ts"),
   "utf8",
 );
+const conversationsRepositorySource = readFileSync(
+  join(process.cwd(), "src", "modules", "conversations", "conversations.repository.ts"),
+  "utf8",
+);
 
 test("contrato da fila aceita paginação, ordenação e período UTC", () => {
   const parsed = ListConversationsQuerySchema.safeParse({
-    status: "QUEUED",
+    status: "OPEN",
     departmentId: "00000000-0000-4000-8000-000000000001",
     assignedAgentId: "me",
     dateField: "lastActivityAt",
@@ -46,6 +50,22 @@ test("contrato da fila aceita filtros dos cards operacionais", () => {
     assert.equal(parsed.data.openOnly, true);
     assert.equal(parsed.data.unreadOnly, false);
   }
+});
+
+test("contrato do histórico aceita cursor e limites seguros", () => {
+  assert.deepEqual(ListMessagesQuerySchema.parse({ limit: "50", before: "opaque-cursor" }), {
+    limit: 50,
+    before: "opaque-cursor",
+  });
+  assert.equal(ListMessagesQuerySchema.safeParse({ limit: "0" }).success, false);
+  assert.equal(ListMessagesQuerySchema.safeParse({ limit: "101" }).success, false);
+  assert.equal(ListMessagesQuerySchema.safeParse({ extra: "x" }).success, false);
+});
+
+test("fila usa projeção resumida e não carrega histórico por linha", () => {
+  assert.match(conversationsRepositorySource, /isSummary: true/);
+  assert.match(conversationsRepositorySource, /messages:\s*\{\s*take:\s*1/);
+  assert.match(conversationsRepositorySource, /_count:\s*\{[\s\S]*direction:\s*"IN"/);
 });
 
 test("feed ativo de notificacoes nao reexibe itens dispensados", () => {

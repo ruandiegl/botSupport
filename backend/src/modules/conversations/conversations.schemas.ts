@@ -33,6 +33,11 @@ export const IdParamSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const ListMessagesQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  before: z.string().trim().min(1).max(512).optional(),
+}).strict();
+
 export const AssumeConversationBodySchema = z.object({
   agentId: z.string(),
 });
@@ -44,3 +49,4 @@ export const SendMessageBodySchema = z.object({
 export type ListConversationsQuery = z.infer<typeof ListConversationsQuerySchema>;
 export type AssumeConversationBody = z.infer<typeof AssumeConversationBodySchema>;
 export type SendMessageBody = z.infer<typeof SendMessageBodySchema>;
+export type ListMessagesQuery = z.infer<typeof ListMessagesQuerySchema>;

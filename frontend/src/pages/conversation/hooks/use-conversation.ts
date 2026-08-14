@@ -1,12 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
-import type { Conversation, Message } from "@/types";
+import type { Conversation, Message, MessagePage } from "@/types";
 
 export function useGetConversation(id: string) {
   return useQuery<Conversation>({
     queryKey: ["conversation", id],
     queryFn: () => apiFetch<Conversation>(`/conversations/${id}`),
     enabled: !!id,
+  });
+}
+
+export function useLoadPreviousMessages(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<MessagePage, Error, { before: string }>({
+    mutationFn: ({ before }) =>
+      apiFetch<MessagePage>(`/conversations/${id}/messages?limit=50&before=${encodeURIComponent(before)}`),
+    onSuccess: (page) => {
+      queryClient.setQueryData<Conversation>(["conversation", id], (current) => {
+        if (!current) return current;
+        const existingIds = new Set(current.messages.map((message) => message.id));
+        const older = page.items.filter((message) => !existingIds.has(message.id));
+        return {
+          ...current,
+          messages: [...older, ...current.messages],
+          messagesPagination: page.pagination,
+        };
+      });
+    },
   });
 }
 
@@ -19,7 +39,7 @@ export function useMarkConversationRead(id: string) {
       }),
     onSuccess: (updated) => {
       queryClient.setQueryData(["conversation", id], updated);
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
     },
   });
 }
@@ -32,9 +52,17 @@ export function useSendMessage(id: string) {
         method: "POST",
         body: JSON.stringify(data),
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    onSuccess: (message) => {
+      queryClient.setQueryData<Conversation>(["conversation", id], (current) => {
+        if (!current || current.messages.some((item) => item.id === message.id)) return current;
+        return {
+          ...current,
+          messages: [...current.messages, message],
+          lastMessage: message.content,
+          lastActivityAt: message.createdAt,
+        };
+      });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
     },
   });
 }
@@ -49,7 +77,7 @@ export function useAssumeConversation(id: string) {
       }),
     onSuccess: (updated) => {
       queryClient.setQueryData(["conversation", id], updated);
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
     },
   });
 }
@@ -63,7 +91,7 @@ export function useCloseConversation(id: string) {
       }),
     onSuccess: (updated) => {
       queryClient.setQueryData(["conversation", id], updated);
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
     },
   });
 }

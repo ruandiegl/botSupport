@@ -166,6 +166,13 @@ io.use(async (socket, next) => {
 
 ## 6. Requisitos Funcionais
 
+### RF-00 â€” SincronizaÃ§Ã£o incremental
+
+- A fila deve receber somente o resumo da conversa, sem histÃ³rico integral ou URLs de mÃ­dia.
+- `message:new` Ã© deduplicado por `messageId` e atualiza o cache da conversa aberta sem refetch completo.
+- `conversation:updated` atualiza fila, status e contadores; o mesmo evento lÃ³gico nÃ£o deve causar duas leituras integrais.
+- ApÃ³s reconexÃ£o, o cliente executa uma Ãºnica reconciliaÃ§Ã£o REST por recurso.
+
 ### RF-01 — Mensagens em Tempo Real
 
 - Quando o webhook Z-API recebe uma mensagem (`zapi.service.ts` → `handleIncomingWebhook`), emitir `message:new` na room `conversation:{id}` e `conversation:updated` na room `queue`.

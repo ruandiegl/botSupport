@@ -60,7 +60,10 @@ Quando `page` ou `limit` Ã© enviado, a resposta Ã© paginada:
 Sem parÃ¢metros de paginaÃ§Ã£o, o formato legado (array) Ã© mantido temporariamente para clientes antigos.
 
 ### `GET /conversations/:id`
-Retorna detalhes completos de uma conversa específica por ID.
+Retorna metadados e uma janela inicial de atÃ© 50 mensagens. Quando houver mensagens anteriores, `messagesPagination.previousCursor` informa o cursor opaco para carregÃ¡-las sem baixar o histÃ³rico inteiro.
+
+### `GET /conversations/:id/messages?limit=50&before=<cursor>`
+Carrega mensagens anteriores de forma paginada. `limit` aceita de 1 a 100 e `before` Ã© validado no servidor. A resposta usa `{ items, pagination: { limit, hasPrevious, previousCursor } }`; o cursor nÃ£o expÃµe tokens, URLs temporÃ¡rias ou conteÃºdo sensÃ­vel.
 
 ### `POST /conversations/:id/assume`
 Altera o status da conversa para `IN_PROGRESS` e vincula o atendente informado.

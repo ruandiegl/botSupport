@@ -52,9 +52,26 @@ export interface Conversation {
   unreadCount: number;
   lastMessage: string;
   messages: Message[];
+  messagesPagination?: {
+    limit: number;
+    hasPrevious: boolean;
+    previousCursor: string | null;
+  };
   startedAt: string;
   queuedAt?: string | null;
   lastActivityAt?: string | null;
+}
+
+/** Lightweight row returned by the paginated queue endpoint. */
+export type ConversationSummary = Omit<Conversation, "messages"> & { messages: [] };
+
+export interface MessagePage {
+  items: Message[];
+  pagination: {
+    limit: number;
+    hasPrevious: boolean;
+    previousCursor: string | null;
+  };
 }
 
 export interface ConversationListResponse {
@@ -64,6 +81,13 @@ export interface ConversationListResponse {
   total: number;
   totalPages: number;
   appliedFilters?: Record<string, unknown>;
+  counts?: {
+    open: number;
+    inProgress: number;
+    closed: number;
+    mine: number;
+    unread: number;
+  };
 }
 
 export type NotificationType =

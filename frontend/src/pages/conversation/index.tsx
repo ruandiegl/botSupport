@@ -8,6 +8,7 @@ import {
   useSendMessage,
   useAssumeConversation,
   useCloseConversation,
+  useLoadPreviousMessages,
 } from "./hooks/use-conversation";
 import { DetailPanel } from "./components/DetailPanel";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export default function ConversationPage() {
   const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const previousMessagesHeightRef = useRef<number | null>(null);
   const lastReadAttemptRef = useRef<string | null>(null);
   const { activeAgent } = useActiveAgent();
   const { can, user } = useAuth();
@@ -59,6 +61,7 @@ export default function ConversationPage() {
   const sendMessage = useSendMessage(id);
   const assume = useAssumeConversation(id);
   const close = useCloseConversation(id);
+  const loadPrevious = useLoadPreviousMessages(id);
   const registerShortcutUse = useRegisterShortcutUse();
 
   // Socket.IO: Entrar na sala da conversa para receber mensagens e atualizações em tempo real
@@ -74,13 +77,28 @@ export default function ConversationPage() {
   // Escutar novas mensagens em tempo real no chat
   useSocketEvent("message:new", useCallback((data: any) => {
     if (data.conversationId === id) {
-      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+      const incoming = data.message;
+      if (!incoming?.id) return;
+      queryClient.setQueryData<any>(["conversation", id], (current: any) => {
+        if (!current || current.messages?.some((item: any) => item.id === incoming.id)) return current;
+        return {
+          ...current,
+          messages: [...(current.messages ?? []), incoming],
+          lastMessage: incoming.content,
+          lastActivityAt: incoming.createdAt,
+          unreadCount: incoming.direction === "IN" ? (current.unreadCount ?? 0) + 1 : current.unreadCount,
+        };
+      });
     }
   }, [id]));
 
   useSocketEvent("conversation:updated", useCallback((data: any) => {
     if (data.conversationId === id) {
-      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+      // MESSAGE_RECEIVED/MESSAGE_SENT already arrive through message:new.
+      // Avoid a second full detail refetch for the same logical event.
+      if (!data.messageId && data.eventType !== "MESSAGE_RECEIVED" && data.eventType !== "MESSAGE_SENT") {
+        queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+      }
     }
   }, [id]));
 
@@ -94,6 +112,12 @@ export default function ConversationPage() {
   useEffect(() => {
     const container = messagesRef.current;
     if (!container) return;
+    if (previousMessagesHeightRef.current !== null) {
+      const heightDelta = container.scrollHeight - previousMessagesHeightRef.current;
+      container.scrollTop += heightDelta;
+      previousMessagesHeightRef.current = null;
+      return;
+    }
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [conversation?.messages?.length]);
 
@@ -264,6 +288,24 @@ export default function ConversationPage() {
         </div>
 
         <div className="messages" ref={messagesRef}>
+          {conversation.messagesPagination?.hasPrevious && conversation.messagesPagination.previousCursor ? (
+            <div className="flex justify-center py-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={loadPrevious.isPending}
+                onClick={() => {
+                  if (messagesRef.current) previousMessagesHeightRef.current = messagesRef.current.scrollHeight;
+                  loadPrevious.mutate(
+                    { before: conversation.messagesPagination!.previousCursor! },
+                    { onError: () => { previousMessagesHeightRef.current = null; } },
+                  );
+                }}
+              >
+                {loadPrevious.isPending ? "Carregando..." : "Carregar mensagens anteriores"}
+              </Button>
+            </div>
+          ) : null}
           <div className="day-divider">Hoje</div>
           {conversation.messages?.map((item) => (
             <Message align={item.direction === "OUT" ? "end" : "start"} key={item.id}>

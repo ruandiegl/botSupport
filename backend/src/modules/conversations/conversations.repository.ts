@@ -96,11 +96,38 @@ export class ConversationsRepository {
         WHERE ${whereSql}
       `);
       const ids = idRows.map((row) => row.id);
+      // A queue row only needs a summary.  The previous implementation
+      // returned ids here and the service then called findById once per row,
+      // loading the complete message history (N+1).  Keep this projection
+      // intentionally small; the detail endpoint owns the full history.
       const rows = ids.length
-        ? await prisma.conversation.findMany({ where: { id: { in: ids } }, select: { id: true, status: true, queuedAt: true, lastActivityAt: true, startedAt: true } })
+        ? await prisma.conversation.findMany({
+            where: { id: { in: ids } },
+            select: {
+              id: true,
+              status: true,
+              departmentId: true,
+              assignedAgentId: true,
+              queuedAt: true,
+              lastActivityAt: true,
+              startedAt: true,
+              closedAt: true,
+              contact: { select: { name: true, phone: true } },
+              department: { select: { name: true } },
+              assignedAgent: { select: { name: true } },
+              messages: {
+                take: 1,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                select: { id: true, content: true, direction: true, senderType: true, createdAt: true },
+              },
+              _count: {
+                select: { messages: { where: { direction: "IN", readAt: null } } },
+              },
+            },
+          })
         : [];
       const byId = new Map(rows.map((row) => [row.id, row]));
-      return { items: ids.map((id) => byId.get(id)).filter(Boolean) as typeof rows, total: Number(countRows[0]?.count ?? 0), page, limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / limit), isPaged: true };
+      return { items: ids.map((id) => byId.get(id)).filter(Boolean) as typeof rows, total: Number(countRows[0]?.count ?? 0), page, limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / limit), isPaged: true, isSummary: true };
     }
 
     const orderBy = sort === "oldest"
@@ -132,7 +159,7 @@ export class ConversationsRepository {
       : rows;
 
     const items = isPaged ? sorted.slice((page - 1) * limit, page * limit) : sorted;
-    return { items, total, page, limit, totalPages: Math.ceil(total / limit), isPaged };
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit), isPaged, isSummary: false };
   }
 
   async countOperational(scope: {
@@ -145,20 +172,32 @@ export class ConversationsRepository {
     }
 
     const baseWhere = scope.departmentId ? { departmentId: scope.departmentId } : {};
-    const [open, inProgress, closed, mine, unread] = await Promise.all([
-      prisma.conversation.count({ where: { ...baseWhere, status: "OPEN" } }),
-      prisma.conversation.count({ where: { ...baseWhere, status: "IN_PROGRESS" } }),
-      prisma.conversation.count({ where: { ...baseWhere, status: "CLOSED" } }),
+    const [byStatus, mine, unread] = await Promise.all([
+      prisma.conversation.groupBy({ where: baseWhere, by: ["status"], _count: { _all: true } }),
       scope.agentId
         ? prisma.conversation.count({ where: { ...baseWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
         : Promise.resolve(0),
       prisma.message.count({ where: { direction: "IN", readAt: null, conversation: baseWhere } }),
     ]);
 
+    const statusCount = (status: string) => byStatus.find((row) => row.status === status)?._count._all ?? 0;
+    const open = statusCount("OPEN");
+    const inProgress = statusCount("IN_PROGRESS");
+    const closed = statusCount("CLOSED");
+
     return { open, inProgress, closed, mine, unread };
   }
 
-  async findById(id: string) {
+  async findById(id: string, options: { messageLimit?: number; before?: { createdAt: Date; id: string } } = {}) {
+    const messageLimit = options.messageLimit;
+    const messageWhere = options.before
+      ? {
+          OR: [
+            { createdAt: { lt: options.before.createdAt } },
+            { createdAt: options.before.createdAt, id: { lt: options.before.id } },
+          ],
+        }
+      : undefined;
     return prisma.conversation.findUnique({
       where: { id },
       include: {
@@ -168,11 +207,52 @@ export class ConversationsRepository {
           include: { department: true },
         },
         messages: {
-          orderBy: { createdAt: "asc" },
+          ...(messageWhere ? { where: messageWhere } : {}),
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          ...(messageLimit ? { take: messageLimit + 1 } : {}),
           include: { media: true },
+        },
+        _count: {
+          select: { messages: { where: { direction: "IN", readAt: null } } },
         },
       },
     });
+  }
+
+  async findAccessById(id: string) {
+    return prisma.conversation.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        status: true,
+        departmentId: true,
+        assignedAgentId: true,
+        contact: { select: { name: true, phone: true } },
+        department: { select: { name: true } },
+        assignedAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+      },
+    });
+  }
+
+  async findMessages(id: string, options: { limit: number; before?: { createdAt: Date; id: string } }) {
+    const where = options.before
+      ? {
+          conversationId: id,
+          OR: [
+            { createdAt: { lt: options.before.createdAt } },
+            { createdAt: options.before.createdAt, id: { lt: options.before.id } },
+          ],
+        }
+      : { conversationId: id };
+    const rows = await prisma.message.findMany({
+      where,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: options.limit + 1,
+      include: { media: true, senderAgent: { select: { name: true } } },
+    });
+    const hasPrevious = rows.length > options.limit;
+    const items = rows.slice(0, options.limit).reverse();
+    return { items, hasPrevious };
   }
 
   async updateStatusAndAgent(id: string, status: string, assignedAgentId?: string | null) {

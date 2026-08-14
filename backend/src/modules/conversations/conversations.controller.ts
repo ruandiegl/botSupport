@@ -5,6 +5,7 @@ import {
   ListConversationsQuerySchema,
   AssumeConversationBodySchema,
   SendMessageBodySchema,
+  ListMessagesQuerySchema,
 } from "./conversations.schemas.js";
 
 function getParam(req: Request, key: string): string {
@@ -42,6 +43,26 @@ export class ConversationsController {
       return;
     }
     res.json(conversation);
+  }
+
+  async listMessages(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const id = getParam(req, "id");
+    const parsed = ListMessagesQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+
+    const result = await conversationsService.listMessages(id, parsed.data, req.user);
+    if (!result) {
+      res.status(404).json({ error: "Conversa não encontrada" });
+      return;
+    }
+    if ("invalidCursor" in result) {
+      res.status(400).json({ error: "Cursor de mensagens inválido" });
+      return;
+    }
+    res.json(result);
   }
 
   async markAsRead(req: Request, res: Response): Promise<void> {

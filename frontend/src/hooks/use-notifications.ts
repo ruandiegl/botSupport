@@ -63,11 +63,71 @@ export function useNotifications(enabled = true) {
     retry: false,
   });
 
-  const refresh = useCallback(() => {
-    void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  const handleNew = useCallback((payload: Partial<AgentNotification>) => {
+    if (!payload.id || !payload.title || !payload.createdAt) {
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      return;
+    }
+    const notification = payload as AgentNotification;
+    queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], (previous) => {
+      if (!previous || previous.items.some((item) => item.id === notification.id)) return previous;
+      const unread = !notification.readAt && !notification.dismissedAt;
+      return {
+        ...previous,
+        items: [notification, ...previous.items].slice(0, previous.limit),
+        total: previous.total + 1,
+        unreadCount: previous.unreadCount + (unread ? 1 : 0),
+      };
+    });
+    if (!notification.readAt && !notification.dismissedAt) {
+      queryClient.setQueryData<number>(["notifications", "unread-count"], (count) => (count ?? 0) + 1);
+    }
   }, [queryClient]);
-  useSocketEvent("notification:new", refresh);
-  useSocketEvent("notification:read", refresh);
+
+  const handleRead = useCallback((payload: { notificationId?: string; all?: boolean }) => {
+    if (payload.all) {
+      queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], (previous) => previous ? {
+        ...previous,
+        unreadCount: 0,
+        items: previous.items.map((item) => item.readAt || item.dismissedAt ? item : { ...item, readAt: new Date().toISOString() }),
+      } : previous);
+      queryClient.setQueryData(["notifications", "unread-count"], 0);
+      return;
+    }
+    if (!payload.notificationId) return;
+    const previous = queryClient.getQueryData<NotificationListResponse>(["notifications", "list"]);
+    const existing = previous?.items.find((item) => item.id === payload.notificationId);
+    const wasUnread = Boolean(existing && !existing.readAt && !existing.dismissedAt);
+    queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], (previous) => {
+      if (!previous) return previous;
+      return {
+        ...previous,
+        unreadCount: Math.max(0, previous.unreadCount - (wasUnread ? 1 : 0)),
+        items: previous.items.map((item) => item.id === payload.notificationId ? { ...item, readAt: item.readAt ?? new Date().toISOString() } : item),
+      };
+    });
+    queryClient.setQueryData<number>(["notifications", "unread-count"], (count) => Math.max(0, (count ?? 0) - (wasUnread ? 1 : 0)));
+  }, [queryClient]);
+
+  const handleDismissed = useCallback((payload: { notificationId?: string }) => {
+    if (!payload.notificationId) return;
+    const previous = queryClient.getQueryData<NotificationListResponse>(["notifications", "list"]);
+    const existing = previous?.items.find((item) => item.id === payload.notificationId);
+    const wasUnread = Boolean(existing && !existing.readAt && !existing.dismissedAt);
+    queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], (previous) => {
+      if (!previous) return previous;
+      return {
+        ...previous,
+        unreadCount: Math.max(0, previous.unreadCount - (wasUnread ? 1 : 0)),
+        items: previous.items.filter((item) => item.id !== payload.notificationId),
+      };
+    });
+    queryClient.setQueryData<number>(["notifications", "unread-count"], (count) => Math.max(0, (count ?? 0) - (wasUnread ? 1 : 0)));
+  }, [queryClient]);
+
+  useSocketEvent("notification:new", handleNew);
+  useSocketEvent("notification:read", handleRead);
+  useSocketEvent("notification:dismissed", handleDismissed);
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {
@@ -91,7 +151,7 @@ export function useNotifications(enabled = true) {
       return { previous };
     },
     onError: (_error, _id, context) => { if (context?.previous) queryClient.setQueryData(["notifications", "list"], context.previous); },
-    onSettled: refresh,
+    onSettled: () => {},
   });
 
   const markAllRead = useMutation({
@@ -108,7 +168,7 @@ export function useNotifications(enabled = true) {
       return { previous };
     },
     onError: (_error, _variables, context) => { if (context?.previous) queryClient.setQueryData(["notifications", "list"], context.previous); },
-    onSettled: refresh,
+    onSettled: () => {},
   });
 
   const dismiss = useMutation({
@@ -131,7 +191,7 @@ export function useNotifications(enabled = true) {
       return { previous };
     },
     onError: (_error, _variables, context) => { if (context?.previous) queryClient.setQueryData(["notifications", "list"], context.previous); },
-    onSettled: refresh,
+    onSettled: () => {},
   });
 
   return {

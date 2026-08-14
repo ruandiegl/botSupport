@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useCallback } from "react";
+import React, { useState, createContext, useContext, useCallback, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import {
   MessageCircle,
@@ -18,7 +18,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
-import type { Conversation, ConversationListResponse, Agent } from "@/types";
+import type { ConversationListResponse, Agent } from "@/types";
 import { Brand } from "@/components/ui/Brand";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
@@ -53,12 +53,21 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
   const queryClient = useQueryClient();
+  const conversationRefreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // A fila e seus contadores são atualizados por eventos do Socket.IO.
   // Assim evitamos polling contínuo em todas as telas.
   const refreshConversations = useCallback(() => {
-    void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    if (conversationRefreshTimer.current) return;
+    conversationRefreshTimer.current = setTimeout(() => {
+      conversationRefreshTimer.current = null;
+      void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      void queryClient.invalidateQueries({ queryKey: ["conversation-counts"] });
+    }, 100);
   }, [queryClient]);
+  useEffect(() => () => {
+    if (conversationRefreshTimer.current) clearTimeout(conversationRefreshTimer.current);
+  }, []);
   const refreshAgents = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: ["agents"] });
   }, [queryClient]);
@@ -86,15 +95,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   const setActiveAgentId = (_id: string) => {};
 
-  // Buscar lista de conversas reais para contagem da fila
-  const { data: conversations } = useQuery<Conversation[] | ConversationListResponse>({
-    queryKey: ["conversations"],
-    queryFn: () => apiFetch<Conversation[]>("/conversations"),
+  // O shell precisa apenas do contador; não carregue a lista completa nem o
+  // histórico de mensagens para montar o badge da navegação.
+  const { data: conversationSummary } = useQuery<ConversationListResponse>({
+    queryKey: ["conversation-counts"],
+    queryFn: () => apiFetch<ConversationListResponse>("/conversations?status=OPEN&page=1&limit=5"),
     enabled: isAuthenticated,
+    staleTime: 15_000,
   });
 
-  const conversationItems = Array.isArray(conversations) ? conversations : conversations?.items ?? [];
-  const queueCount = conversationItems.filter((item) => item.status === "OPEN").length;
+  const queueCount = conversationSummary?.counts?.open ?? conversationSummary?.items?.filter((item) => item.status === "OPEN").length ?? 0;
 
   const nav = [
     { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
