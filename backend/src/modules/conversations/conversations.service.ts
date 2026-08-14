@@ -19,7 +19,7 @@ export class ConversationsService {
     if (!user || user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
     if (user.role !== "AGENT") return true;
     if (conversation.assignedAgentId === user.id) return true;
-    return Boolean(conversation.status === "QUEUED" && user.departmentId && conversation.departmentId === user.departmentId);
+    return Boolean(conversation.status === "OPEN" && user.departmentId && conversation.departmentId === user.departmentId);
   }
 
   async formatConversation(id: string) {
@@ -211,7 +211,7 @@ export class ConversationsService {
     const dept = await conversationsRepository.findDepartmentById(departmentId);
     const deptName = dept?.name ?? "Novo Departamento";
 
-    const queued = await conversationsRepository.updateStatusAndAgent(id, "QUEUED", null);
+    const queued = await conversationsRepository.updateStatusAndAgent(id, "OPEN", null);
     await conversationsRepository.updateDepartment(id, departmentId);
 
     const transferText = `Seu atendimento foi transferido para a fila de *${deptName}*. Em breve um atendente deste departamento irá assumir.`;
@@ -227,7 +227,7 @@ export class ConversationsService {
       await zApiService.sendText(conversation.contact.phone, transferText);
     }
 
-    conversationEvents.emit("conversation_updated", { conversationId: id, status: "QUEUED", eventType: "NEW_QUEUE", departmentId, assignedAgentId: null, queuedAt: queued.queuedAt });
+    conversationEvents.emit("conversation_updated", { conversationId: id, status: "OPEN", eventType: "NEW_QUEUE", departmentId, assignedAgentId: null, queuedAt: queued.queuedAt });
 
     return this.formatConversation(id);
   }

@@ -5,7 +5,7 @@ const queryBoolean = z.union([z.boolean(), z.enum(["true", "false"])])
   .default(false);
 
 export const ListConversationsQuerySchema = z.object({
-  status: z.enum(["ALL", "QUEUED", "IN_PROGRESS", "BOT", "CLOSED"]).optional(),
+  status: z.enum(["ALL", "OPEN", "IN_PROGRESS", "CLOSED"]).optional(),
   departmentId: z.union([z.literal("ALL"), z.string().uuid()]).optional(),
   assignedAgentId: z.union([z.literal("me"), z.string().uuid()]).optional(),
   openOnly: queryBoolean,

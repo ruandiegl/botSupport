@@ -238,7 +238,7 @@ export default function ConversationPage() {
           </div>
 
           <div className="thread-actions">
-            {conversation.status === "QUEUED" && (
+            {conversation.status === "OPEN" && (
               <Button
                 variant="default"
                 size="sm"

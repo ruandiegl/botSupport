@@ -15,6 +15,7 @@ import notificationsRoutes from "./modules/notifications/notifications.routes.js
 import { notificationsService } from "./modules/notifications/notifications.service.js";
 import mediaRoutes from "./modules/media/media.routes.js";
 import { mediaExpirationWorker } from "./modules/media/media-expiration.worker.js";
+import { inactivityWorker } from "./modules/conversations/inactivity.worker.js";
 
 export const app = express();
 
@@ -75,6 +76,7 @@ app.use("/api", mediaRoutes);
 // worker. The worker is unref'd and therefore never prevents graceful shutdown.
 notificationsService.start();
 mediaExpirationWorker.start();
+inactivityWorker.start();
 
 // Global Error Handler
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

@@ -20,7 +20,9 @@ export class ConversationsRepository {
   }) {
     const where: any = {};
     if (filters.status && filters.status !== "ALL") {
-      where.status = filters.status;
+      // Map legacy statuses for backward compatibility
+      const statusValue = filters.status;
+      where.status = statusValue;
     }
     if (filters.departmentId && filters.departmentId !== "ALL") {
       where.departmentId = filters.departmentId;
@@ -79,7 +81,7 @@ export class ConversationsRepository {
         ? Prisma.sql`c."started_at" ASC, c."id" ASC`
         : sort === "recent"
         ? Prisma.sql`c."last_activity_at" DESC, c."id" ASC`
-        : Prisma.sql`CASE c."status" WHEN 'QUEUED' THEN 0 WHEN 'IN_PROGRESS' THEN 1 WHEN 'BOT' THEN 2 WHEN 'CLOSED' THEN 3 ELSE 9 END ASC, (SELECT COUNT(*) FROM "gtf_messages" um WHERE um."conversation_id" = c."id" AND um."direction" = 'IN' AND um."read_at" IS NULL) DESC, CASE WHEN c."status" = 'QUEUED' THEN COALESCE(c."queued_at", c."started_at") END ASC NULLS LAST, c."last_activity_at" DESC, c."id" ASC`;
+        : Prisma.sql`CASE c."status" WHEN 'OPEN' THEN 0 WHEN 'IN_PROGRESS' THEN 1 WHEN 'CLOSED' THEN 2 ELSE 9 END ASC, (SELECT COUNT(*) FROM "gtf_messages" um WHERE um."conversation_id" = c."id" AND um."direction" = 'IN' AND um."read_at" IS NULL) DESC, CASE WHEN c."status" = 'OPEN' THEN COALESCE(c."queued_at", c."started_at") END ASC NULLS LAST, c."last_activity_at" DESC, c."id" ASC`;
       const offset = (page - 1) * limit;
       const idRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
         SELECT c."id" FROM "gtf_conversations" c
@@ -114,12 +116,12 @@ export class ConversationsRepository {
       prisma.conversation.count({ where }),
     ]);
 
-    const statusRank: Record<string, number> = { QUEUED: 0, IN_PROGRESS: 1, BOT: 2, CLOSED: 3 };
+    const statusRank: Record<string, number> = { OPEN: 0, IN_PROGRESS: 1, CLOSED: 2 };
     const sorted = sort === "operational"
       ? rows.slice().sort((a, b) => {
           const rank = (statusRank[a.status] ?? 9) - (statusRank[b.status] ?? 9);
           if (rank !== 0) return rank;
-          if (a.status === "QUEUED" && b.status === "QUEUED") {
+          if (a.status === "OPEN" && b.status === "OPEN") {
             const aQueued = a.queuedAt?.getTime() ?? a.startedAt.getTime();
             const bQueued = b.queuedAt?.getTime() ?? b.startedAt.getTime();
             if (aQueued !== bQueued) return aQueued - bQueued;
@@ -139,15 +141,13 @@ export class ConversationsRepository {
     accessible?: boolean;
   }) {
     if (scope.accessible === false) {
-      return { open: 0, queued: 0, inProgress: 0, bot: 0, closed: 0, mine: 0, unread: 0 };
+      return { open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
     }
 
     const baseWhere = scope.departmentId ? { departmentId: scope.departmentId } : {};
-    const [open, queued, inProgress, bot, closed, mine, unread] = await Promise.all([
-      prisma.conversation.count({ where: { ...baseWhere, status: { not: "CLOSED" } } }),
-      prisma.conversation.count({ where: { ...baseWhere, status: "QUEUED" } }),
+    const [open, inProgress, closed, mine, unread] = await Promise.all([
+      prisma.conversation.count({ where: { ...baseWhere, status: "OPEN" } }),
       prisma.conversation.count({ where: { ...baseWhere, status: "IN_PROGRESS" } }),
-      prisma.conversation.count({ where: { ...baseWhere, status: "BOT" } }),
       prisma.conversation.count({ where: { ...baseWhere, status: "CLOSED" } }),
       scope.agentId
         ? prisma.conversation.count({ where: { ...baseWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
@@ -155,7 +155,7 @@ export class ConversationsRepository {
       prisma.message.count({ where: { direction: "IN", readAt: null, conversation: baseWhere } }),
     ]);
 
-    return { open, queued, inProgress, bot, closed, mine, unread };
+    return { open, inProgress, closed, mine, unread };
   }
 
   async findById(id: string) {
@@ -176,7 +176,6 @@ export class ConversationsRepository {
   }
 
   async updateStatusAndAgent(id: string, status: string, assignedAgentId?: string | null) {
-    const current = await prisma.conversation.findUnique({ where: { id }, select: { status: true, queuedAt: true } });
     const now = new Date();
     return prisma.conversation.update({
       where: { id },
@@ -184,18 +183,21 @@ export class ConversationsRepository {
         status,
         ...(assignedAgentId !== undefined && { assignedAgentId }),
         lastActivityAt: now,
-        ...(status === "QUEUED" && current?.status !== "QUEUED" ? { queuedAt: now } : {}),
+        // Reset inactivity warning when status changes
+        ...(status !== "CLOSED" ? { warningSentAt: null } : {}),
+        ...(status === "OPEN" ? { queuedAt: now } : {}),
       },
     });
   }
 
-  async close(id: string) {
+  async close(id: string, reason: string = "MANUAL") {
     return prisma.conversation.update({
       where: { id },
       data: {
         status: "CLOSED",
         closedAt: new Date(),
         lastActivityAt: new Date(),
+        closeReason: reason,
       },
     });
   }
@@ -255,6 +257,49 @@ export class ConversationsRepository {
     return prisma.conversation.update({
       where: { id },
       data: { departmentId, lastActivityAt: new Date() },
+    });
+  }
+
+  // ─── Inactivity Worker Methods ───────────────────────────────────────────────
+
+  /** Returns conversations open/in-progress with no client activity for `minutes` minutes and no warning sent yet. */
+  async findInactiveWithoutWarning(inactiveMinutes: number) {
+    const cutoff = new Date(Date.now() - inactiveMinutes * 60 * 1000);
+    return prisma.conversation.findMany({
+      where: {
+        status: { in: ["OPEN", "IN_PROGRESS"] },
+        lastActivityAt: { lt: cutoff },
+        warningSentAt: null,
+      },
+      include: { contact: true },
+    });
+  }
+
+  /** Returns conversations where the warning was sent more than `minutes` ago and client still hasn't replied. */
+  async findInactiveAfterWarning(warningMinutes: number) {
+    const cutoff = new Date(Date.now() - warningMinutes * 60 * 1000);
+    return prisma.conversation.findMany({
+      where: {
+        status: { in: ["OPEN", "IN_PROGRESS"] },
+        warningSentAt: { lt: cutoff, not: null },
+      },
+      include: { contact: true },
+    });
+  }
+
+  /** Marks a warning as sent for the given conversation. */
+  async markWarningSent(id: string) {
+    return prisma.conversation.update({
+      where: { id },
+      data: { warningSentAt: new Date() },
+    });
+  }
+
+  /** Resets inactivity warning (called when client sends a new message). */
+  async resetInactivityWarning(id: string) {
+    return prisma.conversation.update({
+      where: { id },
+      data: { warningSentAt: null },
     });
   }
 }

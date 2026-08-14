@@ -32,9 +32,7 @@ export interface ConversationQueryResult {
 
 export interface ConversationMetricCounts {
   open: number;
-  queued: number;
   inProgress: number;
-  bot: number;
   closed: number;
   mine: number;
   unread: number;
@@ -133,10 +131,10 @@ export function useListConversations(filters: ConversationFilters) {
           .sort((left, right) => {
             if (filters.sort === "oldest") return left.startedAt.localeCompare(right.startedAt) || left.id.localeCompare(right.id);
             if (filters.sort === "recent") return (right.lastActivityAt ?? right.startedAt).localeCompare(left.lastActivityAt ?? left.startedAt) || left.id.localeCompare(right.id);
-            const rank: Record<string, number> = { QUEUED: 0, IN_PROGRESS: 1, BOT: 2, CLOSED: 3 };
+            const rank: Record<string, number> = { OPEN: 0, IN_PROGRESS: 1, CLOSED: 2 };
             const rankDiff = (rank[left.status] ?? 9) - (rank[right.status] ?? 9);
             if (rankDiff !== 0) return rankDiff;
-            if (left.status === "QUEUED" && right.status === "QUEUED") {
+            if (left.status === "OPEN" && right.status === "OPEN") {
               const queuedDiff = (left.queuedAt ?? left.startedAt).localeCompare(right.queuedAt ?? right.startedAt);
               if (queuedDiff !== 0) return queuedDiff;
             }

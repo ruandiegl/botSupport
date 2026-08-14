@@ -4,19 +4,20 @@ import type { ConversationMetricCounts } from "../hooks/use-queue";
 
 export function QueueCard({ conversations, fixedCounts }: { conversations: Conversation[]; fixedCounts?: ConversationMetricCounts }) {
   const counts = fixedCounts
-    ? { QUEUED: fixedCounts.queued, IN_PROGRESS: fixedCounts.inProgress, BOT: fixedCounts.bot, CLOSED: fixedCounts.closed }
+    ? { OPEN: fixedCounts.open, IN_PROGRESS: fixedCounts.inProgress, CLOSED: fixedCounts.closed }
     : {
-        QUEUED: conversations.filter((x) => x.status === "QUEUED").length,
+        OPEN: conversations.filter((x) => x.status === "OPEN").length,
         IN_PROGRESS: conversations.filter((x) => x.status === "IN_PROGRESS").length,
-        BOT: conversations.filter((x) => x.status === "BOT").length,
         CLOSED: conversations.filter((x) => x.status === "CLOSED").length,
       };
-  const total = Math.max(fixedCounts ? fixedCounts.queued + fixedCounts.inProgress + fixedCounts.bot + fixedCounts.closed : conversations.length, 1);
+  const total = Math.max(
+    fixedCounts ? fixedCounts.open + fixedCounts.inProgress + fixedCounts.closed : conversations.length,
+    1
+  );
 
   const items = [
-    ["QUEUED", "Aguardando", ""],
+    ["OPEN", "Em aberto", "warning"],
     ["IN_PROGRESS", "Em atendimento", "teal"],
-    ["BOT", "No bot", "slate"],
     ["CLOSED", "Encerradas", "gold"],
   ] as const;
 

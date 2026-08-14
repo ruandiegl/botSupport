@@ -7874,6 +7874,8 @@ export namespace Prisma {
     queuedAt: Date | null
     lastActivityAt: Date | null
     closedAt: Date | null
+    warningSentAt: Date | null
+    closeReason: string | null
   }
 
   export type ConversationMaxAggregateOutputType = {
@@ -7889,6 +7891,8 @@ export namespace Prisma {
     queuedAt: Date | null
     lastActivityAt: Date | null
     closedAt: Date | null
+    warningSentAt: Date | null
+    closeReason: string | null
   }
 
   export type ConversationCountAggregateOutputType = {
@@ -7905,6 +7909,8 @@ export namespace Prisma {
     queuedAt: number
     lastActivityAt: number
     closedAt: number
+    warningSentAt: number
+    closeReason: number
     _all: number
   }
 
@@ -7922,6 +7928,8 @@ export namespace Prisma {
     queuedAt?: true
     lastActivityAt?: true
     closedAt?: true
+    warningSentAt?: true
+    closeReason?: true
   }
 
   export type ConversationMaxAggregateInputType = {
@@ -7937,6 +7945,8 @@ export namespace Prisma {
     queuedAt?: true
     lastActivityAt?: true
     closedAt?: true
+    warningSentAt?: true
+    closeReason?: true
   }
 
   export type ConversationCountAggregateInputType = {
@@ -7953,6 +7963,8 @@ export namespace Prisma {
     queuedAt?: true
     lastActivityAt?: true
     closedAt?: true
+    warningSentAt?: true
+    closeReason?: true
     _all?: true
   }
 
@@ -8042,6 +8054,8 @@ export namespace Prisma {
     queuedAt: Date | null
     lastActivityAt: Date
     closedAt: Date | null
+    warningSentAt: Date | null
+    closeReason: string | null
     _count: ConversationCountAggregateOutputType | null
     _min: ConversationMinAggregateOutputType | null
     _max: ConversationMaxAggregateOutputType | null
@@ -8075,6 +8089,8 @@ export namespace Prisma {
     queuedAt?: boolean
     lastActivityAt?: boolean
     closedAt?: boolean
+    warningSentAt?: boolean
+    closeReason?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
@@ -8101,6 +8117,8 @@ export namespace Prisma {
     queuedAt?: boolean
     lastActivityAt?: boolean
     closedAt?: boolean
+    warningSentAt?: boolean
+    closeReason?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
@@ -8122,6 +8140,8 @@ export namespace Prisma {
     queuedAt?: boolean
     lastActivityAt?: boolean
     closedAt?: boolean
+    warningSentAt?: boolean
+    closeReason?: boolean
   }
 
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8171,6 +8191,8 @@ export namespace Prisma {
       queuedAt: Date | null
       lastActivityAt: Date
       closedAt: Date | null
+      warningSentAt: Date | null
+      closeReason: string | null
     }, ExtArgs["result"]["conversation"]>
     composites: {}
   }
@@ -8586,6 +8608,8 @@ export namespace Prisma {
     readonly queuedAt: FieldRef<"Conversation", 'DateTime'>
     readonly lastActivityAt: FieldRef<"Conversation", 'DateTime'>
     readonly closedAt: FieldRef<"Conversation", 'DateTime'>
+    readonly warningSentAt: FieldRef<"Conversation", 'DateTime'>
+    readonly closeReason: FieldRef<"Conversation", 'String'>
   }
     
 
@@ -21732,7 +21756,9 @@ export namespace Prisma {
     startedAt: 'startedAt',
     queuedAt: 'queuedAt',
     lastActivityAt: 'lastActivityAt',
-    closedAt: 'closedAt'
+    closedAt: 'closedAt',
+    warningSentAt: 'warningSentAt',
+    closeReason: 'closeReason'
   };
 
   export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
@@ -22499,6 +22525,8 @@ export namespace Prisma {
     queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    closeReason?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -22524,6 +22552,8 @@ export namespace Prisma {
     queuedAt?: SortOrderInput | SortOrder
     lastActivityAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
+    warningSentAt?: SortOrderInput | SortOrder
+    closeReason?: SortOrderInput | SortOrder
     contact?: ContactOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
     assignedAgent?: AgentOrderByWithRelationInput
@@ -22552,6 +22582,8 @@ export namespace Prisma {
     queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    closeReason?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -22577,6 +22609,8 @@ export namespace Prisma {
     queuedAt?: SortOrderInput | SortOrder
     lastActivityAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
+    warningSentAt?: SortOrderInput | SortOrder
+    closeReason?: SortOrderInput | SortOrder
     _count?: ConversationCountOrderByAggregateInput
     _max?: ConversationMaxOrderByAggregateInput
     _min?: ConversationMinOrderByAggregateInput
@@ -22599,6 +22633,8 @@ export namespace Prisma {
     queuedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
     lastActivityAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
+    warningSentAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
+    closeReason?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
   }
 
   export type MessageWhereInput = {
@@ -24024,6 +24060,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -24049,6 +24087,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -24064,6 +24104,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -24089,6 +24131,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -24109,6 +24153,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type ConversationUpdateManyMutationInput = {
@@ -24120,6 +24166,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ConversationUncheckedUpdateManyInput = {
@@ -24136,6 +24184,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageCreateInput = {
@@ -25752,6 +25802,8 @@ export namespace Prisma {
     queuedAt?: SortOrder
     lastActivityAt?: SortOrder
     closedAt?: SortOrder
+    warningSentAt?: SortOrder
+    closeReason?: SortOrder
   }
 
   export type ConversationMaxOrderByAggregateInput = {
@@ -25767,6 +25819,8 @@ export namespace Prisma {
     queuedAt?: SortOrder
     lastActivityAt?: SortOrder
     closedAt?: SortOrder
+    warningSentAt?: SortOrder
+    closeReason?: SortOrder
   }
 
   export type ConversationMinOrderByAggregateInput = {
@@ -25782,6 +25836,8 @@ export namespace Prisma {
     queuedAt?: SortOrder
     lastActivityAt?: SortOrder
     closedAt?: SortOrder
+    warningSentAt?: SortOrder
+    closeReason?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -28861,6 +28917,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -28884,6 +28942,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -29075,6 +29135,8 @@ export namespace Prisma {
     queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    closeReason?: StringNullableFilter<"Conversation"> | string | null
   }
 
   export type ShortcutUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -29240,6 +29302,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -29263,6 +29327,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -29838,6 +29904,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -29861,6 +29929,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -30539,6 +30609,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -30563,6 +30635,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -30701,6 +30775,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -30725,6 +30801,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -30888,6 +30966,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -30912,6 +30992,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -30977,6 +31059,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -31001,6 +31085,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -31209,6 +31295,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -31232,6 +31320,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -31564,6 +31654,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -31587,6 +31679,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
@@ -32014,6 +32108,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -32038,6 +32134,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -32140,6 +32238,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -32164,6 +32264,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -32877,6 +32979,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -32901,6 +33005,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -32982,6 +33088,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -33006,6 +33114,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -33138,6 +33248,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type ShortcutCreateManyDepartmentInput = {
@@ -33248,6 +33360,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -33271,6 +33385,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -33290,6 +33406,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ShortcutUpdateWithoutDepartmentInput = {
@@ -33396,6 +33514,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type MessageCreateManySenderAgentInput = {
@@ -33500,6 +33620,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -33523,6 +33645,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -33542,6 +33666,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageUpdateWithoutSenderAgentInput = {
@@ -33852,6 +33978,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type ConversationUpdateWithoutContactInput = {
@@ -33863,6 +33991,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -33886,6 +34016,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -33905,6 +34037,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageCreateManyConversationInput = {
@@ -34254,6 +34388,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowRevisionInput = {
@@ -34343,6 +34479,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -34366,6 +34504,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -34385,6 +34525,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowRevisionInput = {
@@ -34448,6 +34590,8 @@ export namespace Prisma {
     queuedAt?: Date | string | null
     lastActivityAt?: Date | string
     closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowNodeInput = {
@@ -34523,6 +34667,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -34546,6 +34692,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
@@ -34565,6 +34713,8 @@ export namespace Prisma {
     queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowNodeInput = {

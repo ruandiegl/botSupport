@@ -4,8 +4,7 @@ import type { Conversation } from "@/types";
 import { getInitials } from "@/app/Shell";
 
 const statusLabel: Record<string, string> = {
-  BOT: "Bot",
-  QUEUED: "Na fila",
+  OPEN: "Em aberto",
   IN_PROGRESS: "Em atendimento",
   CLOSED: "Encerrada",
 };
@@ -16,7 +15,7 @@ const timeLabel = (date?: string) =>
     : "--:--";
 
 const ageLabel = (conversation: Conversation) => {
-  const timestamp = conversation.status === "QUEUED"
+  const timestamp = conversation.status === "OPEN"
     ? conversation.queuedAt || conversation.startedAt
     : conversation.lastActivityAt || conversation.startedAt;
   if (!timestamp) return "";
@@ -62,7 +61,7 @@ export function ConversationRow({
           <span style={{ color: "hsl(var(--muted-foreground))", fontSize: 10 }}>
             {conversation.departmentName || "Sem departamento"}
           </span>
-          {conversation.status !== "CLOSED" ? <span className="conversation-age"><Clock3 /> {conversation.status === "QUEUED" ? "aguardando" : "atividade"} {ageLabel(conversation)}</span> : null}
+          {conversation.status !== "CLOSED" ? <span className="conversation-age"><Clock3 /> {conversation.status === "OPEN" ? "aguardando" : "atividade"} {ageLabel(conversation)}</span> : null}
         </div>
       </div>
       <div className="row-side">

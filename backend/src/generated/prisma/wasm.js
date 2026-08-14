@@ -177,7 +177,9 @@ exports.Prisma.ConversationScalarFieldEnum = {
   startedAt: 'startedAt',
   queuedAt: 'queuedAt',
   lastActivityAt: 'lastActivityAt',
-  closedAt: 'closedAt'
+  closedAt: 'closedAt',
+  warningSentAt: 'warningSentAt',
+  closeReason: 'closeReason'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {

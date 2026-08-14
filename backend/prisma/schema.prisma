@@ -82,7 +82,7 @@ model Contact {
 model Conversation {
   id                String               @id @default(uuid())
   contactId         String               @map("contact_id")
-  status            String               @default("BOT")
+  status            String               @default("OPEN")
   departmentId      String?              @map("department_id")
   assignedAgentId   String?              @map("assigned_agent_id")
   currentStep       String?              @map("current_step")
@@ -93,6 +93,8 @@ model Conversation {
   queuedAt          DateTime?            @map("queued_at") @db.Timestamptz
   lastActivityAt    DateTime             @default(now()) @map("last_activity_at") @db.Timestamptz
   closedAt          DateTime?            @map("closed_at") @db.Timestamptz
+  warningSentAt     DateTime?            @map("warning_sent_at") @db.Timestamptz
+  closeReason       String?              @map("close_reason")
   contact           Contact              @relation(fields: [contactId], references: [id])
   department        Department?          @relation(fields: [departmentId], references: [id])
   assignedAgent     Agent?               @relation(fields: [assignedAgentId], references: [id])
@@ -109,6 +111,7 @@ model Conversation {
   @@index([status, queuedAt])
   @@index([assignedAgentId, status, lastActivityAt])
   @@index([lastActivityAt])
+  @@index([warningSentAt])
   @@map("gtf_conversations")
 }
 

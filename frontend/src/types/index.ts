@@ -1,4 +1,4 @@
-export type ConversationStatus = "BOT" | "QUEUED" | "IN_PROGRESS" | "CLOSED";
+export type ConversationStatus = "OPEN" | "IN_PROGRESS" | "CLOSED";
 export type MessageDirection = "IN" | "OUT";
 export type SenderType = "CLIENT" | "AGENT" | "BOT";
 export type AgentRole = "ADMIN" | "SUPERVISOR" | "AGENT";

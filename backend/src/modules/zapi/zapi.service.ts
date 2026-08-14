@@ -541,7 +541,7 @@ export class ZApiService {
     let activeConversation = await zApiRepository.findActiveConversationByContact(contact.id);
     const isNewConversation = !activeConversation;
     if (!activeConversation) {
-      activeConversation = await zApiRepository.createConversation(contact.id, "BOT", "AWAITING_TEAM");
+      activeConversation = await zApiRepository.createConversation(contact.id, "OPEN", "AWAITING_TEAM");
     }
 
     const conversationId = activeConversation.id;
@@ -623,9 +623,15 @@ export class ZApiService {
       assignedAgentId: activeConversation.assignedAgentId,
     });
 
+    // Reset inactivity warning whenever the client sends a new message
+    if (activeConversation.warningSentAt) {
+      await zApiRepository.resetInactivityWarning(conversationId);
+      logger.info({ conversationId }, "inactivity warning reset due to new client message");
+    }
+
     const config = await this.getConfig();
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
-    if (activeConversation.status !== "BOT") return { status: "message_logged" };
+    if (activeConversation.status !== "OPEN") return { status: "message_logged" };
 
     if (incoming.media && !incoming.media.caption?.trim() && !isNewConversation) {
       return { status: "media_logged" };
@@ -656,7 +662,7 @@ export class ZApiService {
       }
       const routed = execution.status === "routed_to_department";
       const latest = await zApiRepository.getConversationContext(conversationId);
-      conversationEvents.emit("conversation_updated", { conversationId, status: routed ? "QUEUED" : "BOT", eventType: routed ? "NEW_QUEUE" : "FLOW_UPDATED", departmentId: latest?.departmentId, assignedAgentId: latest?.assignedAgentId, queuedAt: latest?.queuedAt });
+      conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN", eventType: routed ? "NEW_QUEUE" : "FLOW_UPDATED", departmentId: latest?.departmentId, assignedAgentId: latest?.assignedAgentId, queuedAt: latest?.queuedAt });
       return { status: execution.status };
     }
 
@@ -675,7 +681,7 @@ export class ZApiService {
       const replyMessage = selectedOption.procedureMessage || `Você selecionou a equipe ${teamName}.`;
 
       const routedConversation = await zApiRepository.updateConversationStatus(conversationId, {
-        status: "QUEUED",
+        status: "OPEN",
         departmentId: selectedOption.departmentId,
         currentStep: "AWAITING_DETAILS",
       });
@@ -686,7 +692,7 @@ export class ZApiService {
         content: replyMessage,
       });
       await this.sendText(phone, replyMessage);
-      conversationEvents.emit("conversation_updated", { conversationId, status: "QUEUED", eventType: "NEW_QUEUE", departmentId: routedConversation.departmentId, assignedAgentId: routedConversation.assignedAgentId, queuedAt: routedConversation.queuedAt });
+      conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN", eventType: "NEW_QUEUE", departmentId: routedConversation.departmentId, assignedAgentId: routedConversation.assignedAgentId, queuedAt: routedConversation.queuedAt });
       return { status: "routed_to_department", departmentId: selectedOption.departmentId };
     }
 
@@ -713,7 +719,7 @@ export class ZApiService {
     if (buttonResult?.error) {
       logger.error({ error: buttonResult.error }, "Falha ao enviar botões do bot");
     }
-    conversationEvents.emit("conversation_updated", { conversationId, status: "BOT" });
+    conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN" });
 
     return { status: isNewConversation ? "welcome_sent" : "menu_resent" };
   }

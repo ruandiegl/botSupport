@@ -82,7 +82,7 @@ export class ZApiRepository {
     });
   }
 
-  async createConversation(contactId: string, status = "BOT", currentStep = "AWAITING_TEAM") {
+  async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM") {
     const now = new Date();
     return prisma.conversation.create({
       data: {
@@ -90,7 +90,7 @@ export class ZApiRepository {
         status,
         currentStep,
         lastActivityAt: now,
-        ...(status === "QUEUED" ? { queuedAt: now } : {}),
+        ...(status === "OPEN" ? { queuedAt: now } : {}),
       },
       include: {
         contact: true,
@@ -114,7 +114,8 @@ export class ZApiRepository {
         ...(data.assignedAgentId !== undefined && { assignedAgentId: data.assignedAgentId }),
         ...(data.currentStep !== undefined && { currentStep: data.currentStep }),
         lastActivityAt: now,
-        ...(data.status === "QUEUED" && current?.status !== "QUEUED" ? { queuedAt: now } : {}),
+        ...(data.status === "OPEN" && current?.status !== "OPEN" ? { queuedAt: now } : {}),
+        warningSentAt: null,
       },
     });
   }
@@ -229,6 +230,13 @@ export class ZApiRepository {
 
   async getConversationContext(id: string) {
     return prisma.conversation.findUnique({ where: { id }, select: { status: true, departmentId: true, assignedAgentId: true, queuedAt: true } });
+  }
+
+  async resetInactivityWarning(id: string) {
+    return prisma.conversation.update({
+      where: { id },
+      data: { warningSentAt: null },
+    });
   }
 }
 

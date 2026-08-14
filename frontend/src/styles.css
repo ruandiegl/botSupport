@@ -176,9 +176,8 @@ h3 { font:700 14px var(--app-font-display); color: #f8fafc; }
 /* Status Badges */
 .status { display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 8px;font:600 9px var(--app-font-mono);letter-spacing:.03em;white-space:nowrap; }
 .status:before { content:'';width:5px;height:5px;border-radius:50%;background:currentColor; }
-.status-QUEUED { color:#f59e0b;background:rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
+.status-OPEN { color:#f59e0b;background:rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
 .status-IN_PROGRESS { color:#10b981;background:rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); }
-.status-BOT { color:#a78bfa;background:rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.25); }
 .status-CLOSED { color:#94a3b8;background:rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.25); }
 
 /* Queue Sidebar Side Elements */
@@ -550,9 +549,8 @@ body { color: #0d1b2e; }
 .conversation-name, .queue-line b { color: #0d1b2e; }
 .conversation-phone, .last-message, .queue-line span:first-child, .time { color: #71869a; }
 .count { background: #2d89c8; color: #fff; }
-.status-QUEUED { color: #d9563f; background: rgba(233, 102, 77, .12); border-color: rgba(233, 102, 77, .24); }
+.status-OPEN { color: #d9563f; background: rgba(233, 102, 77, .12); border-color: rgba(233, 102, 77, .24); }
 .status-IN_PROGRESS { color: #258566; background: rgba(44, 157, 123, .12); border-color: rgba(44, 157, 123, .24); }
-.status-BOT { color: #617897; background: rgba(112, 136, 168, .12); border-color: rgba(112, 136, 168, .24); }
 .status-CLOSED { color: #a87518; background: rgba(214, 154, 45, .12); border-color: rgba(214, 154, 45, .24); }
 .bar { background: #e7edf2; }
 .bar span { background: #2d89c8; }

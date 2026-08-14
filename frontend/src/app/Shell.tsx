@@ -94,7 +94,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   });
 
   const conversationItems = Array.isArray(conversations) ? conversations : conversations?.items ?? [];
-  const queueCount = conversationItems.filter((item) => item.status === "QUEUED").length;
+  const queueCount = conversationItems.filter((item) => item.status === "OPEN").length;
 
   const nav = [
     { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
