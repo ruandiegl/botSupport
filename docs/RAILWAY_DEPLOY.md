@@ -47,3 +47,18 @@ Após o primeiro deploy da API, gere o domínio público dela; depois configure 
 ### Migrações no boot da API
 
 O comando de inicialização da API executa `prisma migrate deploy` antes de abrir a porta HTTP. Assim, as migrações versionadas são aplicadas no banco referenciado por `DATABASE_URL` a cada release, incluindo as tabelas de fila, notificações e mídia. Confirme nos logs do serviço que a migração terminou com sucesso; se ela falhar, valide `DATABASE_URL` e as permissões do banco antes de investigar respostas 500.
+
+### Baseline de banco legado (execução única)
+
+Se o Postgres já possuir tabelas criadas antes do histórico Prisma, `prisma migrate deploy` retorna `P3005` e não aplica nenhuma migração. Nesse caso, faça backup e confirme que o schema existente corresponde ao estado anterior às migrações de fila/mídia. Com autorização explícita, registre somente as cinco migrações legadas como aplicadas e, em seguida, aplique as duas novas:
+
+```bash
+npx prisma migrate resolve --applied 20260811000000_add_agent_status_and_rbac
+npx prisma migrate resolve --applied 20260811120000_add_shortcuts
+npx prisma migrate resolve --applied 20260811180000_add_message_read_status
+npx prisma migrate resolve --applied 20260812100000_add_versioned_flow_engine
+npx prisma migrate resolve --applied 20260812110000_add_flow_publish_permission
+npx prisma migrate deploy
+```
+
+Não use `prisma migrate reset` em produção. Depois do baseline, remova os comandos `resolve` do Railway e mantenha apenas `prisma migrate deploy` no pré-deploy.
