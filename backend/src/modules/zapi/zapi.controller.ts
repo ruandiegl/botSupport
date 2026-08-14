@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { zApiService } from "./zapi.service.js";
-import { UpdateZApiConfigSchema, TestZApiConnectionSchema } from "./zapi.schemas.js";
+import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema } from "./zapi.schemas.js";
 
 export class ZApiController {
   async getConfig(_req: Request, res: Response): Promise<void> {
@@ -59,8 +59,13 @@ export class ZApiController {
   }
 
   async handleWebhook(req: Request, res: Response): Promise<void> {
+    const parsed = ZApiReceivedWebhookSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Callback Z-API inválido.", issues: parsed.error.flatten().fieldErrors });
+      return;
+    }
     try {
-      const result = await zApiService.handleIncomingWebhook(req.body);
+      const result = await zApiService.handleIncomingWebhook(parsed.data);
       res.json(result);
     } catch (err: any) {
       res.status(500).json({ error: err.message });

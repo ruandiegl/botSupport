@@ -65,3 +65,12 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 - **Banco de Dados**: PostgreSQL 16 com ORM Prisma.
 - **API Backend**: RESTful com suporte a JSON e validação com Zod.
 - **Interface**: React 18, Vite 5, Tailwind CSS v4 com design system responsivo e moderno.
+## Mídia recebida em chamados
+
+- Imagens, áudios, vídeos e documentos recebidos pelo webhook Z-API aparecem dentro da conversa para atendentes autorizados.
+- O produto usa a retenção temporária de até 30 dias da própria Z-API e não mantém cópia do binário em banco, disco, R2 ou S3.
+- A plataforma guarda somente metadados e URLs cifradas; o navegador acessa uma rota interna com ticket curto e nunca recebe a URL original.
+- `messageId` é a chave de idempotência. Retransmissões do webhook não criam outra mensagem, mídia, unread ou notificação.
+- Mídias `viewOnce`, com `downloadError`, expiradas ou removidas antecipadamente recebem estados claros e não interrompem o restante do chamado.
+- Acesso segue o mesmo escopo da conversa: administrador/supervisor, atendente atribuído ou atendente do departamento enquanto o chamado estiver na fila.
+- Ao completar `expiresAt`, o acesso retorna `410`, as URLs cifradas são eliminadas e somente metadados mínimos permanecem no histórico.

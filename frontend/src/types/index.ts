@@ -16,6 +16,29 @@ export interface Message {
   senderName: string | null;
   content: string;
   createdAt: string;
+  media?: ConversationMedia | null;
+}
+
+export type ConversationMediaType = "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
+export type ConversationMediaStatus = "AVAILABLE" | "UNAVAILABLE" | "EXPIRED";
+
+export interface ConversationMedia {
+  id: string;
+  type: ConversationMediaType;
+  status: ConversationMediaStatus;
+  mimeType: string;
+  caption?: string | null;
+  fileName?: string | null;
+  title?: string | null;
+  ptt?: boolean | null;
+  seconds?: number | null;
+  width?: number | null;
+  height?: number | null;
+  pageCount?: number | null;
+  viewOnce: boolean;
+  hasThumbnail: boolean;
+  expiresAt: string;
+  available: boolean;
 }
 
 export interface Conversation {
@@ -30,6 +53,46 @@ export interface Conversation {
   lastMessage: string;
   messages: Message[];
   startedAt: string;
+  queuedAt?: string | null;
+  lastActivityAt?: string | null;
+}
+
+export interface ConversationListResponse {
+  items: Conversation[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  appliedFilters?: Record<string, unknown>;
+}
+
+export type NotificationType =
+  | "NEW_QUEUE_CONVERSATION"
+  | "NEW_MESSAGE"
+  | "ASSIGNED_CONVERSATION"
+  | "UNRESOLVED_REMINDER"
+  | (string & {});
+
+export interface AgentNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  conversationId?: string | null;
+  departmentId?: string | null;
+  createdAt: string;
+  readAt?: string | null;
+  dismissedAt?: string | null;
+  dedupeKey?: string | null;
+}
+
+export interface NotificationListResponse {
+  items: AgentNotification[];
+  page: number;
+  limit: number;
+  total: number;
+  unreadCount: number;
+  totalPages: number;
 }
 
 export interface Procedure {

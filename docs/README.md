@@ -22,6 +22,8 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Especificação da API REST**](API.md): Endpoints da API, schemas de requisição, respostas JSON e status HTTP.
 - [**Integração Z-API (WhatsApp)**](PRD_ZAPI.md): Especificação de webhooks de mensagens recebidas, envio e atualização de conversas.
 - [**Guia de Configuração e Execução (Setup)**](SETUP.md): Instruções passo a passo para ambiente de desenvolvimento local e Docker Compose.
+- [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.
+- [**Matriz QA de mídia Z-API**](QA_MIDIA_ZAPI.md): contratos, segurança, expiração e regressão.
 
 ---
 

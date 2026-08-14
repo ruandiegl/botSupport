@@ -51,6 +51,8 @@ model Agent {
   updatedShortcuts       Shortcut[]      @relation("ShortcutUpdatedBy")
   shortcutAudits         ShortcutAudit[]
   publishedFlowRevisions FlowRevision[]  @relation("FlowRevisionPublisher")
+  notifications          Notification[]
+  notificationPreference NotificationPreference?
 
   @@map("gtf_agents")
 }
@@ -88,6 +90,8 @@ model Conversation {
   currentFlowNodeId String?              @map("current_flow_node_id")
   flowContext       Json?                @map("flow_context")
   startedAt         DateTime             @default(now()) @map("started_at") @db.Timestamptz
+  queuedAt          DateTime?            @map("queued_at") @db.Timestamptz
+  lastActivityAt    DateTime             @default(now()) @map("last_activity_at") @db.Timestamptz
   closedAt          DateTime?            @map("closed_at") @db.Timestamptz
   contact           Contact              @relation(fields: [contactId], references: [id])
   department        Department?          @relation(fields: [departmentId], references: [id])
@@ -96,26 +100,87 @@ model Conversation {
   flowRevision      FlowRevision?        @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
   currentFlowNode   FlowNode?            @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
   flowEvents        FlowExecutionEvent[]
+  notifications     Notification[]
+  media             ConversationMedia[]
 
   @@index([flowRevisionId])
   @@index([currentFlowNodeId])
+  @@index([status, departmentId, lastActivityAt])
+  @@index([status, queuedAt])
+  @@index([assignedAgentId, status, lastActivityAt])
+  @@index([lastActivityAt])
   @@map("gtf_conversations")
 }
 
 model Message {
-  id             String       @id @default(uuid())
-  conversationId String       @map("conversation_id")
-  direction      String
-  senderType     String       @map("sender_type")
-  senderAgentId  String?      @map("sender_agent_id")
-  content        String
-  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  readAt         DateTime?    @map("read_at") @db.Timestamptz
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  senderAgent    Agent?       @relation(fields: [senderAgentId], references: [id])
+  id                String             @id @default(uuid())
+  conversationId    String             @map("conversation_id")
+  externalMessageId String?            @unique @map("external_message_id")
+  direction         String
+  senderType        String             @map("sender_type")
+  senderAgentId     String?            @map("sender_agent_id")
+  content           String
+  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  readAt            DateTime?          @map("read_at") @db.Timestamptz
+  conversation      Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderAgent       Agent?             @relation(fields: [senderAgentId], references: [id])
+  media             ConversationMedia?
 
   @@index([conversationId, direction, readAt])
   @@map("gtf_messages")
+}
+
+enum MediaProvider {
+  ZAPI
+}
+
+enum MediaType {
+  IMAGE
+  AUDIO
+  VIDEO
+  DOCUMENT
+}
+
+enum MediaStatus {
+  AVAILABLE
+  UNAVAILABLE
+  EXPIRED
+}
+
+model ConversationMedia {
+  id                     String        @id @default(uuid())
+  messageId              String        @unique @map("message_id")
+  conversationId         String        @map("conversation_id")
+  whatsappMessageId      String        @unique @map("whatsapp_message_id")
+  provider               MediaProvider @default(ZAPI)
+  type                   MediaType
+  status                 MediaStatus   @default(AVAILABLE)
+  mimeType               String        @map("mime_type")
+  caption                String?
+  originalFileName       String?       @map("original_file_name")
+  title                  String?
+  ptt                    Boolean?
+  seconds                Int?
+  width                  Int?
+  height                 Int?
+  pageCount              Int?          @map("page_count")
+  viewOnce               Boolean       @default(false) @map("view_once")
+  sourceUrlCiphertext    String?       @map("source_url_ciphertext")
+  thumbnailUrlCiphertext String?       @map("thumbnail_url_ciphertext")
+  encryptionKeyVersion   Int           @default(1) @map("encryption_key_version")
+  sourceCreatedAt        DateTime      @map("source_created_at") @db.Timestamptz
+  expiresAt              DateTime      @map("expires_at") @db.Timestamptz
+  failureCode            String?       @map("failure_code")
+  lastAccessErrorCode    String?       @map("last_access_error_code")
+  lastAccessedAt         DateTime?     @map("last_accessed_at") @db.Timestamptz
+  createdAt              DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  message                Message       @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  conversation           Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([status, expiresAt])
+  @@map("gtf_conversation_media")
 }
 
 model FlowDefinition {
@@ -295,4 +360,40 @@ model ShortcutAudit {
   @@index([shortcutId, action])
   @@index([actorId, createdAt])
   @@map("gtf_shortcut_audits")
+}
+
+model Notification {
+  id             String       @id @default(uuid())
+  agentId        String       @map("agent_id")
+  type           String
+  title          String
+  body           String
+  conversationId String?      @map("conversation_id")
+  departmentId   String?      @map("department_id")
+  dedupeKey      String       @map("dedupe_key")
+  payload        Json?
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  readAt         DateTime?    @map("read_at") @db.Timestamptz
+  dismissedAt    DateTime?    @map("dismissed_at") @db.Timestamptz
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, dedupeKey])
+  @@index([agentId, readAt, createdAt])
+  @@index([conversationId, type, createdAt])
+  @@map("gtf_notifications")
+}
+
+model NotificationPreference {
+  id                         String   @id @default(uuid())
+  agentId                    String   @unique @map("agent_id")
+  soundEnabled               Boolean  @default(false) @map("sound_enabled")
+  browserEnabled             Boolean  @default(false) @map("browser_enabled")
+  unresolvedRemindersEnabled Boolean  @default(true) @map("unresolved_reminders_enabled")
+  unresolvedReminderMinutes  Int      @default(30) @map("unresolved_reminder_minutes")
+  reminderRepeatMinutes     Int      @default(30) @map("reminder_repeat_minutes")
+  updatedAt                  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  agent                      Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("gtf_notification_preferences")
 }

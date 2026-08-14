@@ -1,7 +1,23 @@
 import { prisma } from "../../shared/prisma.js";
+// The generated client lives under src/ and is loaded at runtime by the
+// compiled server as well as the TypeScript test runner.
+import { Prisma } from "../../../src/generated/prisma/index.js";
 
 export class ConversationsRepository {
-  async findMany(filters: { status?: string; departmentId?: string }) {
+  async findMany(filters: {
+    status?: string;
+    departmentId?: string;
+    assignedAgentId?: string;
+    openOnly?: boolean;
+    unreadOnly?: boolean;
+    q?: string;
+    dateField?: "lastActivityAt" | "createdAt";
+    from?: string;
+    to?: string;
+    sort?: "operational" | "recent" | "oldest";
+    page?: number;
+    limit?: number;
+  }) {
     const where: any = {};
     if (filters.status && filters.status !== "ALL") {
       where.status = filters.status;
@@ -10,11 +26,136 @@ export class ConversationsRepository {
       where.departmentId = filters.departmentId;
     }
 
-    return prisma.conversation.findMany({
+    if (filters.assignedAgentId && filters.assignedAgentId !== "ALL") {
+      where.assignedAgentId = filters.assignedAgentId;
+    }
+
+    if (filters.openOnly && !where.status) {
+      where.status = { not: "CLOSED" };
+    }
+    if (filters.unreadOnly) {
+      where.messages = { some: { direction: "IN", readAt: null } };
+    }
+
+    if (filters.q) {
+      where.OR = [
+        { contact: { name: { contains: filters.q, mode: "insensitive" } } },
+        { contact: { phone: { contains: filters.q } } },
+        { messages: { some: { content: { contains: filters.q, mode: "insensitive" } } } },
+      ];
+    }
+
+    if (filters.from || filters.to) {
+      where[filters.dateField === "createdAt" ? "startedAt" : "lastActivityAt"] = {
+        ...(filters.from ? { gte: new Date(filters.from) } : {}),
+        ...(filters.to ? { lt: new Date(filters.to) } : {}),
+      };
+    }
+
+    const isPaged = filters.page !== undefined || filters.limit !== undefined;
+    const page = Math.max(1, filters.page ?? 1);
+    const limit = Math.min(100, Math.max(5, filters.limit ?? 20));
+    const sort = filters.sort ?? "operational";
+
+    // For paged operational reads, use a parameterized CASE expression so a
+    // large queue is ranked correctly before LIMIT/OFFSET (Prisma's lexical
+    // status ordering would put BOT before QUEUED).
+    if (isPaged) {
+      const conditions: Prisma.Sql[] = [Prisma.sql`TRUE`];
+      if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
+      if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
+      if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
+      if (filters.openOnly) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
+      if (filters.unreadOnly) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" umf WHERE umf."conversation_id" = c."id" AND umf."direction" = 'IN' AND umf."read_at" IS NULL)`);
+      const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
+      if (filters.from) conditions.push(Prisma.sql`${dateColumn} >= ${new Date(filters.from)}`);
+      if (filters.to) conditions.push(Prisma.sql`${dateColumn} < ${new Date(filters.to)}`);
+      if (filters.q) {
+        const like = `%${filters.q}%`;
+        conditions.push(Prisma.sql`(ct."name" ILIKE ${like} OR ct."phone" LIKE ${like} OR EXISTS (SELECT 1 FROM "gtf_messages" m WHERE m."conversation_id" = c."id" AND m."content" ILIKE ${like}))`);
+      }
+      const whereSql = Prisma.join(conditions, " AND ");
+      const orderSql = sort === "oldest"
+        ? Prisma.sql`c."started_at" ASC, c."id" ASC`
+        : sort === "recent"
+        ? Prisma.sql`c."last_activity_at" DESC, c."id" ASC`
+        : Prisma.sql`CASE c."status" WHEN 'QUEUED' THEN 0 WHEN 'IN_PROGRESS' THEN 1 WHEN 'BOT' THEN 2 WHEN 'CLOSED' THEN 3 ELSE 9 END ASC, (SELECT COUNT(*) FROM "gtf_messages" um WHERE um."conversation_id" = c."id" AND um."direction" = 'IN' AND um."read_at" IS NULL) DESC, CASE WHEN c."status" = 'QUEUED' THEN COALESCE(c."queued_at", c."started_at") END ASC NULLS LAST, c."last_activity_at" DESC, c."id" ASC`;
+      const offset = (page - 1) * limit;
+      const idRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+        SELECT c."id" FROM "gtf_conversations" c
+        LEFT JOIN "gtf_contacts" ct ON ct."id" = c."contact_id"
+        WHERE ${whereSql}
+        ORDER BY ${orderSql}
+        LIMIT ${limit} OFFSET ${offset}
+      `);
+      const countRows = await prisma.$queryRaw<Array<{ count: bigint }>>(Prisma.sql`
+        SELECT COUNT(*)::bigint AS count FROM "gtf_conversations" c
+        LEFT JOIN "gtf_contacts" ct ON ct."id" = c."contact_id"
+        WHERE ${whereSql}
+      `);
+      const ids = idRows.map((row) => row.id);
+      const rows = ids.length
+        ? await prisma.conversation.findMany({ where: { id: { in: ids } }, select: { id: true, status: true, queuedAt: true, lastActivityAt: true, startedAt: true } })
+        : [];
+      const byId = new Map(rows.map((row) => [row.id, row]));
+      return { items: ids.map((id) => byId.get(id)).filter(Boolean) as typeof rows, total: Number(countRows[0]?.count ?? 0), page, limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / limit), isPaged: true };
+    }
+
+    const orderBy = sort === "oldest"
+      ? [{ startedAt: "asc" as const }, { id: "asc" as const }]
+      : [{ lastActivityAt: "desc" as const }, { id: "asc" as const }];
+
+    const [rows, total] = await Promise.all([
+      prisma.conversation.findMany({
       where,
-      orderBy: { startedAt: "desc" },
-      select: { id: true },
-    });
+        orderBy,
+        select: { id: true, status: true, queuedAt: true, lastActivityAt: true, startedAt: true },
+      }),
+      prisma.conversation.count({ where }),
+    ]);
+
+    const statusRank: Record<string, number> = { QUEUED: 0, IN_PROGRESS: 1, BOT: 2, CLOSED: 3 };
+    const sorted = sort === "operational"
+      ? rows.slice().sort((a, b) => {
+          const rank = (statusRank[a.status] ?? 9) - (statusRank[b.status] ?? 9);
+          if (rank !== 0) return rank;
+          if (a.status === "QUEUED" && b.status === "QUEUED") {
+            const aQueued = a.queuedAt?.getTime() ?? a.startedAt.getTime();
+            const bQueued = b.queuedAt?.getTime() ?? b.startedAt.getTime();
+            if (aQueued !== bQueued) return aQueued - bQueued;
+          }
+          const activity = b.lastActivityAt.getTime() - a.lastActivityAt.getTime();
+          return activity || a.id.localeCompare(b.id);
+        })
+      : rows;
+
+    const items = isPaged ? sorted.slice((page - 1) * limit, page * limit) : sorted;
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit), isPaged };
+  }
+
+  async countOperational(scope: {
+    departmentId?: string | null;
+    agentId?: string | null;
+    accessible?: boolean;
+  }) {
+    if (scope.accessible === false) {
+      return { open: 0, queued: 0, inProgress: 0, bot: 0, closed: 0, mine: 0, unread: 0 };
+    }
+
+    const baseWhere = scope.departmentId ? { departmentId: scope.departmentId } : {};
+    const [open, queued, inProgress, bot, closed, mine, unread] = await Promise.all([
+      prisma.conversation.count({ where: { ...baseWhere, status: { not: "CLOSED" } } }),
+      prisma.conversation.count({ where: { ...baseWhere, status: "QUEUED" } }),
+      prisma.conversation.count({ where: { ...baseWhere, status: "IN_PROGRESS" } }),
+      prisma.conversation.count({ where: { ...baseWhere, status: "BOT" } }),
+      prisma.conversation.count({ where: { ...baseWhere, status: "CLOSED" } }),
+      scope.agentId
+        ? prisma.conversation.count({ where: { ...baseWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
+        : Promise.resolve(0),
+      prisma.message.count({ where: { direction: "IN", readAt: null, conversation: baseWhere } }),
+    ]);
+
+    return { open, queued, inProgress, bot, closed, mine, unread };
   }
 
   async findById(id: string) {
@@ -28,17 +169,22 @@ export class ConversationsRepository {
         },
         messages: {
           orderBy: { createdAt: "asc" },
+          include: { media: true },
         },
       },
     });
   }
 
   async updateStatusAndAgent(id: string, status: string, assignedAgentId?: string | null) {
+    const current = await prisma.conversation.findUnique({ where: { id }, select: { status: true, queuedAt: true } });
+    const now = new Date();
     return prisma.conversation.update({
       where: { id },
       data: {
         status,
         ...(assignedAgentId !== undefined && { assignedAgentId }),
+        lastActivityAt: now,
+        ...(status === "QUEUED" && current?.status !== "QUEUED" ? { queuedAt: now } : {}),
       },
     });
   }
@@ -49,6 +195,7 @@ export class ConversationsRepository {
       data: {
         status: "CLOSED",
         closedAt: new Date(),
+        lastActivityAt: new Date(),
       },
     });
   }
@@ -60,7 +207,7 @@ export class ConversationsRepository {
     senderAgentId?: string | null;
     content: string;
   }) {
-    return prisma.message.create({
+    const message = await prisma.message.create({
       data: {
         conversationId: data.conversationId,
         direction: data.direction,
@@ -69,6 +216,8 @@ export class ConversationsRepository {
         content: data.content,
       },
     });
+    await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
+    return message;
   }
 
   async markIncomingMessagesAsRead(conversationId: string) {
@@ -105,7 +254,7 @@ export class ConversationsRepository {
   async updateDepartment(id: string, departmentId: string) {
     return prisma.conversation.update({
       where: { id },
-      data: { departmentId },
+      data: { departmentId, lastActivityAt: new Date() },
     });
   }
 }

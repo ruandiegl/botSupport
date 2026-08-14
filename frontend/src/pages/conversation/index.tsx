@@ -21,6 +21,10 @@ import { formatShortcutMessage } from "@/lib/utils";
 import { useSocket } from "@/lib/socket-context";
 import { useSocketEvent } from "@/lib/use-socket-events";
 import { queryClient } from "@/lib/query-client";
+import { Message, MessageContent, MessageFooter } from "@/components/ui/message";
+import { Bubble, BubbleContent } from "@/components/ui/bubble";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MessageMedia } from "./components/MessageMedia";
 
 const timeLabel = (date?: string) =>
   date
@@ -80,6 +84,13 @@ export default function ConversationPage() {
     }
   }, [id]));
 
+  useSocketEvent("media:expired", useCallback((data: any) => {
+    if (data.conversationId === id) {
+      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+      queryClient.removeQueries({ queryKey: ["media-access", id] });
+    }
+  }, [id]));
+
   useEffect(() => {
     const container = messagesRef.current;
     if (!container) return;
@@ -103,8 +114,8 @@ export default function ConversationPage() {
     return (
       <div className="content">
         <div className="panel loading">
-          <div className="skeleton short" />
-          <div className="skeleton" />
+          <Skeleton className="h-5 w-36" />
+          <Skeleton className="h-24 w-full" />
         </div>
       </div>
     );
@@ -255,16 +266,26 @@ export default function ConversationPage() {
         <div className="messages" ref={messagesRef}>
           <div className="day-divider">Hoje</div>
           {conversation.messages?.map((item) => (
-            <div className={`message-wrap ${item.direction === "OUT" ? "out" : "in"}`} key={item.id}>
-              <div className="bubble">
-                {item.content}
-              </div>
-              <div className="bubble-meta">
-                {item.direction === "OUT"
-                  ? timeLabel(item.createdAt)
-                  : `${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)} · ${timeLabel(item.createdAt)}`}
-              </div>
-            </div>
+            <Message align={item.direction === "OUT" ? "end" : "start"} key={item.id}>
+              <MessageContent>
+                <Bubble
+                  align={item.direction === "OUT" ? "end" : "start"}
+                  variant={item.direction === "OUT" ? "default" : "secondary"}
+                >
+                  <BubbleContent className="space-y-2">
+                    {item.content && <p className="whitespace-pre-wrap">{item.content}</p>}
+                    {item.media && (
+                      <MessageMedia conversationId={id} messageId={item.id} media={item.media} />
+                    )}
+                  </BubbleContent>
+                </Bubble>
+                <MessageFooter>
+                  {item.direction === "OUT"
+                    ? timeLabel(item.createdAt)
+                    : `${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)} · ${timeLabel(item.createdAt)}`}
+                </MessageFooter>
+              </MessageContent>
+            </Message>
           ))}
         </div>
 

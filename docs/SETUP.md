@@ -82,3 +82,16 @@ O frontend estará ativo em `http://localhost:5173`.
   ```bash
   cd frontend && npm run build
   ```
+
+## Configuração de mídia Z-API
+
+Antes de habilitar mídia em produção:
+
+1. confirme que `update-webhook-received` aponta para `https://<backend>/api/webhooks/z-api`;
+2. envie fixtures reais de imagem, áudio, vídeo e documento e registre os domínios efetivos em `MEDIA_ALLOWED_SOURCE_HOSTS`;
+3. gere segredos independentes para `MEDIA_URL_ENCRYPTION_KEY` e `MEDIA_ACCESS_TICKET_SECRET` no secret manager;
+4. mantenha `MEDIA_RETENTION_DAYS=30` ou um valor menor;
+5. aplique `npx prisma migrate deploy` antes de ativar `MEDIA_ZAPI_INGESTION_ENABLED` e `MEDIA_ZAPI_DISPLAY_ENABLED`;
+6. consulte [`RUNBOOK_MIDIA_ZAPI.md`](RUNBOOK_MIDIA_ZAPI.md) para canary, rotação e rollback.
+
+Nunca use os placeholders de `.env.example` em produção e nunca adicione URLs reais de mídia a logs ou fixtures versionadas.

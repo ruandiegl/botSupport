@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { conversationsService } from "./conversations.service.js";
 import {
   ListConversationsQuerySchema,
@@ -12,20 +13,30 @@ function getParam(req: Request, key: string): string {
 }
 
 export class ConversationsController {
-  async list(req: Request, res: Response): Promise<void> {
+  async list(req: AuthenticatedRequest, res: Response): Promise<void> {
     const parsed = ListConversationsQuerySchema.safeParse(req.query);
     if (!parsed.success) {
       res.status(400).json({ error: parsed.error.message });
       return;
     }
 
-    const conversations = await conversationsService.list(parsed.data);
+    if (req.user?.role === "AGENT" && parsed.data.departmentId && parsed.data.departmentId !== "ALL" && parsed.data.departmentId !== req.user.departmentId) {
+      res.status(403).json({ error: "Você não pode consultar outro departamento." });
+      return;
+    }
+    const filters = {
+      ...parsed.data,
+      ...(parsed.data.assignedAgentId === "me" ? { assignedAgentId: req.user?.id } : {}),
+      ...(req.user?.role === "AGENT" && req.user.departmentId ? { departmentId: req.user.departmentId } : {}),
+      ...(req.user?.role === "AGENT" && parsed.data.assignedAgentId && parsed.data.assignedAgentId !== "me" ? { assignedAgentId: req.user.id } : {}),
+    };
+    const conversations = await conversationsService.list(filters, req.user);
     res.json(conversations);
   }
 
   async getById(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
-    const conversation = await conversationsService.getById(id);
+    const conversation = await conversationsService.getById(id, (req as AuthenticatedRequest).user);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;
@@ -35,7 +46,7 @@ export class ConversationsController {
 
   async markAsRead(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
-    const conversation = await conversationsService.markAsRead(id);
+    const conversation = await conversationsService.markAsRead(id, (req as AuthenticatedRequest).user);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;
@@ -51,7 +62,7 @@ export class ConversationsController {
       return;
     }
 
-    const conversation = await conversationsService.assume(id, body.data.agentId);
+    const conversation = await conversationsService.assume(id, body.data.agentId, (req as AuthenticatedRequest).user);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;
@@ -61,7 +72,7 @@ export class ConversationsController {
 
   async close(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
-    const conversation = await conversationsService.close(id);
+    const conversation = await conversationsService.close(id, (req as AuthenticatedRequest).user);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;
@@ -77,7 +88,7 @@ export class ConversationsController {
       return;
     }
 
-    const message = await conversationsService.sendMessage(id, body.data.content);
+    const message = await conversationsService.sendMessage(id, body.data.content, (req as AuthenticatedRequest).user);
     if (!message) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;
@@ -93,7 +104,7 @@ export class ConversationsController {
       return;
     }
 
-    const conversation = await conversationsService.transfer(id, departmentId);
+    const conversation = await conversationsService.transfer(id, departmentId, (req as AuthenticatedRequest).user);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;

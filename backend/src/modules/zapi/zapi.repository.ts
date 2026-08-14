@@ -83,11 +83,14 @@ export class ZApiRepository {
   }
 
   async createConversation(contactId: string, status = "BOT", currentStep = "AWAITING_TEAM") {
+    const now = new Date();
     return prisma.conversation.create({
       data: {
         contactId,
         status,
         currentStep,
+        lastActivityAt: now,
+        ...(status === "QUEUED" ? { queuedAt: now } : {}),
       },
       include: {
         contact: true,
@@ -101,6 +104,8 @@ export class ZApiRepository {
     id: string,
     data: { status: string; departmentId?: string; assignedAgentId?: string; currentStep?: string }
   ) {
+    const current = await prisma.conversation.findUnique({ where: { id }, select: { status: true } });
+    const now = new Date();
     return prisma.conversation.update({
       where: { id },
       data: {
@@ -108,6 +113,8 @@ export class ZApiRepository {
         ...(data.departmentId !== undefined && { departmentId: data.departmentId }),
         ...(data.assignedAgentId !== undefined && { assignedAgentId: data.assignedAgentId }),
         ...(data.currentStep !== undefined && { currentStep: data.currentStep }),
+        lastActivityAt: now,
+        ...(data.status === "QUEUED" && current?.status !== "QUEUED" ? { queuedAt: now } : {}),
       },
     });
   }
@@ -119,7 +126,7 @@ export class ZApiRepository {
     senderAgentId?: string | null;
     content: string;
   }) {
-    return prisma.message.create({
+    const message = await prisma.message.create({
       data: {
         conversationId: data.conversationId,
         direction: data.direction,
@@ -128,6 +135,80 @@ export class ZApiRepository {
         content: data.content,
       },
     });
+    await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
+    return message;
+  }
+
+  async addIncomingMessage(data: {
+    conversationId: string;
+    externalMessageId: string;
+    content: string;
+    media?: {
+      type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
+      status: "AVAILABLE" | "UNAVAILABLE" | "EXPIRED";
+      mimeType: string;
+      caption?: string | null;
+      originalFileName?: string | null;
+      title?: string | null;
+      ptt?: boolean | null;
+      seconds?: number | null;
+      width?: number | null;
+      height?: number | null;
+      pageCount?: number | null;
+      viewOnce: boolean;
+      sourceUrlCiphertext?: string | null;
+      thumbnailUrlCiphertext?: string | null;
+      encryptionKeyVersion: number;
+      sourceCreatedAt: Date;
+      expiresAt: Date;
+      failureCode?: string | null;
+    };
+  }) {
+    try {
+      return await prisma.$transaction(async (transaction) => {
+        const existing = await transaction.message.findUnique({
+          where: { externalMessageId: data.externalMessageId },
+          include: { media: true },
+        });
+        if (existing) return { duplicate: true, message: existing };
+
+        const message = await transaction.message.create({
+          data: {
+            conversationId: data.conversationId,
+            externalMessageId: data.externalMessageId,
+            direction: "IN",
+            senderType: "CLIENT",
+            content: data.content,
+            ...(data.media
+              ? {
+                  media: {
+                    create: {
+                      conversationId: data.conversationId,
+                      whatsappMessageId: data.externalMessageId,
+                      provider: "ZAPI",
+                      ...data.media,
+                    },
+                  },
+                }
+              : {}),
+          },
+          include: { media: true },
+        });
+        await transaction.conversation.update({
+          where: { id: data.conversationId },
+          data: { lastActivityAt: message.createdAt },
+        });
+        return { duplicate: false, message };
+      });
+    } catch (error: any) {
+      if (error?.code !== "P2002") throw error;
+      const existing = await prisma.message.findUnique({
+        where: { externalMessageId: data.externalMessageId },
+        include: { media: true },
+      });
+      if (!existing) throw error;
+      return { duplicate: true, message: existing };
+    }
   }
 
   async deleteMessage(id: string) {
@@ -144,6 +225,10 @@ export class ZApiRepository {
     return prisma.department.findUnique({
       where: { id },
     });
+  }
+
+  async getConversationContext(id: string) {
+    return prisma.conversation.findUnique({ where: { id }, select: { status: true, departmentId: true, assignedAgentId: true, queuedAt: true } });
   }
 }
 

@@ -101,3 +101,11 @@ model ZApiConfig {
   @@map("gtf_zapi_config")
 }
 ```
+
+## 10. Mídia recebida e retenção
+
+O callback `ReceivedCallback` aceita no máximo um objeto `image`, `audio`, `video` ou `document`. O backend valida o contrato, usa `messageId` como identidade externa e persiste `Message` e `ConversationMedia` atomicamente. URLs devem ser HTTPS e são cifradas com AES-256-GCM antes de chegar ao PostgreSQL.
+
+A aplicação utiliza o storage temporário da Z-API, documentado com retenção de 30 dias em [Prazo de expiração dos arquivos](https://developer.z-api.io/tips/file-expiration). Nenhum binário é copiado para infraestrutura própria. A exibição é feita pelo proxy do backend com RBAC, ticket HMAC curto, allowlist de hosts, bloqueio de IP privado, limite de bytes, timeout, Range e `Cache-Control: private, no-store`.
+
+`downloadError` e `viewOnce` geram mídia `UNAVAILABLE` sem URL utilizável. O tempo `momment` aceita Unix em segundos ou milissegundos; `expiresAt` é limitado a 30 dias a partir da origem. O job de expiração marca `EXPIRED` e apaga os ciphertexts.

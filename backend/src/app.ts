@@ -11,6 +11,10 @@ import zapiRoutes from "./modules/zapi/zapi.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import rbacRoutes from "./modules/rbac/rbac.routes.js";
 import shortcutsRoutes from "./modules/shortcuts/shortcuts.routes.js";
+import notificationsRoutes from "./modules/notifications/notifications.routes.js";
+import { notificationsService } from "./modules/notifications/notifications.service.js";
+import mediaRoutes from "./modules/media/media.routes.js";
+import { mediaExpirationWorker } from "./modules/media/media-expiration.worker.js";
 
 export const app = express();
 
@@ -43,7 +47,15 @@ app.use((req, res, next) => {
   apiCors(req, res, next);
 });
 app.use(express.json());
-app.use(pinoHttp({ logger: logger as any }));
+app.use(
+  pinoHttp({
+    logger: logger as any,
+    // Media access tickets are bearer credentials. Never write them to access logs.
+    autoLogging: {
+      ignore: (req) => Boolean(req.url?.startsWith("/api/media/")),
+    },
+  }),
+);
 
 // API Router Prefix
 app.use("/api", healthRoutes);
@@ -56,6 +68,13 @@ app.use("/api", flowRoutes);
 app.use("/api", zapiRoutes);
 app.use("/api", rbacRoutes);
 app.use("/api", shortcutsRoutes);
+app.use("/api", notificationsRoutes);
+app.use("/api", mediaRoutes);
+
+// Persists notification events and runs the idempotent unresolved-call reminder
+// worker. The worker is unref'd and therefore never prevents graceful shutdown.
+notificationsService.start();
+mediaExpirationWorker.start();
 
 // Global Error Handler
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

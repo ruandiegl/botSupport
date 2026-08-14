@@ -1,14 +1,17 @@
 import { ShieldCheck } from "lucide-react";
 import type { Conversation } from "@/types";
+import type { ConversationMetricCounts } from "../hooks/use-queue";
 
-export function QueueCard({ conversations }: { conversations: Conversation[] }) {
-  const counts = {
-    QUEUED: conversations.filter((x) => x.status === "QUEUED").length,
-    IN_PROGRESS: conversations.filter((x) => x.status === "IN_PROGRESS").length,
-    BOT: conversations.filter((x) => x.status === "BOT").length,
-    CLOSED: conversations.filter((x) => x.status === "CLOSED").length,
-  };
-  const total = Math.max(conversations.length, 1);
+export function QueueCard({ conversations, fixedCounts }: { conversations: Conversation[]; fixedCounts?: ConversationMetricCounts }) {
+  const counts = fixedCounts
+    ? { QUEUED: fixedCounts.queued, IN_PROGRESS: fixedCounts.inProgress, BOT: fixedCounts.bot, CLOSED: fixedCounts.closed }
+    : {
+        QUEUED: conversations.filter((x) => x.status === "QUEUED").length,
+        IN_PROGRESS: conversations.filter((x) => x.status === "IN_PROGRESS").length,
+        BOT: conversations.filter((x) => x.status === "BOT").length,
+        CLOSED: conversations.filter((x) => x.status === "CLOSED").length,
+      };
+  const total = Math.max(fixedCounts ? fixedCounts.queued + fixedCounts.inProgress + fixedCounts.bot + fixedCounts.closed : conversations.length, 1);
 
   const items = [
     ["QUEUED", "Aguardando", ""],

@@ -3,6 +3,9 @@ import { logger } from "../../shared/logger.js";
 import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import { flowExecutionService } from "../flow-execution/flow-execution.service.js";
+import type { ZApiReceivedWebhook } from "./zapi.schemas.js";
+import { mediaCryptoService } from "../media/media-crypto.service.js";
+import { mediaService } from "../media/media.service.js";
 
 function parseZApiError(status: number, data: any): string {
   const rawMsg = data?.error || data?.message || data?.reason || "";
@@ -38,7 +41,82 @@ export type ParsedIncomingMessage = {
   content: string;
   selectedOptionId?: string;
   externalEventId?: string;
+  media?: ParsedIncomingMedia;
 };
+
+export type ParsedIncomingMedia = {
+  type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
+  mimeType: string;
+  sourceUrl?: string;
+  thumbnailUrl?: string;
+  downloadError?: string | null;
+  caption?: string;
+  originalFileName?: string;
+  title?: string;
+  ptt?: boolean;
+  seconds?: number;
+  width?: number;
+  height?: number;
+  pageCount?: number;
+  viewOnce: boolean;
+};
+
+function parseIncomingMedia(payload: any): ParsedIncomingMedia | undefined {
+  if (payload?.image) {
+    return {
+      type: "IMAGE",
+      mimeType: String(payload.image.mimeType || "image/jpeg"),
+      sourceUrl: payload.image.imageUrl,
+      thumbnailUrl: payload.image.thumbnailUrl,
+      downloadError: payload.image.downloadError,
+      caption: payload.image.caption || "",
+      width: payload.image.width,
+      height: payload.image.height,
+      viewOnce: payload.image.viewOnce === true,
+    };
+  }
+  if (payload?.audio) {
+    return {
+      type: "AUDIO",
+      mimeType: String(payload.audio.mimeType || "audio/ogg"),
+      sourceUrl: payload.audio.audioUrl,
+      ptt: payload.audio.ptt,
+      seconds: payload.audio.seconds,
+      viewOnce: payload.audio.viewOnce === true,
+    };
+  }
+  if (payload?.video) {
+    return {
+      type: "VIDEO",
+      mimeType: String(payload.video.mimeType || "video/mp4"),
+      sourceUrl: payload.video.videoUrl,
+      caption: payload.video.caption || "",
+      seconds: payload.video.seconds,
+      viewOnce: payload.video.viewOnce === true,
+    };
+  }
+  if (payload?.document) {
+    return {
+      type: "DOCUMENT",
+      mimeType: String(payload.document.mimeType || "application/octet-stream"),
+      sourceUrl: payload.document.documentUrl,
+      originalFileName: payload.document.fileName,
+      title: payload.document.title,
+      pageCount: payload.document.pageCount,
+      viewOnce: false,
+    };
+  }
+  return undefined;
+}
+
+function mediaFallback(media: ParsedIncomingMedia): string {
+  const caption = media.caption?.trim();
+  if (caption) return caption;
+  if (media.type === "IMAGE") return "[Imagem recebida]";
+  if (media.type === "AUDIO") return "[Áudio recebido]";
+  if (media.type === "VIDEO") return "[Vídeo recebido]";
+  return media.originalFileName ? `[Documento recebido: ${media.originalFileName}]` : "[Documento recebido]";
+}
 
 export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null {
   if (
@@ -61,6 +139,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     buttonResponse?.buttonId || listResponse?.selectedRowId || ""
   ).trim() || undefined;
 
+  const media = parseIncomingMedia(payload);
   const content = String(
     buttonResponse?.message ||
       listResponse?.title ||
@@ -70,6 +149,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
       payload.body ||
       payload.caption ||
       (typeof payload.message === "string" ? payload.message : "") ||
+      (media ? mediaFallback(media) : "") ||
       "Mensagem recebida"
   ).trim();
 
@@ -80,6 +160,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     content,
     selectedOptionId,
     ...(externalEventId ? { externalEventId } : {}),
+    ...(media ? { media } : {}),
   };
 }
 
@@ -447,7 +528,7 @@ export class ZApiService {
     }
   }
 
-  async handleIncomingWebhook(payload: any) {
+  async handleIncomingWebhook(payload: ZApiReceivedWebhook) {
     logger.info({ callbackType: payload?.type, externalEventId: payload?.messageId || payload?.id }, "Webhook recebido da Z-API");
 
     const incoming = parseIncomingMessage(payload);
@@ -463,15 +544,62 @@ export class ZApiService {
       activeConversation = await zApiRepository.createConversation(contact.id, "BOT", "AWAITING_TEAM");
     }
 
-    if (incoming.externalEventId && !await zApiRepository.claimExternalEvent(activeConversation.id, incoming.externalEventId)) return { status: "duplicate_event" };
-
     const conversationId = activeConversation.id;
-    const savedMsg = await zApiRepository.addMessage({
+    // Z-API examples may represent `momment` in Unix seconds or milliseconds.
+    const rawMoment = Number(payload.momment);
+    const sourceTimeCandidate = new Date(rawMoment < 1_000_000_000_000 ? rawMoment * 1000 : rawMoment);
+    const now = new Date();
+    const sourceCreatedAt =
+      Number.isFinite(sourceTimeCandidate.getTime()) && sourceTimeCandidate.getTime() <= now.getTime() + 5 * 60_000
+        ? sourceTimeCandidate
+        : now;
+    const retentionDays = Math.min(30, Math.max(1, Number(process.env.MEDIA_RETENTION_DAYS ?? "30") || 30));
+    const expiresAt = new Date(sourceCreatedAt.getTime() + retentionDays * 24 * 60 * 60 * 1000);
+    const mediaUnavailable = Boolean(incoming.media?.downloadError) || incoming.media?.viewOnce === true;
+    const alreadyExpired = expiresAt.getTime() <= now.getTime();
+    const mediaData = incoming.media && process.env.MEDIA_ZAPI_INGESTION_ENABLED !== "false"
+      ? {
+          type: incoming.media.type,
+          status: alreadyExpired ? ("EXPIRED" as const) : mediaUnavailable ? ("UNAVAILABLE" as const) : ("AVAILABLE" as const),
+          mimeType: incoming.media.mimeType,
+          caption: incoming.media.caption || null,
+          originalFileName: incoming.media.originalFileName || null,
+          title: incoming.media.title || null,
+          ptt: incoming.media.ptt ?? null,
+          seconds: incoming.media.seconds ?? null,
+          width: incoming.media.width ?? null,
+          height: incoming.media.height ?? null,
+          pageCount: incoming.media.pageCount ?? null,
+          viewOnce: incoming.media.viewOnce,
+          sourceUrlCiphertext:
+            !alreadyExpired && !mediaUnavailable && incoming.media.sourceUrl
+              ? mediaCryptoService.encryptUrl(incoming.media.sourceUrl)
+              : null,
+          thumbnailUrlCiphertext:
+            !alreadyExpired && !mediaUnavailable && incoming.media.thumbnailUrl
+              ? mediaCryptoService.encryptUrl(incoming.media.thumbnailUrl)
+              : null,
+          encryptionKeyVersion: mediaCryptoService.encryptionKeyVersion(),
+          sourceCreatedAt,
+          expiresAt,
+          failureCode: alreadyExpired
+            ? "SOURCE_ALREADY_EXPIRED"
+            : incoming.media.viewOnce
+              ? "VIEW_ONCE_NOT_AVAILABLE"
+              : incoming.media.downloadError
+                ? "ZAPI_DOWNLOAD_ERROR"
+                : null,
+        }
+      : undefined;
+
+    const persisted = await zApiRepository.addIncomingMessage({
       conversationId,
-      direction: "IN",
-      senderType: "CLIENT",
+      externalMessageId: payload.messageId,
       content: incoming.content,
+      media: mediaData,
     });
+    if (persisted.duplicate) return { status: "duplicate_event" };
+    const savedMsg = persisted.message;
 
     socketEmitter.emitToConversation(conversationId, "message:new", {
       conversationId,
@@ -482,17 +610,26 @@ export class ZApiService {
         senderName: incoming.senderName,
         content: savedMsg.content,
         createdAt: savedMsg.createdAt.toISOString(),
+        media: savedMsg.media ? mediaService.toPublic(savedMsg.media) : null,
       },
     });
 
     conversationEvents.emit("conversation_updated", {
       conversationId,
       status: activeConversation.status,
+      eventType: "MESSAGE_RECEIVED",
+      messageId: savedMsg.id,
+      departmentId: activeConversation.departmentId,
+      assignedAgentId: activeConversation.assignedAgentId,
     });
 
     const config = await this.getConfig();
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
     if (activeConversation.status !== "BOT") return { status: "message_logged" };
+
+    if (incoming.media && !incoming.media.caption?.trim() && !isNewConversation) {
+      return { status: "media_logged" };
+    }
 
     const execution = await flowExecutionService.execute({ conversationId, content: incoming.content, selectedOptionId: incoming.selectedOptionId, isNewConversation });
     if (execution.status !== "no_flow_configured") {
@@ -517,7 +654,9 @@ export class ZApiService {
           }
         }
       }
-      conversationEvents.emit("conversation_updated", { conversationId, status: execution.status === "routed_to_department" ? "QUEUED" : "BOT" });
+      const routed = execution.status === "routed_to_department";
+      const latest = await zApiRepository.getConversationContext(conversationId);
+      conversationEvents.emit("conversation_updated", { conversationId, status: routed ? "QUEUED" : "BOT", eventType: routed ? "NEW_QUEUE" : "FLOW_UPDATED", departmentId: latest?.departmentId, assignedAgentId: latest?.assignedAgentId, queuedAt: latest?.queuedAt });
       return { status: execution.status };
     }
 
@@ -535,7 +674,7 @@ export class ZApiService {
       const teamName = selectedOption.label || department?.name || "Suporte";
       const replyMessage = selectedOption.procedureMessage || `Você selecionou a equipe ${teamName}.`;
 
-      await zApiRepository.updateConversationStatus(conversationId, {
+      const routedConversation = await zApiRepository.updateConversationStatus(conversationId, {
         status: "QUEUED",
         departmentId: selectedOption.departmentId,
         currentStep: "AWAITING_DETAILS",
@@ -547,7 +686,7 @@ export class ZApiService {
         content: replyMessage,
       });
       await this.sendText(phone, replyMessage);
-      conversationEvents.emit("conversation_updated", { conversationId, status: "QUEUED" });
+      conversationEvents.emit("conversation_updated", { conversationId, status: "QUEUED", eventType: "NEW_QUEUE", departmentId: routedConversation.departmentId, assignedAgentId: routedConversation.assignedAgentId, queuedAt: routedConversation.queuedAt });
       return { status: "routed_to_department", departmentId: selectedOption.departmentId };
     }
 

@@ -18,10 +18,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
-import type { Conversation, Agent } from "@/types";
+import type { Conversation, ConversationListResponse, Agent } from "@/types";
 import { Brand } from "@/components/ui/Brand";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export interface AgentContextType {
   activeAgent: Agent | null;
@@ -73,14 +74,15 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const setActiveAgentId = (_id: string) => {};
 
   // Buscar lista de conversas reais para contagem da fila
-  const { data: conversations } = useQuery<Conversation[]>({
+  const { data: conversations } = useQuery<Conversation[] | ConversationListResponse>({
     queryKey: ["conversations"],
     queryFn: () => apiFetch<Conversation[]>("/conversations"),
     enabled: isAuthenticated,
     refetchInterval: 3000, // Revalidação a cada 3s para fila em tempo real
   });
 
-  const queueCount = (conversations || []).filter((item) => item.status === "QUEUED").length;
+  const conversationItems = Array.isArray(conversations) ? conversations : conversations?.items ?? [];
+  const queueCount = conversationItems.filter((item) => item.status === "QUEUED").length;
 
   const nav = [
     { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
@@ -195,6 +197,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <strong>{getPageTitle()}</strong>
             </div>
             <div className="top-actions">
+              <NotificationBell />
               <Button variant="ghost" size="icon" className="icon-btn" data-testid="button-help">
                 <HelpCircle size={16} />
               </Button>

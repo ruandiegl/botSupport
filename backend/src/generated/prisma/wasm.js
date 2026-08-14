@@ -175,18 +175,51 @@ exports.Prisma.ConversationScalarFieldEnum = {
   currentFlowNodeId: 'currentFlowNodeId',
   flowContext: 'flowContext',
   startedAt: 'startedAt',
+  queuedAt: 'queuedAt',
+  lastActivityAt: 'lastActivityAt',
   closedAt: 'closedAt'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   conversationId: 'conversationId',
+  externalMessageId: 'externalMessageId',
   direction: 'direction',
   senderType: 'senderType',
   senderAgentId: 'senderAgentId',
   content: 'content',
   createdAt: 'createdAt',
   readAt: 'readAt'
+};
+
+exports.Prisma.ConversationMediaScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  conversationId: 'conversationId',
+  whatsappMessageId: 'whatsappMessageId',
+  provider: 'provider',
+  type: 'type',
+  status: 'status',
+  mimeType: 'mimeType',
+  caption: 'caption',
+  originalFileName: 'originalFileName',
+  title: 'title',
+  ptt: 'ptt',
+  seconds: 'seconds',
+  width: 'width',
+  height: 'height',
+  pageCount: 'pageCount',
+  viewOnce: 'viewOnce',
+  sourceUrlCiphertext: 'sourceUrlCiphertext',
+  thumbnailUrlCiphertext: 'thumbnailUrlCiphertext',
+  encryptionKeyVersion: 'encryptionKeyVersion',
+  sourceCreatedAt: 'sourceCreatedAt',
+  expiresAt: 'expiresAt',
+  failureCode: 'failureCode',
+  lastAccessErrorCode: 'lastAccessErrorCode',
+  lastAccessedAt: 'lastAccessedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.FlowDefinitionScalarFieldEnum = {
@@ -281,6 +314,32 @@ exports.Prisma.ShortcutAuditScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  agentId: 'agentId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  conversationId: 'conversationId',
+  departmentId: 'departmentId',
+  dedupeKey: 'dedupeKey',
+  payload: 'payload',
+  createdAt: 'createdAt',
+  readAt: 'readAt',
+  dismissedAt: 'dismissedAt'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  agentId: 'agentId',
+  soundEnabled: 'soundEnabled',
+  browserEnabled: 'browserEnabled',
+  unresolvedRemindersEnabled: 'unresolvedRemindersEnabled',
+  unresolvedReminderMinutes: 'unresolvedReminderMinutes',
+  reminderRepeatMinutes: 'reminderRepeatMinutes',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -310,6 +369,23 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.MediaProvider = exports.$Enums.MediaProvider = {
+  ZAPI: 'ZAPI'
+};
+
+exports.MediaType = exports.$Enums.MediaType = {
+  IMAGE: 'IMAGE',
+  AUDIO: 'AUDIO',
+  VIDEO: 'VIDEO',
+  DOCUMENT: 'DOCUMENT'
+};
+
+exports.MediaStatus = exports.$Enums.MediaStatus = {
+  AVAILABLE: 'AVAILABLE',
+  UNAVAILABLE: 'UNAVAILABLE',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.FlowRevisionStatus = exports.$Enums.FlowRevisionStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
@@ -348,6 +424,7 @@ exports.Prisma.ModelName = {
   Contact: 'Contact',
   Conversation: 'Conversation',
   Message: 'Message',
+  ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',
   FlowRevision: 'FlowRevision',
@@ -355,7 +432,9 @@ exports.Prisma.ModelName = {
   FlowTransition: 'FlowTransition',
   FlowExecutionEvent: 'FlowExecutionEvent',
   Shortcut: 'Shortcut',
-  ShortcutAudit: 'ShortcutAudit'
+  ShortcutAudit: 'ShortcutAudit',
+  Notification: 'Notification',
+  NotificationPreference: 'NotificationPreference'
 };
 
 /**

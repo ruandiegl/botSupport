@@ -25,7 +25,39 @@ Verifica se o backend está ativo.
 Retorna a lista de conversas com informações de contato, departamento, atendente responsável e histórico recente.
 - **Query Params**:
   - `status` (opcional): `ALL`, `QUEUED`, `IN_PROGRESS`, `BOT`, `CLOSED`
-  - `departmentId` (opcional): UUID do departamento
+  - `departmentId` (opcional): UUID do departamento (`AGENT` sÃ³ pode consultar o prÃ³prio departamento)
+  - `assignedAgentId` (opcional): `me` ou UUID; para `AGENT`, o servidor restringe ao atendente autenticado
+  - `openOnly` (opcional): `true` retorna somente conversas ainda nÃ£o encerradas
+  - `unreadOnly` (opcional): `true` retorna somente conversas com mensagens recebidas nÃ£o lidas
+  - `q` (opcional): busca por nome, telefone ou mensagem (mÃ¡ximo 120 caracteres)
+  - `dateField` (opcional): `lastActivityAt` (padrÃ£o) ou `createdAt`
+  - `from`/`to` (opcional): ISO-8601 com offset; `from` inclusivo e `to` exclusivo
+  - `sort` (opcional): `operational` (padrÃ£o), `recent` ou `oldest`
+  - `page` (opcional): inteiro a partir de 1
+  - `limit` (opcional): entre 5 e 100; a fila usa 5 por pÃ¡gina
+
+Quando `page` ou `limit` Ã© enviado, a resposta Ã© paginada:
+```json
+{
+  "items": [],
+  "page": 1,
+  "limit": 5,
+  "total": 0,
+  "totalPages": 0,
+  "counts": {
+    "open": 0,
+    "queued": 0,
+    "inProgress": 0,
+    "bot": 0,
+    "closed": 0,
+    "mine": 0,
+    "unread": 0
+  },
+  "appliedFilters": { "status": "QUEUED", "dateField": "lastActivityAt", "from": null, "to": null }
+}
+```
+`counts` representa o pulso operacional do escopo do usuário autenticado e não muda com os filtros da lista (busca, período, departamento ou status).
+Sem parÃ¢metros de paginaÃ§Ã£o, o formato legado (array) Ã© mantido temporariamente para clientes antigos.
 
 ### `GET /conversations/:id`
 Retorna detalhes completos de uma conversa específica por ID.
@@ -53,7 +85,28 @@ Envia uma nova mensagem para a conversa como atendente.
 
 ---
 
-## 3. Departamentos (`/departments`)
+## 3. Notificações (`/notifications`)
+
+As notificações são persistidas por atendente e deduplicadas no servidor. Todas as rotas exigem autenticação e `queue:view_own`.
+
+### `GET /notifications?unreadOnly=false&page=1&limit=30`
+Lista notificações do atendente autenticado.
+
+### `GET /notifications/unread-count`
+Retorna `{ "count": 0 }` sem expor notificações de outros agentes.
+
+### `POST /notifications/:id/read`, `POST /notifications/read-all`
+Marca uma notificação específica ou todas as notificações do atendente como lidas.
+
+### `POST /notifications/:id/dismiss`
+Dispensa um alerta sem apagar o registro de auditoria.
+
+### `GET /notification-preferences`, `PATCH /notification-preferences`
+Lê ou altera som, notificações do navegador e limiares de lembrete. Os intervalos são limitados entre 5 e 1440 minutos.
+
+Tipos emitidos: `NEW_QUEUE_CONVERSATION`, `NEW_MESSAGE` e `UNRESOLVED_REMINDER`.
+
+## 4. Departamentos (`/departments`)
 
 ### `GET /departments`
 Lista todos os departamentos cadastrados, incluindo contagem de atendimentos abertos e procedimentos.
@@ -69,7 +122,7 @@ Remove um departamento.
 
 ---
 
-## 4. Atendentes (`/agents`)
+## 5. Atendentes (`/agents`)
 
 ### `GET /agents`
 Lista todos os atendentes e os status de presença e ativação. Requer permissão `agents:view`.
@@ -86,7 +139,7 @@ Redefine a senha com body `{ "password": "..." }`. Requer `ADMIN`.
 ### `DELETE /agents/:id`
 Exclui atendente, exceto o próprio usuário ou o último administrador ativo. Requer `ADMIN`.
 
-## 5. RBAC (`/rbac`)
+## 6. RBAC (`/rbac`)
 
 ### `GET /rbac/roles`
 Lista as funções disponíveis. Requer autenticação.
@@ -99,7 +152,7 @@ Atualiza permissões por recurso/tela. Requer `rbac:manage`.
 
 ---
 
-## 6. Fluxo do Bot (`/flow`)
+## 7. Fluxo do Bot (`/flow`)
 
 Todas as rotas v2 exigem autenticação. Leitura requer `flow:view`, edição de rascunho requer `flow:edit` e publicação/restauração requer `flow:publish`.
 
@@ -189,7 +242,7 @@ Clientes novos devem usar exclusivamente os endpoints v2. A remoção do legado 
 
 ---
 
-## 7. Atalhos e procedimentos (`/shortcuts`)
+## 8. Atalhos e procedimentos (`/shortcuts`)
 
 Todas as rotas exigem autenticação. A API aplica visibilidade por escopo no servidor: global, departamento da conversa e proprietário do atalho pessoal.
 
@@ -236,3 +289,27 @@ Registra uso após o envio da mensagem, com body `{ "conversationId": "uuid" }`.
 ### `DELETE /shortcuts/:id`
 
 Faz arquivamento lógico e preserva a auditoria. Requer `shortcuts:delete`.
+
+## Mídia de conversas
+
+### Metadados em `GET /conversations/:id`
+
+Uma mensagem pode incluir `media` com `id`, `type`, `status`, `mimeType`, caption/nome/duração/dimensões/páginas, `viewOnce`, `hasThumbnail`, `expiresAt` e `available`. A resposta nunca inclui URL da Z-API, ciphertext ou erro bruto do provedor.
+
+### `POST /conversations/:conversationId/messages/:messageId/media-access`
+
+Requer Bearer JWT e `conversations:view`. Body estrito:
+
+```json
+{ "purpose": "content" }
+```
+
+`purpose` aceita `content`, `thumbnail` ou `download`. A resposta contém uma URL interna com ticket opaco de curta duração. O service também valida atribuição/departamento, estado e expiração da conversa/mídia.
+
+### Proxy interno
+
+- `GET /media/:mediaId/content?ticket=...`
+- `GET /media/:mediaId/thumbnail?ticket=...`
+- `GET /media/:mediaId/download?ticket=...`
+
+O ticket é a credencial exclusiva dessas rotas e não deve ser registrado, compartilhado ou armazenado. Respostas: `401` ticket inválido; `403` finalidade/escopo inválido; `404` inexistente; `410` expirada/removida; `416` Range inválido; `422` indisponível ou formato bloqueado; `429` streams simultâneos excedidos; `502/503/504` indisponibilidade da origem.

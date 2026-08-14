@@ -49,6 +49,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
+ * Model ConversationMedia
+ * 
+ */
+export type ConversationMedia = $Result.DefaultSelection<Prisma.$ConversationMediaPayload>
+/**
  * Model FlowDefinition
  * 
  */
@@ -88,12 +93,48 @@ export type Shortcut = $Result.DefaultSelection<Prisma.$ShortcutPayload>
  * 
  */
 export type ShortcutAudit = $Result.DefaultSelection<Prisma.$ShortcutAuditPayload>
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
+/**
+ * Model NotificationPreference
+ * 
+ */
+export type NotificationPreference = $Result.DefaultSelection<Prisma.$NotificationPreferencePayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const FlowRevisionStatus: {
+  export const MediaProvider: {
+  ZAPI: 'ZAPI'
+};
+
+export type MediaProvider = (typeof MediaProvider)[keyof typeof MediaProvider]
+
+
+export const MediaType: {
+  IMAGE: 'IMAGE',
+  AUDIO: 'AUDIO',
+  VIDEO: 'VIDEO',
+  DOCUMENT: 'DOCUMENT'
+};
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType]
+
+
+export const MediaStatus: {
+  AVAILABLE: 'AVAILABLE',
+  UNAVAILABLE: 'UNAVAILABLE',
+  EXPIRED: 'EXPIRED'
+};
+
+export type MediaStatus = (typeof MediaStatus)[keyof typeof MediaStatus]
+
+
+export const FlowRevisionStatus: {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
   ARCHIVED: 'ARCHIVED'
@@ -135,6 +176,18 @@ export const ShortcutScope: {
 export type ShortcutScope = (typeof ShortcutScope)[keyof typeof ShortcutScope]
 
 }
+
+export type MediaProvider = $Enums.MediaProvider
+
+export const MediaProvider: typeof $Enums.MediaProvider
+
+export type MediaType = $Enums.MediaType
+
+export const MediaType: typeof $Enums.MediaType
+
+export type MediaStatus = $Enums.MediaStatus
+
+export const MediaStatus: typeof $Enums.MediaStatus
 
 export type FlowRevisionStatus = $Enums.FlowRevisionStatus
 
@@ -346,6 +399,16 @@ export class PrismaClient<
   get message(): Prisma.MessageDelegate<ExtArgs>;
 
   /**
+   * `prisma.conversationMedia`: Exposes CRUD operations for the **ConversationMedia** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ConversationMedias
+    * const conversationMedias = await prisma.conversationMedia.findMany()
+    * ```
+    */
+  get conversationMedia(): Prisma.ConversationMediaDelegate<ExtArgs>;
+
+  /**
    * `prisma.flowDefinition`: Exposes CRUD operations for the **FlowDefinition** model.
     * Example usage:
     * ```ts
@@ -424,6 +487,26 @@ export class PrismaClient<
     * ```
     */
   get shortcutAudit(): Prisma.ShortcutAuditDelegate<ExtArgs>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.notificationPreference`: Exposes CRUD operations for the **NotificationPreference** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NotificationPreferences
+    * const notificationPreferences = await prisma.notificationPreference.findMany()
+    * ```
+    */
+  get notificationPreference(): Prisma.NotificationPreferenceDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -872,6 +955,7 @@ export namespace Prisma {
     Contact: 'Contact',
     Conversation: 'Conversation',
     Message: 'Message',
+    ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
     FlowRevision: 'FlowRevision',
@@ -879,7 +963,9 @@ export namespace Prisma {
     FlowTransition: 'FlowTransition',
     FlowExecutionEvent: 'FlowExecutionEvent',
     Shortcut: 'Shortcut',
-    ShortcutAudit: 'ShortcutAudit'
+    ShortcutAudit: 'ShortcutAudit',
+    Notification: 'Notification',
+    NotificationPreference: 'NotificationPreference'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -895,7 +981,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "flowDefinition" | "zApiConfig" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1386,6 +1472,76 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      ConversationMedia: {
+        payload: Prisma.$ConversationMediaPayload<ExtArgs>
+        fields: Prisma.ConversationMediaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConversationMediaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConversationMediaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          findFirst: {
+            args: Prisma.ConversationMediaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConversationMediaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          findMany: {
+            args: Prisma.ConversationMediaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>[]
+          }
+          create: {
+            args: Prisma.ConversationMediaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          createMany: {
+            args: Prisma.ConversationMediaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConversationMediaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>[]
+          }
+          delete: {
+            args: Prisma.ConversationMediaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          update: {
+            args: Prisma.ConversationMediaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConversationMediaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConversationMediaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ConversationMediaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationMediaPayload>
+          }
+          aggregate: {
+            args: Prisma.ConversationMediaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConversationMedia>
+          }
+          groupBy: {
+            args: Prisma.ConversationMediaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConversationMediaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConversationMediaCountArgs<ExtArgs>
+            result: $Utils.Optional<ConversationMediaCountAggregateOutputType> | number
           }
         }
       }
@@ -1949,6 +2105,146 @@ export namespace Prisma {
           }
         }
       }
+      Notification: {
+        payload: Prisma.$NotificationPayload<ExtArgs>
+        fields: Prisma.NotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          update: {
+            args: Prisma.NotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.NotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotification>
+          }
+          groupBy: {
+            args: Prisma.NotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      NotificationPreference: {
+        payload: Prisma.$NotificationPreferencePayload<ExtArgs>
+        fields: Prisma.NotificationPreferenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationPreferenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationPreferenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationPreferenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationPreferenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          findMany: {
+            args: Prisma.NotificationPreferenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>[]
+          }
+          create: {
+            args: Prisma.NotificationPreferenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          createMany: {
+            args: Prisma.NotificationPreferenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationPreferenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationPreferenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          update: {
+            args: Prisma.NotificationPreferenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationPreferenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationPreferenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.NotificationPreferenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPreferencePayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationPreferenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotificationPreference>
+          }
+          groupBy: {
+            args: Prisma.NotificationPreferenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationPreferenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationPreferenceCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationPreferenceCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2184,6 +2480,7 @@ export namespace Prisma {
     updatedShortcuts: number
     shortcutAudits: number
     publishedFlowRevisions: number
+    notifications: number
   }
 
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2194,6 +2491,7 @@ export namespace Prisma {
     updatedShortcuts?: boolean | AgentCountOutputTypeCountUpdatedShortcutsArgs
     shortcutAudits?: boolean | AgentCountOutputTypeCountShortcutAuditsArgs
     publishedFlowRevisions?: boolean | AgentCountOutputTypeCountPublishedFlowRevisionsArgs
+    notifications?: boolean | AgentCountOutputTypeCountNotificationsArgs
   }
 
   // Custom InputTypes
@@ -2256,6 +2554,13 @@ export namespace Prisma {
     where?: FlowRevisionWhereInput
   }
 
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+  }
+
 
   /**
    * Count Type ContactCountOutputType
@@ -2295,11 +2600,15 @@ export namespace Prisma {
   export type ConversationCountOutputType = {
     messages: number
     flowEvents: number
+    notifications: number
+    media: number
   }
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
     flowEvents?: boolean | ConversationCountOutputTypeCountFlowEventsArgs
+    notifications?: boolean | ConversationCountOutputTypeCountNotificationsArgs
+    media?: boolean | ConversationCountOutputTypeCountMediaArgs
   }
 
   // Custom InputTypes
@@ -2325,6 +2634,20 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountFlowEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FlowExecutionEventWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationMediaWhereInput
   }
 
 
@@ -4713,6 +5036,8 @@ export namespace Prisma {
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
     shortcutAudits?: boolean | Agent$shortcutAuditsArgs<ExtArgs>
     publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
+    notifications?: boolean | Agent$notificationsArgs<ExtArgs>
+    notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agent"]>
 
@@ -4750,6 +5075,8 @@ export namespace Prisma {
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
     shortcutAudits?: boolean | Agent$shortcutAuditsArgs<ExtArgs>
     publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
+    notifications?: boolean | Agent$notificationsArgs<ExtArgs>
+    notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4767,6 +5094,8 @@ export namespace Prisma {
       updatedShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       shortcutAudits: Prisma.$ShortcutAuditPayload<ExtArgs>[]
       publishedFlowRevisions: Prisma.$FlowRevisionPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5150,6 +5479,8 @@ export namespace Prisma {
     updatedShortcuts<T extends Agent$updatedShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$updatedShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     shortcutAudits<T extends Agent$shortcutAuditsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$shortcutAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutAuditPayload<ExtArgs>, T, "findMany"> | Null>
     publishedFlowRevisions<T extends Agent$publishedFlowRevisionsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$publishedFlowRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findMany"> | Null>
+    notifications<T extends Agent$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
+    notificationPreference<T extends Agent$notificationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationPreferenceArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5658,6 +5989,41 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FlowRevisionScalarFieldEnum | FlowRevisionScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.notifications
+   */
+  export type Agent$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.notificationPreference
+   */
+  export type Agent$notificationPreferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    where?: NotificationPreferenceWhereInput
   }
 
   /**
@@ -7505,6 +7871,8 @@ export namespace Prisma {
     flowRevisionId: string | null
     currentFlowNodeId: string | null
     startedAt: Date | null
+    queuedAt: Date | null
+    lastActivityAt: Date | null
     closedAt: Date | null
   }
 
@@ -7518,6 +7886,8 @@ export namespace Prisma {
     flowRevisionId: string | null
     currentFlowNodeId: string | null
     startedAt: Date | null
+    queuedAt: Date | null
+    lastActivityAt: Date | null
     closedAt: Date | null
   }
 
@@ -7532,6 +7902,8 @@ export namespace Prisma {
     currentFlowNodeId: number
     flowContext: number
     startedAt: number
+    queuedAt: number
+    lastActivityAt: number
     closedAt: number
     _all: number
   }
@@ -7547,6 +7919,8 @@ export namespace Prisma {
     flowRevisionId?: true
     currentFlowNodeId?: true
     startedAt?: true
+    queuedAt?: true
+    lastActivityAt?: true
     closedAt?: true
   }
 
@@ -7560,6 +7934,8 @@ export namespace Prisma {
     flowRevisionId?: true
     currentFlowNodeId?: true
     startedAt?: true
+    queuedAt?: true
+    lastActivityAt?: true
     closedAt?: true
   }
 
@@ -7574,6 +7950,8 @@ export namespace Prisma {
     currentFlowNodeId?: true
     flowContext?: true
     startedAt?: true
+    queuedAt?: true
+    lastActivityAt?: true
     closedAt?: true
     _all?: true
   }
@@ -7661,6 +8039,8 @@ export namespace Prisma {
     currentFlowNodeId: string | null
     flowContext: JsonValue | null
     startedAt: Date
+    queuedAt: Date | null
+    lastActivityAt: Date
     closedAt: Date | null
     _count: ConversationCountAggregateOutputType | null
     _min: ConversationMinAggregateOutputType | null
@@ -7692,6 +8072,8 @@ export namespace Prisma {
     currentFlowNodeId?: boolean
     flowContext?: boolean
     startedAt?: boolean
+    queuedAt?: boolean
+    lastActivityAt?: boolean
     closedAt?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
@@ -7700,6 +8082,8 @@ export namespace Prisma {
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
+    notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
+    media?: boolean | Conversation$mediaArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -7714,6 +8098,8 @@ export namespace Prisma {
     currentFlowNodeId?: boolean
     flowContext?: boolean
     startedAt?: boolean
+    queuedAt?: boolean
+    lastActivityAt?: boolean
     closedAt?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
@@ -7733,6 +8119,8 @@ export namespace Prisma {
     currentFlowNodeId?: boolean
     flowContext?: boolean
     startedAt?: boolean
+    queuedAt?: boolean
+    lastActivityAt?: boolean
     closedAt?: boolean
   }
 
@@ -7744,6 +8132,8 @@ export namespace Prisma {
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
+    notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
+    media?: boolean | Conversation$mediaArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7764,6 +8154,8 @@ export namespace Prisma {
       flowRevision: Prisma.$FlowRevisionPayload<ExtArgs> | null
       currentFlowNode: Prisma.$FlowNodePayload<ExtArgs> | null
       flowEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      media: Prisma.$ConversationMediaPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7776,6 +8168,8 @@ export namespace Prisma {
       currentFlowNodeId: string | null
       flowContext: Prisma.JsonValue | null
       startedAt: Date
+      queuedAt: Date | null
+      lastActivityAt: Date
       closedAt: Date | null
     }, ExtArgs["result"]["conversation"]>
     composites: {}
@@ -8148,6 +8542,8 @@ export namespace Prisma {
     flowRevision<T extends Conversation$flowRevisionArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowRevisionArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     currentFlowNode<T extends Conversation$currentFlowNodeArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$currentFlowNodeArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     flowEvents<T extends Conversation$flowEventsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
+    notifications<T extends Conversation$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
+    media<T extends Conversation$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8187,6 +8583,8 @@ export namespace Prisma {
     readonly currentFlowNodeId: FieldRef<"Conversation", 'String'>
     readonly flowContext: FieldRef<"Conversation", 'Json'>
     readonly startedAt: FieldRef<"Conversation", 'DateTime'>
+    readonly queuedAt: FieldRef<"Conversation", 'DateTime'>
+    readonly lastActivityAt: FieldRef<"Conversation", 'DateTime'>
     readonly closedAt: FieldRef<"Conversation", 'DateTime'>
   }
     
@@ -8606,6 +9004,46 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.notifications
+   */
+  export type Conversation$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation.media
+   */
+  export type Conversation$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    where?: ConversationMediaWhereInput
+    orderBy?: ConversationMediaOrderByWithRelationInput | ConversationMediaOrderByWithRelationInput[]
+    cursor?: ConversationMediaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationMediaScalarFieldEnum | ConversationMediaScalarFieldEnum[]
+  }
+
+  /**
    * Conversation without action
    */
   export type ConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8633,6 +9071,7 @@ export namespace Prisma {
   export type MessageMinAggregateOutputType = {
     id: string | null
     conversationId: string | null
+    externalMessageId: string | null
     direction: string | null
     senderType: string | null
     senderAgentId: string | null
@@ -8644,6 +9083,7 @@ export namespace Prisma {
   export type MessageMaxAggregateOutputType = {
     id: string | null
     conversationId: string | null
+    externalMessageId: string | null
     direction: string | null
     senderType: string | null
     senderAgentId: string | null
@@ -8655,6 +9095,7 @@ export namespace Prisma {
   export type MessageCountAggregateOutputType = {
     id: number
     conversationId: number
+    externalMessageId: number
     direction: number
     senderType: number
     senderAgentId: number
@@ -8668,6 +9109,7 @@ export namespace Prisma {
   export type MessageMinAggregateInputType = {
     id?: true
     conversationId?: true
+    externalMessageId?: true
     direction?: true
     senderType?: true
     senderAgentId?: true
@@ -8679,6 +9121,7 @@ export namespace Prisma {
   export type MessageMaxAggregateInputType = {
     id?: true
     conversationId?: true
+    externalMessageId?: true
     direction?: true
     senderType?: true
     senderAgentId?: true
@@ -8690,6 +9133,7 @@ export namespace Prisma {
   export type MessageCountAggregateInputType = {
     id?: true
     conversationId?: true
+    externalMessageId?: true
     direction?: true
     senderType?: true
     senderAgentId?: true
@@ -8774,6 +9218,7 @@ export namespace Prisma {
   export type MessageGroupByOutputType = {
     id: string
     conversationId: string
+    externalMessageId: string | null
     direction: string
     senderType: string
     senderAgentId: string | null
@@ -8802,6 +9247,7 @@ export namespace Prisma {
   export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     conversationId?: boolean
+    externalMessageId?: boolean
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
@@ -8810,11 +9256,13 @@ export namespace Prisma {
     readAt?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    media?: boolean | Message$mediaArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     conversationId?: boolean
+    externalMessageId?: boolean
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
@@ -8828,6 +9276,7 @@ export namespace Prisma {
   export type MessageSelectScalar = {
     id?: boolean
     conversationId?: boolean
+    externalMessageId?: boolean
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
@@ -8839,6 +9288,7 @@ export namespace Prisma {
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    media?: boolean | Message$mediaArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
@@ -8850,10 +9300,12 @@ export namespace Prisma {
     objects: {
       conversation: Prisma.$ConversationPayload<ExtArgs>
       senderAgent: Prisma.$AgentPayload<ExtArgs> | null
+      media: Prisma.$ConversationMediaPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       conversationId: string
+      externalMessageId: string | null
       direction: string
       senderType: string
       senderAgentId: string | null
@@ -9226,6 +9678,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     senderAgent<T extends Message$senderAgentArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    media<T extends Message$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Message$mediaArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9257,6 +9710,7 @@ export namespace Prisma {
   interface MessageFieldRefs {
     readonly id: FieldRef<"Message", 'String'>
     readonly conversationId: FieldRef<"Message", 'String'>
+    readonly externalMessageId: FieldRef<"Message", 'String'>
     readonly direction: FieldRef<"Message", 'String'>
     readonly senderType: FieldRef<"Message", 'String'>
     readonly senderAgentId: FieldRef<"Message", 'String'>
@@ -9596,6 +10050,21 @@ export namespace Prisma {
   }
 
   /**
+   * Message.media
+   */
+  export type Message$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    where?: ConversationMediaWhereInput
+  }
+
+  /**
    * Message without action
    */
   export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9607,6 +10076,1259 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ConversationMedia
+   */
+
+  export type AggregateConversationMedia = {
+    _count: ConversationMediaCountAggregateOutputType | null
+    _avg: ConversationMediaAvgAggregateOutputType | null
+    _sum: ConversationMediaSumAggregateOutputType | null
+    _min: ConversationMediaMinAggregateOutputType | null
+    _max: ConversationMediaMaxAggregateOutputType | null
+  }
+
+  export type ConversationMediaAvgAggregateOutputType = {
+    seconds: number | null
+    width: number | null
+    height: number | null
+    pageCount: number | null
+    encryptionKeyVersion: number | null
+  }
+
+  export type ConversationMediaSumAggregateOutputType = {
+    seconds: number | null
+    width: number | null
+    height: number | null
+    pageCount: number | null
+    encryptionKeyVersion: number | null
+  }
+
+  export type ConversationMediaMinAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    conversationId: string | null
+    whatsappMessageId: string | null
+    provider: $Enums.MediaProvider | null
+    type: $Enums.MediaType | null
+    status: $Enums.MediaStatus | null
+    mimeType: string | null
+    caption: string | null
+    originalFileName: string | null
+    title: string | null
+    ptt: boolean | null
+    seconds: number | null
+    width: number | null
+    height: number | null
+    pageCount: number | null
+    viewOnce: boolean | null
+    sourceUrlCiphertext: string | null
+    thumbnailUrlCiphertext: string | null
+    encryptionKeyVersion: number | null
+    sourceCreatedAt: Date | null
+    expiresAt: Date | null
+    failureCode: string | null
+    lastAccessErrorCode: string | null
+    lastAccessedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConversationMediaMaxAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    conversationId: string | null
+    whatsappMessageId: string | null
+    provider: $Enums.MediaProvider | null
+    type: $Enums.MediaType | null
+    status: $Enums.MediaStatus | null
+    mimeType: string | null
+    caption: string | null
+    originalFileName: string | null
+    title: string | null
+    ptt: boolean | null
+    seconds: number | null
+    width: number | null
+    height: number | null
+    pageCount: number | null
+    viewOnce: boolean | null
+    sourceUrlCiphertext: string | null
+    thumbnailUrlCiphertext: string | null
+    encryptionKeyVersion: number | null
+    sourceCreatedAt: Date | null
+    expiresAt: Date | null
+    failureCode: string | null
+    lastAccessErrorCode: string | null
+    lastAccessedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConversationMediaCountAggregateOutputType = {
+    id: number
+    messageId: number
+    conversationId: number
+    whatsappMessageId: number
+    provider: number
+    type: number
+    status: number
+    mimeType: number
+    caption: number
+    originalFileName: number
+    title: number
+    ptt: number
+    seconds: number
+    width: number
+    height: number
+    pageCount: number
+    viewOnce: number
+    sourceUrlCiphertext: number
+    thumbnailUrlCiphertext: number
+    encryptionKeyVersion: number
+    sourceCreatedAt: number
+    expiresAt: number
+    failureCode: number
+    lastAccessErrorCode: number
+    lastAccessedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ConversationMediaAvgAggregateInputType = {
+    seconds?: true
+    width?: true
+    height?: true
+    pageCount?: true
+    encryptionKeyVersion?: true
+  }
+
+  export type ConversationMediaSumAggregateInputType = {
+    seconds?: true
+    width?: true
+    height?: true
+    pageCount?: true
+    encryptionKeyVersion?: true
+  }
+
+  export type ConversationMediaMinAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    whatsappMessageId?: true
+    provider?: true
+    type?: true
+    status?: true
+    mimeType?: true
+    caption?: true
+    originalFileName?: true
+    title?: true
+    ptt?: true
+    seconds?: true
+    width?: true
+    height?: true
+    pageCount?: true
+    viewOnce?: true
+    sourceUrlCiphertext?: true
+    thumbnailUrlCiphertext?: true
+    encryptionKeyVersion?: true
+    sourceCreatedAt?: true
+    expiresAt?: true
+    failureCode?: true
+    lastAccessErrorCode?: true
+    lastAccessedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConversationMediaMaxAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    whatsappMessageId?: true
+    provider?: true
+    type?: true
+    status?: true
+    mimeType?: true
+    caption?: true
+    originalFileName?: true
+    title?: true
+    ptt?: true
+    seconds?: true
+    width?: true
+    height?: true
+    pageCount?: true
+    viewOnce?: true
+    sourceUrlCiphertext?: true
+    thumbnailUrlCiphertext?: true
+    encryptionKeyVersion?: true
+    sourceCreatedAt?: true
+    expiresAt?: true
+    failureCode?: true
+    lastAccessErrorCode?: true
+    lastAccessedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConversationMediaCountAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    whatsappMessageId?: true
+    provider?: true
+    type?: true
+    status?: true
+    mimeType?: true
+    caption?: true
+    originalFileName?: true
+    title?: true
+    ptt?: true
+    seconds?: true
+    width?: true
+    height?: true
+    pageCount?: true
+    viewOnce?: true
+    sourceUrlCiphertext?: true
+    thumbnailUrlCiphertext?: true
+    encryptionKeyVersion?: true
+    sourceCreatedAt?: true
+    expiresAt?: true
+    failureCode?: true
+    lastAccessErrorCode?: true
+    lastAccessedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ConversationMediaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationMedia to aggregate.
+     */
+    where?: ConversationMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationMedias to fetch.
+     */
+    orderBy?: ConversationMediaOrderByWithRelationInput | ConversationMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConversationMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ConversationMedias
+    **/
+    _count?: true | ConversationMediaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ConversationMediaAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ConversationMediaSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConversationMediaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConversationMediaMaxAggregateInputType
+  }
+
+  export type GetConversationMediaAggregateType<T extends ConversationMediaAggregateArgs> = {
+        [P in keyof T & keyof AggregateConversationMedia]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConversationMedia[P]>
+      : GetScalarType<T[P], AggregateConversationMedia[P]>
+  }
+
+
+
+
+  export type ConversationMediaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationMediaWhereInput
+    orderBy?: ConversationMediaOrderByWithAggregationInput | ConversationMediaOrderByWithAggregationInput[]
+    by: ConversationMediaScalarFieldEnum[] | ConversationMediaScalarFieldEnum
+    having?: ConversationMediaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConversationMediaCountAggregateInputType | true
+    _avg?: ConversationMediaAvgAggregateInputType
+    _sum?: ConversationMediaSumAggregateInputType
+    _min?: ConversationMediaMinAggregateInputType
+    _max?: ConversationMediaMaxAggregateInputType
+  }
+
+  export type ConversationMediaGroupByOutputType = {
+    id: string
+    messageId: string
+    conversationId: string
+    whatsappMessageId: string
+    provider: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status: $Enums.MediaStatus
+    mimeType: string
+    caption: string | null
+    originalFileName: string | null
+    title: string | null
+    ptt: boolean | null
+    seconds: number | null
+    width: number | null
+    height: number | null
+    pageCount: number | null
+    viewOnce: boolean
+    sourceUrlCiphertext: string | null
+    thumbnailUrlCiphertext: string | null
+    encryptionKeyVersion: number
+    sourceCreatedAt: Date
+    expiresAt: Date
+    failureCode: string | null
+    lastAccessErrorCode: string | null
+    lastAccessedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ConversationMediaCountAggregateOutputType | null
+    _avg: ConversationMediaAvgAggregateOutputType | null
+    _sum: ConversationMediaSumAggregateOutputType | null
+    _min: ConversationMediaMinAggregateOutputType | null
+    _max: ConversationMediaMaxAggregateOutputType | null
+  }
+
+  type GetConversationMediaGroupByPayload<T extends ConversationMediaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConversationMediaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConversationMediaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConversationMediaGroupByOutputType[P]>
+            : GetScalarType<T[P], ConversationMediaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConversationMediaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    whatsappMessageId?: boolean
+    provider?: boolean
+    type?: boolean
+    status?: boolean
+    mimeType?: boolean
+    caption?: boolean
+    originalFileName?: boolean
+    title?: boolean
+    ptt?: boolean
+    seconds?: boolean
+    width?: boolean
+    height?: boolean
+    pageCount?: boolean
+    viewOnce?: boolean
+    sourceUrlCiphertext?: boolean
+    thumbnailUrlCiphertext?: boolean
+    encryptionKeyVersion?: boolean
+    sourceCreatedAt?: boolean
+    expiresAt?: boolean
+    failureCode?: boolean
+    lastAccessErrorCode?: boolean
+    lastAccessedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationMedia"]>
+
+  export type ConversationMediaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    whatsappMessageId?: boolean
+    provider?: boolean
+    type?: boolean
+    status?: boolean
+    mimeType?: boolean
+    caption?: boolean
+    originalFileName?: boolean
+    title?: boolean
+    ptt?: boolean
+    seconds?: boolean
+    width?: boolean
+    height?: boolean
+    pageCount?: boolean
+    viewOnce?: boolean
+    sourceUrlCiphertext?: boolean
+    thumbnailUrlCiphertext?: boolean
+    encryptionKeyVersion?: boolean
+    sourceCreatedAt?: boolean
+    expiresAt?: boolean
+    failureCode?: boolean
+    lastAccessErrorCode?: boolean
+    lastAccessedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationMedia"]>
+
+  export type ConversationMediaSelectScalar = {
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    whatsappMessageId?: boolean
+    provider?: boolean
+    type?: boolean
+    status?: boolean
+    mimeType?: boolean
+    caption?: boolean
+    originalFileName?: boolean
+    title?: boolean
+    ptt?: boolean
+    seconds?: boolean
+    width?: boolean
+    height?: boolean
+    pageCount?: boolean
+    viewOnce?: boolean
+    sourceUrlCiphertext?: boolean
+    thumbnailUrlCiphertext?: boolean
+    encryptionKeyVersion?: boolean
+    sourceCreatedAt?: boolean
+    expiresAt?: boolean
+    failureCode?: boolean
+    lastAccessErrorCode?: boolean
+    lastAccessedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ConversationMediaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type ConversationMediaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+
+  export type $ConversationMediaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ConversationMedia"
+    objects: {
+      message: Prisma.$MessagePayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      messageId: string
+      conversationId: string
+      whatsappMessageId: string
+      provider: $Enums.MediaProvider
+      type: $Enums.MediaType
+      status: $Enums.MediaStatus
+      mimeType: string
+      caption: string | null
+      originalFileName: string | null
+      title: string | null
+      ptt: boolean | null
+      seconds: number | null
+      width: number | null
+      height: number | null
+      pageCount: number | null
+      viewOnce: boolean
+      sourceUrlCiphertext: string | null
+      thumbnailUrlCiphertext: string | null
+      encryptionKeyVersion: number
+      sourceCreatedAt: Date
+      expiresAt: Date
+      failureCode: string | null
+      lastAccessErrorCode: string | null
+      lastAccessedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["conversationMedia"]>
+    composites: {}
+  }
+
+  type ConversationMediaGetPayload<S extends boolean | null | undefined | ConversationMediaDefaultArgs> = $Result.GetResult<Prisma.$ConversationMediaPayload, S>
+
+  type ConversationMediaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ConversationMediaFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ConversationMediaCountAggregateInputType | true
+    }
+
+  export interface ConversationMediaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ConversationMedia'], meta: { name: 'ConversationMedia' } }
+    /**
+     * Find zero or one ConversationMedia that matches the filter.
+     * @param {ConversationMediaFindUniqueArgs} args - Arguments to find a ConversationMedia
+     * @example
+     * // Get one ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConversationMediaFindUniqueArgs>(args: SelectSubset<T, ConversationMediaFindUniqueArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ConversationMedia that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ConversationMediaFindUniqueOrThrowArgs} args - Arguments to find a ConversationMedia
+     * @example
+     * // Get one ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConversationMediaFindUniqueOrThrowArgs>(args: SelectSubset<T, ConversationMediaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ConversationMedia that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaFindFirstArgs} args - Arguments to find a ConversationMedia
+     * @example
+     * // Get one ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConversationMediaFindFirstArgs>(args?: SelectSubset<T, ConversationMediaFindFirstArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ConversationMedia that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaFindFirstOrThrowArgs} args - Arguments to find a ConversationMedia
+     * @example
+     * // Get one ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConversationMediaFindFirstOrThrowArgs>(args?: SelectSubset<T, ConversationMediaFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ConversationMedias that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ConversationMedias
+     * const conversationMedias = await prisma.conversationMedia.findMany()
+     * 
+     * // Get first 10 ConversationMedias
+     * const conversationMedias = await prisma.conversationMedia.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const conversationMediaWithIdOnly = await prisma.conversationMedia.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConversationMediaFindManyArgs>(args?: SelectSubset<T, ConversationMediaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ConversationMedia.
+     * @param {ConversationMediaCreateArgs} args - Arguments to create a ConversationMedia.
+     * @example
+     * // Create one ConversationMedia
+     * const ConversationMedia = await prisma.conversationMedia.create({
+     *   data: {
+     *     // ... data to create a ConversationMedia
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConversationMediaCreateArgs>(args: SelectSubset<T, ConversationMediaCreateArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ConversationMedias.
+     * @param {ConversationMediaCreateManyArgs} args - Arguments to create many ConversationMedias.
+     * @example
+     * // Create many ConversationMedias
+     * const conversationMedia = await prisma.conversationMedia.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConversationMediaCreateManyArgs>(args?: SelectSubset<T, ConversationMediaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ConversationMedias and returns the data saved in the database.
+     * @param {ConversationMediaCreateManyAndReturnArgs} args - Arguments to create many ConversationMedias.
+     * @example
+     * // Create many ConversationMedias
+     * const conversationMedia = await prisma.conversationMedia.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ConversationMedias and only return the `id`
+     * const conversationMediaWithIdOnly = await prisma.conversationMedia.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConversationMediaCreateManyAndReturnArgs>(args?: SelectSubset<T, ConversationMediaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ConversationMedia.
+     * @param {ConversationMediaDeleteArgs} args - Arguments to delete one ConversationMedia.
+     * @example
+     * // Delete one ConversationMedia
+     * const ConversationMedia = await prisma.conversationMedia.delete({
+     *   where: {
+     *     // ... filter to delete one ConversationMedia
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConversationMediaDeleteArgs>(args: SelectSubset<T, ConversationMediaDeleteArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ConversationMedia.
+     * @param {ConversationMediaUpdateArgs} args - Arguments to update one ConversationMedia.
+     * @example
+     * // Update one ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConversationMediaUpdateArgs>(args: SelectSubset<T, ConversationMediaUpdateArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ConversationMedias.
+     * @param {ConversationMediaDeleteManyArgs} args - Arguments to filter ConversationMedias to delete.
+     * @example
+     * // Delete a few ConversationMedias
+     * const { count } = await prisma.conversationMedia.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConversationMediaDeleteManyArgs>(args?: SelectSubset<T, ConversationMediaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConversationMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ConversationMedias
+     * const conversationMedia = await prisma.conversationMedia.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConversationMediaUpdateManyArgs>(args: SelectSubset<T, ConversationMediaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ConversationMedia.
+     * @param {ConversationMediaUpsertArgs} args - Arguments to update or create a ConversationMedia.
+     * @example
+     * // Update or create a ConversationMedia
+     * const conversationMedia = await prisma.conversationMedia.upsert({
+     *   create: {
+     *     // ... data to create a ConversationMedia
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ConversationMedia we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConversationMediaUpsertArgs>(args: SelectSubset<T, ConversationMediaUpsertArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ConversationMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaCountArgs} args - Arguments to filter ConversationMedias to count.
+     * @example
+     * // Count the number of ConversationMedias
+     * const count = await prisma.conversationMedia.count({
+     *   where: {
+     *     // ... the filter for the ConversationMedias we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConversationMediaCountArgs>(
+      args?: Subset<T, ConversationMediaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConversationMediaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ConversationMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConversationMediaAggregateArgs>(args: Subset<T, ConversationMediaAggregateArgs>): Prisma.PrismaPromise<GetConversationMediaAggregateType<T>>
+
+    /**
+     * Group by ConversationMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationMediaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConversationMediaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConversationMediaGroupByArgs['orderBy'] }
+        : { orderBy?: ConversationMediaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConversationMediaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConversationMediaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ConversationMedia model
+   */
+  readonly fields: ConversationMediaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ConversationMedia.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConversationMediaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    message<T extends MessageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MessageDefaultArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ConversationMedia model
+   */ 
+  interface ConversationMediaFieldRefs {
+    readonly id: FieldRef<"ConversationMedia", 'String'>
+    readonly messageId: FieldRef<"ConversationMedia", 'String'>
+    readonly conversationId: FieldRef<"ConversationMedia", 'String'>
+    readonly whatsappMessageId: FieldRef<"ConversationMedia", 'String'>
+    readonly provider: FieldRef<"ConversationMedia", 'MediaProvider'>
+    readonly type: FieldRef<"ConversationMedia", 'MediaType'>
+    readonly status: FieldRef<"ConversationMedia", 'MediaStatus'>
+    readonly mimeType: FieldRef<"ConversationMedia", 'String'>
+    readonly caption: FieldRef<"ConversationMedia", 'String'>
+    readonly originalFileName: FieldRef<"ConversationMedia", 'String'>
+    readonly title: FieldRef<"ConversationMedia", 'String'>
+    readonly ptt: FieldRef<"ConversationMedia", 'Boolean'>
+    readonly seconds: FieldRef<"ConversationMedia", 'Int'>
+    readonly width: FieldRef<"ConversationMedia", 'Int'>
+    readonly height: FieldRef<"ConversationMedia", 'Int'>
+    readonly pageCount: FieldRef<"ConversationMedia", 'Int'>
+    readonly viewOnce: FieldRef<"ConversationMedia", 'Boolean'>
+    readonly sourceUrlCiphertext: FieldRef<"ConversationMedia", 'String'>
+    readonly thumbnailUrlCiphertext: FieldRef<"ConversationMedia", 'String'>
+    readonly encryptionKeyVersion: FieldRef<"ConversationMedia", 'Int'>
+    readonly sourceCreatedAt: FieldRef<"ConversationMedia", 'DateTime'>
+    readonly expiresAt: FieldRef<"ConversationMedia", 'DateTime'>
+    readonly failureCode: FieldRef<"ConversationMedia", 'String'>
+    readonly lastAccessErrorCode: FieldRef<"ConversationMedia", 'String'>
+    readonly lastAccessedAt: FieldRef<"ConversationMedia", 'DateTime'>
+    readonly createdAt: FieldRef<"ConversationMedia", 'DateTime'>
+    readonly updatedAt: FieldRef<"ConversationMedia", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ConversationMedia findUnique
+   */
+  export type ConversationMediaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationMedia to fetch.
+     */
+    where: ConversationMediaWhereUniqueInput
+  }
+
+  /**
+   * ConversationMedia findUniqueOrThrow
+   */
+  export type ConversationMediaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationMedia to fetch.
+     */
+    where: ConversationMediaWhereUniqueInput
+  }
+
+  /**
+   * ConversationMedia findFirst
+   */
+  export type ConversationMediaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationMedia to fetch.
+     */
+    where?: ConversationMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationMedias to fetch.
+     */
+    orderBy?: ConversationMediaOrderByWithRelationInput | ConversationMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationMedias.
+     */
+    cursor?: ConversationMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationMedias.
+     */
+    distinct?: ConversationMediaScalarFieldEnum | ConversationMediaScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationMedia findFirstOrThrow
+   */
+  export type ConversationMediaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationMedia to fetch.
+     */
+    where?: ConversationMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationMedias to fetch.
+     */
+    orderBy?: ConversationMediaOrderByWithRelationInput | ConversationMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationMedias.
+     */
+    cursor?: ConversationMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationMedias.
+     */
+    distinct?: ConversationMediaScalarFieldEnum | ConversationMediaScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationMedia findMany
+   */
+  export type ConversationMediaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationMedias to fetch.
+     */
+    where?: ConversationMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationMedias to fetch.
+     */
+    orderBy?: ConversationMediaOrderByWithRelationInput | ConversationMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ConversationMedias.
+     */
+    cursor?: ConversationMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationMedias.
+     */
+    skip?: number
+    distinct?: ConversationMediaScalarFieldEnum | ConversationMediaScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationMedia create
+   */
+  export type ConversationMediaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ConversationMedia.
+     */
+    data: XOR<ConversationMediaCreateInput, ConversationMediaUncheckedCreateInput>
+  }
+
+  /**
+   * ConversationMedia createMany
+   */
+  export type ConversationMediaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ConversationMedias.
+     */
+    data: ConversationMediaCreateManyInput | ConversationMediaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConversationMedia createManyAndReturn
+   */
+  export type ConversationMediaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ConversationMedias.
+     */
+    data: ConversationMediaCreateManyInput | ConversationMediaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ConversationMedia update
+   */
+  export type ConversationMediaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ConversationMedia.
+     */
+    data: XOR<ConversationMediaUpdateInput, ConversationMediaUncheckedUpdateInput>
+    /**
+     * Choose, which ConversationMedia to update.
+     */
+    where: ConversationMediaWhereUniqueInput
+  }
+
+  /**
+   * ConversationMedia updateMany
+   */
+  export type ConversationMediaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ConversationMedias.
+     */
+    data: XOR<ConversationMediaUpdateManyMutationInput, ConversationMediaUncheckedUpdateManyInput>
+    /**
+     * Filter which ConversationMedias to update
+     */
+    where?: ConversationMediaWhereInput
+  }
+
+  /**
+   * ConversationMedia upsert
+   */
+  export type ConversationMediaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ConversationMedia to update in case it exists.
+     */
+    where: ConversationMediaWhereUniqueInput
+    /**
+     * In case the ConversationMedia found by the `where` argument doesn't exist, create a new ConversationMedia with this data.
+     */
+    create: XOR<ConversationMediaCreateInput, ConversationMediaUncheckedCreateInput>
+    /**
+     * In case the ConversationMedia was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConversationMediaUpdateInput, ConversationMediaUncheckedUpdateInput>
+  }
+
+  /**
+   * ConversationMedia delete
+   */
+  export type ConversationMediaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
+    /**
+     * Filter which ConversationMedia to delete.
+     */
+    where: ConversationMediaWhereUniqueInput
+  }
+
+  /**
+   * ConversationMedia deleteMany
+   */
+  export type ConversationMediaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationMedias to delete
+     */
+    where?: ConversationMediaWhereInput
+  }
+
+  /**
+   * ConversationMedia without action
+   */
+  export type ConversationMediaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationMedia
+     */
+    select?: ConversationMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationMediaInclude<ExtArgs> | null
   }
 
 
@@ -17886,6 +19608,2047 @@ export namespace Prisma {
 
 
   /**
+   * Model Notification
+   */
+
+  export type AggregateNotification = {
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  export type NotificationMinAggregateOutputType = {
+    id: string | null
+    agentId: string | null
+    type: string | null
+    title: string | null
+    body: string | null
+    conversationId: string | null
+    departmentId: string | null
+    dedupeKey: string | null
+    createdAt: Date | null
+    readAt: Date | null
+    dismissedAt: Date | null
+  }
+
+  export type NotificationMaxAggregateOutputType = {
+    id: string | null
+    agentId: string | null
+    type: string | null
+    title: string | null
+    body: string | null
+    conversationId: string | null
+    departmentId: string | null
+    dedupeKey: string | null
+    createdAt: Date | null
+    readAt: Date | null
+    dismissedAt: Date | null
+  }
+
+  export type NotificationCountAggregateOutputType = {
+    id: number
+    agentId: number
+    type: number
+    title: number
+    body: number
+    conversationId: number
+    departmentId: number
+    dedupeKey: number
+    payload: number
+    createdAt: number
+    readAt: number
+    dismissedAt: number
+    _all: number
+  }
+
+
+  export type NotificationMinAggregateInputType = {
+    id?: true
+    agentId?: true
+    type?: true
+    title?: true
+    body?: true
+    conversationId?: true
+    departmentId?: true
+    dedupeKey?: true
+    createdAt?: true
+    readAt?: true
+    dismissedAt?: true
+  }
+
+  export type NotificationMaxAggregateInputType = {
+    id?: true
+    agentId?: true
+    type?: true
+    title?: true
+    body?: true
+    conversationId?: true
+    departmentId?: true
+    dedupeKey?: true
+    createdAt?: true
+    readAt?: true
+    dismissedAt?: true
+  }
+
+  export type NotificationCountAggregateInputType = {
+    id?: true
+    agentId?: true
+    type?: true
+    title?: true
+    body?: true
+    conversationId?: true
+    departmentId?: true
+    dedupeKey?: true
+    payload?: true
+    createdAt?: true
+    readAt?: true
+    dismissedAt?: true
+    _all?: true
+  }
+
+  export type NotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notification to aggregate.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Notifications
+    **/
+    _count?: true | NotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type GetNotificationAggregateType<T extends NotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotification[P]>
+      : GetScalarType<T[P], AggregateNotification[P]>
+  }
+
+
+
+
+  export type NotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithAggregationInput | NotificationOrderByWithAggregationInput[]
+    by: NotificationScalarFieldEnum[] | NotificationScalarFieldEnum
+    having?: NotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationCountAggregateInputType | true
+    _min?: NotificationMinAggregateInputType
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type NotificationGroupByOutputType = {
+    id: string
+    agentId: string
+    type: string
+    title: string
+    body: string
+    conversationId: string | null
+    departmentId: string | null
+    dedupeKey: string
+    payload: JsonValue | null
+    createdAt: Date
+    readAt: Date | null
+    dismissedAt: Date | null
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  type GetNotificationGroupByPayload<T extends NotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    agentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    conversationId?: boolean
+    departmentId?: boolean
+    dedupeKey?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+    dismissedAt?: boolean
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+    conversation?: boolean | Notification$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    agentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    conversationId?: boolean
+    departmentId?: boolean
+    dedupeKey?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+    dismissedAt?: boolean
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+    conversation?: boolean | Notification$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectScalar = {
+    id?: boolean
+    agentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    conversationId?: boolean
+    departmentId?: boolean
+    dedupeKey?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+    dismissedAt?: boolean
+  }
+
+  export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+    conversation?: boolean | Notification$conversationArgs<ExtArgs>
+  }
+  export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+    conversation?: boolean | Notification$conversationArgs<ExtArgs>
+  }
+
+  export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Notification"
+    objects: {
+      agent: Prisma.$AgentPayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      agentId: string
+      type: string
+      title: string
+      body: string
+      conversationId: string | null
+      departmentId: string | null
+      dedupeKey: string
+      payload: Prisma.JsonValue | null
+      createdAt: Date
+      readAt: Date | null
+      dismissedAt: Date | null
+    }, ExtArgs["result"]["notification"]>
+    composites: {}
+  }
+
+  type NotificationGetPayload<S extends boolean | null | undefined | NotificationDefaultArgs> = $Result.GetResult<Prisma.$NotificationPayload, S>
+
+  type NotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<NotificationFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: NotificationCountAggregateInputType | true
+    }
+
+  export interface NotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Notification'], meta: { name: 'Notification' } }
+    /**
+     * Find zero or one Notification that matches the filter.
+     * @param {NotificationFindUniqueArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationFindUniqueArgs>(args: SelectSubset<T, NotificationFindUniqueArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Notification that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {NotificationFindUniqueOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Notification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationFindFirstArgs>(args?: SelectSubset<T, NotificationFindFirstArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Notification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Notifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notifications
+     * const notifications = await prisma.notification.findMany()
+     * 
+     * // Get first 10 Notifications
+     * const notifications = await prisma.notification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationWithIdOnly = await prisma.notification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationFindManyArgs>(args?: SelectSubset<T, NotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Notification.
+     * @param {NotificationCreateArgs} args - Arguments to create a Notification.
+     * @example
+     * // Create one Notification
+     * const Notification = await prisma.notification.create({
+     *   data: {
+     *     // ... data to create a Notification
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationCreateArgs>(args: SelectSubset<T, NotificationCreateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Notifications.
+     * @param {NotificationCreateManyArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationCreateManyArgs>(args?: SelectSubset<T, NotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notifications and returns the data saved in the database.
+     * @param {NotificationCreateManyAndReturnArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Notification.
+     * @param {NotificationDeleteArgs} args - Arguments to delete one Notification.
+     * @example
+     * // Delete one Notification
+     * const Notification = await prisma.notification.delete({
+     *   where: {
+     *     // ... filter to delete one Notification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationDeleteArgs>(args: SelectSubset<T, NotificationDeleteArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Notification.
+     * @param {NotificationUpdateArgs} args - Arguments to update one Notification.
+     * @example
+     * // Update one Notification
+     * const notification = await prisma.notification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationUpdateArgs>(args: SelectSubset<T, NotificationUpdateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Notifications.
+     * @param {NotificationDeleteManyArgs} args - Arguments to filter Notifications to delete.
+     * @example
+     * // Delete a few Notifications
+     * const { count } = await prisma.notification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationDeleteManyArgs>(args?: SelectSubset<T, NotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationUpdateManyArgs>(args: SelectSubset<T, NotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Notification.
+     * @param {NotificationUpsertArgs} args - Arguments to update or create a Notification.
+     * @example
+     * // Update or create a Notification
+     * const notification = await prisma.notification.upsert({
+     *   create: {
+     *     // ... data to create a Notification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationUpsertArgs>(args: SelectSubset<T, NotificationUpsertArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationCountArgs} args - Arguments to filter Notifications to count.
+     * @example
+     * // Count the number of Notifications
+     * const count = await prisma.notification.count({
+     *   where: {
+     *     // ... the filter for the Notifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationCountArgs>(
+      args?: Subset<T, NotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationAggregateArgs>(args: Subset<T, NotificationAggregateArgs>): Prisma.PrismaPromise<GetNotificationAggregateType<T>>
+
+    /**
+     * Group by Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Notification model
+   */
+  readonly fields: NotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Notification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agent<T extends AgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgentDefaultArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    conversation<T extends Notification$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Notification$conversationArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Notification model
+   */ 
+  interface NotificationFieldRefs {
+    readonly id: FieldRef<"Notification", 'String'>
+    readonly agentId: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'String'>
+    readonly title: FieldRef<"Notification", 'String'>
+    readonly body: FieldRef<"Notification", 'String'>
+    readonly conversationId: FieldRef<"Notification", 'String'>
+    readonly departmentId: FieldRef<"Notification", 'String'>
+    readonly dedupeKey: FieldRef<"Notification", 'String'>
+    readonly payload: FieldRef<"Notification", 'Json'>
+    readonly createdAt: FieldRef<"Notification", 'DateTime'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
+    readonly dismissedAt: FieldRef<"Notification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Notification findUnique
+   */
+  export type NotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findUniqueOrThrow
+   */
+  export type NotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findFirst
+   */
+  export type NotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findFirstOrThrow
+   */
+  export type NotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findMany
+   */
+  export type NotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notifications to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification create
+   */
+  export type NotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Notification.
+     */
+    data: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+  }
+
+  /**
+   * Notification createMany
+   */
+  export type NotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Notification createManyAndReturn
+   */
+  export type NotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification update
+   */
+  export type NotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Notification.
+     */
+    data: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+    /**
+     * Choose, which Notification to update.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification updateMany
+   */
+  export type NotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+  }
+
+  /**
+   * Notification upsert
+   */
+  export type NotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Notification to update in case it exists.
+     */
+    where: NotificationWhereUniqueInput
+    /**
+     * In case the Notification found by the `where` argument doesn't exist, create a new Notification with this data.
+     */
+    create: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+    /**
+     * In case the Notification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Notification delete
+   */
+  export type NotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter which Notification to delete.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification deleteMany
+   */
+  export type NotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notifications to delete
+     */
+    where?: NotificationWhereInput
+  }
+
+  /**
+   * Notification.conversation
+   */
+  export type Notification$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+  }
+
+  /**
+   * Notification without action
+   */
+  export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NotificationPreference
+   */
+
+  export type AggregateNotificationPreference = {
+    _count: NotificationPreferenceCountAggregateOutputType | null
+    _avg: NotificationPreferenceAvgAggregateOutputType | null
+    _sum: NotificationPreferenceSumAggregateOutputType | null
+    _min: NotificationPreferenceMinAggregateOutputType | null
+    _max: NotificationPreferenceMaxAggregateOutputType | null
+  }
+
+  export type NotificationPreferenceAvgAggregateOutputType = {
+    unresolvedReminderMinutes: number | null
+    reminderRepeatMinutes: number | null
+  }
+
+  export type NotificationPreferenceSumAggregateOutputType = {
+    unresolvedReminderMinutes: number | null
+    reminderRepeatMinutes: number | null
+  }
+
+  export type NotificationPreferenceMinAggregateOutputType = {
+    id: string | null
+    agentId: string | null
+    soundEnabled: boolean | null
+    browserEnabled: boolean | null
+    unresolvedRemindersEnabled: boolean | null
+    unresolvedReminderMinutes: number | null
+    reminderRepeatMinutes: number | null
+    updatedAt: Date | null
+  }
+
+  export type NotificationPreferenceMaxAggregateOutputType = {
+    id: string | null
+    agentId: string | null
+    soundEnabled: boolean | null
+    browserEnabled: boolean | null
+    unresolvedRemindersEnabled: boolean | null
+    unresolvedReminderMinutes: number | null
+    reminderRepeatMinutes: number | null
+    updatedAt: Date | null
+  }
+
+  export type NotificationPreferenceCountAggregateOutputType = {
+    id: number
+    agentId: number
+    soundEnabled: number
+    browserEnabled: number
+    unresolvedRemindersEnabled: number
+    unresolvedReminderMinutes: number
+    reminderRepeatMinutes: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NotificationPreferenceAvgAggregateInputType = {
+    unresolvedReminderMinutes?: true
+    reminderRepeatMinutes?: true
+  }
+
+  export type NotificationPreferenceSumAggregateInputType = {
+    unresolvedReminderMinutes?: true
+    reminderRepeatMinutes?: true
+  }
+
+  export type NotificationPreferenceMinAggregateInputType = {
+    id?: true
+    agentId?: true
+    soundEnabled?: true
+    browserEnabled?: true
+    unresolvedRemindersEnabled?: true
+    unresolvedReminderMinutes?: true
+    reminderRepeatMinutes?: true
+    updatedAt?: true
+  }
+
+  export type NotificationPreferenceMaxAggregateInputType = {
+    id?: true
+    agentId?: true
+    soundEnabled?: true
+    browserEnabled?: true
+    unresolvedRemindersEnabled?: true
+    unresolvedReminderMinutes?: true
+    reminderRepeatMinutes?: true
+    updatedAt?: true
+  }
+
+  export type NotificationPreferenceCountAggregateInputType = {
+    id?: true
+    agentId?: true
+    soundEnabled?: true
+    browserEnabled?: true
+    unresolvedRemindersEnabled?: true
+    unresolvedReminderMinutes?: true
+    reminderRepeatMinutes?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NotificationPreferenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationPreference to aggregate.
+     */
+    where?: NotificationPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationPreferences to fetch.
+     */
+    orderBy?: NotificationPreferenceOrderByWithRelationInput | NotificationPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NotificationPreferences
+    **/
+    _count?: true | NotificationPreferenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: NotificationPreferenceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NotificationPreferenceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationPreferenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationPreferenceMaxAggregateInputType
+  }
+
+  export type GetNotificationPreferenceAggregateType<T extends NotificationPreferenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotificationPreference]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotificationPreference[P]>
+      : GetScalarType<T[P], AggregateNotificationPreference[P]>
+  }
+
+
+
+
+  export type NotificationPreferenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationPreferenceWhereInput
+    orderBy?: NotificationPreferenceOrderByWithAggregationInput | NotificationPreferenceOrderByWithAggregationInput[]
+    by: NotificationPreferenceScalarFieldEnum[] | NotificationPreferenceScalarFieldEnum
+    having?: NotificationPreferenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationPreferenceCountAggregateInputType | true
+    _avg?: NotificationPreferenceAvgAggregateInputType
+    _sum?: NotificationPreferenceSumAggregateInputType
+    _min?: NotificationPreferenceMinAggregateInputType
+    _max?: NotificationPreferenceMaxAggregateInputType
+  }
+
+  export type NotificationPreferenceGroupByOutputType = {
+    id: string
+    agentId: string
+    soundEnabled: boolean
+    browserEnabled: boolean
+    unresolvedRemindersEnabled: boolean
+    unresolvedReminderMinutes: number
+    reminderRepeatMinutes: number
+    updatedAt: Date
+    _count: NotificationPreferenceCountAggregateOutputType | null
+    _avg: NotificationPreferenceAvgAggregateOutputType | null
+    _sum: NotificationPreferenceSumAggregateOutputType | null
+    _min: NotificationPreferenceMinAggregateOutputType | null
+    _max: NotificationPreferenceMaxAggregateOutputType | null
+  }
+
+  type GetNotificationPreferenceGroupByPayload<T extends NotificationPreferenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationPreferenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationPreferenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationPreferenceGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationPreferenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationPreferenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    agentId?: boolean
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: boolean
+    reminderRepeatMinutes?: boolean
+    updatedAt?: boolean
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notificationPreference"]>
+
+  export type NotificationPreferenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    agentId?: boolean
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: boolean
+    reminderRepeatMinutes?: boolean
+    updatedAt?: boolean
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notificationPreference"]>
+
+  export type NotificationPreferenceSelectScalar = {
+    id?: boolean
+    agentId?: boolean
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: boolean
+    reminderRepeatMinutes?: boolean
+    updatedAt?: boolean
+  }
+
+  export type NotificationPreferenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+  export type NotificationPreferenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+
+  export type $NotificationPreferencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NotificationPreference"
+    objects: {
+      agent: Prisma.$AgentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      agentId: string
+      soundEnabled: boolean
+      browserEnabled: boolean
+      unresolvedRemindersEnabled: boolean
+      unresolvedReminderMinutes: number
+      reminderRepeatMinutes: number
+      updatedAt: Date
+    }, ExtArgs["result"]["notificationPreference"]>
+    composites: {}
+  }
+
+  type NotificationPreferenceGetPayload<S extends boolean | null | undefined | NotificationPreferenceDefaultArgs> = $Result.GetResult<Prisma.$NotificationPreferencePayload, S>
+
+  type NotificationPreferenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<NotificationPreferenceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: NotificationPreferenceCountAggregateInputType | true
+    }
+
+  export interface NotificationPreferenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NotificationPreference'], meta: { name: 'NotificationPreference' } }
+    /**
+     * Find zero or one NotificationPreference that matches the filter.
+     * @param {NotificationPreferenceFindUniqueArgs} args - Arguments to find a NotificationPreference
+     * @example
+     * // Get one NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationPreferenceFindUniqueArgs>(args: SelectSubset<T, NotificationPreferenceFindUniqueArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one NotificationPreference that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {NotificationPreferenceFindUniqueOrThrowArgs} args - Arguments to find a NotificationPreference
+     * @example
+     * // Get one NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationPreferenceFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationPreferenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first NotificationPreference that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceFindFirstArgs} args - Arguments to find a NotificationPreference
+     * @example
+     * // Get one NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationPreferenceFindFirstArgs>(args?: SelectSubset<T, NotificationPreferenceFindFirstArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first NotificationPreference that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceFindFirstOrThrowArgs} args - Arguments to find a NotificationPreference
+     * @example
+     * // Get one NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationPreferenceFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationPreferenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more NotificationPreferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NotificationPreferences
+     * const notificationPreferences = await prisma.notificationPreference.findMany()
+     * 
+     * // Get first 10 NotificationPreferences
+     * const notificationPreferences = await prisma.notificationPreference.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationPreferenceWithIdOnly = await prisma.notificationPreference.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationPreferenceFindManyArgs>(args?: SelectSubset<T, NotificationPreferenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a NotificationPreference.
+     * @param {NotificationPreferenceCreateArgs} args - Arguments to create a NotificationPreference.
+     * @example
+     * // Create one NotificationPreference
+     * const NotificationPreference = await prisma.notificationPreference.create({
+     *   data: {
+     *     // ... data to create a NotificationPreference
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationPreferenceCreateArgs>(args: SelectSubset<T, NotificationPreferenceCreateArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many NotificationPreferences.
+     * @param {NotificationPreferenceCreateManyArgs} args - Arguments to create many NotificationPreferences.
+     * @example
+     * // Create many NotificationPreferences
+     * const notificationPreference = await prisma.notificationPreference.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationPreferenceCreateManyArgs>(args?: SelectSubset<T, NotificationPreferenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NotificationPreferences and returns the data saved in the database.
+     * @param {NotificationPreferenceCreateManyAndReturnArgs} args - Arguments to create many NotificationPreferences.
+     * @example
+     * // Create many NotificationPreferences
+     * const notificationPreference = await prisma.notificationPreference.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NotificationPreferences and only return the `id`
+     * const notificationPreferenceWithIdOnly = await prisma.notificationPreference.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationPreferenceCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationPreferenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a NotificationPreference.
+     * @param {NotificationPreferenceDeleteArgs} args - Arguments to delete one NotificationPreference.
+     * @example
+     * // Delete one NotificationPreference
+     * const NotificationPreference = await prisma.notificationPreference.delete({
+     *   where: {
+     *     // ... filter to delete one NotificationPreference
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationPreferenceDeleteArgs>(args: SelectSubset<T, NotificationPreferenceDeleteArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one NotificationPreference.
+     * @param {NotificationPreferenceUpdateArgs} args - Arguments to update one NotificationPreference.
+     * @example
+     * // Update one NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationPreferenceUpdateArgs>(args: SelectSubset<T, NotificationPreferenceUpdateArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more NotificationPreferences.
+     * @param {NotificationPreferenceDeleteManyArgs} args - Arguments to filter NotificationPreferences to delete.
+     * @example
+     * // Delete a few NotificationPreferences
+     * const { count } = await prisma.notificationPreference.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationPreferenceDeleteManyArgs>(args?: SelectSubset<T, NotificationPreferenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NotificationPreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NotificationPreferences
+     * const notificationPreference = await prisma.notificationPreference.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationPreferenceUpdateManyArgs>(args: SelectSubset<T, NotificationPreferenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one NotificationPreference.
+     * @param {NotificationPreferenceUpsertArgs} args - Arguments to update or create a NotificationPreference.
+     * @example
+     * // Update or create a NotificationPreference
+     * const notificationPreference = await prisma.notificationPreference.upsert({
+     *   create: {
+     *     // ... data to create a NotificationPreference
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NotificationPreference we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationPreferenceUpsertArgs>(args: SelectSubset<T, NotificationPreferenceUpsertArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of NotificationPreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceCountArgs} args - Arguments to filter NotificationPreferences to count.
+     * @example
+     * // Count the number of NotificationPreferences
+     * const count = await prisma.notificationPreference.count({
+     *   where: {
+     *     // ... the filter for the NotificationPreferences we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationPreferenceCountArgs>(
+      args?: Subset<T, NotificationPreferenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationPreferenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NotificationPreference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationPreferenceAggregateArgs>(args: Subset<T, NotificationPreferenceAggregateArgs>): Prisma.PrismaPromise<GetNotificationPreferenceAggregateType<T>>
+
+    /**
+     * Group by NotificationPreference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationPreferenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationPreferenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationPreferenceGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationPreferenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationPreferenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationPreferenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NotificationPreference model
+   */
+  readonly fields: NotificationPreferenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NotificationPreference.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationPreferenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agent<T extends AgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgentDefaultArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NotificationPreference model
+   */ 
+  interface NotificationPreferenceFieldRefs {
+    readonly id: FieldRef<"NotificationPreference", 'String'>
+    readonly agentId: FieldRef<"NotificationPreference", 'String'>
+    readonly soundEnabled: FieldRef<"NotificationPreference", 'Boolean'>
+    readonly browserEnabled: FieldRef<"NotificationPreference", 'Boolean'>
+    readonly unresolvedRemindersEnabled: FieldRef<"NotificationPreference", 'Boolean'>
+    readonly unresolvedReminderMinutes: FieldRef<"NotificationPreference", 'Int'>
+    readonly reminderRepeatMinutes: FieldRef<"NotificationPreference", 'Int'>
+    readonly updatedAt: FieldRef<"NotificationPreference", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NotificationPreference findUnique
+   */
+  export type NotificationPreferenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationPreference to fetch.
+     */
+    where: NotificationPreferenceWhereUniqueInput
+  }
+
+  /**
+   * NotificationPreference findUniqueOrThrow
+   */
+  export type NotificationPreferenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationPreference to fetch.
+     */
+    where: NotificationPreferenceWhereUniqueInput
+  }
+
+  /**
+   * NotificationPreference findFirst
+   */
+  export type NotificationPreferenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationPreference to fetch.
+     */
+    where?: NotificationPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationPreferences to fetch.
+     */
+    orderBy?: NotificationPreferenceOrderByWithRelationInput | NotificationPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationPreferences.
+     */
+    cursor?: NotificationPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationPreferences.
+     */
+    distinct?: NotificationPreferenceScalarFieldEnum | NotificationPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationPreference findFirstOrThrow
+   */
+  export type NotificationPreferenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationPreference to fetch.
+     */
+    where?: NotificationPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationPreferences to fetch.
+     */
+    orderBy?: NotificationPreferenceOrderByWithRelationInput | NotificationPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationPreferences.
+     */
+    cursor?: NotificationPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationPreferences.
+     */
+    distinct?: NotificationPreferenceScalarFieldEnum | NotificationPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationPreference findMany
+   */
+  export type NotificationPreferenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which NotificationPreferences to fetch.
+     */
+    where?: NotificationPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationPreferences to fetch.
+     */
+    orderBy?: NotificationPreferenceOrderByWithRelationInput | NotificationPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NotificationPreferences.
+     */
+    cursor?: NotificationPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationPreferences.
+     */
+    skip?: number
+    distinct?: NotificationPreferenceScalarFieldEnum | NotificationPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationPreference create
+   */
+  export type NotificationPreferenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a NotificationPreference.
+     */
+    data: XOR<NotificationPreferenceCreateInput, NotificationPreferenceUncheckedCreateInput>
+  }
+
+  /**
+   * NotificationPreference createMany
+   */
+  export type NotificationPreferenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NotificationPreferences.
+     */
+    data: NotificationPreferenceCreateManyInput | NotificationPreferenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NotificationPreference createManyAndReturn
+   */
+  export type NotificationPreferenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many NotificationPreferences.
+     */
+    data: NotificationPreferenceCreateManyInput | NotificationPreferenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NotificationPreference update
+   */
+  export type NotificationPreferenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a NotificationPreference.
+     */
+    data: XOR<NotificationPreferenceUpdateInput, NotificationPreferenceUncheckedUpdateInput>
+    /**
+     * Choose, which NotificationPreference to update.
+     */
+    where: NotificationPreferenceWhereUniqueInput
+  }
+
+  /**
+   * NotificationPreference updateMany
+   */
+  export type NotificationPreferenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NotificationPreferences.
+     */
+    data: XOR<NotificationPreferenceUpdateManyMutationInput, NotificationPreferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which NotificationPreferences to update
+     */
+    where?: NotificationPreferenceWhereInput
+  }
+
+  /**
+   * NotificationPreference upsert
+   */
+  export type NotificationPreferenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the NotificationPreference to update in case it exists.
+     */
+    where: NotificationPreferenceWhereUniqueInput
+    /**
+     * In case the NotificationPreference found by the `where` argument doesn't exist, create a new NotificationPreference with this data.
+     */
+    create: XOR<NotificationPreferenceCreateInput, NotificationPreferenceUncheckedCreateInput>
+    /**
+     * In case the NotificationPreference was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationPreferenceUpdateInput, NotificationPreferenceUncheckedUpdateInput>
+  }
+
+  /**
+   * NotificationPreference delete
+   */
+  export type NotificationPreferenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter which NotificationPreference to delete.
+     */
+    where: NotificationPreferenceWhereUniqueInput
+  }
+
+  /**
+   * NotificationPreference deleteMany
+   */
+  export type NotificationPreferenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationPreferences to delete
+     */
+    where?: NotificationPreferenceWhereInput
+  }
+
+  /**
+   * NotificationPreference without action
+   */
+  export type NotificationPreferenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -17967,6 +21730,8 @@ export namespace Prisma {
     currentFlowNodeId: 'currentFlowNodeId',
     flowContext: 'flowContext',
     startedAt: 'startedAt',
+    queuedAt: 'queuedAt',
+    lastActivityAt: 'lastActivityAt',
     closedAt: 'closedAt'
   };
 
@@ -17976,6 +21741,7 @@ export namespace Prisma {
   export const MessageScalarFieldEnum: {
     id: 'id',
     conversationId: 'conversationId',
+    externalMessageId: 'externalMessageId',
     direction: 'direction',
     senderType: 'senderType',
     senderAgentId: 'senderAgentId',
@@ -17985,6 +21751,39 @@ export namespace Prisma {
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+  export const ConversationMediaScalarFieldEnum: {
+    id: 'id',
+    messageId: 'messageId',
+    conversationId: 'conversationId',
+    whatsappMessageId: 'whatsappMessageId',
+    provider: 'provider',
+    type: 'type',
+    status: 'status',
+    mimeType: 'mimeType',
+    caption: 'caption',
+    originalFileName: 'originalFileName',
+    title: 'title',
+    ptt: 'ptt',
+    seconds: 'seconds',
+    width: 'width',
+    height: 'height',
+    pageCount: 'pageCount',
+    viewOnce: 'viewOnce',
+    sourceUrlCiphertext: 'sourceUrlCiphertext',
+    thumbnailUrlCiphertext: 'thumbnailUrlCiphertext',
+    encryptionKeyVersion: 'encryptionKeyVersion',
+    sourceCreatedAt: 'sourceCreatedAt',
+    expiresAt: 'expiresAt',
+    failureCode: 'failureCode',
+    lastAccessErrorCode: 'lastAccessErrorCode',
+    lastAccessedAt: 'lastAccessedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ConversationMediaScalarFieldEnum = (typeof ConversationMediaScalarFieldEnum)[keyof typeof ConversationMediaScalarFieldEnum]
 
 
   export const FlowDefinitionScalarFieldEnum: {
@@ -18103,6 +21902,38 @@ export namespace Prisma {
   export type ShortcutAuditScalarFieldEnum = (typeof ShortcutAuditScalarFieldEnum)[keyof typeof ShortcutAuditScalarFieldEnum]
 
 
+  export const NotificationScalarFieldEnum: {
+    id: 'id',
+    agentId: 'agentId',
+    type: 'type',
+    title: 'title',
+    body: 'body',
+    conversationId: 'conversationId',
+    departmentId: 'departmentId',
+    dedupeKey: 'dedupeKey',
+    payload: 'payload',
+    createdAt: 'createdAt',
+    readAt: 'readAt',
+    dismissedAt: 'dismissedAt'
+  };
+
+  export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+  export const NotificationPreferenceScalarFieldEnum: {
+    id: 'id',
+    agentId: 'agentId',
+    soundEnabled: 'soundEnabled',
+    browserEnabled: 'browserEnabled',
+    unresolvedRemindersEnabled: 'unresolvedRemindersEnabled',
+    unresolvedReminderMinutes: 'unresolvedReminderMinutes',
+    reminderRepeatMinutes: 'reminderRepeatMinutes',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -18209,6 +22040,48 @@ export namespace Prisma {
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaProvider'
+   */
+  export type EnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaProvider[]'
+   */
+  export type ListEnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaType'
+   */
+  export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaType[]'
+   */
+  export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaStatus'
+   */
+  export type EnumMediaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaStatus[]'
+   */
+  export type ListEnumMediaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaStatus[]'>
     
 
 
@@ -18425,6 +22298,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutListRelationFilter
     shortcutAudits?: ShortcutAuditListRelationFilter
     publishedFlowRevisions?: FlowRevisionListRelationFilter
+    notifications?: NotificationListRelationFilter
+    notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
   }
 
   export type AgentOrderByWithRelationInput = {
@@ -18445,6 +22320,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutOrderByRelationAggregateInput
     shortcutAudits?: ShortcutAuditOrderByRelationAggregateInput
     publishedFlowRevisions?: FlowRevisionOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
+    notificationPreference?: NotificationPreferenceOrderByWithRelationInput
   }
 
   export type AgentWhereUniqueInput = Prisma.AtLeast<{
@@ -18468,6 +22345,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutListRelationFilter
     shortcutAudits?: ShortcutAuditListRelationFilter
     publishedFlowRevisions?: FlowRevisionListRelationFilter
+    notifications?: NotificationListRelationFilter
+    notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
   }, "id" | "email">
 
   export type AgentOrderByWithAggregationInput = {
@@ -18617,6 +22496,8 @@ export namespace Prisma {
     currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
     flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
+    queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
@@ -18625,6 +22506,8 @@ export namespace Prisma {
     flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
+    notifications?: NotificationListRelationFilter
+    media?: ConversationMediaListRelationFilter
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -18638,6 +22521,8 @@ export namespace Prisma {
     currentFlowNodeId?: SortOrderInput | SortOrder
     flowContext?: SortOrderInput | SortOrder
     startedAt?: SortOrder
+    queuedAt?: SortOrderInput | SortOrder
+    lastActivityAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
     contact?: ContactOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
@@ -18646,6 +22531,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionOrderByWithRelationInput
     currentFlowNode?: FlowNodeOrderByWithRelationInput
     flowEvents?: FlowExecutionEventOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
+    media?: ConversationMediaOrderByRelationAggregateInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -18662,6 +22549,8 @@ export namespace Prisma {
     currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
     flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
+    queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
@@ -18670,6 +22559,8 @@ export namespace Prisma {
     flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
+    notifications?: NotificationListRelationFilter
+    media?: ConversationMediaListRelationFilter
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -18683,6 +22574,8 @@ export namespace Prisma {
     currentFlowNodeId?: SortOrderInput | SortOrder
     flowContext?: SortOrderInput | SortOrder
     startedAt?: SortOrder
+    queuedAt?: SortOrderInput | SortOrder
+    lastActivityAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
     _count?: ConversationCountOrderByAggregateInput
     _max?: ConversationMaxOrderByAggregateInput
@@ -18703,6 +22596,8 @@ export namespace Prisma {
     currentFlowNodeId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     flowContext?: JsonNullableWithAggregatesFilter<"Conversation">
     startedAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
+    queuedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
+    lastActivityAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
   }
 
@@ -18712,6 +22607,7 @@ export namespace Prisma {
     NOT?: MessageWhereInput | MessageWhereInput[]
     id?: StringFilter<"Message"> | string
     conversationId?: StringFilter<"Message"> | string
+    externalMessageId?: StringNullableFilter<"Message"> | string | null
     direction?: StringFilter<"Message"> | string
     senderType?: StringFilter<"Message"> | string
     senderAgentId?: StringNullableFilter<"Message"> | string | null
@@ -18720,11 +22616,13 @@ export namespace Prisma {
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
   }
 
   export type MessageOrderByWithRelationInput = {
     id?: SortOrder
     conversationId?: SortOrder
+    externalMessageId?: SortOrderInput | SortOrder
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrderInput | SortOrder
@@ -18733,10 +22631,12 @@ export namespace Prisma {
     readAt?: SortOrderInput | SortOrder
     conversation?: ConversationOrderByWithRelationInput
     senderAgent?: AgentOrderByWithRelationInput
+    media?: ConversationMediaOrderByWithRelationInput
   }
 
   export type MessageWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    externalMessageId?: string
     AND?: MessageWhereInput | MessageWhereInput[]
     OR?: MessageWhereInput[]
     NOT?: MessageWhereInput | MessageWhereInput[]
@@ -18749,11 +22649,13 @@ export namespace Prisma {
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
-  }, "id">
+    media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
+  }, "id" | "externalMessageId">
 
   export type MessageOrderByWithAggregationInput = {
     id?: SortOrder
     conversationId?: SortOrder
+    externalMessageId?: SortOrderInput | SortOrder
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrderInput | SortOrder
@@ -18771,12 +22673,183 @@ export namespace Prisma {
     NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Message"> | string
     conversationId?: StringWithAggregatesFilter<"Message"> | string
+    externalMessageId?: StringNullableWithAggregatesFilter<"Message"> | string | null
     direction?: StringWithAggregatesFilter<"Message"> | string
     senderType?: StringWithAggregatesFilter<"Message"> | string
     senderAgentId?: StringNullableWithAggregatesFilter<"Message"> | string | null
     content?: StringWithAggregatesFilter<"Message"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     readAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
+  }
+
+  export type ConversationMediaWhereInput = {
+    AND?: ConversationMediaWhereInput | ConversationMediaWhereInput[]
+    OR?: ConversationMediaWhereInput[]
+    NOT?: ConversationMediaWhereInput | ConversationMediaWhereInput[]
+    id?: StringFilter<"ConversationMedia"> | string
+    messageId?: StringFilter<"ConversationMedia"> | string
+    conversationId?: StringFilter<"ConversationMedia"> | string
+    whatsappMessageId?: StringFilter<"ConversationMedia"> | string
+    provider?: EnumMediaProviderFilter<"ConversationMedia"> | $Enums.MediaProvider
+    type?: EnumMediaTypeFilter<"ConversationMedia"> | $Enums.MediaType
+    status?: EnumMediaStatusFilter<"ConversationMedia"> | $Enums.MediaStatus
+    mimeType?: StringFilter<"ConversationMedia"> | string
+    caption?: StringNullableFilter<"ConversationMedia"> | string | null
+    originalFileName?: StringNullableFilter<"ConversationMedia"> | string | null
+    title?: StringNullableFilter<"ConversationMedia"> | string | null
+    ptt?: BoolNullableFilter<"ConversationMedia"> | boolean | null
+    seconds?: IntNullableFilter<"ConversationMedia"> | number | null
+    width?: IntNullableFilter<"ConversationMedia"> | number | null
+    height?: IntNullableFilter<"ConversationMedia"> | number | null
+    pageCount?: IntNullableFilter<"ConversationMedia"> | number | null
+    viewOnce?: BoolFilter<"ConversationMedia"> | boolean
+    sourceUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    thumbnailUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    encryptionKeyVersion?: IntFilter<"ConversationMedia"> | number
+    sourceCreatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    expiresAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    failureCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessErrorCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessedAt?: DateTimeNullableFilter<"ConversationMedia"> | Date | string | null
+    createdAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+  }
+
+  export type ConversationMediaOrderByWithRelationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    whatsappMessageId?: SortOrder
+    provider?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    mimeType?: SortOrder
+    caption?: SortOrderInput | SortOrder
+    originalFileName?: SortOrderInput | SortOrder
+    title?: SortOrderInput | SortOrder
+    ptt?: SortOrderInput | SortOrder
+    seconds?: SortOrderInput | SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    pageCount?: SortOrderInput | SortOrder
+    viewOnce?: SortOrder
+    sourceUrlCiphertext?: SortOrderInput | SortOrder
+    thumbnailUrlCiphertext?: SortOrderInput | SortOrder
+    encryptionKeyVersion?: SortOrder
+    sourceCreatedAt?: SortOrder
+    expiresAt?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    lastAccessErrorCode?: SortOrderInput | SortOrder
+    lastAccessedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    message?: MessageOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
+  }
+
+  export type ConversationMediaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    messageId?: string
+    whatsappMessageId?: string
+    AND?: ConversationMediaWhereInput | ConversationMediaWhereInput[]
+    OR?: ConversationMediaWhereInput[]
+    NOT?: ConversationMediaWhereInput | ConversationMediaWhereInput[]
+    conversationId?: StringFilter<"ConversationMedia"> | string
+    provider?: EnumMediaProviderFilter<"ConversationMedia"> | $Enums.MediaProvider
+    type?: EnumMediaTypeFilter<"ConversationMedia"> | $Enums.MediaType
+    status?: EnumMediaStatusFilter<"ConversationMedia"> | $Enums.MediaStatus
+    mimeType?: StringFilter<"ConversationMedia"> | string
+    caption?: StringNullableFilter<"ConversationMedia"> | string | null
+    originalFileName?: StringNullableFilter<"ConversationMedia"> | string | null
+    title?: StringNullableFilter<"ConversationMedia"> | string | null
+    ptt?: BoolNullableFilter<"ConversationMedia"> | boolean | null
+    seconds?: IntNullableFilter<"ConversationMedia"> | number | null
+    width?: IntNullableFilter<"ConversationMedia"> | number | null
+    height?: IntNullableFilter<"ConversationMedia"> | number | null
+    pageCount?: IntNullableFilter<"ConversationMedia"> | number | null
+    viewOnce?: BoolFilter<"ConversationMedia"> | boolean
+    sourceUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    thumbnailUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    encryptionKeyVersion?: IntFilter<"ConversationMedia"> | number
+    sourceCreatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    expiresAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    failureCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessErrorCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessedAt?: DateTimeNullableFilter<"ConversationMedia"> | Date | string | null
+    createdAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+  }, "id" | "messageId" | "whatsappMessageId">
+
+  export type ConversationMediaOrderByWithAggregationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    whatsappMessageId?: SortOrder
+    provider?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    mimeType?: SortOrder
+    caption?: SortOrderInput | SortOrder
+    originalFileName?: SortOrderInput | SortOrder
+    title?: SortOrderInput | SortOrder
+    ptt?: SortOrderInput | SortOrder
+    seconds?: SortOrderInput | SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    pageCount?: SortOrderInput | SortOrder
+    viewOnce?: SortOrder
+    sourceUrlCiphertext?: SortOrderInput | SortOrder
+    thumbnailUrlCiphertext?: SortOrderInput | SortOrder
+    encryptionKeyVersion?: SortOrder
+    sourceCreatedAt?: SortOrder
+    expiresAt?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    lastAccessErrorCode?: SortOrderInput | SortOrder
+    lastAccessedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ConversationMediaCountOrderByAggregateInput
+    _avg?: ConversationMediaAvgOrderByAggregateInput
+    _max?: ConversationMediaMaxOrderByAggregateInput
+    _min?: ConversationMediaMinOrderByAggregateInput
+    _sum?: ConversationMediaSumOrderByAggregateInput
+  }
+
+  export type ConversationMediaScalarWhereWithAggregatesInput = {
+    AND?: ConversationMediaScalarWhereWithAggregatesInput | ConversationMediaScalarWhereWithAggregatesInput[]
+    OR?: ConversationMediaScalarWhereWithAggregatesInput[]
+    NOT?: ConversationMediaScalarWhereWithAggregatesInput | ConversationMediaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ConversationMedia"> | string
+    messageId?: StringWithAggregatesFilter<"ConversationMedia"> | string
+    conversationId?: StringWithAggregatesFilter<"ConversationMedia"> | string
+    whatsappMessageId?: StringWithAggregatesFilter<"ConversationMedia"> | string
+    provider?: EnumMediaProviderWithAggregatesFilter<"ConversationMedia"> | $Enums.MediaProvider
+    type?: EnumMediaTypeWithAggregatesFilter<"ConversationMedia"> | $Enums.MediaType
+    status?: EnumMediaStatusWithAggregatesFilter<"ConversationMedia"> | $Enums.MediaStatus
+    mimeType?: StringWithAggregatesFilter<"ConversationMedia"> | string
+    caption?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    originalFileName?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    title?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    ptt?: BoolNullableWithAggregatesFilter<"ConversationMedia"> | boolean | null
+    seconds?: IntNullableWithAggregatesFilter<"ConversationMedia"> | number | null
+    width?: IntNullableWithAggregatesFilter<"ConversationMedia"> | number | null
+    height?: IntNullableWithAggregatesFilter<"ConversationMedia"> | number | null
+    pageCount?: IntNullableWithAggregatesFilter<"ConversationMedia"> | number | null
+    viewOnce?: BoolWithAggregatesFilter<"ConversationMedia"> | boolean
+    sourceUrlCiphertext?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    thumbnailUrlCiphertext?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    encryptionKeyVersion?: IntWithAggregatesFilter<"ConversationMedia"> | number
+    sourceCreatedAt?: DateTimeWithAggregatesFilter<"ConversationMedia"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"ConversationMedia"> | Date | string
+    failureCode?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    lastAccessErrorCode?: StringNullableWithAggregatesFilter<"ConversationMedia"> | string | null
+    lastAccessedAt?: DateTimeNullableWithAggregatesFilter<"ConversationMedia"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ConversationMedia"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ConversationMedia"> | Date | string
   }
 
   export type FlowDefinitionWhereInput = {
@@ -19424,6 +23497,172 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ShortcutAudit"> | Date | string
   }
 
+  export type NotificationWhereInput = {
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    agentId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    conversationId?: StringNullableFilter<"Notification"> | string | null
+    departmentId?: StringNullableFilter<"Notification"> | string | null
+    dedupeKey?: StringFilter<"Notification"> | string
+    payload?: JsonNullableFilter<"Notification">
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    dismissedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+    conversation?: XOR<ConversationNullableRelationFilter, ConversationWhereInput> | null
+  }
+
+  export type NotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    dismissedAt?: SortOrderInput | SortOrder
+    agent?: AgentOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
+  }
+
+  export type NotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    agentId_dedupeKey?: NotificationAgentIdDedupeKeyCompoundUniqueInput
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    agentId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    conversationId?: StringNullableFilter<"Notification"> | string | null
+    departmentId?: StringNullableFilter<"Notification"> | string | null
+    dedupeKey?: StringFilter<"Notification"> | string
+    payload?: JsonNullableFilter<"Notification">
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    dismissedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+    conversation?: XOR<ConversationNullableRelationFilter, ConversationWhereInput> | null
+  }, "id" | "agentId_dedupeKey">
+
+  export type NotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    dismissedAt?: SortOrderInput | SortOrder
+    _count?: NotificationCountOrderByAggregateInput
+    _max?: NotificationMaxOrderByAggregateInput
+    _min?: NotificationMinOrderByAggregateInput
+  }
+
+  export type NotificationScalarWhereWithAggregatesInput = {
+    AND?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    OR?: NotificationScalarWhereWithAggregatesInput[]
+    NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Notification"> | string
+    agentId?: StringWithAggregatesFilter<"Notification"> | string
+    type?: StringWithAggregatesFilter<"Notification"> | string
+    title?: StringWithAggregatesFilter<"Notification"> | string
+    body?: StringWithAggregatesFilter<"Notification"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    departmentId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    dedupeKey?: StringWithAggregatesFilter<"Notification"> | string
+    payload?: JsonNullableWithAggregatesFilter<"Notification">
+    createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    dismissedAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+  }
+
+  export type NotificationPreferenceWhereInput = {
+    AND?: NotificationPreferenceWhereInput | NotificationPreferenceWhereInput[]
+    OR?: NotificationPreferenceWhereInput[]
+    NOT?: NotificationPreferenceWhereInput | NotificationPreferenceWhereInput[]
+    id?: StringFilter<"NotificationPreference"> | string
+    agentId?: StringFilter<"NotificationPreference"> | string
+    soundEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    browserEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    unresolvedRemindersEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    unresolvedReminderMinutes?: IntFilter<"NotificationPreference"> | number
+    reminderRepeatMinutes?: IntFilter<"NotificationPreference"> | number
+    updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }
+
+  export type NotificationPreferenceOrderByWithRelationInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    soundEnabled?: SortOrder
+    browserEnabled?: SortOrder
+    unresolvedRemindersEnabled?: SortOrder
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+    updatedAt?: SortOrder
+    agent?: AgentOrderByWithRelationInput
+  }
+
+  export type NotificationPreferenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    agentId?: string
+    AND?: NotificationPreferenceWhereInput | NotificationPreferenceWhereInput[]
+    OR?: NotificationPreferenceWhereInput[]
+    NOT?: NotificationPreferenceWhereInput | NotificationPreferenceWhereInput[]
+    soundEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    browserEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    unresolvedRemindersEnabled?: BoolFilter<"NotificationPreference"> | boolean
+    unresolvedReminderMinutes?: IntFilter<"NotificationPreference"> | number
+    reminderRepeatMinutes?: IntFilter<"NotificationPreference"> | number
+    updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }, "id" | "agentId">
+
+  export type NotificationPreferenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    soundEnabled?: SortOrder
+    browserEnabled?: SortOrder
+    unresolvedRemindersEnabled?: SortOrder
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+    updatedAt?: SortOrder
+    _count?: NotificationPreferenceCountOrderByAggregateInput
+    _avg?: NotificationPreferenceAvgOrderByAggregateInput
+    _max?: NotificationPreferenceMaxOrderByAggregateInput
+    _min?: NotificationPreferenceMinOrderByAggregateInput
+    _sum?: NotificationPreferenceSumOrderByAggregateInput
+  }
+
+  export type NotificationPreferenceScalarWhereWithAggregatesInput = {
+    AND?: NotificationPreferenceScalarWhereWithAggregatesInput | NotificationPreferenceScalarWhereWithAggregatesInput[]
+    OR?: NotificationPreferenceScalarWhereWithAggregatesInput[]
+    NOT?: NotificationPreferenceScalarWhereWithAggregatesInput | NotificationPreferenceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"NotificationPreference"> | string
+    agentId?: StringWithAggregatesFilter<"NotificationPreference"> | string
+    soundEnabled?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean
+    browserEnabled?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean
+    unresolvedRemindersEnabled?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean
+    unresolvedReminderMinutes?: IntWithAggregatesFilter<"NotificationPreference"> | number
+    reminderRepeatMinutes?: IntWithAggregatesFilter<"NotificationPreference"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"NotificationPreference"> | Date | string
+  }
+
   export type DepartmentCreateInput = {
     id?: string
     name: string
@@ -19565,6 +23804,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateInput = {
@@ -19584,6 +23825,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUpdateInput = {
@@ -19603,6 +23846,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateInput = {
@@ -19622,6 +23867,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentCreateManyInput = {
@@ -19774,6 +24021,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -19782,6 +24031,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -19795,9 +24046,13 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUpdateInput = {
@@ -19806,6 +24061,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -19814,6 +24071,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -19827,9 +24086,13 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -19843,6 +24106,8 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
@@ -19852,6 +24117,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -19866,11 +24133,14 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageCreateInput = {
     id?: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     content: string
@@ -19878,21 +24148,25 @@ export namespace Prisma {
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateInput = {
     id?: string
     conversationId: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     senderAgentId?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
@@ -19900,22 +24174,26 @@ export namespace Prisma {
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageCreateManyInput = {
     id?: string
     conversationId: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     senderAgentId?: string | null
@@ -19926,6 +24204,7 @@ export namespace Prisma {
 
   export type MessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
@@ -19936,12 +24215,221 @@ export namespace Prisma {
   export type MessageUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationMediaCreateInput = {
+    id?: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    message: MessageCreateNestedOneWithoutMediaInput
+    conversation: ConversationCreateNestedOneWithoutMediaInput
+  }
+
+  export type ConversationMediaUncheckedCreateInput = {
+    id?: string
+    messageId: string
+    conversationId: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationMediaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutMediaNestedInput
+    conversation?: ConversationUpdateOneRequiredWithoutMediaNestedInput
+  }
+
+  export type ConversationMediaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationMediaCreateManyInput = {
+    id?: string
+    messageId: string
+    conversationId: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationMediaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationMediaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FlowDefinitionCreateInput = {
@@ -20612,6 +25100,185 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationCreateInput = {
+    id?: string
+    type: string
+    title: string
+    body: string
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    agent: AgentCreateNestedOneWithoutNotificationsInput
+    conversation?: ConversationCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateInput = {
+    id?: string
+    agentId: string
+    type: string
+    title: string
+    body: string
+    conversationId?: string | null
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
+  export type NotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent?: AgentUpdateOneRequiredWithoutNotificationsNestedInput
+    conversation?: ConversationUpdateOneWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationCreateManyInput = {
+    id?: string
+    agentId: string
+    type: string
+    title: string
+    body: string
+    conversationId?: string | null
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
+  export type NotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationPreferenceCreateInput = {
+    id?: string
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: number
+    reminderRepeatMinutes?: number
+    updatedAt?: Date | string
+    agent: AgentCreateNestedOneWithoutNotificationPreferenceInput
+  }
+
+  export type NotificationPreferenceUncheckedCreateInput = {
+    id?: string
+    agentId: string
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: number
+    reminderRepeatMinutes?: number
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agent?: AgentUpdateOneRequiredWithoutNotificationPreferenceNestedInput
+  }
+
+  export type NotificationPreferenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationPreferenceCreateManyInput = {
+    id?: string
+    agentId: string
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: number
+    reminderRepeatMinutes?: number
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationPreferenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -20871,6 +25538,17 @@ export namespace Prisma {
     none?: FlowRevisionWhereInput
   }
 
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
+  export type NotificationPreferenceNullableRelationFilter = {
+    is?: NotificationPreferenceWhereInput | null
+    isNot?: NotificationPreferenceWhereInput | null
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -20880,6 +25558,10 @@ export namespace Prisma {
   }
 
   export type FlowRevisionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21042,7 +25724,17 @@ export namespace Prisma {
     none?: FlowExecutionEventWhereInput
   }
 
+  export type ConversationMediaListRelationFilter = {
+    every?: ConversationMediaWhereInput
+    some?: ConversationMediaWhereInput
+    none?: ConversationMediaWhereInput
+  }
+
   export type FlowExecutionEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ConversationMediaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21057,6 +25749,8 @@ export namespace Prisma {
     currentFlowNodeId?: SortOrder
     flowContext?: SortOrder
     startedAt?: SortOrder
+    queuedAt?: SortOrder
+    lastActivityAt?: SortOrder
     closedAt?: SortOrder
   }
 
@@ -21070,6 +25764,8 @@ export namespace Prisma {
     flowRevisionId?: SortOrder
     currentFlowNodeId?: SortOrder
     startedAt?: SortOrder
+    queuedAt?: SortOrder
+    lastActivityAt?: SortOrder
     closedAt?: SortOrder
   }
 
@@ -21083,6 +25779,8 @@ export namespace Prisma {
     flowRevisionId?: SortOrder
     currentFlowNodeId?: SortOrder
     startedAt?: SortOrder
+    queuedAt?: SortOrder
+    lastActivityAt?: SortOrder
     closedAt?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
@@ -21130,9 +25828,15 @@ export namespace Prisma {
     isNot?: ConversationWhereInput
   }
 
+  export type ConversationMediaNullableRelationFilter = {
+    is?: ConversationMediaWhereInput | null
+    isNot?: ConversationMediaWhereInput | null
+  }
+
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     conversationId?: SortOrder
+    externalMessageId?: SortOrder
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
@@ -21144,6 +25848,7 @@ export namespace Prisma {
   export type MessageMaxOrderByAggregateInput = {
     id?: SortOrder
     conversationId?: SortOrder
+    externalMessageId?: SortOrder
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
@@ -21155,12 +25860,215 @@ export namespace Prisma {
   export type MessageMinOrderByAggregateInput = {
     id?: SortOrder
     conversationId?: SortOrder
+    externalMessageId?: SortOrder
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
+  }
+
+  export type EnumMediaProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
+  }
+
+  export type EnumMediaTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeFilter<$PrismaModel> | $Enums.MediaType
+  }
+
+  export type EnumMediaStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaStatus | EnumMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaStatusFilter<$PrismaModel> | $Enums.MediaStatus
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type MessageRelationFilter = {
+    is?: MessageWhereInput
+    isNot?: MessageWhereInput
+  }
+
+  export type ConversationMediaCountOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    whatsappMessageId?: SortOrder
+    provider?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    mimeType?: SortOrder
+    caption?: SortOrder
+    originalFileName?: SortOrder
+    title?: SortOrder
+    ptt?: SortOrder
+    seconds?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    pageCount?: SortOrder
+    viewOnce?: SortOrder
+    sourceUrlCiphertext?: SortOrder
+    thumbnailUrlCiphertext?: SortOrder
+    encryptionKeyVersion?: SortOrder
+    sourceCreatedAt?: SortOrder
+    expiresAt?: SortOrder
+    failureCode?: SortOrder
+    lastAccessErrorCode?: SortOrder
+    lastAccessedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConversationMediaAvgOrderByAggregateInput = {
+    seconds?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    pageCount?: SortOrder
+    encryptionKeyVersion?: SortOrder
+  }
+
+  export type ConversationMediaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    whatsappMessageId?: SortOrder
+    provider?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    mimeType?: SortOrder
+    caption?: SortOrder
+    originalFileName?: SortOrder
+    title?: SortOrder
+    ptt?: SortOrder
+    seconds?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    pageCount?: SortOrder
+    viewOnce?: SortOrder
+    sourceUrlCiphertext?: SortOrder
+    thumbnailUrlCiphertext?: SortOrder
+    encryptionKeyVersion?: SortOrder
+    sourceCreatedAt?: SortOrder
+    expiresAt?: SortOrder
+    failureCode?: SortOrder
+    lastAccessErrorCode?: SortOrder
+    lastAccessedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConversationMediaMinOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    whatsappMessageId?: SortOrder
+    provider?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    mimeType?: SortOrder
+    caption?: SortOrder
+    originalFileName?: SortOrder
+    title?: SortOrder
+    ptt?: SortOrder
+    seconds?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    pageCount?: SortOrder
+    viewOnce?: SortOrder
+    sourceUrlCiphertext?: SortOrder
+    thumbnailUrlCiphertext?: SortOrder
+    encryptionKeyVersion?: SortOrder
+    sourceCreatedAt?: SortOrder
+    expiresAt?: SortOrder
+    failureCode?: SortOrder
+    lastAccessErrorCode?: SortOrder
+    lastAccessedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConversationMediaSumOrderByAggregateInput = {
+    seconds?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    pageCount?: SortOrder
+    encryptionKeyVersion?: SortOrder
+  }
+
+  export type EnumMediaProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderWithAggregatesFilter<$PrismaModel> | $Enums.MediaProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaProviderFilter<$PrismaModel>
+    _max?: NestedEnumMediaProviderFilter<$PrismaModel>
+  }
+
+  export type EnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
+    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
+  }
+
+  export type EnumMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaStatus | EnumMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaStatusWithAggregatesFilter<$PrismaModel> | $Enums.MediaStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaStatusFilter<$PrismaModel>
+    _max?: NestedEnumMediaStatusFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -21632,6 +26540,102 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type ConversationNullableRelationFilter = {
+    is?: ConversationWhereInput | null
+    isNot?: ConversationWhereInput | null
+  }
+
+  export type NotificationAgentIdDedupeKeyCompoundUniqueInput = {
+    agentId: string
+    dedupeKey: string
+  }
+
+  export type NotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    conversationId?: SortOrder
+    departmentId?: SortOrder
+    dedupeKey?: SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+    dismissedAt?: SortOrder
+  }
+
+  export type NotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    conversationId?: SortOrder
+    departmentId?: SortOrder
+    dedupeKey?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+    dismissedAt?: SortOrder
+  }
+
+  export type NotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    conversationId?: SortOrder
+    departmentId?: SortOrder
+    dedupeKey?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+    dismissedAt?: SortOrder
+  }
+
+  export type NotificationPreferenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    soundEnabled?: SortOrder
+    browserEnabled?: SortOrder
+    unresolvedRemindersEnabled?: SortOrder
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationPreferenceAvgOrderByAggregateInput = {
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+  }
+
+  export type NotificationPreferenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    soundEnabled?: SortOrder
+    browserEnabled?: SortOrder
+    unresolvedRemindersEnabled?: SortOrder
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationPreferenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    agentId?: SortOrder
+    soundEnabled?: SortOrder
+    browserEnabled?: SortOrder
+    unresolvedRemindersEnabled?: SortOrder
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationPreferenceSumOrderByAggregateInput = {
+    unresolvedReminderMinutes?: SortOrder
+    reminderRepeatMinutes?: SortOrder
+  }
+
   export type ProcedureCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: ProcedureCreateOrConnectWithoutDepartmentInput | ProcedureCreateOrConnectWithoutDepartmentInput[]
@@ -21931,6 +26935,19 @@ export namespace Prisma {
     connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
   }
 
+  export type NotificationCreateNestedManyWithoutAgentInput = {
+    create?: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput> | NotificationCreateWithoutAgentInput[] | NotificationUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutAgentInput | NotificationCreateOrConnectWithoutAgentInput[]
+    createMany?: NotificationCreateManyAgentInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type NotificationPreferenceCreateNestedOneWithoutAgentInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutAgentInput
+    connect?: NotificationPreferenceWhereUniqueInput
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -21978,6 +26995,19 @@ export namespace Prisma {
     connectOrCreate?: FlowRevisionCreateOrConnectWithoutPublishedByInput | FlowRevisionCreateOrConnectWithoutPublishedByInput[]
     createMany?: FlowRevisionCreateManyPublishedByInputEnvelope
     connect?: FlowRevisionWhereUniqueInput | FlowRevisionWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutAgentInput = {
+    create?: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput> | NotificationCreateWithoutAgentInput[] | NotificationUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutAgentInput | NotificationCreateOrConnectWithoutAgentInput[]
+    createMany?: NotificationCreateManyAgentInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutAgentInput
+    connect?: NotificationPreferenceWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -22092,6 +27122,30 @@ export namespace Prisma {
     deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
   }
 
+  export type NotificationUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput> | NotificationCreateWithoutAgentInput[] | NotificationUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutAgentInput | NotificationCreateOrConnectWithoutAgentInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutAgentInput | NotificationUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: NotificationCreateManyAgentInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutAgentInput | NotificationUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutAgentInput | NotificationUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUpdateOneWithoutAgentNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutAgentInput
+    upsert?: NotificationPreferenceUpsertWithoutAgentInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutAgentInput, NotificationPreferenceUpdateWithoutAgentInput>, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
+  }
+
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -22190,6 +27244,30 @@ export namespace Prisma {
     deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
   }
 
+  export type NotificationUncheckedUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput> | NotificationCreateWithoutAgentInput[] | NotificationUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutAgentInput | NotificationCreateOrConnectWithoutAgentInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutAgentInput | NotificationUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: NotificationCreateManyAgentInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutAgentInput | NotificationUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutAgentInput | NotificationUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutAgentInput
+    upsert?: NotificationPreferenceUpsertWithoutAgentInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutAgentInput, NotificationPreferenceUpdateWithoutAgentInput>, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
+  }
+
   export type RolePermissionCreateactionsInput = {
     set: string[]
   }
@@ -22285,6 +27363,20 @@ export namespace Prisma {
     connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
   }
 
+  export type NotificationCreateNestedManyWithoutConversationInput = {
+    create?: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput> | NotificationCreateWithoutConversationInput[] | NotificationUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutConversationInput | NotificationCreateOrConnectWithoutConversationInput[]
+    createMany?: NotificationCreateManyConversationInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type ConversationMediaCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationMediaCreateManyConversationInputEnvelope
+    connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -22297,6 +27389,20 @@ export namespace Prisma {
     connectOrCreate?: FlowExecutionEventCreateOrConnectWithoutConversationInput | FlowExecutionEventCreateOrConnectWithoutConversationInput[]
     createMany?: FlowExecutionEventCreateManyConversationInputEnvelope
     connect?: FlowExecutionEventWhereUniqueInput | FlowExecutionEventWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput> | NotificationCreateWithoutConversationInput[] | NotificationUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutConversationInput | NotificationCreateOrConnectWithoutConversationInput[]
+    createMany?: NotificationCreateManyConversationInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type ConversationMediaUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationMediaCreateManyConversationInputEnvelope
+    connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -22379,6 +27485,34 @@ export namespace Prisma {
     deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
   }
 
+  export type NotificationUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput> | NotificationCreateWithoutConversationInput[] | NotificationUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutConversationInput | NotificationCreateOrConnectWithoutConversationInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutConversationInput | NotificationUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: NotificationCreateManyConversationInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutConversationInput | NotificationUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutConversationInput | NotificationUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type ConversationMediaUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationMediaUpsertWithWhereUniqueWithoutConversationInput | ConversationMediaUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationMediaCreateManyConversationInputEnvelope
+    set?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    disconnect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    delete?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    update?: ConversationMediaUpdateWithWhereUniqueWithoutConversationInput | ConversationMediaUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationMediaUpdateManyWithWhereWithoutConversationInput | ConversationMediaUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -22407,6 +27541,34 @@ export namespace Prisma {
     deleteMany?: FlowExecutionEventScalarWhereInput | FlowExecutionEventScalarWhereInput[]
   }
 
+  export type NotificationUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput> | NotificationCreateWithoutConversationInput[] | NotificationUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutConversationInput | NotificationCreateOrConnectWithoutConversationInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutConversationInput | NotificationUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: NotificationCreateManyConversationInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutConversationInput | NotificationUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutConversationInput | NotificationUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationMediaUpsertWithWhereUniqueWithoutConversationInput | ConversationMediaUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationMediaCreateManyConversationInputEnvelope
+    set?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    disconnect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    delete?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+    update?: ConversationMediaUpdateWithWhereUniqueWithoutConversationInput | ConversationMediaUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationMediaUpdateManyWithWhereWithoutConversationInput | ConversationMediaUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
+  }
+
   export type ConversationCreateNestedOneWithoutMessagesInput = {
     create?: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutMessagesInput
@@ -22417,6 +27579,18 @@ export namespace Prisma {
     create?: XOR<AgentCreateWithoutMessagesInput, AgentUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: AgentCreateOrConnectWithoutMessagesInput
     connect?: AgentWhereUniqueInput
+  }
+
+  export type ConversationMediaCreateNestedOneWithoutMessageInput = {
+    create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
+    connect?: ConversationMediaWhereUniqueInput
+  }
+
+  export type ConversationMediaUncheckedCreateNestedOneWithoutMessageInput = {
+    create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
+    connect?: ConversationMediaWhereUniqueInput
   }
 
   export type ConversationUpdateOneRequiredWithoutMessagesNestedInput = {
@@ -22435,6 +27609,78 @@ export namespace Prisma {
     delete?: AgentWhereInput | boolean
     connect?: AgentWhereUniqueInput
     update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutMessagesInput, AgentUpdateWithoutMessagesInput>, AgentUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ConversationMediaUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
+    upsert?: ConversationMediaUpsertWithoutMessageInput
+    disconnect?: ConversationMediaWhereInput | boolean
+    delete?: ConversationMediaWhereInput | boolean
+    connect?: ConversationMediaWhereUniqueInput
+    update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
+    upsert?: ConversationMediaUpsertWithoutMessageInput
+    disconnect?: ConversationMediaWhereInput | boolean
+    delete?: ConversationMediaWhereInput | boolean
+    connect?: ConversationMediaWhereUniqueInput
+    update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type MessageCreateNestedOneWithoutMediaInput = {
+    create?: XOR<MessageCreateWithoutMediaInput, MessageUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutMediaInput
+    connect?: MessageWhereUniqueInput
+  }
+
+  export type ConversationCreateNestedOneWithoutMediaInput = {
+    create?: XOR<ConversationCreateWithoutMediaInput, ConversationUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutMediaInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type EnumMediaProviderFieldUpdateOperationsInput = {
+    set?: $Enums.MediaProvider
+  }
+
+  export type EnumMediaTypeFieldUpdateOperationsInput = {
+    set?: $Enums.MediaType
+  }
+
+  export type EnumMediaStatusFieldUpdateOperationsInput = {
+    set?: $Enums.MediaStatus
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type MessageUpdateOneRequiredWithoutMediaNestedInput = {
+    create?: XOR<MessageCreateWithoutMediaInput, MessageUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutMediaInput
+    upsert?: MessageUpsertWithoutMediaInput
+    connect?: MessageWhereUniqueInput
+    update?: XOR<XOR<MessageUpdateToOneWithWhereWithoutMediaInput, MessageUpdateWithoutMediaInput>, MessageUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type ConversationUpdateOneRequiredWithoutMediaNestedInput = {
+    create?: XOR<ConversationCreateWithoutMediaInput, ConversationUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutMediaInput
+    upsert?: ConversationUpsertWithoutMediaInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutMediaInput, ConversationUpdateWithoutMediaInput>, ConversationUncheckedUpdateWithoutMediaInput>
   }
 
   export type FlowRevisionCreateNestedManyWithoutFlowDefinitionInput = {
@@ -23111,6 +28357,50 @@ export namespace Prisma {
     update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutShortcutAuditsInput, AgentUpdateWithoutShortcutAuditsInput>, AgentUncheckedUpdateWithoutShortcutAuditsInput>
   }
 
+  export type AgentCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<AgentCreateWithoutNotificationsInput, AgentUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutNotificationsInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type ConversationCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<ConversationCreateWithoutNotificationsInput, ConversationUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutNotificationsInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type AgentUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<AgentCreateWithoutNotificationsInput, AgentUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutNotificationsInput
+    upsert?: AgentUpsertWithoutNotificationsInput
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutNotificationsInput, AgentUpdateWithoutNotificationsInput>, AgentUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type ConversationUpdateOneWithoutNotificationsNestedInput = {
+    create?: XOR<ConversationCreateWithoutNotificationsInput, ConversationUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutNotificationsInput
+    upsert?: ConversationUpsertWithoutNotificationsInput
+    disconnect?: ConversationWhereInput | boolean
+    delete?: ConversationWhereInput | boolean
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutNotificationsInput, ConversationUpdateWithoutNotificationsInput>, ConversationUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type AgentCreateNestedOneWithoutNotificationPreferenceInput = {
+    create?: XOR<AgentCreateWithoutNotificationPreferenceInput, AgentUncheckedCreateWithoutNotificationPreferenceInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutNotificationPreferenceInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type AgentUpdateOneRequiredWithoutNotificationPreferenceNestedInput = {
+    create?: XOR<AgentCreateWithoutNotificationPreferenceInput, AgentUncheckedCreateWithoutNotificationPreferenceInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutNotificationPreferenceInput
+    upsert?: AgentUpsertWithoutNotificationPreferenceInput
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutNotificationPreferenceInput, AgentUpdateWithoutNotificationPreferenceInput>, AgentUncheckedUpdateWithoutNotificationPreferenceInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -23306,6 +28596,97 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+
+  export type NestedEnumMediaProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
+  }
+
+  export type NestedEnumMediaTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeFilter<$PrismaModel> | $Enums.MediaType
+  }
+
+  export type NestedEnumMediaStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaStatus | EnumMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaStatusFilter<$PrismaModel> | $Enums.MediaStatus
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedEnumMediaProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderWithAggregatesFilter<$PrismaModel> | $Enums.MediaProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaProviderFilter<$PrismaModel>
+    _max?: NestedEnumMediaProviderFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
+    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaStatus | EnumMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaStatus[] | ListEnumMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaStatusWithAggregatesFilter<$PrismaModel> | $Enums.MediaStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaStatusFilter<$PrismaModel>
+    _max?: NestedEnumMediaStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type NestedJsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -23437,6 +28818,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutDepartmentInput = {
@@ -23455,6 +28838,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutDepartmentInput = {
@@ -23473,6 +28858,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -23480,6 +28867,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutDepartmentInput = {
@@ -23492,9 +28881,13 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutDepartmentInput = {
@@ -23679,6 +29072,8 @@ export namespace Prisma {
     currentFlowNodeId?: StringNullableFilter<"Conversation"> | string | null
     flowContext?: JsonNullableFilter<"Conversation">
     startedAt?: DateTimeFilter<"Conversation"> | Date | string
+    queuedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
+    lastActivityAt?: DateTimeFilter<"Conversation"> | Date | string
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
   }
 
@@ -23842,6 +29237,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -23849,6 +29246,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignedAgentInput = {
@@ -23861,9 +29260,13 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutAssignedAgentInput = {
@@ -23878,22 +29281,26 @@ export namespace Prisma {
 
   export type MessageCreateWithoutSenderAgentInput = {
     id?: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutSenderAgentInput = {
     id?: string
     conversationId: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutSenderAgentInput = {
@@ -24106,6 +29513,69 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NotificationCreateWithoutAgentInput = {
+    id?: string
+    type: string
+    title: string
+    body: string
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    conversation?: ConversationCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateWithoutAgentInput = {
+    id?: string
+    type: string
+    title: string
+    body: string
+    conversationId?: string | null
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
+  export type NotificationCreateOrConnectWithoutAgentInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput>
+  }
+
+  export type NotificationCreateManyAgentInputEnvelope = {
+    data: NotificationCreateManyAgentInput | NotificationCreateManyAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationPreferenceCreateWithoutAgentInput = {
+    id?: string
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: number
+    reminderRepeatMinutes?: number
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceUncheckedCreateWithoutAgentInput = {
+    id?: string
+    soundEnabled?: boolean
+    browserEnabled?: boolean
+    unresolvedRemindersEnabled?: boolean
+    unresolvedReminderMinutes?: number
+    reminderRepeatMinutes?: number
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceCreateOrConnectWithoutAgentInput = {
+    where: NotificationPreferenceWhereUniqueInput
+    create: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+  }
+
   export type DepartmentUpsertWithoutAgentsInput = {
     update: XOR<DepartmentUpdateWithoutAgentsInput, DepartmentUncheckedUpdateWithoutAgentsInput>
     create: XOR<DepartmentCreateWithoutAgentsInput, DepartmentUncheckedCreateWithoutAgentsInput>
@@ -24177,6 +29647,7 @@ export namespace Prisma {
     NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
     id?: StringFilter<"Message"> | string
     conversationId?: StringFilter<"Message"> | string
+    externalMessageId?: StringNullableFilter<"Message"> | string | null
     direction?: StringFilter<"Message"> | string
     senderType?: StringFilter<"Message"> | string
     senderAgentId?: StringNullableFilter<"Message"> | string | null
@@ -24293,12 +29764,79 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FlowRevision"> | Date | string
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutAgentInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutAgentInput, NotificationUncheckedUpdateWithoutAgentInput>
+    create: XOR<NotificationCreateWithoutAgentInput, NotificationUncheckedCreateWithoutAgentInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutAgentInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutAgentInput, NotificationUncheckedUpdateWithoutAgentInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutAgentInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutAgentInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    agentId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    conversationId?: StringNullableFilter<"Notification"> | string | null
+    departmentId?: StringNullableFilter<"Notification"> | string | null
+    dedupeKey?: StringFilter<"Notification"> | string
+    payload?: JsonNullableFilter<"Notification">
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    dismissedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+  }
+
+  export type NotificationPreferenceUpsertWithoutAgentInput = {
+    update: XOR<NotificationPreferenceUpdateWithoutAgentInput, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
+    create: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
+    where?: NotificationPreferenceWhereInput
+  }
+
+  export type NotificationPreferenceUpdateToOneWithWhereWithoutAgentInput = {
+    where?: NotificationPreferenceWhereInput
+    data: XOR<NotificationPreferenceUpdateWithoutAgentInput, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
+  }
+
+  export type NotificationPreferenceUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationPreferenceUncheckedUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    soundEnabled?: BoolFieldUpdateOperationsInput | boolean
+    browserEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedRemindersEnabled?: BoolFieldUpdateOperationsInput | boolean
+    unresolvedReminderMinutes?: IntFieldUpdateOperationsInput | number
+    reminderRepeatMinutes?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ConversationCreateWithoutContactInput = {
     id?: string
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -24306,6 +29844,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutContactInput = {
@@ -24318,9 +29858,13 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutContactInput = {
@@ -24411,6 +29955,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutConversationsInput = {
@@ -24429,6 +29975,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutConversationsInput = {
@@ -24438,22 +29986,26 @@ export namespace Prisma {
 
   export type MessageCreateWithoutConversationInput = {
     id?: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutConversationInput = {
     id?: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     senderAgentId?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutConversationInput = {
@@ -24568,6 +30120,112 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NotificationCreateWithoutConversationInput = {
+    id?: string
+    type: string
+    title: string
+    body: string
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    agent: AgentCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateWithoutConversationInput = {
+    id?: string
+    agentId: string
+    type: string
+    title: string
+    body: string
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
+  export type NotificationCreateOrConnectWithoutConversationInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput>
+  }
+
+  export type NotificationCreateManyConversationInputEnvelope = {
+    data: NotificationCreateManyConversationInput | NotificationCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationMediaCreateWithoutConversationInput = {
+    id?: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    message: MessageCreateNestedOneWithoutMediaInput
+  }
+
+  export type ConversationMediaUncheckedCreateWithoutConversationInput = {
+    id?: string
+    messageId: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationMediaCreateOrConnectWithoutConversationInput = {
+    where: ConversationMediaWhereUniqueInput
+    create: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationMediaCreateManyConversationInputEnvelope = {
+    data: ConversationMediaCreateManyConversationInput | ConversationMediaCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ContactUpsertWithoutConversationsInput = {
     update: XOR<ContactUpdateWithoutConversationsInput, ContactUncheckedUpdateWithoutConversationsInput>
     create: XOR<ContactCreateWithoutConversationsInput, ContactUncheckedCreateWithoutConversationsInput>
@@ -24653,6 +30311,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutConversationsInput = {
@@ -24671,6 +30331,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -24803,12 +30465,79 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"FlowExecutionEvent"> | Date | string
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutConversationInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutConversationInput, NotificationUncheckedUpdateWithoutConversationInput>
+    create: XOR<NotificationCreateWithoutConversationInput, NotificationUncheckedCreateWithoutConversationInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutConversationInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutConversationInput, NotificationUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutConversationInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type ConversationMediaUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ConversationMediaWhereUniqueInput
+    update: XOR<ConversationMediaUpdateWithoutConversationInput, ConversationMediaUncheckedUpdateWithoutConversationInput>
+    create: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationMediaUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ConversationMediaWhereUniqueInput
+    data: XOR<ConversationMediaUpdateWithoutConversationInput, ConversationMediaUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ConversationMediaUpdateManyWithWhereWithoutConversationInput = {
+    where: ConversationMediaScalarWhereInput
+    data: XOR<ConversationMediaUpdateManyMutationInput, ConversationMediaUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type ConversationMediaScalarWhereInput = {
+    AND?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
+    OR?: ConversationMediaScalarWhereInput[]
+    NOT?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
+    id?: StringFilter<"ConversationMedia"> | string
+    messageId?: StringFilter<"ConversationMedia"> | string
+    conversationId?: StringFilter<"ConversationMedia"> | string
+    whatsappMessageId?: StringFilter<"ConversationMedia"> | string
+    provider?: EnumMediaProviderFilter<"ConversationMedia"> | $Enums.MediaProvider
+    type?: EnumMediaTypeFilter<"ConversationMedia"> | $Enums.MediaType
+    status?: EnumMediaStatusFilter<"ConversationMedia"> | $Enums.MediaStatus
+    mimeType?: StringFilter<"ConversationMedia"> | string
+    caption?: StringNullableFilter<"ConversationMedia"> | string | null
+    originalFileName?: StringNullableFilter<"ConversationMedia"> | string | null
+    title?: StringNullableFilter<"ConversationMedia"> | string | null
+    ptt?: BoolNullableFilter<"ConversationMedia"> | boolean | null
+    seconds?: IntNullableFilter<"ConversationMedia"> | number | null
+    width?: IntNullableFilter<"ConversationMedia"> | number | null
+    height?: IntNullableFilter<"ConversationMedia"> | number | null
+    pageCount?: IntNullableFilter<"ConversationMedia"> | number | null
+    viewOnce?: BoolFilter<"ConversationMedia"> | boolean
+    sourceUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    thumbnailUrlCiphertext?: StringNullableFilter<"ConversationMedia"> | string | null
+    encryptionKeyVersion?: IntFilter<"ConversationMedia"> | number
+    sourceCreatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    expiresAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    failureCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessErrorCode?: StringNullableFilter<"ConversationMedia"> | string | null
+    lastAccessedAt?: DateTimeNullableFilter<"ConversationMedia"> | Date | string | null
+    createdAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
+  }
+
   export type ConversationCreateWithoutMessagesInput = {
     id?: string
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -24816,6 +30545,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -24829,8 +30560,12 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -24854,6 +30589,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutMessagesInput = {
@@ -24872,11 +30609,76 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutMessagesInput = {
     where: AgentWhereUniqueInput
     create: XOR<AgentCreateWithoutMessagesInput, AgentUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ConversationMediaCreateWithoutMessageInput = {
+    id?: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutMediaInput
+  }
+
+  export type ConversationMediaUncheckedCreateWithoutMessageInput = {
+    id?: string
+    conversationId: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationMediaCreateOrConnectWithoutMessageInput = {
+    where: ConversationMediaWhereUniqueInput
+    create: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
   }
 
   export type ConversationUpsertWithoutMessagesInput = {
@@ -24896,6 +30698,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -24903,6 +30707,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -24916,8 +30722,12 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentUpsertWithoutMessagesInput = {
@@ -24947,6 +30757,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutMessagesInput = {
@@ -24965,6 +30777,233 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+  }
+
+  export type ConversationMediaUpsertWithoutMessageInput = {
+    update: XOR<ConversationMediaUpdateWithoutMessageInput, ConversationMediaUncheckedUpdateWithoutMessageInput>
+    create: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+    where?: ConversationMediaWhereInput
+  }
+
+  export type ConversationMediaUpdateToOneWithWhereWithoutMessageInput = {
+    where?: ConversationMediaWhereInput
+    data: XOR<ConversationMediaUpdateWithoutMessageInput, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ConversationMediaUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutMediaNestedInput
+  }
+
+  export type ConversationMediaUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCreateWithoutMediaInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+    senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutMediaInput = {
+    id?: string
+    conversationId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderAgentId?: string | null
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type MessageCreateOrConnectWithoutMediaInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutMediaInput, MessageUncheckedCreateWithoutMediaInput>
+  }
+
+  export type ConversationCreateWithoutMediaInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutMediaInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutMediaInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutMediaInput, ConversationUncheckedCreateWithoutMediaInput>
+  }
+
+  export type MessageUpsertWithoutMediaInput = {
+    update: XOR<MessageUpdateWithoutMediaInput, MessageUncheckedUpdateWithoutMediaInput>
+    create: XOR<MessageCreateWithoutMediaInput, MessageUncheckedCreateWithoutMediaInput>
+    where?: MessageWhereInput
+  }
+
+  export type MessageUpdateToOneWithWhereWithoutMediaInput = {
+    where?: MessageWhereInput
+    data: XOR<MessageUpdateWithoutMediaInput, MessageUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type MessageUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationUpsertWithoutMediaInput = {
+    update: XOR<ConversationUpdateWithoutMediaInput, ConversationUncheckedUpdateWithoutMediaInput>
+    create: XOR<ConversationCreateWithoutMediaInput, ConversationUncheckedCreateWithoutMediaInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutMediaInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutMediaInput, ConversationUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type ConversationUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionCreateWithoutFlowDefinitionInput = {
@@ -25064,6 +31103,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutPublishedFlowRevisionsInput = {
@@ -25082,6 +31123,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutPublishedFlowRevisionsInput = {
@@ -25163,6 +31206,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -25170,6 +31215,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutConversationInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowRevisionInput = {
@@ -25182,9 +31229,13 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowRevisionInput = {
@@ -25283,6 +31334,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput = {
@@ -25301,6 +31354,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput = {
@@ -25506,6 +31561,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -25513,6 +31570,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutCurrentFlowNodeInput = {
@@ -25525,9 +31584,13 @@ export namespace Prisma {
     flowRevisionId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutCurrentFlowNodeInput = {
@@ -25948,6 +32011,8 @@ export namespace Prisma {
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
@@ -25955,6 +32020,8 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowEventsInput = {
@@ -25968,8 +32035,12 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowEventsInput = {
@@ -26066,6 +32137,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -26073,6 +32146,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowEventsInput = {
@@ -26086,8 +32161,12 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionUpsertWithoutExecutionEventsInput = {
@@ -26217,6 +32296,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutOwnedShortcutsInput = {
@@ -26235,6 +32316,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutOwnedShortcutsInput = {
@@ -26258,6 +32341,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutCreatedShortcutsInput = {
@@ -26276,6 +32361,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutCreatedShortcutsInput = {
@@ -26299,6 +32386,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutUpdatedShortcutsInput = {
@@ -26317,6 +32406,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutUpdatedShortcutsInput = {
@@ -26410,6 +32501,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutOwnedShortcutsInput = {
@@ -26428,6 +32521,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUpsertWithoutCreatedShortcutsInput = {
@@ -26457,6 +32552,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutCreatedShortcutsInput = {
@@ -26475,6 +32572,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUpsertWithoutUpdatedShortcutsInput = {
@@ -26504,6 +32603,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutUpdatedShortcutsInput = {
@@ -26522,6 +32623,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type ShortcutAuditUpsertWithWhereUniqueWithoutShortcutInput = {
@@ -26595,6 +32698,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
   }
 
   export type AgentUncheckedCreateWithoutShortcutAuditsInput = {
@@ -26613,6 +32718,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
   }
 
   export type AgentCreateOrConnectWithoutShortcutAuditsInput = {
@@ -26692,6 +32799,8 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutShortcutAuditsInput = {
@@ -26710,6 +32819,292 @@ export namespace Prisma {
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+  }
+
+  export type AgentCreateWithoutNotificationsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutNotificationsInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutNotificationsInput, AgentUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type ConversationCreateWithoutNotificationsInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutNotificationsInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutNotificationsInput, ConversationUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type AgentUpsertWithoutNotificationsInput = {
+    update: XOR<AgentUpdateWithoutNotificationsInput, AgentUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<AgentCreateWithoutNotificationsInput, AgentUncheckedCreateWithoutNotificationsInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutNotificationsInput, AgentUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type AgentUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+  }
+
+  export type ConversationUpsertWithoutNotificationsInput = {
+    update: XOR<ConversationUpdateWithoutNotificationsInput, ConversationUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<ConversationCreateWithoutNotificationsInput, ConversationUncheckedCreateWithoutNotificationsInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutNotificationsInput, ConversationUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type ConversationUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type AgentCreateWithoutNotificationPreferenceInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutNotificationPreferenceInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutNotificationPreferenceInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutNotificationPreferenceInput, AgentUncheckedCreateWithoutNotificationPreferenceInput>
+  }
+
+  export type AgentUpsertWithoutNotificationPreferenceInput = {
+    update: XOR<AgentUpdateWithoutNotificationPreferenceInput, AgentUncheckedUpdateWithoutNotificationPreferenceInput>
+    create: XOR<AgentCreateWithoutNotificationPreferenceInput, AgentUncheckedCreateWithoutNotificationPreferenceInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutNotificationPreferenceInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutNotificationPreferenceInput, AgentUncheckedUpdateWithoutNotificationPreferenceInput>
+  }
+
+  export type AgentUpdateWithoutNotificationPreferenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutNotificationPreferenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type ProcedureCreateManyDepartmentInput = {
@@ -26740,6 +33135,8 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
@@ -26807,6 +33204,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutDepartmentInput = {
@@ -26825,6 +33224,8 @@ export namespace Prisma {
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
   }
 
   export type AgentUncheckedUpdateManyWithoutDepartmentInput = {
@@ -26844,6 +33245,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -26851,6 +33254,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutDepartmentInput = {
@@ -26863,9 +33268,13 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutDepartmentInput = {
@@ -26878,6 +33287,8 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -26982,12 +33393,15 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
   export type MessageCreateManySenderAgentInput = {
     id?: string
     conversationId: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     content: string
@@ -27063,12 +33477,28 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type NotificationCreateManyAgentInput = {
+    id?: string
+    type: string
+    title: string
+    body: string
+    conversationId?: string | null
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
   export type ConversationUpdateWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -27076,6 +33506,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignedAgentInput = {
@@ -27088,9 +33520,13 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentInput = {
@@ -27103,32 +33539,39 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageUpdateWithoutSenderAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutSenderAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateManyWithoutSenderAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
@@ -27354,6 +33797,48 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type ConversationCreateManyContactInput = {
     id?: string
     status?: string
@@ -27364,6 +33849,8 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
@@ -27373,6 +33860,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -27380,6 +33869,8 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutContactInput = {
@@ -27392,9 +33883,13 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutContactInput = {
@@ -27407,11 +33902,14 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageCreateManyConversationInput = {
     id?: string
+    externalMessageId?: string | null
     direction: string
     senderType: string
     senderAgentId?: string | null
@@ -27430,28 +33928,76 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type NotificationCreateManyConversationInput = {
+    id?: string
+    agentId: string
+    type: string
+    title: string
+    body: string
+    departmentId?: string | null
+    dedupeKey: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    dismissedAt?: Date | string | null
+  }
+
+  export type ConversationMediaCreateManyConversationInput = {
+    id?: string
+    messageId: string
+    whatsappMessageId: string
+    provider?: $Enums.MediaProvider
+    type: $Enums.MediaType
+    status?: $Enums.MediaStatus
+    mimeType: string
+    caption?: string | null
+    originalFileName?: string | null
+    title?: string | null
+    ptt?: boolean | null
+    seconds?: number | null
+    width?: number | null
+    height?: number | null
+    pageCount?: number | null
+    viewOnce?: boolean
+    sourceUrlCiphertext?: string | null
+    thumbnailUrlCiphertext?: string | null
+    encryptionKeyVersion?: number
+    sourceCreatedAt: Date | string
+    expiresAt: Date | string
+    failureCode?: string | null
+    lastAccessErrorCode?: string | null
+    lastAccessedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type MessageUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateManyWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27488,6 +34034,135 @@ export namespace Prisma {
     type?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent?: AgentUpdateOneRequiredWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dedupeKey?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationMediaUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutMediaNestedInput
+  }
+
+  export type ConversationMediaUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationMediaUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    whatsappMessageId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumMediaProviderFieldUpdateOperationsInput | $Enums.MediaProvider
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    status?: EnumMediaStatusFieldUpdateOperationsInput | $Enums.MediaStatus
+    mimeType?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    originalFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    ptt?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    seconds?: NullableIntFieldUpdateOperationsInput | number | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    pageCount?: NullableIntFieldUpdateOperationsInput | number | null
+    viewOnce?: BoolFieldUpdateOperationsInput | boolean
+    sourceUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrlCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptionKeyVersion?: IntFieldUpdateOperationsInput | number
+    sourceCreatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FlowRevisionCreateManyFlowDefinitionInput = {
@@ -27576,6 +34251,8 @@ export namespace Prisma {
     currentFlowNodeId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
@@ -27663,6 +34340,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -27670,6 +34349,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutConversationNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowRevisionInput = {
@@ -27682,9 +34363,13 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutFlowRevisionInput = {
@@ -27697,6 +34382,8 @@ export namespace Prisma {
     currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -27758,6 +34445,8 @@ export namespace Prisma {
     flowRevisionId?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
     closedAt?: Date | string | null
   }
 
@@ -27831,6 +34520,8 @@ export namespace Prisma {
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
@@ -27838,6 +34529,8 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutCurrentFlowNodeInput = {
@@ -27850,9 +34543,13 @@ export namespace Prisma {
     flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput = {
@@ -27865,6 +34562,8 @@ export namespace Prisma {
     flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -27996,6 +34695,10 @@ export namespace Prisma {
      */
     export type MessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = MessageDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use ConversationMediaDefaultArgs instead
+     */
+    export type ConversationMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationMediaDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use FlowDefinitionDefaultArgs instead
      */
     export type FlowDefinitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowDefinitionDefaultArgs<ExtArgs>
@@ -28027,6 +34730,14 @@ export namespace Prisma {
      * @deprecated Use ShortcutAuditDefaultArgs instead
      */
     export type ShortcutAuditArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ShortcutAuditDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use NotificationDefaultArgs instead
+     */
+    export type NotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = NotificationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use NotificationPreferenceDefaultArgs instead
+     */
+    export type NotificationPreferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = NotificationPreferenceDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

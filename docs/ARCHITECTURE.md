@@ -79,3 +79,11 @@ O webhook deve ser idempotente pelo identificador externo. Persistência da entr
 ### Compatibilidade
 
 Durante a migração, o backend opera em leitura dupla: revisões v2 têm precedência e o formato legado permanece como fallback. Os endpoints legados `/flow` são temporários e não devem receber novas capacidades. A remoção de colunas e rotas v1 só ocorre depois de não existirem conversas vinculadas ao legado e de uma janela de estabilidade registrada no runbook.
+
+## 5. Proxy de mídia Z-API
+
+O módulo `modules/media` segue Route → Controller → Service → Repository. O webhook não baixa arquivos: ele persiste uma única `ConversationMedia` vinculada à `Message` dentro da mesma transação idempotente. As URLs temporárias permanecem cifradas no PostgreSQL.
+
+O navegador primeiro solicita um ticket autenticado. Depois, o proxy valida ticket, expiração e destino HTTPS, resolve DNS, bloqueia redes privadas, revalida redirects, limita streams/tamanho/tempo e transmite com backpressure. A URL original e o JWT nunca são repassados entre as camadas externas. `mediaExpirationWorker` executa limpeza idempotente e o endpoint aplica a expiração de forma síncrona, sem depender do scheduler.
+
+No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `Attachment`, `Dialog`, `Badge`, `Button` e `Skeleton`. React Query guarda somente o ticket interno; imagem é lazy, áudio/vídeo não usam autoplay e documentos exigem ação explícita.
