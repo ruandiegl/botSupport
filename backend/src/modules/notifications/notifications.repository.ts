@@ -56,7 +56,8 @@ export class NotificationsRepository {
   }
 
   dismiss(id: string, agentId: string) {
-    return prisma.notification.updateMany({ where: { id, agentId, dismissedAt: null }, data: { dismissedAt: new Date() } });
+    const dismissedAt = new Date();
+    return prisma.notification.updateMany({ where: { id, agentId, dismissedAt: null }, data: { dismissedAt, readAt: dismissedAt } });
   }
 
   async getPreference(agentId: string) {

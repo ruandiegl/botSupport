@@ -44,17 +44,18 @@ function NotificationItem({ notification, onOpen, onDismiss }: { notification: A
         <p>{notification.body}</p>
         <span>{relativeTime(notification.createdAt)}</span>
       </div>
-      {unread ? (
+      {
         <Button
           variant="ghost"
           size="icon-xs"
+          className="text-muted-foreground hover:text-destructive"
           aria-label="Dispensar notificação"
-          title="Dispensar"
+          title="Fechar notificação"
           onClick={(event) => { event.stopPropagation(); onDismiss(); }}
         >
           <X />
         </Button>
-      ) : null}
+      }
     </div>
   );
 }
@@ -62,11 +63,12 @@ function NotificationItem({ notification, onOpen, onDismiss }: { notification: A
 export function NotificationBell() {
   const [, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, isLoading, isError, markRead, markAllRead, dismiss } = useNotifications(true);
+  const { notifications, unreadCount, isLoading, isError, markAllRead, dismiss } = useNotifications(true);
   const visibleNotifications = notifications.filter((notification) => !notification.dismissedAt);
 
   const openNotification = (notification: AgentNotification) => {
-    markRead.mutate(notification.id);
+    // Opening a notification acknowledges it and removes it from the active feed.
+    dismiss.mutate(notification.id);
     setOpen(false);
     if (notification.conversationId) setLocation(`/conversation/${notification.conversationId}`);
   };

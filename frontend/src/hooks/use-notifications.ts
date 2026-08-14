@@ -125,7 +125,8 @@ export function useNotifications(enabled = true) {
           const previousCount = queryClient.getQueryData<number>(["notifications", "unread-count"]);
           if (previousCount !== undefined) queryClient.setQueryData(["notifications", "unread-count"], Math.max(0, previousCount - 1));
         }
-        queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], { ...previous, unreadCount: Math.max(0, previous.unreadCount - (wasUnread ? 1 : 0)), items: previous.items.map((item) => item.id === id ? { ...item, dismissedAt: new Date().toISOString() } : item) });
+        const dismissedAt = new Date().toISOString();
+        queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], { ...previous, unreadCount: Math.max(0, previous.unreadCount - (wasUnread ? 1 : 0)), items: previous.items.map((item) => item.id === id ? { ...item, readAt: item.readAt ?? dismissedAt, dismissedAt } : item) });
       }
       return { previous };
     },

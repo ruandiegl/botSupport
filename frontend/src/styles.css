@@ -1200,8 +1200,7 @@ body { letter-spacing: 0; }
 .notification-item-copy p { color: #587087; font-size: 11px; line-height: 1.45; }
 .notification-item-copy > span { color: #8da1b1; font-size: 10px; }
 .notification-unread-dot { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: #e9664d; }
-.notification-item > [data-slot="button"] { color: #8da1b1; opacity: 0; }
-.notification-item:hover > [data-slot="button"], .notification-item:focus-within > [data-slot="button"] { opacity: 1; }
+.notification-item > [data-slot="button"] { opacity: 1; }
 .notification-loading, .notification-error { padding: 24px 16px; color: #71869a; font-size: 12px; text-align: center; }
 .notification-error { color: #a34b3e; }
 .notification-empty { min-height: 170px; padding: 24px 16px; border: 0; }
