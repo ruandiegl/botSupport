@@ -8,7 +8,11 @@ import { mediaCryptoService, type MediaAccessPurpose } from "./media-crypto.serv
 import { mediaRepository } from "./media.repository.js";
 
 export class MediaHttpError extends Error {
-  constructor(public readonly status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string,
+    public readonly code?: string,
+  ) {
     super(message);
   }
 }
@@ -101,10 +105,10 @@ async function assertSafeSourceUrl(rawUrl: string): Promise<URL> {
   try {
     parsed = new URL(rawUrl);
   } catch {
-    throw new MediaHttpError(502, "A origem da mídia retornou uma URL inválida.");
+    throw new MediaHttpError(502, "A origem da mídia retornou uma URL inválida.", "SOURCE_URL_INVALID");
   }
   if (parsed.protocol !== "https:" || parsed.username || parsed.password) {
-    throw new MediaHttpError(502, "A origem da mídia não é segura.");
+    throw new MediaHttpError(502, "A origem da mídia não é segura.", "SOURCE_URL_UNSAFE");
   }
 
   const allowedHosts = (process.env.MEDIA_ALLOWED_SOURCE_HOSTS ?? "")
@@ -112,19 +116,19 @@ async function assertSafeSourceUrl(rawUrl: string): Promise<URL> {
     .map((host) => host.trim().toLowerCase())
     .filter(Boolean);
   if (process.env.NODE_ENV === "production" && !allowedHosts.length) {
-    throw new MediaHttpError(503, "A lista de origens de mídia não foi configurada.");
+    throw new MediaHttpError(503, "A lista de origens de mídia não foi configurada.", "SOURCE_ALLOWLIST_MISSING");
   }
   const hostname = parsed.hostname.toLowerCase();
   if (
     allowedHosts.length &&
     !allowedHosts.some((allowed) => hostname === allowed || hostname.endsWith(`.${allowed}`))
   ) {
-    throw new MediaHttpError(502, "A origem da mídia não é permitida.");
+    throw new MediaHttpError(502, "A origem da mídia não é permitida.", "SOURCE_HOST_NOT_ALLOWED");
   }
 
   const addresses = await dns.lookup(hostname, { all: true, verbatim: true });
   if (!addresses.length || addresses.some(({ address }) => isBlockedAddress(address))) {
-    throw new MediaHttpError(502, "A origem da mídia foi bloqueada por segurança.");
+    throw new MediaHttpError(502, "A origem da mídia foi bloqueada por segurança.", "SOURCE_DNS_BLOCKED");
   }
   return parsed;
 }
@@ -188,11 +192,11 @@ async function fetchSource(
     if (![301, 302, 303, 307, 308].includes(response.status)) return response;
     const location = response.headers.get("location");
     if (!location || redirect === maxRedirects) {
-      throw new MediaHttpError(502, "A origem da mídia excedeu o limite de redirecionamentos.");
+      throw new MediaHttpError(502, "A origem da mídia excedeu o limite de redirecionamentos.", "SOURCE_REDIRECT_LIMIT");
     }
     current = await assertSafeSourceUrl(new URL(location, current).toString());
   }
-  throw new MediaHttpError(502, "Não foi possível acessar a origem da mídia.");
+  throw new MediaHttpError(502, "Não foi possível acessar a origem da mídia.", "SOURCE_FETCH_FAILED");
 }
 
 function publicMedia(media: any) {
@@ -315,8 +319,14 @@ export class MediaService {
       try {
         upstream = await fetchSource(sourceUrl, requestedRange, controller);
       } catch (error) {
-        const reason = error instanceof MediaHttpError ? `HTTP_${error.status}` : "UPSTREAM_FETCH_FAILED";
-        logger.warn({ mediaId, reason }, "Falha ao acessar origem da mídia");
+        const reason = error instanceof MediaHttpError ? error.code ?? `HTTP_${error.status}` : "UPSTREAM_FETCH_FAILED";
+        let sourceHost = "invalid";
+        try {
+          sourceHost = new URL(sourceUrl).hostname.toLowerCase();
+        } catch {
+          // Never log the full URL or its query token.
+        }
+        logger.warn({ mediaId, sourceHost, reason }, "Falha ao acessar origem da mídia");
         throw error;
       }
       if (upstream.status === 404 || upstream.status === 410) {
