@@ -43,3 +43,7 @@ Após o primeiro deploy da API, gere o domínio público dela; depois configure 
 5. Configurar `VITE_API_URL` no front-end e fazer deploy.
 6. Atualizar `CORS_ORIGIN` com o domínio do front-end e redeploy da API.
 7. Testar login, Socket.IO, migrations e webhook da Z-API.
+
+### Migrações no boot da API
+
+O comando de inicialização da API executa `prisma migrate deploy` antes de abrir a porta HTTP. Assim, as migrações versionadas são aplicadas no banco referenciado por `DATABASE_URL` a cada release, incluindo as tabelas de fila, notificações e mídia. Confirme nos logs do serviço que a migração terminou com sucesso; se ela falhar, valide `DATABASE_URL` e as permissões do banco antes de investigar respostas 500.
