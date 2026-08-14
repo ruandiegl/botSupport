@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import {
   MessageCircle,
@@ -15,7 +15,7 @@ import {
   ShieldCheck,
   MessagesSquare,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import type { Conversation, ConversationListResponse, Agent } from "@/types";
@@ -23,6 +23,7 @@ import { Brand } from "@/components/ui/Brand";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { NotificationBell } from "@/components/NotificationBell";
+import { useSocketEvent } from "@/lib/use-socket-events";
 
 export interface AgentContextType {
   activeAgent: Agent | null;
@@ -51,6 +52,18 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
+  const queryClient = useQueryClient();
+
+  // A fila e seus contadores são atualizados por eventos do Socket.IO.
+  // Assim evitamos polling contínuo em todas as telas.
+  const refreshConversations = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+  }, [queryClient]);
+  const refreshAgents = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["agents"] });
+  }, [queryClient]);
+  useSocketEvent("conversation:updated", refreshConversations);
+  useSocketEvent("agent:status", refreshAgents);
 
   // Buscar lista de atendentes reais do banco de dados
   const { data: agents = [] } = useQuery<Agent[]>({
@@ -78,7 +91,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
     queryKey: ["conversations"],
     queryFn: () => apiFetch<Conversation[]>("/conversations"),
     enabled: isAuthenticated,
-    refetchInterval: 3000, // Revalidação a cada 3s para fila em tempo real
   });
 
   const conversationItems = Array.isArray(conversations) ? conversations : conversations?.items ?? [];
