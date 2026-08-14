@@ -1,4 +1,8 @@
 import { spawnSync } from "node:child_process";
+import { createHash, randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 
 const legacyMigrations = [
   "20260811000000_add_agent_status_and_rbac",
@@ -37,23 +41,62 @@ function exitOnFailure(result, step) {
   }
 }
 
+async function baselineLegacyMigrations() {
+  const require = createRequire(import.meta.url);
+  const { PrismaClient } = require("../src/generated/prisma/index.js");
+  const prisma = new PrismaClient();
+
+  try {
+    // Prisma creates this table during `migrate resolve`; creating it explicitly
+    // keeps the one-time recovery idempotent and avoids a separate CLI process
+    // holding a migration lock on legacy databases.
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
+        "id" VARCHAR(36) PRIMARY KEY NOT NULL,
+        "checksum" VARCHAR(64) NOT NULL,
+        "finished_at" TIMESTAMPTZ,
+        "migration_name" VARCHAR(255) NOT NULL,
+        "logs" TEXT,
+        "rolled_back_at" TIMESTAMPTZ,
+        "started_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+        "applied_steps_count" INTEGER NOT NULL DEFAULT 0
+      )
+    `);
+    await prisma.$executeRawUnsafe(
+      `CREATE UNIQUE INDEX IF NOT EXISTS "_prisma_migrations_migration_name_key" ON "_prisma_migrations" ("migration_name")`,
+    );
+
+    for (const migration of legacyMigrations) {
+      const sqlPath = join(process.cwd(), "prisma", "migrations", migration, "migration.sql");
+      const checksum = createHash("sha256").update(await readFile(sqlPath)).digest("hex");
+      const id = randomUUID();
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO "_prisma_migrations" ("id", "checksum", "finished_at", "migration_name", "started_at", "applied_steps_count")
+         VALUES ($1, $2, now(), $3, now(), 1)
+         ON CONFLICT ("migration_name") DO NOTHING`,
+        id,
+        checksum,
+        migration,
+      );
+      console.log(`[startup] Legacy migration baseline recorded: ${migration}`);
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 const deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
 process.stdout.write(deploy.stdout ?? "");
 process.stderr.write(deploy.stderr ?? "");
 
 if (deploy.status !== 0 && process.env.PRISMA_BASELINE_LEGACY === "true" && /P3005|schema is not empty/i.test(deploy.output)) {
   console.warn("[startup] Existing schema detected; applying one-time legacy Prisma baseline.");
-
-  for (const migration of legacyMigrations) {
-    const resolved = run("npx", ["prisma", "migrate", "resolve", "--applied", migration], { capture: true });
-    process.stdout.write(resolved.stdout ?? "");
-    process.stderr.write(resolved.stderr ?? "");
-
-    if (resolved.status !== 0 && !/already recorded|already applied|P3008/i.test(resolved.output)) {
-      exitOnFailure(resolved, `baseline ${migration}`);
-    }
+  try {
+    await baselineLegacyMigrations();
+  } catch (error) {
+    console.error("[startup] Legacy baseline failed:", error);
+    process.exit(1);
   }
-
   exitOnFailure(run("npx", ["prisma", "migrate", "deploy"]), "migrate deploy after baseline");
 } else if (deploy.status !== 0) {
   exitOnFailure(deploy, "migrate deploy");
