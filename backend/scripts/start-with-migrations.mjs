@@ -85,11 +85,8 @@ async function baselineLegacyMigrations() {
   }
 }
 
-const deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
-process.stdout.write(deploy.stdout ?? "");
-process.stderr.write(deploy.stderr ?? "");
-
-if (deploy.status !== 0 && process.env.PRISMA_BASELINE_LEGACY === "true" && /P3005|schema is not empty/i.test(deploy.output)) {
+let deploy;
+if (process.env.PRISMA_BASELINE_LEGACY === "true") {
   console.warn("[startup] Existing schema detected; applying one-time legacy Prisma baseline.");
   try {
     await baselineLegacyMigrations();
@@ -97,8 +94,17 @@ if (deploy.status !== 0 && process.env.PRISMA_BASELINE_LEGACY === "true" && /P30
     console.error("[startup] Legacy baseline failed:", error);
     process.exit(1);
   }
-  exitOnFailure(run("npx", ["prisma", "migrate", "deploy"]), "migrate deploy after baseline");
-} else if (deploy.status !== 0) {
+  deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
+  process.stdout.write(deploy.stdout ?? "");
+  process.stderr.write(deploy.stderr ?? "");
+  exitOnFailure(deploy, "migrate deploy after baseline");
+} else {
+  deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
+  process.stdout.write(deploy.stdout ?? "");
+  process.stderr.write(deploy.stderr ?? "");
+}
+
+if (deploy.status !== 0) {
   exitOnFailure(deploy, "migrate deploy");
 }
 
