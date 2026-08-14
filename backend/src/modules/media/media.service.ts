@@ -129,6 +129,11 @@ async function assertSafeSourceUrl(rawUrl: string): Promise<URL> {
   return parsed;
 }
 
+function isZApiHost(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return normalized === "z-api.io" || normalized.endsWith(".z-api.io");
+}
+
 function mediaMaxBytes(type: string): number {
   const defaults: Record<string, number> = {
     IMAGE: 20 * 1024 * 1024,
@@ -174,6 +179,9 @@ async function fetchSource(
       headers: {
         Accept: "*/*",
         "User-Agent": "GTFBot-MediaProxy/1.0",
+        ...(isZApiHost(current.hostname) && process.env.ZAPI_CLIENT_TOKEN
+          ? { "Client-Token": process.env.ZAPI_CLIENT_TOKEN }
+          : {}),
         ...(range ? { Range: range } : {}),
       },
     });
@@ -303,12 +311,20 @@ export class MediaService {
       if (requestedRange && !/^bytes=\d*-\d*$/.test(requestedRange)) {
         throw new MediaHttpError(416, "Intervalo de bytes inválido.");
       }
-      const upstream = await fetchSource(sourceUrl, requestedRange, controller);
+      let upstream: globalThis.Response;
+      try {
+        upstream = await fetchSource(sourceUrl, requestedRange, controller);
+      } catch (error) {
+        const reason = error instanceof MediaHttpError ? `HTTP_${error.status}` : "UPSTREAM_FETCH_FAILED";
+        logger.warn({ mediaId, reason }, "Falha ao acessar origem da mídia");
+        throw error;
+      }
       if (upstream.status === 404 || upstream.status === 410) {
         await mediaRepository.markUnavailable(media.id, "ZAPI_SOURCE_UNAVAILABLE");
         throw new MediaHttpError(410, "A mídia não está mais disponível na Z-API.");
       }
       if (!upstream.ok || !upstream.body) {
+        logger.warn({ mediaId, reason: `ZAPI_HTTP_${upstream.status}` }, "Origem da mídia retornou erro");
         await mediaRepository.markAccessError(media.id, `ZAPI_HTTP_${upstream.status}`);
         throw new MediaHttpError(502, "A Z-API não conseguiu fornecer a mídia.");
       }
