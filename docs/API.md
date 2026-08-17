@@ -57,7 +57,7 @@ Quando `page` ou `limit` Ã© enviado, a resposta Ã© paginada:
   "appliedFilters": { "status": "QUEUED", "dateField": "lastActivityAt", "from": null, "to": null }
 }
 ```
-`counts` representa o pulso operacional do escopo do usuário autenticado e não muda com os filtros da lista (busca, período, departamento ou status).
+`counts` representa o pulso operacional do escopo do usuário autenticado. Os indicadores de status permanecem globais; `counts.all` acompanha o intervalo de data enviado (`from`, `to`, `dateField`), permitindo que o card de todas as conversas reflita o período selecionado.
 Sem parÃ¢metros de paginaÃ§Ã£o, o formato legado (array) Ã© mantido temporariamente para clientes antigos.
 
 ### `GET /conversations/:id`

@@ -53,6 +53,7 @@ model Agent {
   publishedFlowRevisions FlowRevision[]  @relation("FlowRevisionPublisher")
   notifications          Notification[]
   notificationPreference NotificationPreference?
+  addedConversationLabels ConversationLabel[]
 
   @@map("gtf_agents")
 }
@@ -104,6 +105,9 @@ model Conversation {
   flowEvents        FlowExecutionEvent[]
   notifications     Notification[]
   media             ConversationMedia[]
+  labels            ConversationLabel[]
+  groupChatName     String?              @map("group_chat_name")
+  groupParticipant  String?              @map("group_participant")
 
   @@index([flowRevisionId])
   @@index([currentFlowNodeId])
@@ -200,16 +204,61 @@ model FlowDefinition {
 }
 
 model ZApiConfig {
-  id          String   @id @default(uuid())
-  instanceId  String   @map("instance_id")
-  token       String
-  clientToken String?  @map("client_token")
-  webhookUrl  String?  @map("webhook_url")
-  isActive    Boolean  @default(true) @map("is_active")
-  autoReply   Boolean  @default(true) @map("auto_reply")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                   String   @id @default(uuid())
+  instanceId           String   @map("instance_id")
+  token                String
+  clientToken          String?  @map("client_token")
+  webhookUrl           String?  @map("webhook_url")
+  isActive             Boolean  @default(true) @map("is_active")
+  autoReply            Boolean  @default(true) @map("auto_reply")
+  instancePhone        String?  @map("instance_phone")
+  groupsEnabled        Boolean  @default(false) @map("groups_enabled")
+  groupCooldownSeconds Int      @default(60) @map("group_cooldown_seconds")
+  groupConfirmInGroup  Boolean  @default(false) @map("group_confirm_in_group")
+  groupConfirmMessage  String?  @map("group_confirm_message")
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("gtf_zapi_config")
+}
+
+model Label {
+  id                 String              @id @default(uuid())
+  name               String              @unique
+  slug               String              @unique
+  color              String              @default("#6366f1")
+  icon               String?
+  isSystem           Boolean             @default(false) @map("is_system")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  conversationLabels ConversationLabel[]
+
+  @@map("gtf_labels")
+}
+
+model ConversationLabel {
+  id             String       @id @default(uuid())
+  conversationId String       @map("conversation_id")
+  labelId        String       @map("label_id")
+  addedByAgentId String?      @map("added_by_agent_id")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  label          Label        @relation(fields: [labelId], references: [id], onDelete: Cascade)
+  addedByAgent   Agent?       @relation(fields: [addedByAgentId], references: [id], onDelete: SetNull)
+
+  @@unique([conversationId, labelId])
+  @@index([conversationId])
+  @@index([labelId])
+  @@map("gtf_conversation_labels")
+}
+
+model GroupMentionCooldown {
+  id             String   @id @default(uuid())
+  groupKey       String   @map("group_key")
+  participantKey String   @map("participant_key")
+  lastMentionAt  DateTime @map("last_mention_at") @db.Timestamptz
+
+  @@unique([groupKey, participantKey])
+  @@index([lastMentionAt])
+  @@map("gtf_group_mention_cooldowns")
 }
 
 enum FlowRevisionStatus {

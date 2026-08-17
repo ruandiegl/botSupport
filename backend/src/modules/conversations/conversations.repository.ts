@@ -166,14 +166,27 @@ export class ConversationsRepository {
     departmentId?: string | null;
     agentId?: string | null;
     accessible?: boolean;
+    dateField?: "lastActivityAt" | "createdAt";
+    from?: string;
+    to?: string;
   }) {
     if (scope.accessible === false) {
       return { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
     }
 
     const baseWhere = scope.departmentId ? { departmentId: scope.departmentId } : {};
-    const [byStatus, mine, unread] = await Promise.all([
+    const dateField = scope.dateField === "createdAt" ? "startedAt" : "lastActivityAt";
+    const dateWhere = scope.from || scope.to
+      ? {
+          [dateField]: {
+            ...(scope.from ? { gte: new Date(scope.from) } : {}),
+            ...(scope.to ? { lt: new Date(scope.to) } : {}),
+          },
+        }
+      : {};
+    const [byStatus, all, mine, unread] = await Promise.all([
       prisma.conversation.groupBy({ where: baseWhere, by: ["status"], _count: { _all: true } }),
+      prisma.conversation.count({ where: { ...baseWhere, ...dateWhere } }),
       scope.agentId
         ? prisma.conversation.count({ where: { ...baseWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
         : Promise.resolve(0),
@@ -184,8 +197,6 @@ export class ConversationsRepository {
     const open = statusCount("OPEN");
     const inProgress = statusCount("IN_PROGRESS");
     const closed = statusCount("CLOSED");
-    const all = byStatus.reduce((total, row) => total + row._count._all, 0);
-
     return { all, open, inProgress, closed, mine, unread };
   }
 

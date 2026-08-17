@@ -147,6 +147,9 @@ export class ConversationsService {
       departmentId: user?.role === "AGENT" ? user.departmentId : undefined,
       agentId: user?.id,
       accessible: user?.role !== "AGENT" || Boolean(user.departmentId),
+      dateField: filters.dateField,
+      from: filters.from,
+      to: filters.to,
     });
     const items = result.isSummary
       ? result.items.map((item) => this.formatSummary(item))

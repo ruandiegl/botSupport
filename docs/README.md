@@ -36,13 +36,6 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Guia de Configuração e Execução (Setup)**](SETUP.md): Instruções passo a passo para ambiente de desenvolvimento local e Docker Compose.
 - [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.
 - [**Matriz QA de mídia Z-API**](QA_MIDIA_ZAPI.md): contratos, segurança, expiração e regressão.
-## Visão Geral da Estrutura do Repositório
-
-```
-botSupport/
-├── backend/          # API REST Node.js + Express 5 + Prisma ORM + PostgreSQL
-├── frontend/         # SPA React 18 + Vite 5 + Tailwind CSS v4
-├── docs/             # Documentação do projeto, guias e padrões (esta pasta)
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```
