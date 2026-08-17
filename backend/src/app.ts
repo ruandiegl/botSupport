@@ -58,6 +58,8 @@ app.use(
         "req.headers.cookie",
         "req.headers['x-api-key']",
         "req.headers['client-token']",
+        "req.headers['z-api-token']",
+        "req.headers['z-api-key']",
       ],
       censor: "[REDACTED]",
     },
