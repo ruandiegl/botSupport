@@ -52,6 +52,15 @@ app.use(express.json());
 app.use(
   pinoHttp({
     logger: logger as any,
+    redact: {
+      paths: [
+        "req.headers.authorization",
+        "req.headers.cookie",
+        "req.headers['x-api-key']",
+        "req.headers['client-token']",
+      ],
+      censor: "[REDACTED]",
+    },
     // Media access tickets are bearer credentials. Never write them to access logs.
     autoLogging: {
       ignore: (req) => Boolean(req.url?.startsWith("/api/media/")),

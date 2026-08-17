@@ -274,6 +274,7 @@ export class ZApiService {
 
   async getConfig() {
     let dbConfig = await zApiRepository.getConfig();
+    const envGroupsEnabled = process.env.ZAPI_GROUPS_ENABLED === "true";
     
     // Obter credenciais prioritariamente do ambiente (.env) se disponíveis
     const envInstanceId = process.env.ZAPI_INSTANCE_ID || "";
@@ -305,6 +306,10 @@ export class ZApiService {
       token: dbConfig.token || envToken,
       clientToken: dbConfig.clientToken ?? envClientToken,
       webhookUrl: normalizeWebhookUrl(dbConfig.webhookUrl || envWebhookUrl),
+      // Railway can enable the feature without mutating existing production
+      // rows. The admin toggle remains the source of truth when this flag is
+      // absent; the environment flag is intentionally opt-in.
+      groupsEnabled: Boolean(dbConfig.groupsEnabled || envGroupsEnabled),
     };
   }
 
