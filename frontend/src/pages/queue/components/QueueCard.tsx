@@ -11,7 +11,7 @@ export function QueueCard({ conversations, fixedCounts }: { conversations: Conve
         CLOSED: conversations.filter((x) => x.status === "CLOSED").length,
       };
   const total = Math.max(
-    fixedCounts ? fixedCounts.open + fixedCounts.inProgress + fixedCounts.closed : conversations.length,
+    fixedCounts ? fixedCounts.all ?? fixedCounts.open + fixedCounts.inProgress + fixedCounts.closed : conversations.length,
     1
   );
 

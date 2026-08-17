@@ -31,22 +31,30 @@ const statusLabels: Record<string, string> = {
 };
 
 const defaultDateRange: DateRangeValue = { preset: "ALL", dateField: "lastActivityAt", from: "", to: "" };
-type MetricFilter = "OPEN" | "MINE" | "UNREAD";
+// Keep each metric as a distinct filter.  "Em atendimento" is the global
+// IN_PROGRESS view, while "Com você" is the same status scoped to the
+// current agent; sharing the MINE key made the first click apply the wrong
+// query and required a second interaction to reach the expected list.
+type MetricFilter = "ALL" | "OPEN" | "IN_PROGRESS" | "MINE" | "UNREAD";
 
 export default function QueuePage(props?: { onlyMine?: boolean } & Record<string, unknown>) {
   const onlyMine = props?.onlyMine ?? false;
   const { activeAgent } = useActiveAgent();
   const currentAgentId = activeAgent?.id || "";
-  const [status, setStatus] = useState(onlyMine ? "IN_PROGRESS" : "OPEN");
-  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(onlyMine ? "MINE" : "OPEN");
+  // There is one explicit metric state.  The queue starts unfiltered (all
+  // conversations), while operational sorting still puts OPEN first.
+  const [status, setStatus] = useState("ALL");
+  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(onlyMine ? "MINE" : null);
   const [department, setDepartment] = useState("ALL");
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const queryStatus = metricFilter === "OPEN"
+  const queryStatus = metricFilter === "ALL"
+    ? "ALL"
+    : metricFilter === "OPEN"
     ? "OPEN"
-    : metricFilter === "MINE"
+    : metricFilter === "IN_PROGRESS" || metricFilter === "MINE"
     ? "IN_PROGRESS"
     : metricFilter === "UNREAD"
     ? "ALL"
@@ -95,11 +103,12 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
   const activateMetric = (next: MetricFilter) => {
     const isActive = metricFilter === next;
-    setMetricFilter(isActive ? null : next);
-    if (!isActive && (next === "MINE" || next === "UNREAD")) setStatus(next === "MINE" ? "IN_PROGRESS" : "ALL");
-    if (!isActive && next === "OPEN") setStatus("OPEN");
+    const selected: MetricFilter | null = isActive ? (onlyMine ? "MINE" : null) : next;
+    setMetricFilter(selected);
+    setStatus(selected === "OPEN" ? "OPEN" : selected === "IN_PROGRESS" || selected === "MINE" ? "IN_PROGRESS" : "ALL");
   };
-  const metricCounts = result?.counts ?? { open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
+  const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
+  const allConversationCount = metricCounts.all ?? metricCounts.open + metricCounts.inProgress + metricCounts.closed;
   const onlineAgents = agents.filter((agent) => agent.isOnline);
   const onlineNames = onlineAgents.map((agent) => agent.name).join(", ");
   const departmentLabel = department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
@@ -113,8 +122,9 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       />
 
       <div className="stats">
-        <MetricCard label="Em aberto" value={metricCounts.open} note="aguardando atendimento" tone="warning" onClick={() => activateMetric("OPEN")} selected={metricFilter === "OPEN"} ariaLabel="Filtrar conversas em aberto" testId="metric-open" />
-        <MetricCard label="Em atendimento" value={metricCounts.inProgress} note="atendimentos em curso" tone="success" onClick={() => activateMetric("MINE")} selected={metricFilter === "MINE"} ariaLabel="Filtrar atendimentos em curso" testId="metric-in-progress" />
+        {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="visão completa da operação" tone="primary" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL" || (!metricFilter && queryStatus === "ALL")} ariaLabel="Mostrar todas as conversas" testId="metric-all" /> : null}
+        <MetricCard label="Em aberto" value={metricCounts.open} note="aguardando atendimento" tone="warning" onClick={() => activateMetric("OPEN")} selected={metricFilter === "OPEN" || (!metricFilter && queryStatus === "OPEN")} ariaLabel="Filtrar conversas em aberto" testId="metric-open" />
+        <MetricCard label="Em atendimento" value={metricCounts.inProgress} note="atendimentos em curso" tone="success" onClick={() => activateMetric("IN_PROGRESS")} selected={metricFilter === "IN_PROGRESS" || (!metricFilter && queryStatus === "IN_PROGRESS")} ariaLabel="Filtrar atendimentos em curso" testId="metric-in-progress" />
         <MetricCard label="Com você" value={metricCounts.mine} note="atendimentos sob sua gestão" onClick={() => activateMetric("MINE")} selected={metricFilter === "MINE"} ariaLabel="Filtrar meus atendimentos" testId="metric-mine" />
         <MetricCard label="Não lidas" value={metricCounts.unread} note="mensagens recebidas" tone="info" onClick={() => activateMetric("UNREAD")} selected={metricFilter === "UNREAD"} ariaLabel="Filtrar conversas não lidas" testId="metric-unread" />
       </div>

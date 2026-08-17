@@ -45,6 +45,7 @@ Quando `page` ou `limit` Ã© enviado, a resposta Ã© paginada:
   "total": 0,
   "totalPages": 0,
   "counts": {
+    "all": 0,
     "open": 0,
     "queued": 0,
     "inProgress": 0,

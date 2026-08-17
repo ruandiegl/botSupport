@@ -31,6 +31,8 @@ export interface ConversationQueryResult {
 }
 
 export interface ConversationMetricCounts {
+  /** Added in the paginated response; older deployments can omit it. */
+  all?: number;
   open: number;
   inProgress: number;
   closed: number;

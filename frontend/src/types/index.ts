@@ -82,6 +82,7 @@ export interface ConversationListResponse {
   totalPages: number;
   appliedFilters?: Record<string, unknown>;
   counts?: {
+    all?: number;
     open: number;
     inProgress: number;
     closed: number;
