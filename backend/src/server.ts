@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { app } from "./app.js";
 import { logger } from "./shared/logger.js";
 import { initSocketIO } from "./shared/socket.js";
+import { zApiService } from "./modules/zapi/zapi.service.js";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
@@ -12,6 +13,17 @@ initSocketIO(httpServer);
 
 const server = httpServer.listen(PORT, "0.0.0.0", () => {
   logger.info(`Servidor GTF-Bot Backend rodando na porta ${PORT} com suporte a Socket.IO`);
+
+  if (process.env.ZAPI_REGISTER_WEBHOOK_ON_STARTUP === "true") {
+    const webhookUrl = process.env.ZAPI_WEBHOOK_URL?.trim();
+    if (!webhookUrl) {
+      logger.warn("Registro automático do webhook ignorado: ZAPI_WEBHOOK_URL não configurada");
+    } else {
+      void zApiService.updateWebhookUrl(webhookUrl)
+        .then(() => logger.info("Webhook Z-API registrado automaticamente"))
+        .catch((error: any) => logger.warn({ message: error?.message || "erro desconhecido" }, "Falha ao registrar webhook Z-API automaticamente"));
+    }
+  }
 });
 
 server.on("error", (error) => {

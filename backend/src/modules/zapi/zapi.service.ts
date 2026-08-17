@@ -280,6 +280,7 @@ export class ZApiService {
     const envInstanceId = process.env.ZAPI_INSTANCE_ID || "";
     const envToken = process.env.ZAPI_TOKEN || "";
     const envClientToken = process.env.ZAPI_CLIENT_TOKEN || "";
+    const hasEnvWebhookUrl = Boolean(process.env.ZAPI_WEBHOOK_URL?.trim());
     const envWebhookUrl = normalizeWebhookUrl(
       process.env.ZAPI_WEBHOOK_URL || "http://localhost:3001/api/webhooks/z-api",
     );
@@ -305,7 +306,7 @@ export class ZApiService {
       instanceId: dbConfig.instanceId || envInstanceId,
       token: dbConfig.token || envToken,
       clientToken: dbConfig.clientToken ?? envClientToken,
-      webhookUrl: normalizeWebhookUrl(dbConfig.webhookUrl || envWebhookUrl),
+      webhookUrl: hasEnvWebhookUrl ? envWebhookUrl : normalizeWebhookUrl(dbConfig.webhookUrl || envWebhookUrl),
       // Railway can enable the feature without mutating existing production
       // rows. The admin toggle remains the source of truth when this flag is
       // absent; the environment flag is intentionally opt-in.

@@ -8,7 +8,7 @@
 4. Confirmar que o webhook Z-API aponta para `/api/webhooks/z-api` em HTTPS. Os aliases `/api/webhooks/zapi/message` e `/api/webhooks/z-api/message` também são aceitos para instalações antigas.
 5. Atualizar o status da instância no painel para o backend detectar o telefone; durante o callback, `connectedPhone` também é aceito como fallback. A UI deve mostrar apenas os quatro últimos dígitos.
 
-Em Railway, a ativação controlada pode ser feita com `ZAPI_GROUPS_ENABLED=true`; remover a variável desativa o override sem alterar dados existentes.
+Em Railway, a ativação controlada pode ser feita com `ZAPI_GROUPS_ENABLED=true`; remover a variável desativa o override sem alterar dados existentes. Para atualizar automaticamente o endereço registrado na Z-API, usar `ZAPI_REGISTER_WEBHOOK_ON_STARTUP=true` junto de `ZAPI_WEBHOOK_URL`.
 
 ## Homologação
 
