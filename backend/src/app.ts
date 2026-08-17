@@ -41,7 +41,7 @@ const apiCors = cors({
 // origem de navegador confiável. Ele precisa chegar ao controller para que
 // a mensagem seja processada; o CORS continua restrito para as rotas do painel.
 app.use((req, res, next) => {
-  if (req.path === "/api/webhooks/z-api") {
+  if (req.path.startsWith("/api/webhooks/")) {
     next();
     return;
   }

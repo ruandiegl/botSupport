@@ -484,4 +484,7 @@ Os agentes abaixo são referências de responsabilidade do plano, conforme [`age
 - frontend shadcn inclui badges, filtro multi-select, gerenciamento no detalhe e CRUD administrativo com modais warning/danger;
 - Socket.IO sincroniza etiquetas na fila e no detalhe;
 - `prisma validate`, migrations, backend build, frontend TypeScript/build e 47 testes automatizados aprovados;
-- pendência operacional: validar em uma instância/grupo de homologação o formato real de `mentionedJids` e o envio opcional ao JID do grupo antes de habilitar `groupsEnabled` em produção.
+- correção pós-homologação: parser compatível com `participantPhone`/`participantLid`/`connectedPhone` documentados pela Z-API, mantendo fallback legado para `participant`/`mentionedJids`;
+- quando a versão da Z-API não envia lista explícita de menções, o webhook usa o token `@` preservado no texto como fallback controlado;
+- diagnóstico do ambiente local: CORS não bloqueia `/api/webhooks/z-api`; a flag `groupsEnabled` está desativada e `instancePhone` não foi persistido, portanto grupos continuam ignorados até ativação/configuração consciente;
+- pendência operacional: habilitar `groupsEnabled`, confirmar o status da instância para preencher o telefone e validar um grupo real antes de produção.

@@ -132,7 +132,11 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     return null;
   }
 
-  const participant = String(payload.participant || "");
+  // A Z-API usa participantPhone/participantLid nos callbacks atuais; `participant`
+  // continua aceito para compatibilidade com versões antigas e fixtures legados.
+  const participant = String(
+    payload.participantPhone || payload.participant || payload.senderPhone || "",
+  );
   const phone = String(payload.isGroup === true ? participant : (payload.phone || payload.senderPhone || payload.chatId || "")).replace(/\D/g, "");
   if (!phone) return null;
 
@@ -171,6 +175,27 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
 function canonicalJid(value: string) { return value.trim().toLowerCase().split(":")[0].replace(/\D/g, ""); }
 function hashIdentifier(value: string) { return createHash("sha256").update(value.trim().toLowerCase()).digest("hex"); }
 function hasBroadcastMention(values: string[]) { return values.some((value) => /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(value)); }
+function collectMentionValues(payload: any): string[] {
+  const values = [payload?.mentionedJids, payload?.mentionedJid, payload?.mentions, payload?.mentioned]
+    .flatMap((value) => (Array.isArray(value) ? value : value ? [value] : []));
+
+  return values
+    .map((value) => {
+      if (typeof value === "string") return value;
+      if (!value || typeof value !== "object") return "";
+      return String(value.jid || value.phone || value.id || value.participantPhone || "");
+    })
+    .filter(Boolean);
+}
+
+function hasTextMention(payload: any): boolean {
+  const text = String(payload?.text?.message || payload?.body || payload?.caption || payload?.message || "");
+  // Some Z-API versions do not expose a mention array in ReceivedCallback, but
+  // preserve the WhatsApp @ token in the text. This fallback keeps that format
+  // functional while explicit mention arrays remain preferred when available.
+  return /(^|\s)@[~\w][^\s@]*/u.test(text);
+}
+
 function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
   return (template?.trim() || "Olá, {{nome}}! Recebemos sua solicitação no grupo {{grupo}} e iniciaremos o atendimento por aqui.")
     .replace(/{{\s*nome\s*}}/gi, name)
@@ -568,13 +593,16 @@ export class ZApiService {
     const isGroup = payload.isGroup === true;
     if (isGroup) {
       if (!config.groupsEnabled) return { status: "ignored_groups_disabled" };
-      if (!payload.participant || !payload.phone) return { status: "ignored_invalid_group_context" };
-      const mentions = payload.mentionedJids || [];
-      if (!mentions.length) return { status: "ignored_no_mention" };
-      if (hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
-      const instancePhone = canonicalJid(config.instancePhone || "");
+      const participant = payload.participantPhone || payload.participant;
+      if (!participant || !payload.phone) return { status: "ignored_invalid_group_context" };
+      const mentions = collectMentionValues(payload);
+      if (!mentions.length && !hasTextMention(payload)) return { status: "ignored_no_mention" };
+      if (payload.broadcast === true || hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
+      const instancePhone = canonicalJid(config.instancePhone || payload.connectedPhone || "");
       if (!instancePhone) return { status: "ignored_instance_phone_unavailable" };
-      if (!mentions.some((jid) => canonicalJid(jid) === instancePhone)) return { status: "ignored_not_mentioned" };
+      // Prefer the explicit mention list. If the provider omits it, the text
+      // fallback is the only signal available and is guarded by the @ token.
+      if (mentions.length && !mentions.some((jid) => canonicalJid(jid) === instancePhone)) return { status: "ignored_not_mentioned" };
       if (await zApiRepository.findIncomingMessage(payload.messageId)) return { status: "duplicate_event" };
       const reserved = await zApiRepository.reserveGroupMention(
         hashIdentifier(String(payload.phone)),

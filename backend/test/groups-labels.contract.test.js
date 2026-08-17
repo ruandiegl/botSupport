@@ -30,6 +30,18 @@ test("parser vincula a conversa ao participante, não ao JID do grupo", () => {
   assert.equal(parsed?.group?.jid, groupPayload.phone);
 });
 
+test("aceita o formato oficial da Z-API para participante e telefone conectado", () => {
+  const payload = {
+    ...groupPayload,
+    participant: undefined,
+    participantPhone: "5511777777777",
+    participantLid: "81896604192873@lid",
+    connectedPhone: "5511666666666",
+  };
+  assert.equal(ZApiReceivedWebhookSchema.safeParse(payload).success, true);
+  assert.equal(parseIncomingMessage(payload)?.phone, "5511777777777");
+});
+
 test("configuração de grupos valida cooldown e variáveis permitidas", () => {
   const base = { instanceId: "instance", token: "token", groupsEnabled: true };
   assert.equal(UpdateZApiConfigSchema.safeParse({ ...base, groupCooldownSeconds: 60, groupConfirmMessage: "Olá {{nome}}, grupo {{grupo}}" }).success, true);
