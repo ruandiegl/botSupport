@@ -82,8 +82,25 @@ export function initSocketIO(httpServer: HTTPServer): SocketIOServer {
       logger.error({ err, userId: user.id }, "Erro ao marcar atendente como online no socket");
     }
 
-    socket.on("conversation:join", (data: { conversationId: string }) => {
+    socket.on("conversation:join", async (data: { conversationId: string }) => {
       if (!data?.conversationId) return;
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: data.conversationId },
+        select: { status: true, departmentId: true, assignedAgentId: true },
+      }).catch((error) => {
+        logger.error({ error, userId: user.id, conversationId: data.conversationId }, "Falha ao validar acesso à sala da conversa");
+        return null;
+      });
+      const allowed = Boolean(conversation) && (
+        user.role === "ADMIN" ||
+        user.role === "SUPERVISOR" ||
+        conversation?.assignedAgentId === user.id ||
+        Boolean(conversation?.status === "OPEN" && user.departmentId && conversation?.departmentId === user.departmentId)
+      );
+      if (!allowed) {
+        logger.warn({ userId: user.id, conversationId: data.conversationId }, "Socket recusou acesso à conversa");
+        return;
+      }
       const room = `conversation:${data.conversationId}`;
       socket.join(room);
       logger.debug({ userId: user.id, conversationId: data.conversationId }, "Socket entrou na conversa");

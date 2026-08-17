@@ -14,6 +14,7 @@ export interface ConversationFilters {
   assignedAgentId?: "me";
   openOnly?: boolean;
   unreadOnly?: boolean;
+  labelIds?: string[];
   fallbackAssignedAgentId?: string;
   sort?: "operational" | "recent" | "oldest";
 }
@@ -98,6 +99,7 @@ function buildQuery(filters: ConversationFilters) {
   if (filters.assignedAgentId) params.set("assignedAgentId", filters.assignedAgentId);
   if (filters.openOnly) params.set("openOnly", "true");
   if (filters.unreadOnly) params.set("unreadOnly", "true");
+  if (filters.labelIds?.length) params.set("labelIds", filters.labelIds.join(","));
   params.set("sort", filters.sort ?? "operational");
   params.set("page", String(filters.page));
   params.set("limit", String(filters.limit));
@@ -126,6 +128,7 @@ export function useListConversations(filters: ConversationFilters) {
           .filter((item) => !filters.assignedAgentId || !filters.fallbackAssignedAgentId || item.assignedAgentId === filters.fallbackAssignedAgentId)
           .filter((item) => !filters.openOnly || item.status !== "CLOSED")
           .filter((item) => !filters.unreadOnly || item.unreadCount > 0)
+          .filter((item) => !filters.labelIds?.length || item.labels?.some((label) => filters.labelIds?.includes(label.id)))
           .filter((item) => {
             const timestamp = filters.dateField === "createdAt" ? item.startedAt : item.lastActivityAt ?? item.startedAt;
             return (!filters.from || timestamp >= filters.from) && (!filters.to || timestamp < filters.to);

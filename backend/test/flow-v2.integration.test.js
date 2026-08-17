@@ -87,13 +87,13 @@ test("motor executa decisão, triagem editável e handoff sem transporte externo
     assert.equal(selected.status, "waiting_triage");
     assert.equal(selected.actions.some((action) => action.type === "SEND_TEXT" && action.content === "Dados"), true);
     let conversation = await flowIntegrationRepository.getConversation(fixture.conversation.id);
-    assert.equal(conversation.status, "BOT");
+    assert.equal(conversation.status, "OPEN");
     assert.equal(conversation.currentFlowNodeId, fixture.triage.id);
 
     const handoff = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Nome, emissora, cidade e necessidade", isNewConversation: false });
     assert.equal(handoff.status, "routed_to_department");
     conversation = await flowIntegrationRepository.getConversation(fixture.conversation.id);
-    assert.equal(conversation.status, "QUEUED");
+    assert.equal(conversation.status, "OPEN");
     assert.equal(conversation.departmentId, fixture.department.id);
     assert.equal(conversation.flowContext.details, "Nome, emissora, cidade e necessidade");
   } finally { await flowIntegrationRepository.cleanup(fixture); }

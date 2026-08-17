@@ -6,6 +6,8 @@ import { flowExecutionService } from "../flow-execution/flow-execution.service.j
 import type { ZApiReceivedWebhook } from "./zapi.schemas.js";
 import { mediaCryptoService } from "../media/media-crypto.service.js";
 import { mediaService } from "../media/media.service.js";
+import { createHash } from "node:crypto";
+import { labelsService } from "../labels/labels.service.js";
 
 function parseZApiError(status: number, data: any): string {
   const rawMsg = data?.error || data?.message || data?.reason || "";
@@ -42,6 +44,7 @@ export type ParsedIncomingMessage = {
   selectedOptionId?: string;
   externalEventId?: string;
   media?: ParsedIncomingMedia;
+  group?: { jid: string; name: string; participant: string };
 };
 
 export type ParsedIncomingMedia = {
@@ -122,7 +125,6 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   if (
     payload?.type !== "ReceivedCallback" ||
     payload?.fromMe === true ||
-    payload?.isGroup === true ||
     payload?.isNewsletter === true ||
     payload?.isStatusReply === true ||
     payload?.notification
@@ -130,7 +132,8 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     return null;
   }
 
-  const phone = String(payload.phone || payload.senderPhone || payload.chatId || "").replace(/\D/g, "");
+  const participant = String(payload.participant || "");
+  const phone = String(payload.isGroup === true ? participant : (payload.phone || payload.senderPhone || payload.chatId || "")).replace(/\D/g, "");
   if (!phone) return null;
 
   const buttonResponse = payload.buttonsResponseMessage;
@@ -161,7 +164,17 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     selectedOptionId,
     ...(externalEventId ? { externalEventId } : {}),
     ...(media ? { media } : {}),
+    ...(payload.isGroup === true ? { group: { jid: String(payload.phone || payload.chatId || ""), name: String(payload.chatName || "Grupo do WhatsApp"), participant } } : {}),
   };
+}
+
+function canonicalJid(value: string) { return value.trim().toLowerCase().split(":")[0].replace(/\D/g, ""); }
+function hashIdentifier(value: string) { return createHash("sha256").update(value.trim().toLowerCase()).digest("hex"); }
+function hasBroadcastMention(values: string[]) { return values.some((value) => /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(value)); }
+function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
+  return (template?.trim() || "Olá, {{nome}}! Recebemos sua solicitação no grupo {{grupo}} e iniciaremos o atendimento por aqui.")
+    .replace(/{{\s*nome\s*}}/gi, name)
+    .replace(/{{\s*grupo\s*}}/gi, group);
 }
 
 function normalize(value: string): string {
@@ -293,14 +306,17 @@ export class ZApiService {
 
       if (!response.ok) {
         const friendlyMessage = parseZApiError(response.status, data);
-        return { connected: false, message: friendlyMessage, raw: data };
+        return { connected: false, message: friendlyMessage };
       }
 
       const connected = data.connected === true || data.status === "CONNECTED" || data.signed === true;
+      const detectedPhone = canonicalJid(String(data.phone || data.connectedPhone || data.phoneNumber || data.device?.phone || ""));
+      if (connected && detectedPhone && !overrideInstanceId && !overrideToken) {
+        await zApiRepository.updateInstancePhone(detectedPhone);
+      }
 
       return {
         connected,
-        raw: data,
         message: connected
           ? "WhatsApp Conectado e Operacional!"
           : "WhatsApp Desconectado. Aponte a câmera do WhatsApp para o QR Code para conectar.",
@@ -438,6 +454,23 @@ export class ZApiService {
     }
   }
 
+  private async sendTextToTarget(target: string, text: string) {
+    const config = await this.getConfig();
+    if (!config.isActive || !config.instanceId || !config.token) return null;
+    try {
+      const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-text`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(config.clientToken ? { "Client-Token": config.clientToken } : {}) },
+        body: JSON.stringify({ phone: target, message: text }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return { error: parseZApiError(response.status, data) };
+      return data;
+    } catch (error: any) {
+      return { error: error?.message || "Falha na requisição Z-API" };
+    }
+  }
+
   async sendButtonList(phone: string, message: string, options: BotOption[]) {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
@@ -531,6 +564,26 @@ export class ZApiService {
   async handleIncomingWebhook(payload: ZApiReceivedWebhook) {
     logger.info({ callbackType: payload?.type, externalEventId: payload?.messageId || payload?.id }, "Webhook recebido da Z-API");
 
+    const config = await this.getConfig();
+    const isGroup = payload.isGroup === true;
+    if (isGroup) {
+      if (!config.groupsEnabled) return { status: "ignored_groups_disabled" };
+      if (!payload.participant || !payload.phone) return { status: "ignored_invalid_group_context" };
+      const mentions = payload.mentionedJids || [];
+      if (!mentions.length) return { status: "ignored_no_mention" };
+      if (hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
+      const instancePhone = canonicalJid(config.instancePhone || "");
+      if (!instancePhone) return { status: "ignored_instance_phone_unavailable" };
+      if (!mentions.some((jid) => canonicalJid(jid) === instancePhone)) return { status: "ignored_not_mentioned" };
+      if (await zApiRepository.findIncomingMessage(payload.messageId)) return { status: "duplicate_event" };
+      const reserved = await zApiRepository.reserveGroupMention(
+        hashIdentifier(String(payload.phone)),
+        hashIdentifier(String(payload.participant)),
+        config.groupCooldownSeconds,
+      );
+      if (!reserved) return { status: "cooldown" };
+    }
+
     const incoming = parseIncomingMessage(payload);
     if (!incoming) return { status: "ignored" };
 
@@ -541,7 +594,14 @@ export class ZApiService {
     let activeConversation = await zApiRepository.findActiveConversationByContact(contact.id);
     const isNewConversation = !activeConversation;
     if (!activeConversation) {
-      activeConversation = await zApiRepository.createConversation(contact.id, "OPEN", "AWAITING_TEAM");
+      activeConversation = await zApiRepository.createConversation(
+        contact.id,
+        "OPEN",
+        "AWAITING_TEAM",
+        incoming.group ? { chatName: incoming.group.name, participant: phone } : undefined,
+      );
+    } else if (incoming.group) {
+      await zApiRepository.updateGroupContext(activeConversation.id, incoming.group.name, phone);
     }
 
     const conversationId = activeConversation.id;
@@ -600,6 +660,7 @@ export class ZApiService {
     });
     if (persisted.duplicate) return { status: "duplicate_event" };
     const savedMsg = persisted.message;
+    if (incoming.group) await labelsService.assignSystem(conversationId, "GROUP");
 
     socketEmitter.emitToConversation(conversationId, "message:new", {
       conversationId,
@@ -629,7 +690,19 @@ export class ZApiService {
       logger.info({ conversationId }, "inactivity warning reset due to new client message");
     }
 
-    const config = await this.getConfig();
+    if (incoming.group) {
+      const confirmation = renderGroupTemplate(config.groupConfirmMessage, incoming.senderName, incoming.group.name);
+      const storedConfirmation = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: confirmation });
+      const directResult = await this.sendText(phone, confirmation);
+      if (!directResult || directResult?.error) {
+        await zApiRepository.deleteMessage(storedConfirmation.id);
+        logger.error({ conversationId, error: directResult?.error || "integration_inactive" }, "Falha ao confirmar menção por mensagem privada");
+      }
+      if (config.groupConfirmInGroup) {
+        const groupResult = await this.sendTextToTarget(incoming.group.jid, confirmation);
+        if (groupResult && "error" in groupResult) logger.warn({ conversationId, error: groupResult.error }, "Falha na confirmação opcional no grupo");
+      }
+    }
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
     if (activeConversation.status !== "OPEN") return { status: "message_logged" };
 

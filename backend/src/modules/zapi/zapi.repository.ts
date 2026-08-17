@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { Prisma } from "../../generated/prisma/index.js";
 import { prisma } from "../../shared/prisma.js";
 
 export class ZApiRepository {
@@ -21,11 +23,15 @@ export class ZApiRepository {
 
   async upsertConfig(data: {
     instanceId: string;
-    token: string;
+    token?: string;
     clientToken?: string;
     webhookUrl?: string;
     isActive?: boolean;
     autoReply?: boolean;
+    groupsEnabled?: boolean;
+    groupCooldownSeconds?: number;
+    groupConfirmInGroup?: boolean;
+    groupConfirmMessage?: string | null;
   }) {
     const existing = await this.getConfig();
     if (existing) {
@@ -33,11 +39,15 @@ export class ZApiRepository {
         where: { id: existing.id },
         data: {
           instanceId: data.instanceId,
-          token: data.token,
+          token: data.token || existing.token,
           clientToken: data.clientToken ?? existing.clientToken,
           webhookUrl: data.webhookUrl ?? existing.webhookUrl,
           isActive: data.isActive ?? existing.isActive,
           autoReply: data.autoReply ?? existing.autoReply,
+          groupsEnabled: data.groupsEnabled ?? existing.groupsEnabled,
+          groupCooldownSeconds: data.groupCooldownSeconds ?? existing.groupCooldownSeconds,
+          groupConfirmInGroup: data.groupConfirmInGroup ?? existing.groupConfirmInGroup,
+          groupConfirmMessage: data.groupConfirmMessage !== undefined ? data.groupConfirmMessage : existing.groupConfirmMessage,
           updatedAt: new Date(),
         },
       });
@@ -46,11 +56,15 @@ export class ZApiRepository {
     return prisma.zApiConfig.create({
       data: {
         instanceId: data.instanceId,
-        token: data.token,
+        token: data.token ?? "",
         clientToken: data.clientToken ?? "",
         webhookUrl: data.webhookUrl ?? "http://localhost:3001/api/webhooks/z-api",
         isActive: data.isActive ?? true,
         autoReply: data.autoReply ?? true,
+        groupsEnabled: data.groupsEnabled ?? false,
+        groupCooldownSeconds: data.groupCooldownSeconds ?? 60,
+        groupConfirmInGroup: data.groupConfirmInGroup ?? false,
+        groupConfirmMessage: data.groupConfirmMessage ?? null,
       },
     });
   }
@@ -82,7 +96,7 @@ export class ZApiRepository {
     });
   }
 
-  async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM") {
+  async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM", group?: { chatName?: string | null; participant?: string | null }) {
     const now = new Date();
     return prisma.conversation.create({
       data: {
@@ -91,6 +105,7 @@ export class ZApiRepository {
         currentStep,
         lastActivityAt: now,
         ...(status === "OPEN" ? { queuedAt: now } : {}),
+        ...(group ? { groupChatName: group.chatName ?? null, groupParticipant: group.participant ?? null } : {}),
       },
       include: {
         contact: true,
@@ -138,6 +153,31 @@ export class ZApiRepository {
     });
     await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
     return message;
+  }
+
+  updateGroupContext(id: string, groupChatName?: string | null, groupParticipant?: string | null) {
+    return prisma.conversation.update({ where: { id }, data: { groupChatName: groupChatName ?? null, groupParticipant: groupParticipant ?? null } });
+  }
+
+  findIncomingMessage(externalMessageId: string) {
+    return prisma.message.findUnique({ where: { externalMessageId }, select: { id: true } });
+  }
+
+  async reserveGroupMention(groupKey: string, participantKey: string, cooldownSeconds: number) {
+    const cutoff = new Date(Date.now() - cooldownSeconds * 1000);
+    const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      INSERT INTO "gtf_group_mention_cooldowns" ("id", "group_key", "participant_key", "last_mention_at")
+      VALUES (${randomUUID()}, ${groupKey}, ${participantKey}, NOW())
+      ON CONFLICT ("group_key", "participant_key") DO UPDATE
+      SET "last_mention_at" = EXCLUDED."last_mention_at"
+      WHERE "gtf_group_mention_cooldowns"."last_mention_at" <= ${cutoff}
+      RETURNING "id"
+    `);
+    return rows.length > 0;
+  }
+
+  updateInstancePhone(instancePhone: string) {
+    return prisma.zApiConfig.updateMany({ data: { instancePhone } });
   }
 
   async addIncomingMessage(data: {

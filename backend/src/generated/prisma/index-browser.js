@@ -179,7 +179,9 @@ exports.Prisma.ConversationScalarFieldEnum = {
   lastActivityAt: 'lastActivityAt',
   closedAt: 'closedAt',
   warningSentAt: 'warningSentAt',
-  closeReason: 'closeReason'
+  closeReason: 'closeReason',
+  groupChatName: 'groupChatName',
+  groupParticipant: 'groupParticipant'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
@@ -241,7 +243,37 @@ exports.Prisma.ZApiConfigScalarFieldEnum = {
   webhookUrl: 'webhookUrl',
   isActive: 'isActive',
   autoReply: 'autoReply',
+  instancePhone: 'instancePhone',
+  groupsEnabled: 'groupsEnabled',
+  groupCooldownSeconds: 'groupCooldownSeconds',
+  groupConfirmInGroup: 'groupConfirmInGroup',
+  groupConfirmMessage: 'groupConfirmMessage',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LabelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  color: 'color',
+  icon: 'icon',
+  isSystem: 'isSystem',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ConversationLabelScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  labelId: 'labelId',
+  addedByAgentId: 'addedByAgentId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.GroupMentionCooldownScalarFieldEnum = {
+  id: 'id',
+  groupKey: 'groupKey',
+  participantKey: 'participantKey',
+  lastMentionAt: 'lastMentionAt'
 };
 
 exports.Prisma.FlowRevisionScalarFieldEnum = {
@@ -429,6 +461,9 @@ exports.Prisma.ModelName = {
   ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',
+  Label: 'Label',
+  ConversationLabel: 'ConversationLabel',
+  GroupMentionCooldown: 'GroupMentionCooldown',
   FlowRevision: 'FlowRevision',
   FlowNode: 'FlowNode',
   FlowTransition: 'FlowTransition',

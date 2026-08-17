@@ -2,12 +2,19 @@ import { z } from "zod";
 
 export const UpdateZApiConfigSchema = z.object({
   instanceId: z.string().min(1, "ID da Instância é obrigatório"),
-  token: z.string().min(1, "Token da Instância é obrigatório"),
+  token: z.string().min(1, "Token da Instância é obrigatório").optional(),
   clientToken: z.string().optional(),
   webhookUrl: z.string().optional(),
   isActive: z.boolean().optional(),
   autoReply: z.boolean().optional(),
-});
+  groupsEnabled: z.boolean().optional(),
+  groupCooldownSeconds: z.number().int().min(5).max(3600).optional(),
+  groupConfirmInGroup: z.boolean().optional(),
+  groupConfirmMessage: z.string().trim().max(1000).nullable().optional().superRefine((value, context) => {
+    const unknown = value?.match(/{{\s*([^}]+)\s*}}/g)?.filter((item) => !/^{{\s*(nome|grupo)\s*}}$/.test(item));
+    if (unknown?.length) context.addIssue({ code: z.ZodIssueCode.custom, message: "Use somente as variáveis {{nome}} e {{grupo}}." });
+  }),
+}).strict();
 
 export const TestZApiConnectionSchema = z.object({
   instanceId: z.string().optional(),
@@ -100,6 +107,8 @@ export const ZApiReceivedWebhookSchema = z
     senderName: z.string().max(300).optional(),
     pushName: z.string().max(300).optional(),
     chatName: z.string().max(300).optional(),
+    participant: z.string().max(200).optional(),
+    mentionedJids: z.array(z.string().max(200)).max(100).optional(),
     text: z.union([z.string(), z.object({ message: z.string().max(4096).optional() }).passthrough()]).optional(),
     body: z.string().max(4096).optional(),
     caption: z.string().max(4096).optional(),

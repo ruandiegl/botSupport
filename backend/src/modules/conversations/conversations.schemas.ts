@@ -4,12 +4,22 @@ const queryBoolean = z.union([z.boolean(), z.enum(["true", "false"])])
   .transform((value) => value === true || value === "true")
   .default(false);
 
+const labelIds = z.string().trim().max(1500).transform((value, ctx) => {
+  const ids = [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))];
+  if (ids.length > 20 || ids.some((id) => !z.string().uuid().safeParse(id).success)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "labelIds deve conter até 20 UUIDs separados por vírgula" });
+    return z.NEVER;
+  }
+  return ids;
+});
+
 export const ListConversationsQuerySchema = z.object({
   status: z.enum(["ALL", "OPEN", "IN_PROGRESS", "CLOSED"]).optional(),
   departmentId: z.union([z.literal("ALL"), z.string().uuid()]).optional(),
   assignedAgentId: z.union([z.literal("me"), z.string().uuid()]).optional(),
   openOnly: queryBoolean,
   unreadOnly: queryBoolean,
+  labelIds: labelIds.optional(),
   q: z.string().trim().max(120).optional(),
   dateField: z.enum(["lastActivityAt", "createdAt"]).default("lastActivityAt"),
   from: z.string().datetime({ offset: true }).optional(),

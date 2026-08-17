@@ -11,6 +11,7 @@ import { useListAgents, useListConversations, useListDepartments, type Conversat
 import { ConversationRow } from "./components/ConversationRow";
 import { QueueCard } from "./components/QueueCard";
 import { DateRangeFilter, type DateRangeValue } from "./components/DateRangeFilter";
+import { LabelFilter } from "./components/LabelFilter";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -49,6 +50,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
   const [currentPage, setCurrentPage] = useState(1);
+  const [labelIds, setLabelIds] = useState<string[]>([]);
 
   const queryStatus = metricFilter === "ALL"
     ? "ALL"
@@ -74,6 +76,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     openOnly: metricFilter === "OPEN",
     unreadOnly: metricFilter === "UNREAD",
     sort: "operational",
+    labelIds,
   };
   const { data: result, isLoading, isError, refetch } = useListConversations(filters);
   const { data: departments } = useListDepartments();
@@ -98,7 +101,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const firstVisible = total ? (currentPage - 1) * CONVERSATIONS_PER_PAGE + 1 : 0;
   const lastVisible = Math.min(currentPage * CONVERSATIONS_PER_PAGE, total);
 
-  useEffect(() => { setCurrentPage(1); }, [status, department, search, onlyMine, currentAgentId, dateRange, metricFilter]);
+  useEffect(() => { setCurrentPage(1); }, [status, department, search, onlyMine, currentAgentId, dateRange, metricFilter, labelIds]);
   useEffect(() => { setCurrentPage((page) => Math.min(page, totalPages)); }, [totalPages]);
 
   const activateMetric = (next: MetricFilter) => {
@@ -140,6 +143,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
           <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup><SelectItem value="ALL">Todos os departamentos</SelectItem>{(departments || []).map((item) => <SelectItem value={item.id} key={item.id}>{item.name}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        <LabelFilter value={labelIds} onChange={setLabelIds} />
         <div className="queue-sort-hint"><SlidersHorizontal /> Ordenado por urgência</div>
       </div>
 

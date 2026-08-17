@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Clock3 } from "lucide-react";
 import type { Conversation } from "@/types";
 import { getInitials } from "@/app/Shell";
+import { ConversationLabelBadge } from "@/components/ui/ConversationLabelBadge";
 
 const statusLabel: Record<string, string> = {
   OPEN: "Em aberto",
@@ -63,6 +64,7 @@ export function ConversationRow({
           </span>
           {conversation.status !== "CLOSED" ? <span className="conversation-age"><Clock3 /> {conversation.status === "OPEN" ? "aguardando" : "atividade"} {ageLabel(conversation)}</span> : null}
         </div>
+        {conversation.labels?.length ? <div className="mt-2 flex flex-wrap gap-1">{conversation.labels.slice(0, 3).map((label) => <ConversationLabelBadge key={label.id} label={label} />)}</div> : null}
       </div>
       <div className="row-side">
         <span className="time">{timeLabel(conversation.startedAt)}</span>

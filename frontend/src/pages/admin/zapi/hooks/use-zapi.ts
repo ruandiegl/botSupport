@@ -4,18 +4,24 @@ import { apiFetch } from "@/lib/api-client";
 export interface ZApiConfig {
   id?: string;
   instanceId: string;
-  token: string;
+  token?: string;
   clientToken?: string;
   webhookUrl?: string;
   isActive: boolean;
   autoReply: boolean;
+  hasToken?: boolean;
+  hasClientToken?: boolean;
+  instancePhoneMasked?: string | null;
+  groupsEnabled: boolean;
+  groupCooldownSeconds: number;
+  groupConfirmInGroup: boolean;
+  groupConfirmMessage?: string | null;
   updatedAt?: string;
 }
 
 export interface ZApiTestResponse {
   connected: boolean;
   message: string;
-  raw?: any;
 }
 
 export interface ZApiQrCodeResponse {

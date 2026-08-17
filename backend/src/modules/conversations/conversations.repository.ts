@@ -10,6 +10,7 @@ export class ConversationsRepository {
     assignedAgentId?: string;
     openOnly?: boolean;
     unreadOnly?: boolean;
+    labelIds?: string[];
     q?: string;
     dateField?: "lastActivityAt" | "createdAt";
     from?: string;
@@ -37,6 +38,9 @@ export class ConversationsRepository {
     }
     if (filters.unreadOnly) {
       where.messages = { some: { direction: "IN", readAt: null } };
+    }
+    if (filters.labelIds?.length) {
+      where.labels = { some: { labelId: { in: filters.labelIds } } };
     }
 
     if (filters.q) {
@@ -69,6 +73,7 @@ export class ConversationsRepository {
       if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
       if (filters.openOnly) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
       if (filters.unreadOnly) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" umf WHERE umf."conversation_id" = c."id" AND umf."direction" = 'IN' AND umf."read_at" IS NULL)`);
+      if (filters.labelIds?.length) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_conversation_labels" clf WHERE clf."conversation_id" = c."id" AND clf."label_id" IN (${Prisma.join(filters.labelIds)}))`);
       const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
       if (filters.from) conditions.push(Prisma.sql`${dateColumn} >= ${new Date(filters.from)}`);
       if (filters.to) conditions.push(Prisma.sql`${dateColumn} < ${new Date(filters.to)}`);
@@ -112,9 +117,14 @@ export class ConversationsRepository {
               lastActivityAt: true,
               startedAt: true,
               closedAt: true,
+              groupChatName: true,
               contact: { select: { name: true, phone: true } },
               department: { select: { name: true } },
               assignedAgent: { select: { name: true } },
+              labels: {
+                select: { label: { select: { id: true, name: true, slug: true, color: true, icon: true, isSystem: true } } },
+                orderBy: { createdAt: "asc" },
+              },
               messages: {
                 take: 1,
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -217,6 +227,10 @@ export class ConversationsRepository {
         department: true,
         assignedAgent: {
           include: { department: true },
+        },
+        labels: {
+          include: { label: { select: { id: true, name: true, slug: true, color: true, icon: true, isSystem: true } } },
+          orderBy: { createdAt: "asc" },
         },
         messages: {
           ...(messageWhere ? { where: messageWhere } : {}),

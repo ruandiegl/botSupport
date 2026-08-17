@@ -1,4 +1,4 @@
-import { Clock3, Sparkles, TrendingUp } from "lucide-react";
+import { Clock3, Sparkles, Tags, TrendingUp } from "lucide-react";
 import type { Conversation, Shortcut } from "@/types";
 import { getInitials } from "@/app/Shell";
 import { Status } from "@/pages/queue/components/ConversationRow";
@@ -7,17 +7,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatShortcutMessage } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ConversationLabelBadge } from "@/components/ui/ConversationLabelBadge";
+import { useAssignConversationLabel, useLabels, useRemoveConversationLabel } from "@/hooks/use-labels";
 
 export function DetailPanel({
   conversation,
   canUseShortcuts,
   onInsertShortcut,
   agentDeptName,
+  canManageLabels,
 }: {
   conversation: Conversation;
   canUseShortcuts: boolean;
   onInsertShortcut: (shortcut: Shortcut) => void;
   agentDeptName?: string;
+  canManageLabels: boolean;
 }) {
   const { data: shortcuts = [], isLoading } = useAvailableShortcuts(
     conversation.id,
@@ -35,6 +41,10 @@ export function DetailPanel({
     .sort((a, b) => new Date(b.lastUsedAt!).getTime() - new Date(a.lastUsedAt!).getTime())
     .slice(0, 3);
   const available = shortcuts.slice(0, 4);
+  const { data: labelCatalog } = useLabels(canManageLabels);
+  const assignLabel = useAssignConversationLabel(conversation.id);
+  const removeLabel = useRemoveConversationLabel(conversation.id);
+  const activeLabelIds = new Set((conversation.labels || []).map((label) => label.id));
 
   const agentName = conversation.assignedAgentName || "Atendente";
   const contactName = conversation.contact.name || "Cliente";
@@ -89,6 +99,37 @@ export function DetailPanel({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="detail-section">
+        <div className="flex items-center justify-between gap-2">
+          <div className="detail-label">Etiquetas</div>
+          {canManageLabels ? (
+            <Popover>
+              <PopoverTrigger render={<Button variant="outline" size="sm" />}><Tags /> Gerenciar</PopoverTrigger>
+              <PopoverContent side="bottom" align="end" className="w-72 bg-popover">
+                <PopoverTitle>Etiquetas do chamado</PopoverTitle>
+                <PopoverDescription>Selecione as etiquetas que ajudam a organizar esta conversa.</PopoverDescription>
+                <div className="mt-3 grid max-h-64 gap-1 overflow-y-auto">
+                  {labelCatalog?.items.map((label) => (
+                    <label key={label.id} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted">
+                      <Checkbox
+                        checked={activeLabelIds.has(label.id)}
+                        disabled={assignLabel.isPending || removeLabel.isPending}
+                        onCheckedChange={(checked) => checked ? assignLabel.mutate(label.id) : removeLabel.mutate(label.id)}
+                      />
+                      <ConversationLabelBadge label={label} />
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : null}
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {conversation.labels?.length ? conversation.labels.map((label) => <ConversationLabelBadge key={label.id} label={label} />) : <span className="subtle">Sem etiquetas</span>}
+        </div>
+        {conversation.groupChatName ? <p className="mt-2 text-xs text-muted-foreground">Originada no grupo <strong>{conversation.groupChatName}</strong></p> : null}
       </div>
 
       {canUseShortcuts && (

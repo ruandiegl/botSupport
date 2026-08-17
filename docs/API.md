@@ -317,3 +317,33 @@ Requer Bearer JWT e `conversations:view`. Body estrito:
 - `GET /media/:mediaId/download?ticket=...`
 
 O ticket é a credencial exclusiva dessas rotas e não deve ser registrado, compartilhado ou armazenado. Respostas: `401` ticket inválido; `403` finalidade/escopo inválido; `404` inexistente; `410` expirada/removida; `416` Range inválido; `422` indisponível ou formato bloqueado; `429` streams simultâneos excedidos; `502/503/504` indisponibilidade da origem.
+
+## Etiquetas de conversas
+
+As rotas exigem autenticação e permissões no recurso `labels`. Etiquetas de sistema (`GROUP`, `URGENT`, `WAITING`, `RESOLVED`, `REVIEW`) não podem ser editadas ou excluídas.
+
+- `GET /labels?q=&page=1&limit=100`: lista o catálogo e a quantidade de conversas por etiqueta (`labels:view`).
+- `POST /labels`: cria etiqueta customizada com `{ name, slug, color, icon? }` (`labels:create`).
+- `PATCH /labels/:id`: altera uma etiqueta customizada (`labels:update`).
+- `DELETE /labels/:id`: exclui uma etiqueta customizada e suas relações, sem excluir conversas (`labels:delete`).
+- `POST /conversations/:id/labels`: adiciona de forma idempotente, body `{ "labelId": "uuid" }` (`labels:update`).
+- `DELETE /conversations/:id/labels/:labelId`: remove de forma idempotente (`labels:update`).
+
+`GET /conversations` aceita `labelIds=uuid,uuid` (máximo 20) e combina o filtro com status, departamento, busca e período. Os itens da fila e o detalhe incluem `labels[]` e `groupChatName`; JIDs de participantes nunca são retornados.
+
+## Menções em grupos Z-API
+
+`PUT /zapi/config` também aceita:
+
+```json
+{
+  "groupsEnabled": false,
+  "groupCooldownSeconds": 60,
+  "groupConfirmInGroup": false,
+  "groupConfirmMessage": "Olá, {{nome}}! Recebemos sua solicitação no grupo {{grupo}}."
+}
+```
+
+Somente `{{nome}}` e `{{grupo}}` são permitidas. O telefone real da instância é detectado pelo backend ao consultar o status. `GET /zapi/config` retorna apenas indicadores de credencial e telefone mascarado; tokens e o telefone completo não são expostos.
+
+No webhook `ReceivedCallback`, grupos usam `phone` como chat de origem, `participant` como remetente individual e `mentionedJids` para confirmar a menção. Com o recurso desabilitado, sem menção, broadcast ou cooldown ativo, a mensagem é ignorada sem abrir conversa. Uma menção válida cria/reutiliza a conversa privada do participante, persiste a etiqueta `GROUP` e envia confirmação por DM. A confirmação pública é opt-in.

@@ -23,6 +23,7 @@ import {
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
@@ -54,6 +55,10 @@ export default function ZApiAdmin() {
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [autoReply, setAutoReply] = useState(true);
+  const [groupsEnabled, setGroupsEnabled] = useState(false);
+  const [groupCooldownSeconds, setGroupCooldownSeconds] = useState(60);
+  const [groupConfirmInGroup, setGroupConfirmInGroup] = useState(false);
+  const [groupConfirmMessage, setGroupConfirmMessage] = useState("");
   const [copied, setCopied] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveConfirmOpen, setSaveConfirmOpen] = useState(false);
@@ -68,6 +73,10 @@ export default function ZApiAdmin() {
       setWebhookUrl(normalizeWebhookUrl(config.webhookUrl || ""));
       setIsActive(config.isActive ?? true);
       setAutoReply(config.autoReply ?? true);
+      setGroupsEnabled(config.groupsEnabled ?? false);
+      setGroupCooldownSeconds(config.groupCooldownSeconds ?? 60);
+      setGroupConfirmInGroup(config.groupConfirmInGroup ?? false);
+      setGroupConfirmMessage(config.groupConfirmMessage || "");
     }
   }, [config]);
 
@@ -85,11 +94,15 @@ export default function ZApiAdmin() {
     await updateConfig.mutateAsync(
       {
         instanceId: instanceId.trim(),
-        token: token.trim(),
-        clientToken: clientToken.trim(),
+        ...(token.trim() ? { token: token.trim() } : {}),
+        ...(clientToken.trim() ? { clientToken: clientToken.trim() } : {}),
         webhookUrl: normalizeWebhookUrl(webhookUrl),
         isActive,
         autoReply,
+        groupsEnabled,
+        groupCooldownSeconds,
+        groupConfirmInGroup,
+        groupConfirmMessage: groupConfirmMessage.trim() || null,
       },
       {
         onSuccess: () => {
@@ -292,7 +305,7 @@ export default function ZApiAdmin() {
                     type="password"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
-                    placeholder="Informe o token da instância"
+                    placeholder={config?.hasToken ? "Token já configurado — informe apenas para substituir" : "Informe o token da instância"}
                     style={{ fontSize: 12 }}
                     data-testid="input-zapi-token"
                   />
@@ -304,7 +317,7 @@ export default function ZApiAdmin() {
                     id="zapi-client-token"
                     value={clientToken}
                     onChange={(e) => setClientToken(e.target.value)}
-                    placeholder="Token de segurança da conta Z-API (se ativado)"
+                    placeholder={config?.hasClientToken ? "Client Token já configurado — informe apenas para substituir" : "Token de segurança da conta Z-API (se ativado)"}
                     style={{ fontSize: 12 }}
                     data-testid="input-zapi-client-token"
                   />
@@ -328,12 +341,25 @@ export default function ZApiAdmin() {
                   </label>
                 </div>
 
+                <div className="rounded-xl border bg-card p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div><strong className="text-sm">Menções em grupos</strong><p className="text-xs text-muted-foreground">Abre atendimento privado somente quando esta instância é mencionada.</p></div>
+                    <Checkbox checked={groupsEnabled} onCheckedChange={(checked) => setGroupsEnabled(checked === true)} aria-label="Ativar atendimento por menção em grupos" />
+                  </div>
+                  <div className="grid gap-3">
+                    <div className="field"><label htmlFor="zapi-instance-phone" style={{ fontSize: 11 }}>Número detectado da instância</label><Input id="zapi-instance-phone" value={config?.instancePhoneMasked || "Atualize o status para detectar"} readOnly disabled /></div>
+                    <div className="field"><label htmlFor="group-cooldown" style={{ fontSize: 11 }}>Intervalo mínimo por participante (segundos)</label><Input id="group-cooldown" type="number" min={5} max={3600} value={groupCooldownSeconds} onChange={(event) => setGroupCooldownSeconds(Math.min(3600, Math.max(5, Number(event.target.value) || 60)))} disabled={!groupsEnabled} /></div>
+                    <div className="field"><label htmlFor="group-message" style={{ fontSize: 11 }}>Mensagem de confirmação privada</label><Textarea id="group-message" value={groupConfirmMessage} onChange={(event) => setGroupConfirmMessage(event.target.value)} placeholder="Olá, {{nome}}! Recebemos sua solicitação no grupo {{grupo}}." disabled={!groupsEnabled} /></div>
+                    <label className="flex items-center gap-2 text-xs"><Checkbox checked={groupConfirmInGroup} onCheckedChange={(checked) => setGroupConfirmInGroup(checked === true)} disabled={!groupsEnabled} />Confirmar também no grupo (opcional)</label>
+                  </div>
+                </div>
+
                 <Button
                   variant="default"
                   size="lg"
                   style={{ width: "100%", justifyContent: "center", marginTop: 6 }}
                   onClick={() => setSaveConfirmOpen(true)}
-                  disabled={updateConfig.isPending || !instanceId.trim() || !token.trim()}
+                  disabled={updateConfig.isPending || !instanceId.trim() || (!token.trim() && !config?.hasToken)}
                   data-testid="button-save-zapi"
                 >
                   <Save size={15} />

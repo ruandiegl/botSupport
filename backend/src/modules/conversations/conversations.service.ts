@@ -72,6 +72,8 @@ export class ConversationsService {
       departmentName: summary.department?.name ?? null,
       assignedAgentId: summary.assignedAgentId,
       assignedAgentName: summary.assignedAgent?.name ?? null,
+      labels: (summary.labels || []).map((item: any) => item.label),
+      groupChatName: summary.groupChatName ?? null,
       unreadCount: summary._count?.messages ?? 0,
       lastMessage: latest?.content ?? "Nenhuma mensagem ainda",
       // The queue never needs the full history. Keep the property for
@@ -111,6 +113,8 @@ export class ConversationsService {
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
       assignedAgentName: conversation.assignedAgent?.name ?? null,
+      labels: (conversation.labels || []).map((item: any) => item.label),
+      groupChatName: conversation.groupChatName ?? null,
       unreadCount,
       lastMessage,
       messages: messages.map((m) => this.formatMessage(m, conversation)),
@@ -134,6 +138,7 @@ export class ConversationsService {
     assignedAgentId?: string;
     openOnly?: boolean;
     unreadOnly?: boolean;
+    labelIds?: string[];
     q?: string;
     dateField?: "lastActivityAt" | "createdAt";
     from?: string;
@@ -168,6 +173,7 @@ export class ConversationsService {
         assignedAgentId: filters.assignedAgentId ?? null,
         openOnly: filters.openOnly ?? false,
         unreadOnly: filters.unreadOnly ?? false,
+        labelIds: filters.labelIds ?? [],
         q: filters.q ?? null,
         dateField: filters.dateField ?? "lastActivityAt",
         from: filters.from ?? null,
@@ -202,6 +208,8 @@ export class ConversationsService {
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
       assignedAgentName: conversation.assignedAgent?.name ?? null,
+      labels: (conversation.labels || []).map((item: any) => item.label),
+      groupChatName: conversation.groupChatName ?? null,
       unreadCount,
       lastMessage,
       messages: messages.map((m: any) => this.formatMessage(m, conversation)),

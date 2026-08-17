@@ -2,10 +2,15 @@ import type { Request, Response } from "express";
 import { zApiService } from "./zapi.service.js";
 import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema } from "./zapi.schemas.js";
 
+function toPublicConfig(config: any) {
+  const { token, clientToken, instancePhone, ...publicConfig } = config;
+  return { ...publicConfig, hasToken: Boolean(token), hasClientToken: Boolean(clientToken), instancePhoneMasked: instancePhone ? `•••• ${String(instancePhone).slice(-4)}` : null };
+}
+
 export class ZApiController {
   async getConfig(_req: Request, res: Response): Promise<void> {
     const config = await zApiService.getConfig();
-    res.json(config);
+    res.json(toPublicConfig(config));
   }
 
   async updateConfig(req: Request, res: Response): Promise<void> {
@@ -17,7 +22,7 @@ export class ZApiController {
 
     const { zApiRepository } = await import("./zapi.repository.js");
     const updated = await zApiRepository.upsertConfig(parsed.data);
-    res.json(updated);
+    res.json(toPublicConfig(updated));
   }
 
   async testConnection(req: Request, res: Response): Promise<void> {

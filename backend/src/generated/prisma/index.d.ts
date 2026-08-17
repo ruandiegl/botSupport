@@ -64,6 +64,21 @@ export type FlowDefinition = $Result.DefaultSelection<Prisma.$FlowDefinitionPayl
  */
 export type ZApiConfig = $Result.DefaultSelection<Prisma.$ZApiConfigPayload>
 /**
+ * Model Label
+ * 
+ */
+export type Label = $Result.DefaultSelection<Prisma.$LabelPayload>
+/**
+ * Model ConversationLabel
+ * 
+ */
+export type ConversationLabel = $Result.DefaultSelection<Prisma.$ConversationLabelPayload>
+/**
+ * Model GroupMentionCooldown
+ * 
+ */
+export type GroupMentionCooldown = $Result.DefaultSelection<Prisma.$GroupMentionCooldownPayload>
+/**
  * Model FlowRevision
  * 
  */
@@ -427,6 +442,36 @@ export class PrismaClient<
     * ```
     */
   get zApiConfig(): Prisma.ZApiConfigDelegate<ExtArgs>;
+
+  /**
+   * `prisma.label`: Exposes CRUD operations for the **Label** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Labels
+    * const labels = await prisma.label.findMany()
+    * ```
+    */
+  get label(): Prisma.LabelDelegate<ExtArgs>;
+
+  /**
+   * `prisma.conversationLabel`: Exposes CRUD operations for the **ConversationLabel** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ConversationLabels
+    * const conversationLabels = await prisma.conversationLabel.findMany()
+    * ```
+    */
+  get conversationLabel(): Prisma.ConversationLabelDelegate<ExtArgs>;
+
+  /**
+   * `prisma.groupMentionCooldown`: Exposes CRUD operations for the **GroupMentionCooldown** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroupMentionCooldowns
+    * const groupMentionCooldowns = await prisma.groupMentionCooldown.findMany()
+    * ```
+    */
+  get groupMentionCooldown(): Prisma.GroupMentionCooldownDelegate<ExtArgs>;
 
   /**
    * `prisma.flowRevision`: Exposes CRUD operations for the **FlowRevision** model.
@@ -958,6 +1003,9 @@ export namespace Prisma {
     ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
+    Label: 'Label',
+    ConversationLabel: 'ConversationLabel',
+    GroupMentionCooldown: 'GroupMentionCooldown',
     FlowRevision: 'FlowRevision',
     FlowNode: 'FlowNode',
     FlowTransition: 'FlowTransition',
@@ -981,7 +1029,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1682,6 +1730,216 @@ export namespace Prisma {
           count: {
             args: Prisma.ZApiConfigCountArgs<ExtArgs>
             result: $Utils.Optional<ZApiConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      Label: {
+        payload: Prisma.$LabelPayload<ExtArgs>
+        fields: Prisma.LabelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LabelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LabelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          findFirst: {
+            args: Prisma.LabelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LabelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          findMany: {
+            args: Prisma.LabelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>[]
+          }
+          create: {
+            args: Prisma.LabelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          createMany: {
+            args: Prisma.LabelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LabelCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>[]
+          }
+          delete: {
+            args: Prisma.LabelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          update: {
+            args: Prisma.LabelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          deleteMany: {
+            args: Prisma.LabelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LabelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.LabelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          aggregate: {
+            args: Prisma.LabelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLabel>
+          }
+          groupBy: {
+            args: Prisma.LabelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LabelGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LabelCountArgs<ExtArgs>
+            result: $Utils.Optional<LabelCountAggregateOutputType> | number
+          }
+        }
+      }
+      ConversationLabel: {
+        payload: Prisma.$ConversationLabelPayload<ExtArgs>
+        fields: Prisma.ConversationLabelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConversationLabelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConversationLabelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          findFirst: {
+            args: Prisma.ConversationLabelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConversationLabelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          findMany: {
+            args: Prisma.ConversationLabelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>[]
+          }
+          create: {
+            args: Prisma.ConversationLabelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          createMany: {
+            args: Prisma.ConversationLabelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConversationLabelCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>[]
+          }
+          delete: {
+            args: Prisma.ConversationLabelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          update: {
+            args: Prisma.ConversationLabelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConversationLabelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConversationLabelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ConversationLabelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationLabelPayload>
+          }
+          aggregate: {
+            args: Prisma.ConversationLabelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConversationLabel>
+          }
+          groupBy: {
+            args: Prisma.ConversationLabelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConversationLabelGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConversationLabelCountArgs<ExtArgs>
+            result: $Utils.Optional<ConversationLabelCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroupMentionCooldown: {
+        payload: Prisma.$GroupMentionCooldownPayload<ExtArgs>
+        fields: Prisma.GroupMentionCooldownFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupMentionCooldownFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupMentionCooldownFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          findFirst: {
+            args: Prisma.GroupMentionCooldownFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupMentionCooldownFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          findMany: {
+            args: Prisma.GroupMentionCooldownFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>[]
+          }
+          create: {
+            args: Prisma.GroupMentionCooldownCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          createMany: {
+            args: Prisma.GroupMentionCooldownCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroupMentionCooldownCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>[]
+          }
+          delete: {
+            args: Prisma.GroupMentionCooldownDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          update: {
+            args: Prisma.GroupMentionCooldownUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupMentionCooldownDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupMentionCooldownUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GroupMentionCooldownUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMentionCooldownPayload>
+          }
+          aggregate: {
+            args: Prisma.GroupMentionCooldownAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroupMentionCooldown>
+          }
+          groupBy: {
+            args: Prisma.GroupMentionCooldownGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupMentionCooldownGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupMentionCooldownCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupMentionCooldownCountAggregateOutputType> | number
           }
         }
       }
@@ -2481,6 +2739,7 @@ export namespace Prisma {
     shortcutAudits: number
     publishedFlowRevisions: number
     notifications: number
+    addedConversationLabels: number
   }
 
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2492,6 +2751,7 @@ export namespace Prisma {
     shortcutAudits?: boolean | AgentCountOutputTypeCountShortcutAuditsArgs
     publishedFlowRevisions?: boolean | AgentCountOutputTypeCountPublishedFlowRevisionsArgs
     notifications?: boolean | AgentCountOutputTypeCountNotificationsArgs
+    addedConversationLabels?: boolean | AgentCountOutputTypeCountAddedConversationLabelsArgs
   }
 
   // Custom InputTypes
@@ -2561,6 +2821,13 @@ export namespace Prisma {
     where?: NotificationWhereInput
   }
 
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountAddedConversationLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationLabelWhereInput
+  }
+
 
   /**
    * Count Type ContactCountOutputType
@@ -2602,6 +2869,7 @@ export namespace Prisma {
     flowEvents: number
     notifications: number
     media: number
+    labels: number
   }
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2609,6 +2877,7 @@ export namespace Prisma {
     flowEvents?: boolean | ConversationCountOutputTypeCountFlowEventsArgs
     notifications?: boolean | ConversationCountOutputTypeCountNotificationsArgs
     media?: boolean | ConversationCountOutputTypeCountMediaArgs
+    labels?: boolean | ConversationCountOutputTypeCountLabelsArgs
   }
 
   // Custom InputTypes
@@ -2650,6 +2919,13 @@ export namespace Prisma {
     where?: ConversationMediaWhereInput
   }
 
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationLabelWhereInput
+  }
+
 
   /**
    * Count Type FlowDefinitionCountOutputType
@@ -2679,6 +2955,37 @@ export namespace Prisma {
    */
   export type FlowDefinitionCountOutputTypeCountRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FlowRevisionWhereInput
+  }
+
+
+  /**
+   * Count Type LabelCountOutputType
+   */
+
+  export type LabelCountOutputType = {
+    conversationLabels: number
+  }
+
+  export type LabelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversationLabels?: boolean | LabelCountOutputTypeCountConversationLabelsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * LabelCountOutputType without action
+   */
+  export type LabelCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LabelCountOutputType
+     */
+    select?: LabelCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * LabelCountOutputType without action
+   */
+  export type LabelCountOutputTypeCountConversationLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationLabelWhereInput
   }
 
 
@@ -5038,6 +5345,7 @@ export namespace Prisma {
     publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
     notifications?: boolean | Agent$notificationsArgs<ExtArgs>
     notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
+    addedConversationLabels?: boolean | Agent$addedConversationLabelsArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agent"]>
 
@@ -5077,6 +5385,7 @@ export namespace Prisma {
     publishedFlowRevisions?: boolean | Agent$publishedFlowRevisionsArgs<ExtArgs>
     notifications?: boolean | Agent$notificationsArgs<ExtArgs>
     notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
+    addedConversationLabels?: boolean | Agent$addedConversationLabelsArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5096,6 +5405,7 @@ export namespace Prisma {
       publishedFlowRevisions: Prisma.$FlowRevisionPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
+      addedConversationLabels: Prisma.$ConversationLabelPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5481,6 +5791,7 @@ export namespace Prisma {
     publishedFlowRevisions<T extends Agent$publishedFlowRevisionsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$publishedFlowRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findMany"> | Null>
     notifications<T extends Agent$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     notificationPreference<T extends Agent$notificationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationPreferenceArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    addedConversationLabels<T extends Agent$addedConversationLabelsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$addedConversationLabelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6024,6 +6335,26 @@ export namespace Prisma {
      */
     include?: NotificationPreferenceInclude<ExtArgs> | null
     where?: NotificationPreferenceWhereInput
+  }
+
+  /**
+   * Agent.addedConversationLabels
+   */
+  export type Agent$addedConversationLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    where?: ConversationLabelWhereInput
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    cursor?: ConversationLabelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
   }
 
   /**
@@ -7876,6 +8207,8 @@ export namespace Prisma {
     closedAt: Date | null
     warningSentAt: Date | null
     closeReason: string | null
+    groupChatName: string | null
+    groupParticipant: string | null
   }
 
   export type ConversationMaxAggregateOutputType = {
@@ -7893,6 +8226,8 @@ export namespace Prisma {
     closedAt: Date | null
     warningSentAt: Date | null
     closeReason: string | null
+    groupChatName: string | null
+    groupParticipant: string | null
   }
 
   export type ConversationCountAggregateOutputType = {
@@ -7911,6 +8246,8 @@ export namespace Prisma {
     closedAt: number
     warningSentAt: number
     closeReason: number
+    groupChatName: number
+    groupParticipant: number
     _all: number
   }
 
@@ -7930,6 +8267,8 @@ export namespace Prisma {
     closedAt?: true
     warningSentAt?: true
     closeReason?: true
+    groupChatName?: true
+    groupParticipant?: true
   }
 
   export type ConversationMaxAggregateInputType = {
@@ -7947,6 +8286,8 @@ export namespace Prisma {
     closedAt?: true
     warningSentAt?: true
     closeReason?: true
+    groupChatName?: true
+    groupParticipant?: true
   }
 
   export type ConversationCountAggregateInputType = {
@@ -7965,6 +8306,8 @@ export namespace Prisma {
     closedAt?: true
     warningSentAt?: true
     closeReason?: true
+    groupChatName?: true
+    groupParticipant?: true
     _all?: true
   }
 
@@ -8056,6 +8399,8 @@ export namespace Prisma {
     closedAt: Date | null
     warningSentAt: Date | null
     closeReason: string | null
+    groupChatName: string | null
+    groupParticipant: string | null
     _count: ConversationCountAggregateOutputType | null
     _min: ConversationMinAggregateOutputType | null
     _max: ConversationMaxAggregateOutputType | null
@@ -8091,6 +8436,8 @@ export namespace Prisma {
     closedAt?: boolean
     warningSentAt?: boolean
     closeReason?: boolean
+    groupChatName?: boolean
+    groupParticipant?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
@@ -8100,6 +8447,7 @@ export namespace Prisma {
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
+    labels?: boolean | Conversation$labelsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -8119,6 +8467,8 @@ export namespace Prisma {
     closedAt?: boolean
     warningSentAt?: boolean
     closeReason?: boolean
+    groupChatName?: boolean
+    groupParticipant?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
@@ -8142,6 +8492,8 @@ export namespace Prisma {
     closedAt?: boolean
     warningSentAt?: boolean
     closeReason?: boolean
+    groupChatName?: boolean
+    groupParticipant?: boolean
   }
 
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8154,6 +8506,7 @@ export namespace Prisma {
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
+    labels?: boolean | Conversation$labelsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8176,6 +8529,7 @@ export namespace Prisma {
       flowEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       media: Prisma.$ConversationMediaPayload<ExtArgs>[]
+      labels: Prisma.$ConversationLabelPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8193,6 +8547,8 @@ export namespace Prisma {
       closedAt: Date | null
       warningSentAt: Date | null
       closeReason: string | null
+      groupChatName: string | null
+      groupParticipant: string | null
     }, ExtArgs["result"]["conversation"]>
     composites: {}
   }
@@ -8566,6 +8922,7 @@ export namespace Prisma {
     flowEvents<T extends Conversation$flowEventsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
     notifications<T extends Conversation$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     media<T extends Conversation$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany"> | Null>
+    labels<T extends Conversation$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8610,6 +8967,8 @@ export namespace Prisma {
     readonly closedAt: FieldRef<"Conversation", 'DateTime'>
     readonly warningSentAt: FieldRef<"Conversation", 'DateTime'>
     readonly closeReason: FieldRef<"Conversation", 'String'>
+    readonly groupChatName: FieldRef<"Conversation", 'String'>
+    readonly groupParticipant: FieldRef<"Conversation", 'String'>
   }
     
 
@@ -9065,6 +9424,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ConversationMediaScalarFieldEnum | ConversationMediaScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation.labels
+   */
+  export type Conversation$labelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    where?: ConversationLabelWhereInput
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    cursor?: ConversationLabelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
   }
 
   /**
@@ -12318,8 +12697,18 @@ export namespace Prisma {
 
   export type AggregateZApiConfig = {
     _count: ZApiConfigCountAggregateOutputType | null
+    _avg: ZApiConfigAvgAggregateOutputType | null
+    _sum: ZApiConfigSumAggregateOutputType | null
     _min: ZApiConfigMinAggregateOutputType | null
     _max: ZApiConfigMaxAggregateOutputType | null
+  }
+
+  export type ZApiConfigAvgAggregateOutputType = {
+    groupCooldownSeconds: number | null
+  }
+
+  export type ZApiConfigSumAggregateOutputType = {
+    groupCooldownSeconds: number | null
   }
 
   export type ZApiConfigMinAggregateOutputType = {
@@ -12330,6 +12719,11 @@ export namespace Prisma {
     webhookUrl: string | null
     isActive: boolean | null
     autoReply: boolean | null
+    instancePhone: string | null
+    groupsEnabled: boolean | null
+    groupCooldownSeconds: number | null
+    groupConfirmInGroup: boolean | null
+    groupConfirmMessage: string | null
     updatedAt: Date | null
   }
 
@@ -12341,6 +12735,11 @@ export namespace Prisma {
     webhookUrl: string | null
     isActive: boolean | null
     autoReply: boolean | null
+    instancePhone: string | null
+    groupsEnabled: boolean | null
+    groupCooldownSeconds: number | null
+    groupConfirmInGroup: boolean | null
+    groupConfirmMessage: string | null
     updatedAt: Date | null
   }
 
@@ -12352,10 +12751,23 @@ export namespace Prisma {
     webhookUrl: number
     isActive: number
     autoReply: number
+    instancePhone: number
+    groupsEnabled: number
+    groupCooldownSeconds: number
+    groupConfirmInGroup: number
+    groupConfirmMessage: number
     updatedAt: number
     _all: number
   }
 
+
+  export type ZApiConfigAvgAggregateInputType = {
+    groupCooldownSeconds?: true
+  }
+
+  export type ZApiConfigSumAggregateInputType = {
+    groupCooldownSeconds?: true
+  }
 
   export type ZApiConfigMinAggregateInputType = {
     id?: true
@@ -12365,6 +12777,11 @@ export namespace Prisma {
     webhookUrl?: true
     isActive?: true
     autoReply?: true
+    instancePhone?: true
+    groupsEnabled?: true
+    groupCooldownSeconds?: true
+    groupConfirmInGroup?: true
+    groupConfirmMessage?: true
     updatedAt?: true
   }
 
@@ -12376,6 +12793,11 @@ export namespace Prisma {
     webhookUrl?: true
     isActive?: true
     autoReply?: true
+    instancePhone?: true
+    groupsEnabled?: true
+    groupCooldownSeconds?: true
+    groupConfirmInGroup?: true
+    groupConfirmMessage?: true
     updatedAt?: true
   }
 
@@ -12387,6 +12809,11 @@ export namespace Prisma {
     webhookUrl?: true
     isActive?: true
     autoReply?: true
+    instancePhone?: true
+    groupsEnabled?: true
+    groupCooldownSeconds?: true
+    groupConfirmInGroup?: true
+    groupConfirmMessage?: true
     updatedAt?: true
     _all?: true
   }
@@ -12429,6 +12856,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ZApiConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ZApiConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ZApiConfigMinAggregateInputType
@@ -12459,6 +12898,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ZApiConfigCountAggregateInputType | true
+    _avg?: ZApiConfigAvgAggregateInputType
+    _sum?: ZApiConfigSumAggregateInputType
     _min?: ZApiConfigMinAggregateInputType
     _max?: ZApiConfigMaxAggregateInputType
   }
@@ -12471,8 +12912,15 @@ export namespace Prisma {
     webhookUrl: string | null
     isActive: boolean
     autoReply: boolean
+    instancePhone: string | null
+    groupsEnabled: boolean
+    groupCooldownSeconds: number
+    groupConfirmInGroup: boolean
+    groupConfirmMessage: string | null
     updatedAt: Date
     _count: ZApiConfigCountAggregateOutputType | null
+    _avg: ZApiConfigAvgAggregateOutputType | null
+    _sum: ZApiConfigSumAggregateOutputType | null
     _min: ZApiConfigMinAggregateOutputType | null
     _max: ZApiConfigMaxAggregateOutputType | null
   }
@@ -12499,6 +12947,11 @@ export namespace Prisma {
     webhookUrl?: boolean
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: boolean
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: boolean
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["zApiConfig"]>
 
@@ -12510,6 +12963,11 @@ export namespace Prisma {
     webhookUrl?: boolean
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: boolean
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: boolean
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["zApiConfig"]>
 
@@ -12521,6 +12979,11 @@ export namespace Prisma {
     webhookUrl?: boolean
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: boolean
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: boolean
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: boolean
     updatedAt?: boolean
   }
 
@@ -12536,6 +12999,11 @@ export namespace Prisma {
       webhookUrl: string | null
       isActive: boolean
       autoReply: boolean
+      instancePhone: string | null
+      groupsEnabled: boolean
+      groupCooldownSeconds: number
+      groupConfirmInGroup: boolean
+      groupConfirmMessage: string | null
       updatedAt: Date
     }, ExtArgs["result"]["zApiConfig"]>
     composites: {}
@@ -12937,6 +13405,11 @@ export namespace Prisma {
     readonly webhookUrl: FieldRef<"ZApiConfig", 'String'>
     readonly isActive: FieldRef<"ZApiConfig", 'Boolean'>
     readonly autoReply: FieldRef<"ZApiConfig", 'Boolean'>
+    readonly instancePhone: FieldRef<"ZApiConfig", 'String'>
+    readonly groupsEnabled: FieldRef<"ZApiConfig", 'Boolean'>
+    readonly groupCooldownSeconds: FieldRef<"ZApiConfig", 'Int'>
+    readonly groupConfirmInGroup: FieldRef<"ZApiConfig", 'Boolean'>
+    readonly groupConfirmMessage: FieldRef<"ZApiConfig", 'String'>
     readonly updatedAt: FieldRef<"ZApiConfig", 'DateTime'>
   }
     
@@ -13223,6 +13696,2804 @@ export namespace Prisma {
      * Select specific fields to fetch from the ZApiConfig
      */
     select?: ZApiConfigSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Label
+   */
+
+  export type AggregateLabel = {
+    _count: LabelCountAggregateOutputType | null
+    _min: LabelMinAggregateOutputType | null
+    _max: LabelMaxAggregateOutputType | null
+  }
+
+  export type LabelMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    color: string | null
+    icon: string | null
+    isSystem: boolean | null
+    createdAt: Date | null
+  }
+
+  export type LabelMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    color: string | null
+    icon: string | null
+    isSystem: boolean | null
+    createdAt: Date | null
+  }
+
+  export type LabelCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    color: number
+    icon: number
+    isSystem: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LabelMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    color?: true
+    icon?: true
+    isSystem?: true
+    createdAt?: true
+  }
+
+  export type LabelMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    color?: true
+    icon?: true
+    isSystem?: true
+    createdAt?: true
+  }
+
+  export type LabelCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    color?: true
+    icon?: true
+    isSystem?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LabelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Label to aggregate.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Labels
+    **/
+    _count?: true | LabelCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LabelMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LabelMaxAggregateInputType
+  }
+
+  export type GetLabelAggregateType<T extends LabelAggregateArgs> = {
+        [P in keyof T & keyof AggregateLabel]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLabel[P]>
+      : GetScalarType<T[P], AggregateLabel[P]>
+  }
+
+
+
+
+  export type LabelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LabelWhereInput
+    orderBy?: LabelOrderByWithAggregationInput | LabelOrderByWithAggregationInput[]
+    by: LabelScalarFieldEnum[] | LabelScalarFieldEnum
+    having?: LabelScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LabelCountAggregateInputType | true
+    _min?: LabelMinAggregateInputType
+    _max?: LabelMaxAggregateInputType
+  }
+
+  export type LabelGroupByOutputType = {
+    id: string
+    name: string
+    slug: string
+    color: string
+    icon: string | null
+    isSystem: boolean
+    createdAt: Date
+    _count: LabelCountAggregateOutputType | null
+    _min: LabelMinAggregateOutputType | null
+    _max: LabelMaxAggregateOutputType | null
+  }
+
+  type GetLabelGroupByPayload<T extends LabelGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LabelGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LabelGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LabelGroupByOutputType[P]>
+            : GetScalarType<T[P], LabelGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LabelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    color?: boolean
+    icon?: boolean
+    isSystem?: boolean
+    createdAt?: boolean
+    conversationLabels?: boolean | Label$conversationLabelsArgs<ExtArgs>
+    _count?: boolean | LabelCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["label"]>
+
+  export type LabelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    color?: boolean
+    icon?: boolean
+    isSystem?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["label"]>
+
+  export type LabelSelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    color?: boolean
+    icon?: boolean
+    isSystem?: boolean
+    createdAt?: boolean
+  }
+
+  export type LabelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversationLabels?: boolean | Label$conversationLabelsArgs<ExtArgs>
+    _count?: boolean | LabelCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type LabelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $LabelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Label"
+    objects: {
+      conversationLabels: Prisma.$ConversationLabelPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string
+      color: string
+      icon: string | null
+      isSystem: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["label"]>
+    composites: {}
+  }
+
+  type LabelGetPayload<S extends boolean | null | undefined | LabelDefaultArgs> = $Result.GetResult<Prisma.$LabelPayload, S>
+
+  type LabelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<LabelFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: LabelCountAggregateInputType | true
+    }
+
+  export interface LabelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Label'], meta: { name: 'Label' } }
+    /**
+     * Find zero or one Label that matches the filter.
+     * @param {LabelFindUniqueArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LabelFindUniqueArgs>(args: SelectSubset<T, LabelFindUniqueArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Label that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {LabelFindUniqueOrThrowArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LabelFindUniqueOrThrowArgs>(args: SelectSubset<T, LabelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Label that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindFirstArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LabelFindFirstArgs>(args?: SelectSubset<T, LabelFindFirstArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Label that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindFirstOrThrowArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LabelFindFirstOrThrowArgs>(args?: SelectSubset<T, LabelFindFirstOrThrowArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Labels that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Labels
+     * const labels = await prisma.label.findMany()
+     * 
+     * // Get first 10 Labels
+     * const labels = await prisma.label.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const labelWithIdOnly = await prisma.label.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LabelFindManyArgs>(args?: SelectSubset<T, LabelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Label.
+     * @param {LabelCreateArgs} args - Arguments to create a Label.
+     * @example
+     * // Create one Label
+     * const Label = await prisma.label.create({
+     *   data: {
+     *     // ... data to create a Label
+     *   }
+     * })
+     * 
+     */
+    create<T extends LabelCreateArgs>(args: SelectSubset<T, LabelCreateArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Labels.
+     * @param {LabelCreateManyArgs} args - Arguments to create many Labels.
+     * @example
+     * // Create many Labels
+     * const label = await prisma.label.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LabelCreateManyArgs>(args?: SelectSubset<T, LabelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Labels and returns the data saved in the database.
+     * @param {LabelCreateManyAndReturnArgs} args - Arguments to create many Labels.
+     * @example
+     * // Create many Labels
+     * const label = await prisma.label.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Labels and only return the `id`
+     * const labelWithIdOnly = await prisma.label.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LabelCreateManyAndReturnArgs>(args?: SelectSubset<T, LabelCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Label.
+     * @param {LabelDeleteArgs} args - Arguments to delete one Label.
+     * @example
+     * // Delete one Label
+     * const Label = await prisma.label.delete({
+     *   where: {
+     *     // ... filter to delete one Label
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LabelDeleteArgs>(args: SelectSubset<T, LabelDeleteArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Label.
+     * @param {LabelUpdateArgs} args - Arguments to update one Label.
+     * @example
+     * // Update one Label
+     * const label = await prisma.label.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LabelUpdateArgs>(args: SelectSubset<T, LabelUpdateArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Labels.
+     * @param {LabelDeleteManyArgs} args - Arguments to filter Labels to delete.
+     * @example
+     * // Delete a few Labels
+     * const { count } = await prisma.label.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LabelDeleteManyArgs>(args?: SelectSubset<T, LabelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Labels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Labels
+     * const label = await prisma.label.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LabelUpdateManyArgs>(args: SelectSubset<T, LabelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Label.
+     * @param {LabelUpsertArgs} args - Arguments to update or create a Label.
+     * @example
+     * // Update or create a Label
+     * const label = await prisma.label.upsert({
+     *   create: {
+     *     // ... data to create a Label
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Label we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LabelUpsertArgs>(args: SelectSubset<T, LabelUpsertArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Labels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelCountArgs} args - Arguments to filter Labels to count.
+     * @example
+     * // Count the number of Labels
+     * const count = await prisma.label.count({
+     *   where: {
+     *     // ... the filter for the Labels we want to count
+     *   }
+     * })
+    **/
+    count<T extends LabelCountArgs>(
+      args?: Subset<T, LabelCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LabelCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Label.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LabelAggregateArgs>(args: Subset<T, LabelAggregateArgs>): Prisma.PrismaPromise<GetLabelAggregateType<T>>
+
+    /**
+     * Group by Label.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LabelGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LabelGroupByArgs['orderBy'] }
+        : { orderBy?: LabelGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LabelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLabelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Label model
+   */
+  readonly fields: LabelFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Label.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LabelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversationLabels<T extends Label$conversationLabelsArgs<ExtArgs> = {}>(args?: Subset<T, Label$conversationLabelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Label model
+   */ 
+  interface LabelFieldRefs {
+    readonly id: FieldRef<"Label", 'String'>
+    readonly name: FieldRef<"Label", 'String'>
+    readonly slug: FieldRef<"Label", 'String'>
+    readonly color: FieldRef<"Label", 'String'>
+    readonly icon: FieldRef<"Label", 'String'>
+    readonly isSystem: FieldRef<"Label", 'Boolean'>
+    readonly createdAt: FieldRef<"Label", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Label findUnique
+   */
+  export type LabelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label findUniqueOrThrow
+   */
+  export type LabelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label findFirst
+   */
+  export type LabelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Labels.
+     */
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label findFirstOrThrow
+   */
+  export type LabelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Labels.
+     */
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label findMany
+   */
+  export type LabelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Labels to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label create
+   */
+  export type LabelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Label.
+     */
+    data: XOR<LabelCreateInput, LabelUncheckedCreateInput>
+  }
+
+  /**
+   * Label createMany
+   */
+  export type LabelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Labels.
+     */
+    data: LabelCreateManyInput | LabelCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Label createManyAndReturn
+   */
+  export type LabelCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Labels.
+     */
+    data: LabelCreateManyInput | LabelCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Label update
+   */
+  export type LabelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Label.
+     */
+    data: XOR<LabelUpdateInput, LabelUncheckedUpdateInput>
+    /**
+     * Choose, which Label to update.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label updateMany
+   */
+  export type LabelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Labels.
+     */
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyInput>
+    /**
+     * Filter which Labels to update
+     */
+    where?: LabelWhereInput
+  }
+
+  /**
+   * Label upsert
+   */
+  export type LabelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Label to update in case it exists.
+     */
+    where: LabelWhereUniqueInput
+    /**
+     * In case the Label found by the `where` argument doesn't exist, create a new Label with this data.
+     */
+    create: XOR<LabelCreateInput, LabelUncheckedCreateInput>
+    /**
+     * In case the Label was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LabelUpdateInput, LabelUncheckedUpdateInput>
+  }
+
+  /**
+   * Label delete
+   */
+  export type LabelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter which Label to delete.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label deleteMany
+   */
+  export type LabelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Labels to delete
+     */
+    where?: LabelWhereInput
+  }
+
+  /**
+   * Label.conversationLabels
+   */
+  export type Label$conversationLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    where?: ConversationLabelWhereInput
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    cursor?: ConversationLabelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label without action
+   */
+  export type LabelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ConversationLabel
+   */
+
+  export type AggregateConversationLabel = {
+    _count: ConversationLabelCountAggregateOutputType | null
+    _min: ConversationLabelMinAggregateOutputType | null
+    _max: ConversationLabelMaxAggregateOutputType | null
+  }
+
+  export type ConversationLabelMinAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    labelId: string | null
+    addedByAgentId: string | null
+    createdAt: Date | null
+  }
+
+  export type ConversationLabelMaxAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    labelId: string | null
+    addedByAgentId: string | null
+    createdAt: Date | null
+  }
+
+  export type ConversationLabelCountAggregateOutputType = {
+    id: number
+    conversationId: number
+    labelId: number
+    addedByAgentId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ConversationLabelMinAggregateInputType = {
+    id?: true
+    conversationId?: true
+    labelId?: true
+    addedByAgentId?: true
+    createdAt?: true
+  }
+
+  export type ConversationLabelMaxAggregateInputType = {
+    id?: true
+    conversationId?: true
+    labelId?: true
+    addedByAgentId?: true
+    createdAt?: true
+  }
+
+  export type ConversationLabelCountAggregateInputType = {
+    id?: true
+    conversationId?: true
+    labelId?: true
+    addedByAgentId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ConversationLabelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationLabel to aggregate.
+     */
+    where?: ConversationLabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationLabels to fetch.
+     */
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConversationLabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationLabels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationLabels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ConversationLabels
+    **/
+    _count?: true | ConversationLabelCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConversationLabelMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConversationLabelMaxAggregateInputType
+  }
+
+  export type GetConversationLabelAggregateType<T extends ConversationLabelAggregateArgs> = {
+        [P in keyof T & keyof AggregateConversationLabel]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConversationLabel[P]>
+      : GetScalarType<T[P], AggregateConversationLabel[P]>
+  }
+
+
+
+
+  export type ConversationLabelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationLabelWhereInput
+    orderBy?: ConversationLabelOrderByWithAggregationInput | ConversationLabelOrderByWithAggregationInput[]
+    by: ConversationLabelScalarFieldEnum[] | ConversationLabelScalarFieldEnum
+    having?: ConversationLabelScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConversationLabelCountAggregateInputType | true
+    _min?: ConversationLabelMinAggregateInputType
+    _max?: ConversationLabelMaxAggregateInputType
+  }
+
+  export type ConversationLabelGroupByOutputType = {
+    id: string
+    conversationId: string
+    labelId: string
+    addedByAgentId: string | null
+    createdAt: Date
+    _count: ConversationLabelCountAggregateOutputType | null
+    _min: ConversationLabelMinAggregateOutputType | null
+    _max: ConversationLabelMaxAggregateOutputType | null
+  }
+
+  type GetConversationLabelGroupByPayload<T extends ConversationLabelGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConversationLabelGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConversationLabelGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConversationLabelGroupByOutputType[P]>
+            : GetScalarType<T[P], ConversationLabelGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConversationLabelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    labelId?: boolean
+    addedByAgentId?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    label?: boolean | LabelDefaultArgs<ExtArgs>
+    addedByAgent?: boolean | ConversationLabel$addedByAgentArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationLabel"]>
+
+  export type ConversationLabelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    labelId?: boolean
+    addedByAgentId?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    label?: boolean | LabelDefaultArgs<ExtArgs>
+    addedByAgent?: boolean | ConversationLabel$addedByAgentArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationLabel"]>
+
+  export type ConversationLabelSelectScalar = {
+    id?: boolean
+    conversationId?: boolean
+    labelId?: boolean
+    addedByAgentId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ConversationLabelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    label?: boolean | LabelDefaultArgs<ExtArgs>
+    addedByAgent?: boolean | ConversationLabel$addedByAgentArgs<ExtArgs>
+  }
+  export type ConversationLabelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    label?: boolean | LabelDefaultArgs<ExtArgs>
+    addedByAgent?: boolean | ConversationLabel$addedByAgentArgs<ExtArgs>
+  }
+
+  export type $ConversationLabelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ConversationLabel"
+    objects: {
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+      label: Prisma.$LabelPayload<ExtArgs>
+      addedByAgent: Prisma.$AgentPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      conversationId: string
+      labelId: string
+      addedByAgentId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["conversationLabel"]>
+    composites: {}
+  }
+
+  type ConversationLabelGetPayload<S extends boolean | null | undefined | ConversationLabelDefaultArgs> = $Result.GetResult<Prisma.$ConversationLabelPayload, S>
+
+  type ConversationLabelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ConversationLabelFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ConversationLabelCountAggregateInputType | true
+    }
+
+  export interface ConversationLabelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ConversationLabel'], meta: { name: 'ConversationLabel' } }
+    /**
+     * Find zero or one ConversationLabel that matches the filter.
+     * @param {ConversationLabelFindUniqueArgs} args - Arguments to find a ConversationLabel
+     * @example
+     * // Get one ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConversationLabelFindUniqueArgs>(args: SelectSubset<T, ConversationLabelFindUniqueArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ConversationLabel that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ConversationLabelFindUniqueOrThrowArgs} args - Arguments to find a ConversationLabel
+     * @example
+     * // Get one ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConversationLabelFindUniqueOrThrowArgs>(args: SelectSubset<T, ConversationLabelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ConversationLabel that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelFindFirstArgs} args - Arguments to find a ConversationLabel
+     * @example
+     * // Get one ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConversationLabelFindFirstArgs>(args?: SelectSubset<T, ConversationLabelFindFirstArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ConversationLabel that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelFindFirstOrThrowArgs} args - Arguments to find a ConversationLabel
+     * @example
+     * // Get one ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConversationLabelFindFirstOrThrowArgs>(args?: SelectSubset<T, ConversationLabelFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ConversationLabels that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ConversationLabels
+     * const conversationLabels = await prisma.conversationLabel.findMany()
+     * 
+     * // Get first 10 ConversationLabels
+     * const conversationLabels = await prisma.conversationLabel.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const conversationLabelWithIdOnly = await prisma.conversationLabel.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConversationLabelFindManyArgs>(args?: SelectSubset<T, ConversationLabelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ConversationLabel.
+     * @param {ConversationLabelCreateArgs} args - Arguments to create a ConversationLabel.
+     * @example
+     * // Create one ConversationLabel
+     * const ConversationLabel = await prisma.conversationLabel.create({
+     *   data: {
+     *     // ... data to create a ConversationLabel
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConversationLabelCreateArgs>(args: SelectSubset<T, ConversationLabelCreateArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ConversationLabels.
+     * @param {ConversationLabelCreateManyArgs} args - Arguments to create many ConversationLabels.
+     * @example
+     * // Create many ConversationLabels
+     * const conversationLabel = await prisma.conversationLabel.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConversationLabelCreateManyArgs>(args?: SelectSubset<T, ConversationLabelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ConversationLabels and returns the data saved in the database.
+     * @param {ConversationLabelCreateManyAndReturnArgs} args - Arguments to create many ConversationLabels.
+     * @example
+     * // Create many ConversationLabels
+     * const conversationLabel = await prisma.conversationLabel.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ConversationLabels and only return the `id`
+     * const conversationLabelWithIdOnly = await prisma.conversationLabel.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConversationLabelCreateManyAndReturnArgs>(args?: SelectSubset<T, ConversationLabelCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ConversationLabel.
+     * @param {ConversationLabelDeleteArgs} args - Arguments to delete one ConversationLabel.
+     * @example
+     * // Delete one ConversationLabel
+     * const ConversationLabel = await prisma.conversationLabel.delete({
+     *   where: {
+     *     // ... filter to delete one ConversationLabel
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConversationLabelDeleteArgs>(args: SelectSubset<T, ConversationLabelDeleteArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ConversationLabel.
+     * @param {ConversationLabelUpdateArgs} args - Arguments to update one ConversationLabel.
+     * @example
+     * // Update one ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConversationLabelUpdateArgs>(args: SelectSubset<T, ConversationLabelUpdateArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ConversationLabels.
+     * @param {ConversationLabelDeleteManyArgs} args - Arguments to filter ConversationLabels to delete.
+     * @example
+     * // Delete a few ConversationLabels
+     * const { count } = await prisma.conversationLabel.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConversationLabelDeleteManyArgs>(args?: SelectSubset<T, ConversationLabelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConversationLabels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ConversationLabels
+     * const conversationLabel = await prisma.conversationLabel.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConversationLabelUpdateManyArgs>(args: SelectSubset<T, ConversationLabelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ConversationLabel.
+     * @param {ConversationLabelUpsertArgs} args - Arguments to update or create a ConversationLabel.
+     * @example
+     * // Update or create a ConversationLabel
+     * const conversationLabel = await prisma.conversationLabel.upsert({
+     *   create: {
+     *     // ... data to create a ConversationLabel
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ConversationLabel we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConversationLabelUpsertArgs>(args: SelectSubset<T, ConversationLabelUpsertArgs<ExtArgs>>): Prisma__ConversationLabelClient<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ConversationLabels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelCountArgs} args - Arguments to filter ConversationLabels to count.
+     * @example
+     * // Count the number of ConversationLabels
+     * const count = await prisma.conversationLabel.count({
+     *   where: {
+     *     // ... the filter for the ConversationLabels we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConversationLabelCountArgs>(
+      args?: Subset<T, ConversationLabelCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConversationLabelCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ConversationLabel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConversationLabelAggregateArgs>(args: Subset<T, ConversationLabelAggregateArgs>): Prisma.PrismaPromise<GetConversationLabelAggregateType<T>>
+
+    /**
+     * Group by ConversationLabel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationLabelGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConversationLabelGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConversationLabelGroupByArgs['orderBy'] }
+        : { orderBy?: ConversationLabelGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConversationLabelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConversationLabelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ConversationLabel model
+   */
+  readonly fields: ConversationLabelFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ConversationLabel.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConversationLabelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    label<T extends LabelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LabelDefaultArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    addedByAgent<T extends ConversationLabel$addedByAgentArgs<ExtArgs> = {}>(args?: Subset<T, ConversationLabel$addedByAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ConversationLabel model
+   */ 
+  interface ConversationLabelFieldRefs {
+    readonly id: FieldRef<"ConversationLabel", 'String'>
+    readonly conversationId: FieldRef<"ConversationLabel", 'String'>
+    readonly labelId: FieldRef<"ConversationLabel", 'String'>
+    readonly addedByAgentId: FieldRef<"ConversationLabel", 'String'>
+    readonly createdAt: FieldRef<"ConversationLabel", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ConversationLabel findUnique
+   */
+  export type ConversationLabelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationLabel to fetch.
+     */
+    where: ConversationLabelWhereUniqueInput
+  }
+
+  /**
+   * ConversationLabel findUniqueOrThrow
+   */
+  export type ConversationLabelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationLabel to fetch.
+     */
+    where: ConversationLabelWhereUniqueInput
+  }
+
+  /**
+   * ConversationLabel findFirst
+   */
+  export type ConversationLabelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationLabel to fetch.
+     */
+    where?: ConversationLabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationLabels to fetch.
+     */
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationLabels.
+     */
+    cursor?: ConversationLabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationLabels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationLabels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationLabels.
+     */
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationLabel findFirstOrThrow
+   */
+  export type ConversationLabelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationLabel to fetch.
+     */
+    where?: ConversationLabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationLabels to fetch.
+     */
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationLabels.
+     */
+    cursor?: ConversationLabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationLabels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationLabels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationLabels.
+     */
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationLabel findMany
+   */
+  export type ConversationLabelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationLabels to fetch.
+     */
+    where?: ConversationLabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationLabels to fetch.
+     */
+    orderBy?: ConversationLabelOrderByWithRelationInput | ConversationLabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ConversationLabels.
+     */
+    cursor?: ConversationLabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationLabels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationLabels.
+     */
+    skip?: number
+    distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationLabel create
+   */
+  export type ConversationLabelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ConversationLabel.
+     */
+    data: XOR<ConversationLabelCreateInput, ConversationLabelUncheckedCreateInput>
+  }
+
+  /**
+   * ConversationLabel createMany
+   */
+  export type ConversationLabelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ConversationLabels.
+     */
+    data: ConversationLabelCreateManyInput | ConversationLabelCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConversationLabel createManyAndReturn
+   */
+  export type ConversationLabelCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ConversationLabels.
+     */
+    data: ConversationLabelCreateManyInput | ConversationLabelCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ConversationLabel update
+   */
+  export type ConversationLabelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ConversationLabel.
+     */
+    data: XOR<ConversationLabelUpdateInput, ConversationLabelUncheckedUpdateInput>
+    /**
+     * Choose, which ConversationLabel to update.
+     */
+    where: ConversationLabelWhereUniqueInput
+  }
+
+  /**
+   * ConversationLabel updateMany
+   */
+  export type ConversationLabelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ConversationLabels.
+     */
+    data: XOR<ConversationLabelUpdateManyMutationInput, ConversationLabelUncheckedUpdateManyInput>
+    /**
+     * Filter which ConversationLabels to update
+     */
+    where?: ConversationLabelWhereInput
+  }
+
+  /**
+   * ConversationLabel upsert
+   */
+  export type ConversationLabelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ConversationLabel to update in case it exists.
+     */
+    where: ConversationLabelWhereUniqueInput
+    /**
+     * In case the ConversationLabel found by the `where` argument doesn't exist, create a new ConversationLabel with this data.
+     */
+    create: XOR<ConversationLabelCreateInput, ConversationLabelUncheckedCreateInput>
+    /**
+     * In case the ConversationLabel was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConversationLabelUpdateInput, ConversationLabelUncheckedUpdateInput>
+  }
+
+  /**
+   * ConversationLabel delete
+   */
+  export type ConversationLabelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+    /**
+     * Filter which ConversationLabel to delete.
+     */
+    where: ConversationLabelWhereUniqueInput
+  }
+
+  /**
+   * ConversationLabel deleteMany
+   */
+  export type ConversationLabelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationLabels to delete
+     */
+    where?: ConversationLabelWhereInput
+  }
+
+  /**
+   * ConversationLabel.addedByAgent
+   */
+  export type ConversationLabel$addedByAgentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * ConversationLabel without action
+   */
+  export type ConversationLabelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationLabel
+     */
+    select?: ConversationLabelSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationLabelInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroupMentionCooldown
+   */
+
+  export type AggregateGroupMentionCooldown = {
+    _count: GroupMentionCooldownCountAggregateOutputType | null
+    _min: GroupMentionCooldownMinAggregateOutputType | null
+    _max: GroupMentionCooldownMaxAggregateOutputType | null
+  }
+
+  export type GroupMentionCooldownMinAggregateOutputType = {
+    id: string | null
+    groupKey: string | null
+    participantKey: string | null
+    lastMentionAt: Date | null
+  }
+
+  export type GroupMentionCooldownMaxAggregateOutputType = {
+    id: string | null
+    groupKey: string | null
+    participantKey: string | null
+    lastMentionAt: Date | null
+  }
+
+  export type GroupMentionCooldownCountAggregateOutputType = {
+    id: number
+    groupKey: number
+    participantKey: number
+    lastMentionAt: number
+    _all: number
+  }
+
+
+  export type GroupMentionCooldownMinAggregateInputType = {
+    id?: true
+    groupKey?: true
+    participantKey?: true
+    lastMentionAt?: true
+  }
+
+  export type GroupMentionCooldownMaxAggregateInputType = {
+    id?: true
+    groupKey?: true
+    participantKey?: true
+    lastMentionAt?: true
+  }
+
+  export type GroupMentionCooldownCountAggregateInputType = {
+    id?: true
+    groupKey?: true
+    participantKey?: true
+    lastMentionAt?: true
+    _all?: true
+  }
+
+  export type GroupMentionCooldownAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMentionCooldown to aggregate.
+     */
+    where?: GroupMentionCooldownWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMentionCooldowns to fetch.
+     */
+    orderBy?: GroupMentionCooldownOrderByWithRelationInput | GroupMentionCooldownOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupMentionCooldownWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMentionCooldowns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMentionCooldowns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroupMentionCooldowns
+    **/
+    _count?: true | GroupMentionCooldownCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupMentionCooldownMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupMentionCooldownMaxAggregateInputType
+  }
+
+  export type GetGroupMentionCooldownAggregateType<T extends GroupMentionCooldownAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroupMentionCooldown]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroupMentionCooldown[P]>
+      : GetScalarType<T[P], AggregateGroupMentionCooldown[P]>
+  }
+
+
+
+
+  export type GroupMentionCooldownGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMentionCooldownWhereInput
+    orderBy?: GroupMentionCooldownOrderByWithAggregationInput | GroupMentionCooldownOrderByWithAggregationInput[]
+    by: GroupMentionCooldownScalarFieldEnum[] | GroupMentionCooldownScalarFieldEnum
+    having?: GroupMentionCooldownScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupMentionCooldownCountAggregateInputType | true
+    _min?: GroupMentionCooldownMinAggregateInputType
+    _max?: GroupMentionCooldownMaxAggregateInputType
+  }
+
+  export type GroupMentionCooldownGroupByOutputType = {
+    id: string
+    groupKey: string
+    participantKey: string
+    lastMentionAt: Date
+    _count: GroupMentionCooldownCountAggregateOutputType | null
+    _min: GroupMentionCooldownMinAggregateOutputType | null
+    _max: GroupMentionCooldownMaxAggregateOutputType | null
+  }
+
+  type GetGroupMentionCooldownGroupByPayload<T extends GroupMentionCooldownGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupMentionCooldownGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupMentionCooldownGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupMentionCooldownGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupMentionCooldownGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupMentionCooldownSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupKey?: boolean
+    participantKey?: boolean
+    lastMentionAt?: boolean
+  }, ExtArgs["result"]["groupMentionCooldown"]>
+
+  export type GroupMentionCooldownSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupKey?: boolean
+    participantKey?: boolean
+    lastMentionAt?: boolean
+  }, ExtArgs["result"]["groupMentionCooldown"]>
+
+  export type GroupMentionCooldownSelectScalar = {
+    id?: boolean
+    groupKey?: boolean
+    participantKey?: boolean
+    lastMentionAt?: boolean
+  }
+
+
+  export type $GroupMentionCooldownPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroupMentionCooldown"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groupKey: string
+      participantKey: string
+      lastMentionAt: Date
+    }, ExtArgs["result"]["groupMentionCooldown"]>
+    composites: {}
+  }
+
+  type GroupMentionCooldownGetPayload<S extends boolean | null | undefined | GroupMentionCooldownDefaultArgs> = $Result.GetResult<Prisma.$GroupMentionCooldownPayload, S>
+
+  type GroupMentionCooldownCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GroupMentionCooldownFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GroupMentionCooldownCountAggregateInputType | true
+    }
+
+  export interface GroupMentionCooldownDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroupMentionCooldown'], meta: { name: 'GroupMentionCooldown' } }
+    /**
+     * Find zero or one GroupMentionCooldown that matches the filter.
+     * @param {GroupMentionCooldownFindUniqueArgs} args - Arguments to find a GroupMentionCooldown
+     * @example
+     * // Get one GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupMentionCooldownFindUniqueArgs>(args: SelectSubset<T, GroupMentionCooldownFindUniqueArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one GroupMentionCooldown that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {GroupMentionCooldownFindUniqueOrThrowArgs} args - Arguments to find a GroupMentionCooldown
+     * @example
+     * // Get one GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupMentionCooldownFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupMentionCooldownFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first GroupMentionCooldown that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownFindFirstArgs} args - Arguments to find a GroupMentionCooldown
+     * @example
+     * // Get one GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupMentionCooldownFindFirstArgs>(args?: SelectSubset<T, GroupMentionCooldownFindFirstArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first GroupMentionCooldown that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownFindFirstOrThrowArgs} args - Arguments to find a GroupMentionCooldown
+     * @example
+     * // Get one GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupMentionCooldownFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupMentionCooldownFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more GroupMentionCooldowns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroupMentionCooldowns
+     * const groupMentionCooldowns = await prisma.groupMentionCooldown.findMany()
+     * 
+     * // Get first 10 GroupMentionCooldowns
+     * const groupMentionCooldowns = await prisma.groupMentionCooldown.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groupMentionCooldownWithIdOnly = await prisma.groupMentionCooldown.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroupMentionCooldownFindManyArgs>(args?: SelectSubset<T, GroupMentionCooldownFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a GroupMentionCooldown.
+     * @param {GroupMentionCooldownCreateArgs} args - Arguments to create a GroupMentionCooldown.
+     * @example
+     * // Create one GroupMentionCooldown
+     * const GroupMentionCooldown = await prisma.groupMentionCooldown.create({
+     *   data: {
+     *     // ... data to create a GroupMentionCooldown
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupMentionCooldownCreateArgs>(args: SelectSubset<T, GroupMentionCooldownCreateArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many GroupMentionCooldowns.
+     * @param {GroupMentionCooldownCreateManyArgs} args - Arguments to create many GroupMentionCooldowns.
+     * @example
+     * // Create many GroupMentionCooldowns
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupMentionCooldownCreateManyArgs>(args?: SelectSubset<T, GroupMentionCooldownCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroupMentionCooldowns and returns the data saved in the database.
+     * @param {GroupMentionCooldownCreateManyAndReturnArgs} args - Arguments to create many GroupMentionCooldowns.
+     * @example
+     * // Create many GroupMentionCooldowns
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroupMentionCooldowns and only return the `id`
+     * const groupMentionCooldownWithIdOnly = await prisma.groupMentionCooldown.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroupMentionCooldownCreateManyAndReturnArgs>(args?: SelectSubset<T, GroupMentionCooldownCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a GroupMentionCooldown.
+     * @param {GroupMentionCooldownDeleteArgs} args - Arguments to delete one GroupMentionCooldown.
+     * @example
+     * // Delete one GroupMentionCooldown
+     * const GroupMentionCooldown = await prisma.groupMentionCooldown.delete({
+     *   where: {
+     *     // ... filter to delete one GroupMentionCooldown
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupMentionCooldownDeleteArgs>(args: SelectSubset<T, GroupMentionCooldownDeleteArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one GroupMentionCooldown.
+     * @param {GroupMentionCooldownUpdateArgs} args - Arguments to update one GroupMentionCooldown.
+     * @example
+     * // Update one GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupMentionCooldownUpdateArgs>(args: SelectSubset<T, GroupMentionCooldownUpdateArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more GroupMentionCooldowns.
+     * @param {GroupMentionCooldownDeleteManyArgs} args - Arguments to filter GroupMentionCooldowns to delete.
+     * @example
+     * // Delete a few GroupMentionCooldowns
+     * const { count } = await prisma.groupMentionCooldown.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupMentionCooldownDeleteManyArgs>(args?: SelectSubset<T, GroupMentionCooldownDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroupMentionCooldowns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroupMentionCooldowns
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupMentionCooldownUpdateManyArgs>(args: SelectSubset<T, GroupMentionCooldownUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GroupMentionCooldown.
+     * @param {GroupMentionCooldownUpsertArgs} args - Arguments to update or create a GroupMentionCooldown.
+     * @example
+     * // Update or create a GroupMentionCooldown
+     * const groupMentionCooldown = await prisma.groupMentionCooldown.upsert({
+     *   create: {
+     *     // ... data to create a GroupMentionCooldown
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroupMentionCooldown we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupMentionCooldownUpsertArgs>(args: SelectSubset<T, GroupMentionCooldownUpsertArgs<ExtArgs>>): Prisma__GroupMentionCooldownClient<$Result.GetResult<Prisma.$GroupMentionCooldownPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of GroupMentionCooldowns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownCountArgs} args - Arguments to filter GroupMentionCooldowns to count.
+     * @example
+     * // Count the number of GroupMentionCooldowns
+     * const count = await prisma.groupMentionCooldown.count({
+     *   where: {
+     *     // ... the filter for the GroupMentionCooldowns we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupMentionCooldownCountArgs>(
+      args?: Subset<T, GroupMentionCooldownCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupMentionCooldownCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroupMentionCooldown.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupMentionCooldownAggregateArgs>(args: Subset<T, GroupMentionCooldownAggregateArgs>): Prisma.PrismaPromise<GetGroupMentionCooldownAggregateType<T>>
+
+    /**
+     * Group by GroupMentionCooldown.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMentionCooldownGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupMentionCooldownGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupMentionCooldownGroupByArgs['orderBy'] }
+        : { orderBy?: GroupMentionCooldownGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupMentionCooldownGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupMentionCooldownGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroupMentionCooldown model
+   */
+  readonly fields: GroupMentionCooldownFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroupMentionCooldown.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupMentionCooldownClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroupMentionCooldown model
+   */ 
+  interface GroupMentionCooldownFieldRefs {
+    readonly id: FieldRef<"GroupMentionCooldown", 'String'>
+    readonly groupKey: FieldRef<"GroupMentionCooldown", 'String'>
+    readonly participantKey: FieldRef<"GroupMentionCooldown", 'String'>
+    readonly lastMentionAt: FieldRef<"GroupMentionCooldown", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroupMentionCooldown findUnique
+   */
+  export type GroupMentionCooldownFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter, which GroupMentionCooldown to fetch.
+     */
+    where: GroupMentionCooldownWhereUniqueInput
+  }
+
+  /**
+   * GroupMentionCooldown findUniqueOrThrow
+   */
+  export type GroupMentionCooldownFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter, which GroupMentionCooldown to fetch.
+     */
+    where: GroupMentionCooldownWhereUniqueInput
+  }
+
+  /**
+   * GroupMentionCooldown findFirst
+   */
+  export type GroupMentionCooldownFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter, which GroupMentionCooldown to fetch.
+     */
+    where?: GroupMentionCooldownWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMentionCooldowns to fetch.
+     */
+    orderBy?: GroupMentionCooldownOrderByWithRelationInput | GroupMentionCooldownOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMentionCooldowns.
+     */
+    cursor?: GroupMentionCooldownWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMentionCooldowns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMentionCooldowns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMentionCooldowns.
+     */
+    distinct?: GroupMentionCooldownScalarFieldEnum | GroupMentionCooldownScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMentionCooldown findFirstOrThrow
+   */
+  export type GroupMentionCooldownFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter, which GroupMentionCooldown to fetch.
+     */
+    where?: GroupMentionCooldownWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMentionCooldowns to fetch.
+     */
+    orderBy?: GroupMentionCooldownOrderByWithRelationInput | GroupMentionCooldownOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMentionCooldowns.
+     */
+    cursor?: GroupMentionCooldownWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMentionCooldowns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMentionCooldowns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMentionCooldowns.
+     */
+    distinct?: GroupMentionCooldownScalarFieldEnum | GroupMentionCooldownScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMentionCooldown findMany
+   */
+  export type GroupMentionCooldownFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter, which GroupMentionCooldowns to fetch.
+     */
+    where?: GroupMentionCooldownWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMentionCooldowns to fetch.
+     */
+    orderBy?: GroupMentionCooldownOrderByWithRelationInput | GroupMentionCooldownOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroupMentionCooldowns.
+     */
+    cursor?: GroupMentionCooldownWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMentionCooldowns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMentionCooldowns.
+     */
+    skip?: number
+    distinct?: GroupMentionCooldownScalarFieldEnum | GroupMentionCooldownScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMentionCooldown create
+   */
+  export type GroupMentionCooldownCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * The data needed to create a GroupMentionCooldown.
+     */
+    data: XOR<GroupMentionCooldownCreateInput, GroupMentionCooldownUncheckedCreateInput>
+  }
+
+  /**
+   * GroupMentionCooldown createMany
+   */
+  export type GroupMentionCooldownCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroupMentionCooldowns.
+     */
+    data: GroupMentionCooldownCreateManyInput | GroupMentionCooldownCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupMentionCooldown createManyAndReturn
+   */
+  export type GroupMentionCooldownCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GroupMentionCooldowns.
+     */
+    data: GroupMentionCooldownCreateManyInput | GroupMentionCooldownCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupMentionCooldown update
+   */
+  export type GroupMentionCooldownUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * The data needed to update a GroupMentionCooldown.
+     */
+    data: XOR<GroupMentionCooldownUpdateInput, GroupMentionCooldownUncheckedUpdateInput>
+    /**
+     * Choose, which GroupMentionCooldown to update.
+     */
+    where: GroupMentionCooldownWhereUniqueInput
+  }
+
+  /**
+   * GroupMentionCooldown updateMany
+   */
+  export type GroupMentionCooldownUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroupMentionCooldowns.
+     */
+    data: XOR<GroupMentionCooldownUpdateManyMutationInput, GroupMentionCooldownUncheckedUpdateManyInput>
+    /**
+     * Filter which GroupMentionCooldowns to update
+     */
+    where?: GroupMentionCooldownWhereInput
+  }
+
+  /**
+   * GroupMentionCooldown upsert
+   */
+  export type GroupMentionCooldownUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * The filter to search for the GroupMentionCooldown to update in case it exists.
+     */
+    where: GroupMentionCooldownWhereUniqueInput
+    /**
+     * In case the GroupMentionCooldown found by the `where` argument doesn't exist, create a new GroupMentionCooldown with this data.
+     */
+    create: XOR<GroupMentionCooldownCreateInput, GroupMentionCooldownUncheckedCreateInput>
+    /**
+     * In case the GroupMentionCooldown was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupMentionCooldownUpdateInput, GroupMentionCooldownUncheckedUpdateInput>
+  }
+
+  /**
+   * GroupMentionCooldown delete
+   */
+  export type GroupMentionCooldownDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
+    /**
+     * Filter which GroupMentionCooldown to delete.
+     */
+    where: GroupMentionCooldownWhereUniqueInput
+  }
+
+  /**
+   * GroupMentionCooldown deleteMany
+   */
+  export type GroupMentionCooldownDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMentionCooldowns to delete
+     */
+    where?: GroupMentionCooldownWhereInput
+  }
+
+  /**
+   * GroupMentionCooldown without action
+   */
+  export type GroupMentionCooldownDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMentionCooldown
+     */
+    select?: GroupMentionCooldownSelect<ExtArgs> | null
   }
 
 
@@ -21758,7 +25029,9 @@ export namespace Prisma {
     lastActivityAt: 'lastActivityAt',
     closedAt: 'closedAt',
     warningSentAt: 'warningSentAt',
-    closeReason: 'closeReason'
+    closeReason: 'closeReason',
+    groupChatName: 'groupChatName',
+    groupParticipant: 'groupParticipant'
   };
 
   export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
@@ -21832,10 +25105,49 @@ export namespace Prisma {
     webhookUrl: 'webhookUrl',
     isActive: 'isActive',
     autoReply: 'autoReply',
+    instancePhone: 'instancePhone',
+    groupsEnabled: 'groupsEnabled',
+    groupCooldownSeconds: 'groupCooldownSeconds',
+    groupConfirmInGroup: 'groupConfirmInGroup',
+    groupConfirmMessage: 'groupConfirmMessage',
     updatedAt: 'updatedAt'
   };
 
   export type ZApiConfigScalarFieldEnum = (typeof ZApiConfigScalarFieldEnum)[keyof typeof ZApiConfigScalarFieldEnum]
+
+
+  export const LabelScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    color: 'color',
+    icon: 'icon',
+    isSystem: 'isSystem',
+    createdAt: 'createdAt'
+  };
+
+  export type LabelScalarFieldEnum = (typeof LabelScalarFieldEnum)[keyof typeof LabelScalarFieldEnum]
+
+
+  export const ConversationLabelScalarFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    labelId: 'labelId',
+    addedByAgentId: 'addedByAgentId',
+    createdAt: 'createdAt'
+  };
+
+  export type ConversationLabelScalarFieldEnum = (typeof ConversationLabelScalarFieldEnum)[keyof typeof ConversationLabelScalarFieldEnum]
+
+
+  export const GroupMentionCooldownScalarFieldEnum: {
+    id: 'id',
+    groupKey: 'groupKey',
+    participantKey: 'participantKey',
+    lastMentionAt: 'lastMentionAt'
+  };
+
+  export type GroupMentionCooldownScalarFieldEnum = (typeof GroupMentionCooldownScalarFieldEnum)[keyof typeof GroupMentionCooldownScalarFieldEnum]
 
 
   export const FlowRevisionScalarFieldEnum: {
@@ -22326,6 +25638,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionListRelationFilter
     notifications?: NotificationListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
+    addedConversationLabels?: ConversationLabelListRelationFilter
   }
 
   export type AgentOrderByWithRelationInput = {
@@ -22348,6 +25661,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     notificationPreference?: NotificationPreferenceOrderByWithRelationInput
+    addedConversationLabels?: ConversationLabelOrderByRelationAggregateInput
   }
 
   export type AgentWhereUniqueInput = Prisma.AtLeast<{
@@ -22373,6 +25687,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionListRelationFilter
     notifications?: NotificationListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
+    addedConversationLabels?: ConversationLabelListRelationFilter
   }, "id" | "email">
 
   export type AgentOrderByWithAggregationInput = {
@@ -22527,6 +25842,8 @@ export namespace Prisma {
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     closeReason?: StringNullableFilter<"Conversation"> | string | null
+    groupChatName?: StringNullableFilter<"Conversation"> | string | null
+    groupParticipant?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -22536,6 +25853,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventListRelationFilter
     notifications?: NotificationListRelationFilter
     media?: ConversationMediaListRelationFilter
+    labels?: ConversationLabelListRelationFilter
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -22554,6 +25872,8 @@ export namespace Prisma {
     closedAt?: SortOrderInput | SortOrder
     warningSentAt?: SortOrderInput | SortOrder
     closeReason?: SortOrderInput | SortOrder
+    groupChatName?: SortOrderInput | SortOrder
+    groupParticipant?: SortOrderInput | SortOrder
     contact?: ContactOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
     assignedAgent?: AgentOrderByWithRelationInput
@@ -22563,6 +25883,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     media?: ConversationMediaOrderByRelationAggregateInput
+    labels?: ConversationLabelOrderByRelationAggregateInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -22584,6 +25905,8 @@ export namespace Prisma {
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     closeReason?: StringNullableFilter<"Conversation"> | string | null
+    groupChatName?: StringNullableFilter<"Conversation"> | string | null
+    groupParticipant?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -22593,6 +25916,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventListRelationFilter
     notifications?: NotificationListRelationFilter
     media?: ConversationMediaListRelationFilter
+    labels?: ConversationLabelListRelationFilter
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -22611,6 +25935,8 @@ export namespace Prisma {
     closedAt?: SortOrderInput | SortOrder
     warningSentAt?: SortOrderInput | SortOrder
     closeReason?: SortOrderInput | SortOrder
+    groupChatName?: SortOrderInput | SortOrder
+    groupParticipant?: SortOrderInput | SortOrder
     _count?: ConversationCountOrderByAggregateInput
     _max?: ConversationMaxOrderByAggregateInput
     _min?: ConversationMinOrderByAggregateInput
@@ -22635,6 +25961,8 @@ export namespace Prisma {
     closedAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
     warningSentAt?: DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
     closeReason?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    groupChatName?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    groupParticipant?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
   }
 
   export type MessageWhereInput = {
@@ -22959,6 +26287,11 @@ export namespace Prisma {
     webhookUrl?: StringNullableFilter<"ZApiConfig"> | string | null
     isActive?: BoolFilter<"ZApiConfig"> | boolean
     autoReply?: BoolFilter<"ZApiConfig"> | boolean
+    instancePhone?: StringNullableFilter<"ZApiConfig"> | string | null
+    groupsEnabled?: BoolFilter<"ZApiConfig"> | boolean
+    groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
+    groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
+    groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
   }
 
@@ -22970,6 +26303,11 @@ export namespace Prisma {
     webhookUrl?: SortOrderInput | SortOrder
     isActive?: SortOrder
     autoReply?: SortOrder
+    instancePhone?: SortOrderInput | SortOrder
+    groupsEnabled?: SortOrder
+    groupCooldownSeconds?: SortOrder
+    groupConfirmInGroup?: SortOrder
+    groupConfirmMessage?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
   }
 
@@ -22984,6 +26322,11 @@ export namespace Prisma {
     webhookUrl?: StringNullableFilter<"ZApiConfig"> | string | null
     isActive?: BoolFilter<"ZApiConfig"> | boolean
     autoReply?: BoolFilter<"ZApiConfig"> | boolean
+    instancePhone?: StringNullableFilter<"ZApiConfig"> | string | null
+    groupsEnabled?: BoolFilter<"ZApiConfig"> | boolean
+    groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
+    groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
+    groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
   }, "id">
 
@@ -22995,10 +26338,17 @@ export namespace Prisma {
     webhookUrl?: SortOrderInput | SortOrder
     isActive?: SortOrder
     autoReply?: SortOrder
+    instancePhone?: SortOrderInput | SortOrder
+    groupsEnabled?: SortOrder
+    groupCooldownSeconds?: SortOrder
+    groupConfirmInGroup?: SortOrder
+    groupConfirmMessage?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: ZApiConfigCountOrderByAggregateInput
+    _avg?: ZApiConfigAvgOrderByAggregateInput
     _max?: ZApiConfigMaxOrderByAggregateInput
     _min?: ZApiConfigMinOrderByAggregateInput
+    _sum?: ZApiConfigSumOrderByAggregateInput
   }
 
   export type ZApiConfigScalarWhereWithAggregatesInput = {
@@ -23012,7 +26362,187 @@ export namespace Prisma {
     webhookUrl?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
     isActive?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     autoReply?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
+    instancePhone?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
+    groupsEnabled?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
+    groupCooldownSeconds?: IntWithAggregatesFilter<"ZApiConfig"> | number
+    groupConfirmInGroup?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
+    groupConfirmMessage?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"ZApiConfig"> | Date | string
+  }
+
+  export type LabelWhereInput = {
+    AND?: LabelWhereInput | LabelWhereInput[]
+    OR?: LabelWhereInput[]
+    NOT?: LabelWhereInput | LabelWhereInput[]
+    id?: StringFilter<"Label"> | string
+    name?: StringFilter<"Label"> | string
+    slug?: StringFilter<"Label"> | string
+    color?: StringFilter<"Label"> | string
+    icon?: StringNullableFilter<"Label"> | string | null
+    isSystem?: BoolFilter<"Label"> | boolean
+    createdAt?: DateTimeFilter<"Label"> | Date | string
+    conversationLabels?: ConversationLabelListRelationFilter
+  }
+
+  export type LabelOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    color?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    isSystem?: SortOrder
+    createdAt?: SortOrder
+    conversationLabels?: ConversationLabelOrderByRelationAggregateInput
+  }
+
+  export type LabelWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    slug?: string
+    AND?: LabelWhereInput | LabelWhereInput[]
+    OR?: LabelWhereInput[]
+    NOT?: LabelWhereInput | LabelWhereInput[]
+    color?: StringFilter<"Label"> | string
+    icon?: StringNullableFilter<"Label"> | string | null
+    isSystem?: BoolFilter<"Label"> | boolean
+    createdAt?: DateTimeFilter<"Label"> | Date | string
+    conversationLabels?: ConversationLabelListRelationFilter
+  }, "id" | "name" | "slug">
+
+  export type LabelOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    color?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    isSystem?: SortOrder
+    createdAt?: SortOrder
+    _count?: LabelCountOrderByAggregateInput
+    _max?: LabelMaxOrderByAggregateInput
+    _min?: LabelMinOrderByAggregateInput
+  }
+
+  export type LabelScalarWhereWithAggregatesInput = {
+    AND?: LabelScalarWhereWithAggregatesInput | LabelScalarWhereWithAggregatesInput[]
+    OR?: LabelScalarWhereWithAggregatesInput[]
+    NOT?: LabelScalarWhereWithAggregatesInput | LabelScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Label"> | string
+    name?: StringWithAggregatesFilter<"Label"> | string
+    slug?: StringWithAggregatesFilter<"Label"> | string
+    color?: StringWithAggregatesFilter<"Label"> | string
+    icon?: StringNullableWithAggregatesFilter<"Label"> | string | null
+    isSystem?: BoolWithAggregatesFilter<"Label"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Label"> | Date | string
+  }
+
+  export type ConversationLabelWhereInput = {
+    AND?: ConversationLabelWhereInput | ConversationLabelWhereInput[]
+    OR?: ConversationLabelWhereInput[]
+    NOT?: ConversationLabelWhereInput | ConversationLabelWhereInput[]
+    id?: StringFilter<"ConversationLabel"> | string
+    conversationId?: StringFilter<"ConversationLabel"> | string
+    labelId?: StringFilter<"ConversationLabel"> | string
+    addedByAgentId?: StringNullableFilter<"ConversationLabel"> | string | null
+    createdAt?: DateTimeFilter<"ConversationLabel"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    label?: XOR<LabelRelationFilter, LabelWhereInput>
+    addedByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+  }
+
+  export type ConversationLabelOrderByWithRelationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    labelId?: SortOrder
+    addedByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    conversation?: ConversationOrderByWithRelationInput
+    label?: LabelOrderByWithRelationInput
+    addedByAgent?: AgentOrderByWithRelationInput
+  }
+
+  export type ConversationLabelWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    conversationId_labelId?: ConversationLabelConversationIdLabelIdCompoundUniqueInput
+    AND?: ConversationLabelWhereInput | ConversationLabelWhereInput[]
+    OR?: ConversationLabelWhereInput[]
+    NOT?: ConversationLabelWhereInput | ConversationLabelWhereInput[]
+    conversationId?: StringFilter<"ConversationLabel"> | string
+    labelId?: StringFilter<"ConversationLabel"> | string
+    addedByAgentId?: StringNullableFilter<"ConversationLabel"> | string | null
+    createdAt?: DateTimeFilter<"ConversationLabel"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    label?: XOR<LabelRelationFilter, LabelWhereInput>
+    addedByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+  }, "id" | "conversationId_labelId">
+
+  export type ConversationLabelOrderByWithAggregationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    labelId?: SortOrder
+    addedByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ConversationLabelCountOrderByAggregateInput
+    _max?: ConversationLabelMaxOrderByAggregateInput
+    _min?: ConversationLabelMinOrderByAggregateInput
+  }
+
+  export type ConversationLabelScalarWhereWithAggregatesInput = {
+    AND?: ConversationLabelScalarWhereWithAggregatesInput | ConversationLabelScalarWhereWithAggregatesInput[]
+    OR?: ConversationLabelScalarWhereWithAggregatesInput[]
+    NOT?: ConversationLabelScalarWhereWithAggregatesInput | ConversationLabelScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ConversationLabel"> | string
+    conversationId?: StringWithAggregatesFilter<"ConversationLabel"> | string
+    labelId?: StringWithAggregatesFilter<"ConversationLabel"> | string
+    addedByAgentId?: StringNullableWithAggregatesFilter<"ConversationLabel"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ConversationLabel"> | Date | string
+  }
+
+  export type GroupMentionCooldownWhereInput = {
+    AND?: GroupMentionCooldownWhereInput | GroupMentionCooldownWhereInput[]
+    OR?: GroupMentionCooldownWhereInput[]
+    NOT?: GroupMentionCooldownWhereInput | GroupMentionCooldownWhereInput[]
+    id?: StringFilter<"GroupMentionCooldown"> | string
+    groupKey?: StringFilter<"GroupMentionCooldown"> | string
+    participantKey?: StringFilter<"GroupMentionCooldown"> | string
+    lastMentionAt?: DateTimeFilter<"GroupMentionCooldown"> | Date | string
+  }
+
+  export type GroupMentionCooldownOrderByWithRelationInput = {
+    id?: SortOrder
+    groupKey?: SortOrder
+    participantKey?: SortOrder
+    lastMentionAt?: SortOrder
+  }
+
+  export type GroupMentionCooldownWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    groupKey_participantKey?: GroupMentionCooldownGroupKeyParticipantKeyCompoundUniqueInput
+    AND?: GroupMentionCooldownWhereInput | GroupMentionCooldownWhereInput[]
+    OR?: GroupMentionCooldownWhereInput[]
+    NOT?: GroupMentionCooldownWhereInput | GroupMentionCooldownWhereInput[]
+    groupKey?: StringFilter<"GroupMentionCooldown"> | string
+    participantKey?: StringFilter<"GroupMentionCooldown"> | string
+    lastMentionAt?: DateTimeFilter<"GroupMentionCooldown"> | Date | string
+  }, "id" | "groupKey_participantKey">
+
+  export type GroupMentionCooldownOrderByWithAggregationInput = {
+    id?: SortOrder
+    groupKey?: SortOrder
+    participantKey?: SortOrder
+    lastMentionAt?: SortOrder
+    _count?: GroupMentionCooldownCountOrderByAggregateInput
+    _max?: GroupMentionCooldownMaxOrderByAggregateInput
+    _min?: GroupMentionCooldownMinOrderByAggregateInput
+  }
+
+  export type GroupMentionCooldownScalarWhereWithAggregatesInput = {
+    AND?: GroupMentionCooldownScalarWhereWithAggregatesInput | GroupMentionCooldownScalarWhereWithAggregatesInput[]
+    OR?: GroupMentionCooldownScalarWhereWithAggregatesInput[]
+    NOT?: GroupMentionCooldownScalarWhereWithAggregatesInput | GroupMentionCooldownScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroupMentionCooldown"> | string
+    groupKey?: StringWithAggregatesFilter<"GroupMentionCooldown"> | string
+    participantKey?: StringWithAggregatesFilter<"GroupMentionCooldown"> | string
+    lastMentionAt?: DateTimeWithAggregatesFilter<"GroupMentionCooldown"> | Date | string
   }
 
   export type FlowRevisionWhereInput = {
@@ -23842,6 +27372,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateInput = {
@@ -23863,6 +27394,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUpdateInput = {
@@ -23884,6 +27416,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateInput = {
@@ -23905,6 +27438,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentCreateManyInput = {
@@ -24062,6 +27596,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -24071,6 +27607,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -24089,10 +27626,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUpdateInput = {
@@ -24106,6 +27646,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -24115,6 +27657,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -24133,10 +27676,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -24155,6 +27701,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type ConversationUpdateManyMutationInput = {
@@ -24168,6 +27716,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ConversationUncheckedUpdateManyInput = {
@@ -24186,6 +27736,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageCreateInput = {
@@ -24557,6 +28109,11 @@ export namespace Prisma {
     webhookUrl?: string | null
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: string | null
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: number
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: string | null
     updatedAt?: Date | string
   }
 
@@ -24568,6 +28125,11 @@ export namespace Prisma {
     webhookUrl?: string | null
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: string | null
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: number
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: string | null
     updatedAt?: Date | string
   }
 
@@ -24579,6 +28141,11 @@ export namespace Prisma {
     webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24590,6 +28157,11 @@ export namespace Prisma {
     webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24601,6 +28173,11 @@ export namespace Prisma {
     webhookUrl?: string | null
     isActive?: boolean
     autoReply?: boolean
+    instancePhone?: string | null
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: number
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: string | null
     updatedAt?: Date | string
   }
 
@@ -24612,6 +28189,11 @@ export namespace Prisma {
     webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24623,7 +28205,188 @@ export namespace Prisma {
     webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    color?: string
+    icon?: string | null
+    isSystem?: boolean
+    createdAt?: Date | string
+    conversationLabels?: ConversationLabelCreateNestedManyWithoutLabelInput
+  }
+
+  export type LabelUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    color?: string
+    icon?: string | null
+    isSystem?: boolean
+    createdAt?: Date | string
+    conversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutLabelInput
+  }
+
+  export type LabelUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversationLabels?: ConversationLabelUpdateManyWithoutLabelNestedInput
+  }
+
+  export type LabelUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversationLabels?: ConversationLabelUncheckedUpdateManyWithoutLabelNestedInput
+  }
+
+  export type LabelCreateManyInput = {
+    id?: string
+    name: string
+    slug: string
+    color?: string
+    icon?: string | null
+    isSystem?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LabelUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutLabelsInput
+    label: LabelCreateNestedOneWithoutConversationLabelsInput
+    addedByAgent?: AgentCreateNestedOneWithoutAddedConversationLabelsInput
+  }
+
+  export type ConversationLabelUncheckedCreateInput = {
+    id?: string
+    conversationId: string
+    labelId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutLabelsNestedInput
+    label?: LabelUpdateOneRequiredWithoutConversationLabelsNestedInput
+    addedByAgent?: AgentUpdateOneWithoutAddedConversationLabelsNestedInput
+  }
+
+  export type ConversationLabelUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelCreateManyInput = {
+    id?: string
+    conversationId: string
+    labelId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupMentionCooldownCreateInput = {
+    id?: string
+    groupKey: string
+    participantKey: string
+    lastMentionAt: Date | string
+  }
+
+  export type GroupMentionCooldownUncheckedCreateInput = {
+    id?: string
+    groupKey: string
+    participantKey: string
+    lastMentionAt: Date | string
+  }
+
+  export type GroupMentionCooldownUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupKey?: StringFieldUpdateOperationsInput | string
+    participantKey?: StringFieldUpdateOperationsInput | string
+    lastMentionAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupMentionCooldownUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupKey?: StringFieldUpdateOperationsInput | string
+    participantKey?: StringFieldUpdateOperationsInput | string
+    lastMentionAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupMentionCooldownCreateManyInput = {
+    id?: string
+    groupKey: string
+    participantKey: string
+    lastMentionAt: Date | string
+  }
+
+  export type GroupMentionCooldownUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupKey?: StringFieldUpdateOperationsInput | string
+    participantKey?: StringFieldUpdateOperationsInput | string
+    lastMentionAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupMentionCooldownUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupKey?: StringFieldUpdateOperationsInput | string
+    participantKey?: StringFieldUpdateOperationsInput | string
+    lastMentionAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FlowRevisionCreateInput = {
@@ -25599,6 +29362,12 @@ export namespace Prisma {
     isNot?: NotificationPreferenceWhereInput | null
   }
 
+  export type ConversationLabelListRelationFilter = {
+    every?: ConversationLabelWhereInput
+    some?: ConversationLabelWhereInput
+    none?: ConversationLabelWhereInput
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -25612,6 +29381,10 @@ export namespace Prisma {
   }
 
   export type NotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ConversationLabelOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25804,6 +29577,8 @@ export namespace Prisma {
     closedAt?: SortOrder
     warningSentAt?: SortOrder
     closeReason?: SortOrder
+    groupChatName?: SortOrder
+    groupParticipant?: SortOrder
   }
 
   export type ConversationMaxOrderByAggregateInput = {
@@ -25821,6 +29596,8 @@ export namespace Prisma {
     closedAt?: SortOrder
     warningSentAt?: SortOrder
     closeReason?: SortOrder
+    groupChatName?: SortOrder
+    groupParticipant?: SortOrder
   }
 
   export type ConversationMinOrderByAggregateInput = {
@@ -25838,6 +29615,8 @@ export namespace Prisma {
     closedAt?: SortOrder
     warningSentAt?: SortOrder
     closeReason?: SortOrder
+    groupChatName?: SortOrder
+    groupParticipant?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -26207,7 +29986,16 @@ export namespace Prisma {
     webhookUrl?: SortOrder
     isActive?: SortOrder
     autoReply?: SortOrder
+    instancePhone?: SortOrder
+    groupsEnabled?: SortOrder
+    groupCooldownSeconds?: SortOrder
+    groupConfirmInGroup?: SortOrder
+    groupConfirmMessage?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ZApiConfigAvgOrderByAggregateInput = {
+    groupCooldownSeconds?: SortOrder
   }
 
   export type ZApiConfigMaxOrderByAggregateInput = {
@@ -26218,6 +30006,11 @@ export namespace Prisma {
     webhookUrl?: SortOrder
     isActive?: SortOrder
     autoReply?: SortOrder
+    instancePhone?: SortOrder
+    groupsEnabled?: SortOrder
+    groupCooldownSeconds?: SortOrder
+    groupConfirmInGroup?: SortOrder
+    groupConfirmMessage?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -26229,7 +30022,106 @@ export namespace Prisma {
     webhookUrl?: SortOrder
     isActive?: SortOrder
     autoReply?: SortOrder
+    instancePhone?: SortOrder
+    groupsEnabled?: SortOrder
+    groupCooldownSeconds?: SortOrder
+    groupConfirmInGroup?: SortOrder
+    groupConfirmMessage?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ZApiConfigSumOrderByAggregateInput = {
+    groupCooldownSeconds?: SortOrder
+  }
+
+  export type LabelCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    isSystem?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LabelMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    isSystem?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LabelMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    isSystem?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LabelRelationFilter = {
+    is?: LabelWhereInput
+    isNot?: LabelWhereInput
+  }
+
+  export type ConversationLabelConversationIdLabelIdCompoundUniqueInput = {
+    conversationId: string
+    labelId: string
+  }
+
+  export type ConversationLabelCountOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    labelId?: SortOrder
+    addedByAgentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ConversationLabelMaxOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    labelId?: SortOrder
+    addedByAgentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ConversationLabelMinOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    labelId?: SortOrder
+    addedByAgentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GroupMentionCooldownGroupKeyParticipantKeyCompoundUniqueInput = {
+    groupKey: string
+    participantKey: string
+  }
+
+  export type GroupMentionCooldownCountOrderByAggregateInput = {
+    id?: SortOrder
+    groupKey?: SortOrder
+    participantKey?: SortOrder
+    lastMentionAt?: SortOrder
+  }
+
+  export type GroupMentionCooldownMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groupKey?: SortOrder
+    participantKey?: SortOrder
+    lastMentionAt?: SortOrder
+  }
+
+  export type GroupMentionCooldownMinOrderByAggregateInput = {
+    id?: SortOrder
+    groupKey?: SortOrder
+    participantKey?: SortOrder
+    lastMentionAt?: SortOrder
   }
 
   export type EnumFlowRevisionStatusFilter<$PrismaModel = never> = {
@@ -27004,6 +30896,13 @@ export namespace Prisma {
     connect?: NotificationPreferenceWhereUniqueInput
   }
 
+  export type ConversationLabelCreateNestedManyWithoutAddedByAgentInput = {
+    create?: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput> | ConversationLabelCreateWithoutAddedByAgentInput[] | ConversationLabelUncheckedCreateWithoutAddedByAgentInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutAddedByAgentInput | ConversationLabelCreateOrConnectWithoutAddedByAgentInput[]
+    createMany?: ConversationLabelCreateManyAddedByAgentInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -27064,6 +30963,13 @@ export namespace Prisma {
     create?: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
     connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutAgentInput
     connect?: NotificationPreferenceWhereUniqueInput
+  }
+
+  export type ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput = {
+    create?: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput> | ConversationLabelCreateWithoutAddedByAgentInput[] | ConversationLabelUncheckedCreateWithoutAddedByAgentInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutAddedByAgentInput | ConversationLabelCreateOrConnectWithoutAddedByAgentInput[]
+    createMany?: ConversationLabelCreateManyAddedByAgentInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -27202,6 +31108,20 @@ export namespace Prisma {
     update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutAgentInput, NotificationPreferenceUpdateWithoutAgentInput>, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
   }
 
+  export type ConversationLabelUpdateManyWithoutAddedByAgentNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput> | ConversationLabelCreateWithoutAddedByAgentInput[] | ConversationLabelUncheckedCreateWithoutAddedByAgentInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutAddedByAgentInput | ConversationLabelCreateOrConnectWithoutAddedByAgentInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutAddedByAgentInput | ConversationLabelUpsertWithWhereUniqueWithoutAddedByAgentInput[]
+    createMany?: ConversationLabelCreateManyAddedByAgentInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutAddedByAgentInput | ConversationLabelUpdateWithWhereUniqueWithoutAddedByAgentInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutAddedByAgentInput | ConversationLabelUpdateManyWithWhereWithoutAddedByAgentInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -27324,6 +31244,20 @@ export namespace Prisma {
     update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutAgentInput, NotificationPreferenceUpdateWithoutAgentInput>, NotificationPreferenceUncheckedUpdateWithoutAgentInput>
   }
 
+  export type ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput> | ConversationLabelCreateWithoutAddedByAgentInput[] | ConversationLabelUncheckedCreateWithoutAddedByAgentInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutAddedByAgentInput | ConversationLabelCreateOrConnectWithoutAddedByAgentInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutAddedByAgentInput | ConversationLabelUpsertWithWhereUniqueWithoutAddedByAgentInput[]
+    createMany?: ConversationLabelCreateManyAddedByAgentInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutAddedByAgentInput | ConversationLabelUpdateWithWhereUniqueWithoutAddedByAgentInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutAddedByAgentInput | ConversationLabelUpdateManyWithWhereWithoutAddedByAgentInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
   export type RolePermissionCreateactionsInput = {
     set: string[]
   }
@@ -27433,6 +31367,13 @@ export namespace Prisma {
     connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
   }
 
+  export type ConversationLabelCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationLabelCreateManyConversationInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -27459,6 +31400,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
     createMany?: ConversationMediaCreateManyConversationInputEnvelope
     connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+  }
+
+  export type ConversationLabelUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationLabelCreateManyConversationInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -27569,6 +31517,20 @@ export namespace Prisma {
     deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
   }
 
+  export type ConversationLabelUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutConversationInput | ConversationLabelUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationLabelCreateManyConversationInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutConversationInput | ConversationLabelUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutConversationInput | ConversationLabelUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -27623,6 +31585,20 @@ export namespace Prisma {
     update?: ConversationMediaUpdateWithWhereUniqueWithoutConversationInput | ConversationMediaUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: ConversationMediaUpdateManyWithWhereWithoutConversationInput | ConversationMediaUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
+  }
+
+  export type ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutConversationInput | ConversationLabelUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationLabelCreateManyConversationInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutConversationInput | ConversationLabelUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutConversationInput | ConversationLabelUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
   }
 
   export type ConversationCreateNestedOneWithoutMessagesInput = {
@@ -27779,6 +31755,92 @@ export namespace Prisma {
     update?: FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput[]
     updateMany?: FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput | FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput[]
     deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
+  export type ConversationLabelCreateNestedManyWithoutLabelInput = {
+    create?: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput> | ConversationLabelCreateWithoutLabelInput[] | ConversationLabelUncheckedCreateWithoutLabelInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutLabelInput | ConversationLabelCreateOrConnectWithoutLabelInput[]
+    createMany?: ConversationLabelCreateManyLabelInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
+  export type ConversationLabelUncheckedCreateNestedManyWithoutLabelInput = {
+    create?: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput> | ConversationLabelCreateWithoutLabelInput[] | ConversationLabelUncheckedCreateWithoutLabelInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutLabelInput | ConversationLabelCreateOrConnectWithoutLabelInput[]
+    createMany?: ConversationLabelCreateManyLabelInputEnvelope
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
+  export type ConversationLabelUpdateManyWithoutLabelNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput> | ConversationLabelCreateWithoutLabelInput[] | ConversationLabelUncheckedCreateWithoutLabelInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutLabelInput | ConversationLabelCreateOrConnectWithoutLabelInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutLabelInput | ConversationLabelUpsertWithWhereUniqueWithoutLabelInput[]
+    createMany?: ConversationLabelCreateManyLabelInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutLabelInput | ConversationLabelUpdateWithWhereUniqueWithoutLabelInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutLabelInput | ConversationLabelUpdateManyWithWhereWithoutLabelInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
+  export type ConversationLabelUncheckedUpdateManyWithoutLabelNestedInput = {
+    create?: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput> | ConversationLabelCreateWithoutLabelInput[] | ConversationLabelUncheckedCreateWithoutLabelInput[]
+    connectOrCreate?: ConversationLabelCreateOrConnectWithoutLabelInput | ConversationLabelCreateOrConnectWithoutLabelInput[]
+    upsert?: ConversationLabelUpsertWithWhereUniqueWithoutLabelInput | ConversationLabelUpsertWithWhereUniqueWithoutLabelInput[]
+    createMany?: ConversationLabelCreateManyLabelInputEnvelope
+    set?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    disconnect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    delete?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+    update?: ConversationLabelUpdateWithWhereUniqueWithoutLabelInput | ConversationLabelUpdateWithWhereUniqueWithoutLabelInput[]
+    updateMany?: ConversationLabelUpdateManyWithWhereWithoutLabelInput | ConversationLabelUpdateManyWithWhereWithoutLabelInput[]
+    deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
+  export type ConversationCreateNestedOneWithoutLabelsInput = {
+    create?: XOR<ConversationCreateWithoutLabelsInput, ConversationUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutLabelsInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type LabelCreateNestedOneWithoutConversationLabelsInput = {
+    create?: XOR<LabelCreateWithoutConversationLabelsInput, LabelUncheckedCreateWithoutConversationLabelsInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutConversationLabelsInput
+    connect?: LabelWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutAddedConversationLabelsInput = {
+    create?: XOR<AgentCreateWithoutAddedConversationLabelsInput, AgentUncheckedCreateWithoutAddedConversationLabelsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAddedConversationLabelsInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type ConversationUpdateOneRequiredWithoutLabelsNestedInput = {
+    create?: XOR<ConversationCreateWithoutLabelsInput, ConversationUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutLabelsInput
+    upsert?: ConversationUpsertWithoutLabelsInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutLabelsInput, ConversationUpdateWithoutLabelsInput>, ConversationUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type LabelUpdateOneRequiredWithoutConversationLabelsNestedInput = {
+    create?: XOR<LabelCreateWithoutConversationLabelsInput, LabelUncheckedCreateWithoutConversationLabelsInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutConversationLabelsInput
+    upsert?: LabelUpsertWithoutConversationLabelsInput
+    connect?: LabelWhereUniqueInput
+    update?: XOR<XOR<LabelUpdateToOneWithWhereWithoutConversationLabelsInput, LabelUpdateWithoutConversationLabelsInput>, LabelUncheckedUpdateWithoutConversationLabelsInput>
+  }
+
+  export type AgentUpdateOneWithoutAddedConversationLabelsNestedInput = {
+    create?: XOR<AgentCreateWithoutAddedConversationLabelsInput, AgentUncheckedCreateWithoutAddedConversationLabelsInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAddedConversationLabelsInput
+    upsert?: AgentUpsertWithoutAddedConversationLabelsInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutAddedConversationLabelsInput, AgentUpdateWithoutAddedConversationLabelsInput>, AgentUncheckedUpdateWithoutAddedConversationLabelsInput>
   }
 
   export type FlowDefinitionCreateNestedOneWithoutRevisionsInput = {
@@ -28876,6 +32938,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutDepartmentInput = {
@@ -28896,6 +32959,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutDepartmentInput = {
@@ -28919,6 +32983,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -28927,6 +32993,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutDepartmentInput = {
@@ -28944,10 +33011,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutDepartmentInput = {
@@ -29137,6 +33207,8 @@ export namespace Prisma {
     closedAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     warningSentAt?: DateTimeNullableFilter<"Conversation"> | Date | string | null
     closeReason?: StringNullableFilter<"Conversation"> | string | null
+    groupChatName?: StringNullableFilter<"Conversation"> | string | null
+    groupParticipant?: StringNullableFilter<"Conversation"> | string | null
   }
 
   export type ShortcutUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -29304,6 +33376,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -29312,6 +33386,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignedAgentInput = {
@@ -29329,10 +33404,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutAssignedAgentInput = {
@@ -29642,6 +33720,30 @@ export namespace Prisma {
     create: XOR<NotificationPreferenceCreateWithoutAgentInput, NotificationPreferenceUncheckedCreateWithoutAgentInput>
   }
 
+  export type ConversationLabelCreateWithoutAddedByAgentInput = {
+    id?: string
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutLabelsInput
+    label: LabelCreateNestedOneWithoutConversationLabelsInput
+  }
+
+  export type ConversationLabelUncheckedCreateWithoutAddedByAgentInput = {
+    id?: string
+    conversationId: string
+    labelId: string
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelCreateOrConnectWithoutAddedByAgentInput = {
+    where: ConversationLabelWhereUniqueInput
+    create: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput>
+  }
+
+  export type ConversationLabelCreateManyAddedByAgentInputEnvelope = {
+    data: ConversationLabelCreateManyAddedByAgentInput | ConversationLabelCreateManyAddedByAgentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DepartmentUpsertWithoutAgentsInput = {
     update: XOR<DepartmentUpdateWithoutAgentsInput, DepartmentUncheckedUpdateWithoutAgentsInput>
     create: XOR<DepartmentCreateWithoutAgentsInput, DepartmentUncheckedCreateWithoutAgentsInput>
@@ -29895,6 +33997,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationLabelUpsertWithWhereUniqueWithoutAddedByAgentInput = {
+    where: ConversationLabelWhereUniqueInput
+    update: XOR<ConversationLabelUpdateWithoutAddedByAgentInput, ConversationLabelUncheckedUpdateWithoutAddedByAgentInput>
+    create: XOR<ConversationLabelCreateWithoutAddedByAgentInput, ConversationLabelUncheckedCreateWithoutAddedByAgentInput>
+  }
+
+  export type ConversationLabelUpdateWithWhereUniqueWithoutAddedByAgentInput = {
+    where: ConversationLabelWhereUniqueInput
+    data: XOR<ConversationLabelUpdateWithoutAddedByAgentInput, ConversationLabelUncheckedUpdateWithoutAddedByAgentInput>
+  }
+
+  export type ConversationLabelUpdateManyWithWhereWithoutAddedByAgentInput = {
+    where: ConversationLabelScalarWhereInput
+    data: XOR<ConversationLabelUpdateManyMutationInput, ConversationLabelUncheckedUpdateManyWithoutAddedByAgentInput>
+  }
+
+  export type ConversationLabelScalarWhereInput = {
+    AND?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+    OR?: ConversationLabelScalarWhereInput[]
+    NOT?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+    id?: StringFilter<"ConversationLabel"> | string
+    conversationId?: StringFilter<"ConversationLabel"> | string
+    labelId?: StringFilter<"ConversationLabel"> | string
+    addedByAgentId?: StringNullableFilter<"ConversationLabel"> | string | null
+    createdAt?: DateTimeFilter<"ConversationLabel"> | Date | string
+  }
+
   export type ConversationCreateWithoutContactInput = {
     id?: string
     status?: string
@@ -29906,6 +34035,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
@@ -29914,6 +34045,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutContactInput = {
@@ -29931,10 +34063,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutContactInput = {
@@ -30027,6 +34162,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutConversationsInput = {
@@ -30047,6 +34183,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutConversationsInput = {
@@ -30296,6 +34433,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ConversationLabelCreateWithoutConversationInput = {
+    id?: string
+    createdAt?: Date | string
+    label: LabelCreateNestedOneWithoutConversationLabelsInput
+    addedByAgent?: AgentCreateNestedOneWithoutAddedConversationLabelsInput
+  }
+
+  export type ConversationLabelUncheckedCreateWithoutConversationInput = {
+    id?: string
+    labelId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelCreateOrConnectWithoutConversationInput = {
+    where: ConversationLabelWhereUniqueInput
+    create: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationLabelCreateManyConversationInputEnvelope = {
+    data: ConversationLabelCreateManyConversationInput | ConversationLabelCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ContactUpsertWithoutConversationsInput = {
     update: XOR<ContactUpdateWithoutConversationsInput, ContactUncheckedUpdateWithoutConversationsInput>
     create: XOR<ContactCreateWithoutConversationsInput, ContactUncheckedCreateWithoutConversationsInput>
@@ -30383,6 +34544,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutConversationsInput = {
@@ -30403,6 +34565,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -30600,6 +34763,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
   }
 
+  export type ConversationLabelUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ConversationLabelWhereUniqueInput
+    update: XOR<ConversationLabelUpdateWithoutConversationInput, ConversationLabelUncheckedUpdateWithoutConversationInput>
+    create: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationLabelUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ConversationLabelWhereUniqueInput
+    data: XOR<ConversationLabelUpdateWithoutConversationInput, ConversationLabelUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ConversationLabelUpdateManyWithWhereWithoutConversationInput = {
+    where: ConversationLabelScalarWhereInput
+    data: XOR<ConversationLabelUpdateManyMutationInput, ConversationLabelUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type ConversationCreateWithoutMessagesInput = {
     id?: string
     status?: string
@@ -30611,6 +34790,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -30619,6 +34800,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -30637,9 +34819,12 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -30665,6 +34850,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutMessagesInput = {
@@ -30685,6 +34871,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutMessagesInput = {
@@ -30777,6 +34964,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -30785,6 +34974,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -30803,9 +34993,12 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentUpsertWithoutMessagesInput = {
@@ -30837,6 +35030,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutMessagesInput = {
@@ -30857,6 +35051,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type ConversationMediaUpsertWithoutMessageInput = {
@@ -30968,6 +35163,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -30976,6 +35173,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMediaInput = {
@@ -30994,9 +35192,12 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMediaInput = {
@@ -31061,6 +35262,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -31069,6 +35272,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMediaInput = {
@@ -31087,9 +35291,12 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionCreateWithoutFlowDefinitionInput = {
@@ -31150,6 +35357,314 @@ export namespace Prisma {
     data: XOR<FlowRevisionUpdateManyMutationInput, FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionInput>
   }
 
+  export type ConversationLabelCreateWithoutLabelInput = {
+    id?: string
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutLabelsInput
+    addedByAgent?: AgentCreateNestedOneWithoutAddedConversationLabelsInput
+  }
+
+  export type ConversationLabelUncheckedCreateWithoutLabelInput = {
+    id?: string
+    conversationId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelCreateOrConnectWithoutLabelInput = {
+    where: ConversationLabelWhereUniqueInput
+    create: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput>
+  }
+
+  export type ConversationLabelCreateManyLabelInputEnvelope = {
+    data: ConversationLabelCreateManyLabelInput | ConversationLabelCreateManyLabelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationLabelUpsertWithWhereUniqueWithoutLabelInput = {
+    where: ConversationLabelWhereUniqueInput
+    update: XOR<ConversationLabelUpdateWithoutLabelInput, ConversationLabelUncheckedUpdateWithoutLabelInput>
+    create: XOR<ConversationLabelCreateWithoutLabelInput, ConversationLabelUncheckedCreateWithoutLabelInput>
+  }
+
+  export type ConversationLabelUpdateWithWhereUniqueWithoutLabelInput = {
+    where: ConversationLabelWhereUniqueInput
+    data: XOR<ConversationLabelUpdateWithoutLabelInput, ConversationLabelUncheckedUpdateWithoutLabelInput>
+  }
+
+  export type ConversationLabelUpdateManyWithWhereWithoutLabelInput = {
+    where: ConversationLabelScalarWhereInput
+    data: XOR<ConversationLabelUpdateManyMutationInput, ConversationLabelUncheckedUpdateManyWithoutLabelInput>
+  }
+
+  export type ConversationCreateWithoutLabelsInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutLabelsInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutLabelsInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutLabelsInput, ConversationUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type LabelCreateWithoutConversationLabelsInput = {
+    id?: string
+    name: string
+    slug: string
+    color?: string
+    icon?: string | null
+    isSystem?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LabelUncheckedCreateWithoutConversationLabelsInput = {
+    id?: string
+    name: string
+    slug: string
+    color?: string
+    icon?: string | null
+    isSystem?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LabelCreateOrConnectWithoutConversationLabelsInput = {
+    where: LabelWhereUniqueInput
+    create: XOR<LabelCreateWithoutConversationLabelsInput, LabelUncheckedCreateWithoutConversationLabelsInput>
+  }
+
+  export type AgentCreateWithoutAddedConversationLabelsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutAddedConversationLabelsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutAddedConversationLabelsInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutAddedConversationLabelsInput, AgentUncheckedCreateWithoutAddedConversationLabelsInput>
+  }
+
+  export type ConversationUpsertWithoutLabelsInput = {
+    update: XOR<ConversationUpdateWithoutLabelsInput, ConversationUncheckedUpdateWithoutLabelsInput>
+    create: XOR<ConversationCreateWithoutLabelsInput, ConversationUncheckedCreateWithoutLabelsInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutLabelsInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutLabelsInput, ConversationUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type ConversationUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type LabelUpsertWithoutConversationLabelsInput = {
+    update: XOR<LabelUpdateWithoutConversationLabelsInput, LabelUncheckedUpdateWithoutConversationLabelsInput>
+    create: XOR<LabelCreateWithoutConversationLabelsInput, LabelUncheckedCreateWithoutConversationLabelsInput>
+    where?: LabelWhereInput
+  }
+
+  export type LabelUpdateToOneWithWhereWithoutConversationLabelsInput = {
+    where?: LabelWhereInput
+    data: XOR<LabelUpdateWithoutConversationLabelsInput, LabelUncheckedUpdateWithoutConversationLabelsInput>
+  }
+
+  export type LabelUpdateWithoutConversationLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelUncheckedUpdateWithoutConversationLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentUpsertWithoutAddedConversationLabelsInput = {
+    update: XOR<AgentUpdateWithoutAddedConversationLabelsInput, AgentUncheckedUpdateWithoutAddedConversationLabelsInput>
+    create: XOR<AgentCreateWithoutAddedConversationLabelsInput, AgentUncheckedCreateWithoutAddedConversationLabelsInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutAddedConversationLabelsInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutAddedConversationLabelsInput, AgentUncheckedUpdateWithoutAddedConversationLabelsInput>
+  }
+
+  export type AgentUpdateWithoutAddedConversationLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutAddedConversationLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+  }
+
   export type FlowDefinitionCreateWithoutRevisionsInput = {
     id?: string
     name: string
@@ -31191,6 +35706,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutPublishedFlowRevisionsInput = {
@@ -31211,6 +35727,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutPublishedFlowRevisionsInput = {
@@ -31297,6 +35814,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -31305,6 +35824,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowRevisionInput = {
@@ -31322,10 +35842,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowRevisionInput = {
@@ -31426,6 +35949,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput = {
@@ -31446,6 +35970,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput = {
@@ -31656,6 +36181,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -31664,6 +36191,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutCurrentFlowNodeInput = {
@@ -31681,10 +36209,13 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutCurrentFlowNodeInput = {
@@ -32110,6 +36641,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -32118,6 +36651,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowEventsInput = {
@@ -32136,9 +36670,12 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowEventsInput = {
@@ -32240,6 +36777,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -32248,6 +36787,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowEventsInput = {
@@ -32266,9 +36806,12 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionUpsertWithoutExecutionEventsInput = {
@@ -32400,6 +36943,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutOwnedShortcutsInput = {
@@ -32420,6 +36964,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutOwnedShortcutsInput = {
@@ -32445,6 +36990,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutCreatedShortcutsInput = {
@@ -32465,6 +37011,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutCreatedShortcutsInput = {
@@ -32490,6 +37037,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutUpdatedShortcutsInput = {
@@ -32510,6 +37058,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutUpdatedShortcutsInput = {
@@ -32605,6 +37154,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutOwnedShortcutsInput = {
@@ -32625,6 +37175,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUpsertWithoutCreatedShortcutsInput = {
@@ -32656,6 +37207,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutCreatedShortcutsInput = {
@@ -32676,6 +37228,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUpsertWithoutUpdatedShortcutsInput = {
@@ -32707,6 +37260,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutUpdatedShortcutsInput = {
@@ -32727,6 +37281,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type ShortcutAuditUpsertWithWhereUniqueWithoutShortcutInput = {
@@ -32802,6 +37357,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutShortcutAuditsInput = {
@@ -32822,6 +37378,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutShortcutAuditsInput = {
@@ -32903,6 +37460,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutShortcutAuditsInput = {
@@ -32923,6 +37481,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentCreateWithoutNotificationsInput = {
@@ -32943,6 +37502,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutNotificationsInput = {
@@ -32963,6 +37523,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutNotificationsInput = {
@@ -32981,6 +37542,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
@@ -32989,6 +37552,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutNotificationsInput = {
@@ -33007,9 +37571,12 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutNotificationsInput = {
@@ -33046,6 +37613,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutNotificationsInput = {
@@ -33066,6 +37634,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type ConversationUpsertWithoutNotificationsInput = {
@@ -33090,6 +37659,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -33098,6 +37669,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutNotificationsInput = {
@@ -33116,9 +37688,12 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentCreateWithoutNotificationPreferenceInput = {
@@ -33139,6 +37714,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -33159,6 +37735,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -33195,6 +37772,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -33215,6 +37793,7 @@ export namespace Prisma {
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type ProcedureCreateManyDepartmentInput = {
@@ -33250,6 +37829,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type ShortcutCreateManyDepartmentInput = {
@@ -33318,6 +37899,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutDepartmentInput = {
@@ -33338,6 +37920,7 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateManyWithoutDepartmentInput = {
@@ -33362,6 +37945,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -33370,6 +37955,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutDepartmentInput = {
@@ -33387,10 +37973,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutDepartmentInput = {
@@ -33408,6 +37997,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ShortcutUpdateWithoutDepartmentInput = {
@@ -33516,6 +38107,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type MessageCreateManySenderAgentInput = {
@@ -33611,6 +38204,13 @@ export namespace Prisma {
     dismissedAt?: Date | string | null
   }
 
+  export type ConversationLabelCreateManyAddedByAgentInput = {
+    id?: string
+    conversationId: string
+    labelId: string
+    createdAt?: Date | string
+  }
+
   export type ConversationUpdateWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -33622,6 +38222,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -33630,6 +38232,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignedAgentInput = {
@@ -33647,10 +38250,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentInput = {
@@ -33668,6 +38274,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageUpdateWithoutSenderAgentInput = {
@@ -33965,6 +38573,27 @@ export namespace Prisma {
     dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type ConversationLabelUpdateWithoutAddedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutLabelsNestedInput
+    label?: LabelUpdateOneRequiredWithoutConversationLabelsNestedInput
+  }
+
+  export type ConversationLabelUncheckedUpdateWithoutAddedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelUncheckedUpdateManyWithoutAddedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ConversationCreateManyContactInput = {
     id?: string
     status?: string
@@ -33980,6 +38609,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type ConversationUpdateWithoutContactInput = {
@@ -33993,6 +38624,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
@@ -34001,6 +38634,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutContactInput = {
@@ -34018,10 +38652,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutContactInput = {
@@ -34039,6 +38676,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageCreateManyConversationInput = {
@@ -34103,6 +38742,13 @@ export namespace Prisma {
     lastAccessedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ConversationLabelCreateManyConversationInput = {
+    id?: string
+    labelId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
   }
 
   export type MessageUpdateWithoutConversationInput = {
@@ -34299,6 +38945,27 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationLabelUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    label?: LabelUpdateOneRequiredWithoutConversationLabelsNestedInput
+    addedByAgent?: AgentUpdateOneWithoutAddedConversationLabelsNestedInput
+  }
+
+  export type ConversationLabelUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    labelId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FlowRevisionCreateManyFlowDefinitionInput = {
     id?: string
     version: number
@@ -34355,6 +39022,34 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationLabelCreateManyLabelInput = {
+    id?: string
+    conversationId: string
+    addedByAgentId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationLabelUpdateWithoutLabelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutLabelsNestedInput
+    addedByAgent?: AgentUpdateOneWithoutAddedConversationLabelsNestedInput
+  }
+
+  export type ConversationLabelUncheckedUpdateWithoutLabelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationLabelUncheckedUpdateManyWithoutLabelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    addedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FlowNodeCreateManyFlowRevisionInput = {
     id?: string
     stableKey: string
@@ -34390,6 +39085,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowRevisionInput = {
@@ -34481,6 +39178,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -34489,6 +39188,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowRevisionInput = {
@@ -34506,10 +39206,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutFlowRevisionInput = {
@@ -34527,6 +39230,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowRevisionInput = {
@@ -34592,6 +39297,8 @@ export namespace Prisma {
     closedAt?: Date | string | null
     warningSentAt?: Date | string | null
     closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowNodeInput = {
@@ -34669,6 +39376,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
@@ -34677,6 +39386,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutCurrentFlowNodeInput = {
@@ -34694,10 +39404,13 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput = {
@@ -34715,6 +39428,8 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowNodeInput = {
@@ -34805,6 +39520,10 @@ export namespace Prisma {
      */
     export type FlowDefinitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use LabelCountOutputTypeDefaultArgs instead
+     */
+    export type LabelCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LabelCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use FlowRevisionCountOutputTypeDefaultArgs instead
      */
     export type FlowRevisionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowRevisionCountOutputTypeDefaultArgs<ExtArgs>
@@ -34856,6 +39575,18 @@ export namespace Prisma {
      * @deprecated Use ZApiConfigDefaultArgs instead
      */
     export type ZApiConfigArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ZApiConfigDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use LabelDefaultArgs instead
+     */
+    export type LabelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LabelDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ConversationLabelDefaultArgs instead
+     */
+    export type ConversationLabelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationLabelDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GroupMentionCooldownDefaultArgs instead
+     */
+    export type GroupMentionCooldownArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GroupMentionCooldownDefaultArgs<ExtArgs>
     /**
      * @deprecated Use FlowRevisionDefaultArgs instead
      */

@@ -102,6 +102,12 @@ export default function ConversationPage() {
     }
   }, [id]));
 
+  useSocketEvent("conversation:labels_updated", useCallback((data: any) => {
+    if (data.conversationId === id) {
+      queryClient.setQueryData<any>(["conversation", id], (current: any) => current ? { ...current, labels: data.labels || [] } : current);
+    }
+  }, [id]));
+
   useSocketEvent("media:expired", useCallback((data: any) => {
     if (data.conversationId === id) {
       queryClient.invalidateQueries({ queryKey: ["conversation", id] });
@@ -374,6 +380,7 @@ export default function ConversationPage() {
       <DetailPanel
         conversation={conversation}
         canUseShortcuts={can("shortcuts", "use")}
+        canManageLabels={can("labels", "update")}
         agentDeptName={activeAgentDeptName}
         onInsertShortcut={(shortcut) => {
           setMessage(shortcut.message);

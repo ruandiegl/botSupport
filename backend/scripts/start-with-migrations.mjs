@@ -11,6 +11,7 @@ const legacyMigrations = [
   "20260812100000_add_versioned_flow_engine",
   "20260812110000_add_flow_publish_permission",
 ];
+const prismaCli = join(process.cwd(), "node_modules", "prisma", "build", "index.js");
 
 function run(command, args, { capture = false } = {}) {
   const result = spawnSync(command, args, {
@@ -94,12 +95,12 @@ if (process.env.PRISMA_BASELINE_LEGACY === "true") {
     console.error("[startup] Legacy baseline failed:", error);
     process.exit(1);
   }
-  deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
+  deploy = run(process.execPath, [prismaCli, "migrate", "deploy"], { capture: true });
   process.stdout.write(deploy.stdout ?? "");
   process.stderr.write(deploy.stderr ?? "");
   exitOnFailure(deploy, "migrate deploy after baseline");
 } else {
-  deploy = run("npx", ["prisma", "migrate", "deploy"], { capture: true });
+  deploy = run(process.execPath, [prismaCli, "migrate", "deploy"], { capture: true });
   process.stdout.write(deploy.stdout ?? "");
   process.stderr.write(deploy.stderr ?? "");
 }

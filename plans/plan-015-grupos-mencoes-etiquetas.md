@@ -1,6 +1,6 @@
 # Plano 015 — Atendimento em grupos, menções ao bot e etiquetas de chamados
 
-> **Status:** Planejado — aguardando fechamento das decisões funcionais do PRD
+> **Status:** Implementado — aguardando apenas homologação com payload real de grupo na Z-API
 > **Data:** 2026-08-17
 > **Repositório:** `C:\Users\ESTUDIO-TREINAMENTO\Desktop\botSupport`
 > **Escopo:** webhook Z-API, conversas, etiquetas, RBAC, fila, detalhe do chat e administração Z-API
@@ -472,3 +472,16 @@ Os agentes abaixo são referências de responsabilidade do plano, conforme [`age
 - logs não expõem PII/JID/token;
 - builds, `prisma validate`, testes e smoke de produção aprovados;
 - runbook de ativação/rollback entregue e equipe de operação ciente.
+
+## 16. Resultado da execução — 2026-08-17
+
+- migrations aditivas aplicadas localmente sem seed e sem exclusão de conversas;
+- catálogo de etiquetas, relações, cooldown persistente e cinco etiquetas de sistema criados;
+- API CRUD, associação idempotente, filtro de fila e RBAC implementados;
+- webhook aceita contexto de grupo, valida menção à instância, rejeita broadcast, aplica cooldown por hash e mantém o fluxo privado inalterado;
+- conversa de grupo é vinculada ao participante, recebe `GROUP`, preserva somente o nome legível do grupo na UI e confirma por DM;
+- painel Z-API permite configurar flag, cooldown, template e confirmação pública opt-in sem devolver tokens ou telefone completo;
+- frontend shadcn inclui badges, filtro multi-select, gerenciamento no detalhe e CRUD administrativo com modais warning/danger;
+- Socket.IO sincroniza etiquetas na fila e no detalhe;
+- `prisma validate`, migrations, backend build, frontend TypeScript/build e 47 testes automatizados aprovados;
+- pendência operacional: validar em uma instância/grupo de homologação o formato real de `mentionedJids` e o envio opcional ao JID do grupo antes de habilitar `groupsEnabled` em produção.

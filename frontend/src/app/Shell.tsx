@@ -14,6 +14,7 @@ import {
   LogOut,
   ShieldCheck,
   MessagesSquare,
+  Tags,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
@@ -72,6 +73,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     void queryClient.invalidateQueries({ queryKey: ["agents"] });
   }, [queryClient]);
   useSocketEvent("conversation:updated", refreshConversations);
+  useSocketEvent("conversation:labels_updated", refreshConversations);
   useSocketEvent("agent:status", refreshAgents);
 
   // Buscar lista de atendentes reais do banco de dados
@@ -115,6 +117,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     { href: "/admin/departments", label: "Departamentos", icon: LayoutDashboard },
     { href: "/admin/agents", label: "Atendentes", icon: Users },
     { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
+    { href: "/admin/labels", label: "Etiquetas", icon: Tags },
     { href: "/admin/flow", label: "Fluxo do bot", icon: Bot },
     { href: "/admin/zapi", label: "Conexão Z-API", icon: Radio },
     { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
@@ -126,6 +129,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location.includes("departments")) return "Departamentos";
     if (location.includes("agents")) return "Atendentes";
     if (location.includes("shortcuts")) return "Atalhos e procedimentos";
+    if (location.includes("labels")) return "Etiquetas";
     if (location.includes("flow")) return "Fluxo do bot";
     if (location.includes("zapi")) return "Conexão Z-API";
     if (location.includes("rbac")) return "Controle de Acesso (RBAC)";

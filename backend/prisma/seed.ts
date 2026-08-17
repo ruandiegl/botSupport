@@ -9,6 +9,8 @@ async function main() {
   // Limpar tabelas mantendo ordem de chave estrangeira
   await prisma.shortcutAudit.deleteMany();
   await prisma.shortcut.deleteMany();
+  await prisma.conversationLabel.deleteMany();
+  await prisma.groupMentionCooldown.deleteMany();
   await prisma.message.deleteMany();
   await prisma.conversation.deleteMany();
   await prisma.procedure.deleteMany();
@@ -18,6 +20,7 @@ async function main() {
   await prisma.flowDefinition.deleteMany();
   await prisma.zApiConfig.deleteMany();
   await prisma.rolePermission.deleteMany();
+  await prisma.label.deleteMany();
 
   // 1. Departamentos Reais da Operação
   const deptGeral = await prisma.department.create({
@@ -161,13 +164,23 @@ async function main() {
     });
   }
 
-  const screenPaths = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/flow", "/admin/zapi", "/admin/rbac"];
+  await prisma.label.createMany({
+    data: [
+      { id: "00000000-0000-4000-8000-000000000001", name: "Grupo", slug: "GROUP", color: "#2D89C8", icon: "Users", isSystem: true },
+      { id: "00000000-0000-4000-8000-000000000002", name: "Urgente", slug: "URGENT", color: "#DC2626", icon: "TriangleAlert", isSystem: true },
+      { id: "00000000-0000-4000-8000-000000000003", name: "Aguardando", slug: "WAITING", color: "#D97706", icon: "Clock3", isSystem: true },
+      { id: "00000000-0000-4000-8000-000000000004", name: "Resolvido", slug: "RESOLVED", color: "#059669", icon: "CircleCheck", isSystem: true },
+      { id: "00000000-0000-4000-8000-000000000005", name: "Revisão", slug: "REVIEW", color: "#7C3AED", icon: "SearchCheck", isSystem: true },
+    ],
+  });
+
+  const screenPaths = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac"];
   const roleActions: Record<string, Record<string, string[]>> = {
     ADMIN: {
-      conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
+      conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
     },
-    SUPERVISOR: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], reports: ["view"] },
-    AGENT: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"] },
+    SUPERVISOR: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"] },
+    AGENT: { conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"] },
   };
   await prisma.rolePermission.createMany({
     data: Object.entries(roleActions).flatMap(([role, resources]) => [

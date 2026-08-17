@@ -3,6 +3,16 @@ export type MessageDirection = "IN" | "OUT";
 export type SenderType = "CLIENT" | "AGENT" | "BOT";
 export type AgentRole = "ADMIN" | "SUPERVISOR" | "AGENT";
 
+export interface ConversationLabel {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+  icon?: string | null;
+  isSystem: boolean;
+  usageCount?: number;
+}
+
 export interface Contact {
   name: string;
   phone: string;
@@ -60,6 +70,8 @@ export interface Conversation {
   startedAt: string;
   queuedAt?: string | null;
   lastActivityAt?: string | null;
+  labels?: ConversationLabel[];
+  groupChatName?: string | null;
 }
 
 /** Lightweight row returned by the paginated queue endpoint. */

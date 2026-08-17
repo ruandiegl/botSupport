@@ -16,6 +16,7 @@ import FlowAdmin from "@/pages/admin/flow";
 import ZApiAdmin from "@/pages/admin/zapi";
 import RbacAdmin from "@/pages/admin/rbac";
 import ShortcutsAdmin from "@/pages/admin/shortcuts";
+import LabelsAdmin from "@/pages/admin/labels";
 import "@/styles.css";
 
 function NotFoundPage() {
@@ -115,6 +116,9 @@ function Router() {
               </Route>
               <Route path="/admin/shortcuts">
                 {() => <ProtectedRoute component={ShortcutsAdmin} screen="/admin/shortcuts" />}
+              </Route>
+              <Route path="/admin/labels">
+                {() => <ProtectedRoute component={LabelsAdmin} screen="/admin/labels" />}
               </Route>
               <Route path="/admin/zapi">
                 {() => <ProtectedRoute component={ZApiAdmin} screen="/admin/zapi" />}
