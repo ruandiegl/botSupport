@@ -4,6 +4,7 @@ import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { mediaService } from "../media/media.service.js";
+import { notificationsService } from "../notifications/notifications.service.js";
 
 const DEFAULT_MESSAGE_LIMIT = 50;
 
@@ -126,6 +127,8 @@ export class ConversationsService {
         id: assignment.id,
         action: assignment.action,
         reason: assignment.reason,
+        response: assignment.response ?? null,
+        respondedAt: assignment.respondedAt?.toISOString() ?? null,
         createdAt: assignment.createdAt.toISOString(),
         fromAgent: assignment.fromAgent ? { id: assignment.fromAgent.id, name: assignment.fromAgent.name } : null,
         toAgent: assignment.toAgent ? { id: assignment.toAgent.id, name: assignment.toAgent.name, departmentName: assignment.toAgent.department?.name ?? null } : null,
@@ -230,6 +233,8 @@ export class ConversationsService {
         id: assignment.id,
         action: assignment.action,
         reason: assignment.reason,
+        response: assignment.response ?? null,
+        respondedAt: assignment.respondedAt?.toISOString() ?? null,
         createdAt: assignment.createdAt.toISOString(),
         fromAgent: assignment.fromAgent ? { id: assignment.fromAgent.id, name: assignment.fromAgent.name } : null,
         toAgent: assignment.toAgent ? { id: assignment.toAgent.id, name: assignment.toAgent.name, departmentName: assignment.toAgent.department?.name ?? null } : null,
@@ -358,6 +363,40 @@ export class ConversationsService {
     });
     const updated = await this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
     return { kind: "OK" as const, conversation: updated, assignment: result.assignment };
+  }
+
+  async respondToDelegation(id: string, assignmentId: string, decision: "ACCEPT" | "DECLINE", user?: AuthenticatedRequest["user"]) {
+    const conversation = await conversationsRepository.findAccessById(id);
+    if (!conversation || !user || !this.canAccess(conversation, user)) return { kind: "NOT_FOUND" as const };
+
+    const result = await conversationsRepository.respondToDelegation(id, assignmentId, user.id, decision);
+    if (result.kind !== "OK") return result;
+
+    const eventType = result.accepted ? "DELEGATION_ACCEPTED" : "DELEGATION_DECLINED";
+    conversationEvents.emit("conversation_updated", {
+      conversationId: id,
+      status: result.conversation.status,
+      eventType,
+      assignedAgentId: result.conversation.assignedAgentId,
+      departmentId: result.conversation.departmentId,
+      assignmentId: result.assignment.id,
+      response: result.accepted ? "ACCEPTED" : "DECLINED",
+      actorAgentId: user.id,
+      actorName: user.name,
+    });
+    if (result.message) {
+      const formattedMessage = this.formatMessage({ ...result.message, senderAgent: null, senderContact: null }, conversation);
+      socketEmitter.emitToConversation(id, "message:new", { conversationId: id, message: formattedMessage });
+    }
+    await notificationsService.notifyDelegationResponse({
+      assignmentId: result.assignment.id,
+      conversationId: id,
+      delegatorAgentId: result.assignment.actorAgent.id,
+      responderName: result.assignment.toAgent.name,
+      decision: result.accepted ? "ACCEPTED" : "DECLINED",
+    });
+    const updated = await this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
+    return { kind: "OK" as const, conversation: updated, assignment: result.assignment, response: result.accepted ? "ACCEPTED" as const : "DECLINED" as const };
   }
 
   async close(id: string, user?: AuthenticatedRequest["user"]) {

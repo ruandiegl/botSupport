@@ -150,7 +150,7 @@ io.use(async (socket, next) => {
 | `conversation:transferred` | `conversation:{id}` + `queue` | `{ conversationId, departmentId, departmentName }` | Conversa transferida |
 | `typing:update` | `conversation:{id}` | `{ conversationId, agentId, agentName, isTyping }` | Indicador de digitação |
 | `agent:status` | `agents` | `{ agentId, isOnline, lastSeen }` | Presença do atendente mudou |
-| `notification:new` | `agent:{id}` (namespace `/notifications`) | `{ type, title, body, conversationId?, timestamp }` | Notificação pessoal |
+| `notification:new` | `agent:{id}` (namespace `/notifications`) | `{ id, type, title, body, conversationId?, payload?, createdAt }` | Notificação pessoal; `CONVERSATION_DELEGATED` abre o modal de decisão no destinatário |
 
 ### 5.2 Eventos do Cliente → Servidor (Emitidos pelo frontend)
 
@@ -417,7 +417,8 @@ sequenceDiagram
 - [ ] O fallback para polling funciona quando o socket está desconectado.
 - [ ] Backend e frontend compilam sem erros (`npm run build`).
 - [ ] Nenhum token, credencial ou dado sensível trafega por eventos socket.
-- [ ] `conversation:delegated` atualiza a conversa em tempo real e `notification:new` chega somente ao agente destinatário.
+- [x] `conversation:delegated` atualiza a conversa em tempo real e `notification:new` chega somente ao agente destinatário.
+- [x] O destinatário recebe um modal global com `Assumir chamado` e `Não assumir`; a resposta REST é persistida na auditoria e o delegador recebe `DELEGATION_RESPONSE` em tempo real.
 - [ ] Eventos de delegação não expõem telefone completo, JID, token ou conteúdo sensível.
 
 ---

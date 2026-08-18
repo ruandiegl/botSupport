@@ -108,7 +108,7 @@ Dispensa um alerta sem apagar o registro de auditoria.
 ### `GET /notification-preferences`, `PATCH /notification-preferences`
 Lê ou altera som, notificações do navegador e limiares de lembrete. Os intervalos são limitados entre 5 e 1440 minutos.
 
-Tipos emitidos: `NEW_QUEUE_CONVERSATION`, `NEW_MESSAGE` e `UNRESOLVED_REMINDER`.
+Tipos emitidos: `NEW_QUEUE_CONVERSATION`, `NEW_MESSAGE`, `ASSIGNED_CONVERSATION`, `CONVERSATION_DELEGATED`, `DELEGATION_RESPONSE` e `UNRESOLVED_REMINDER`. Notificações de delegação carregam no payload apenas o `conversationId`, `delegationAssignmentId`, decisão e nome do atendente; nunca tokens ou dados sensíveis.
 
 ## 4. Departamentos (`/departments`)
 
@@ -342,6 +342,16 @@ Requer `conversations:delegate`. Retorna `{ items: [{ id, name, email, role, isO
 ### `POST /conversations/:id/delegate`
 
 Requer `conversations:delegate` e recebe `{ "agentId": "uuid", "reason": "Cobertura temporária" }`. O agente do JWT é o ator; `agentId` é apenas o destinatário. A operação é transacional, registra `ConversationAssignment`, atualiza o responsável e notifica o destino. Respostas: `200`, `400` payload inválido, `401`, `403`, `404` ou `409` para encerramento, destino inválido ou conflito concorrente.
+
+### `POST /conversations/:id/delegation-response`
+
+Requer `conversations:view` e só aceita uma resposta do agente destinatário da delegação ainda pendente:
+
+```json
+{ "assignmentId": "uuid", "decision": "ACCEPT" }
+```
+
+`decision` também pode ser `DECLINE`. A resposta é idempotente por `assignmentId`: uma segunda resposta retorna `409`. Ao aceitar, o agente se torna responsável, uma mensagem interna de atendimento assumido é adicionada ao histórico e o frontend pode abrir a conversa imediatamente. Ao recusar, o chamado retorna ao responsável anterior ou à fila. Em ambos os casos, o ator que delegou recebe `notification:new` e uma notificação persistida do tipo `DELEGATION_RESPONSE`.
 
 ## Menções em grupos Z-API
 

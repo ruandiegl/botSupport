@@ -14,6 +14,7 @@ export type NotificationEvent = {
   actorName?: string | null;
   reason?: string | null;
   assignmentId?: string;
+  response?: "ACCEPTED" | "DECLINED";
 };
 
 let initialized = false;
@@ -101,7 +102,13 @@ export class NotificationsService {
       conversationId: event.conversationId,
       departmentId: effectiveDepartmentId ?? null,
       dedupeKey: `${type}:${event.conversationId}:${occurrence}`,
-      payload: { conversationId: event.conversationId, status: effectiveStatus, actorName: event.actorName ?? null, reason: event.reason ?? null },
+      payload: {
+        conversationId: event.conversationId,
+        status: effectiveStatus,
+        actorName: event.actorName ?? null,
+        reason: event.reason ?? null,
+        ...(type === "CONVERSATION_DELEGATED" ? { delegationAssignmentId: event.assignmentId ?? null } : {}),
+      },
     })));
     for (const notification of created) {
       socketEmitter.emitToAgent(notification.agentId, "notification:new", {
@@ -110,10 +117,49 @@ export class NotificationsService {
         title: notification.title,
         body: notification.body,
         conversationId: notification.conversationId,
+        payload: notification.payload,
         createdAt: notification.createdAt.toISOString(),
       });
     }
     return created;
+  }
+
+  async notifyDelegationResponse(data: {
+    assignmentId: string;
+    conversationId: string;
+    delegatorAgentId: string;
+    responderName: string;
+    decision: "ACCEPTED" | "DECLINED";
+  }) {
+    const accepted = data.decision === "ACCEPTED";
+    const rows = await notificationsRepository.createManyIdempotent([{
+      agentId: data.delegatorAgentId,
+      type: "DELEGATION_RESPONSE",
+      title: accepted ? "Delegação aceita" : "Delegação recusada",
+      body: accepted
+        ? `${data.responderName} assumiu o chamado delegado.`
+        : `${data.responderName} não assumiu o chamado delegado. Ele voltou para a responsabilidade anterior ou para a fila.`,
+      conversationId: data.conversationId,
+      dedupeKey: `DELEGATION_RESPONSE:${data.assignmentId}:${data.decision}`,
+      payload: {
+        conversationId: data.conversationId,
+        delegationAssignmentId: data.assignmentId,
+        decision: data.decision,
+        responderName: data.responderName,
+      },
+    }]);
+    for (const notification of rows) {
+      socketEmitter.emitToAgent(notification.agentId, "notification:new", {
+        id: notification.id,
+        type: notification.type,
+        title: notification.title,
+        body: notification.body,
+        conversationId: notification.conversationId,
+        payload: notification.payload,
+        createdAt: notification.createdAt.toISOString(),
+      });
+    }
+    return rows;
   }
 
   async createUnresolvedReminders(now = new Date()) {

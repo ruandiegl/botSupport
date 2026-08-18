@@ -156,6 +156,8 @@ model ConversationAssignment {
   actorAgentId   String       @map("actor_agent_id")
   action         String
   reason         String?
+  response       String?
+  respondedAt    DateTime?    @map("responded_at") @db.Timestamptz
   createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   fromAgent      Agent?       @relation("AssignmentFrom", fields: [fromAgentId], references: [id], onDelete: SetNull)

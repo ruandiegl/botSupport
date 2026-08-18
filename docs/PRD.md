@@ -73,6 +73,7 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 - Atendentes autorizados do departamento podem colaborar no mesmo chamado sem alterar a atribuição.
 - Administradores e supervisores com `conversations:delegate` podem delegar chamados para atendentes ativos elegíveis.
 - A delegação registra ator, origem, destino, motivo e horário, atualiza a fila e notifica o destinatário por REST e Socket.IO.
+- O destinatário recebe um modal imediato via Socket.IO para aceitar ou recusar. Ao aceitar, a conversa é aberta automaticamente, a aceitação é registrada no histórico interno e o delegador recebe uma notificação de retorno; ao recusar, o chamado volta ao responsável anterior ou à fila.
 - Mensagens de participantes de grupos exibem o participante individual por mensagem, mantendo a vinculação do Plano 015.
 ## Mídia recebida em chamados
 

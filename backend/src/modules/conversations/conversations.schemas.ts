@@ -57,6 +57,11 @@ export const DelegateConversationBodySchema = z.object({
   reason: z.string().trim().max(500).optional(),
 }).strict();
 
+export const DelegationResponseBodySchema = z.object({
+  assignmentId: z.string().uuid(),
+  decision: z.enum(["ACCEPT", "DECLINE"]),
+}).strict();
+
 export const SendMessageBodySchema = z.object({
   content: z.string().min(1, "Mensagem não pode ser vazia"),
 });
@@ -64,5 +69,6 @@ export const SendMessageBodySchema = z.object({
 export type ListConversationsQuery = z.infer<typeof ListConversationsQuerySchema>;
 export type AssumeConversationBody = z.infer<typeof AssumeConversationBodySchema>;
 export type DelegateConversationBody = z.infer<typeof DelegateConversationBodySchema>;
+export type DelegationResponseBody = z.infer<typeof DelegationResponseBodySchema>;
 export type SendMessageBody = z.infer<typeof SendMessageBodySchema>;
 export type ListMessagesQuery = z.infer<typeof ListMessagesQuerySchema>;

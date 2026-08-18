@@ -19,12 +19,13 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
-import type { ConversationListResponse, Agent } from "@/types";
+import type { ConversationListResponse, Agent, AgentNotification } from "@/types";
 import { Brand } from "@/components/ui/Brand";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { NotificationBell } from "@/components/NotificationBell";
 import { useSocketEvent } from "@/lib/use-socket-events";
+import { DelegationAlertDialog } from "@/components/DelegationAlertDialog";
 
 export interface AgentContextType {
   activeAgent: Agent | null;
@@ -52,6 +53,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [delegationAlert, setDelegationAlert] = useState<AgentNotification | null>(null);
   const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
   const queryClient = useQueryClient();
   const conversationRefreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -75,6 +77,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
   useSocketEvent("conversation:updated", refreshConversations);
   useSocketEvent("conversation:labels_updated", refreshConversations);
   useSocketEvent("agent:status", refreshAgents);
+  const handleDelegationNotification = useCallback((notification: Partial<AgentNotification>) => {
+    if (notification.type !== "CONVERSATION_DELEGATED" || !notification.id || !notification.title || !notification.createdAt) return;
+    setDelegationAlert((current) => current?.id === notification.id ? current : notification as AgentNotification);
+  }, []);
+  useSocketEvent("notification:new", handleDelegationNotification);
 
   // Buscar lista de atendentes reais do banco de dados
   const { data: agents = [] } = useQuery<Agent[]>({
@@ -247,6 +254,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
           {children}
         </main>
+        <DelegationAlertDialog notification={delegationAlert} onClose={() => setDelegationAlert(null)} />
         <ConfirmationDialog
           open={logoutConfirmOpen}
           onOpenChange={setLogoutConfirmOpen}

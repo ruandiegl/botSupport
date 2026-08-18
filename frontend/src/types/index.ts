@@ -81,6 +81,8 @@ export interface ConversationAssignment {
   id: string;
   action: "ASSUME" | "DELEGATE" | "RELEASE" | string;
   reason?: string | null;
+  response?: "ACCEPTED" | "DECLINED" | null;
+  respondedAt?: string | null;
   createdAt: string;
   fromAgent?: { id: string; name: string } | null;
   toAgent?: { id: string; name: string; departmentName?: string | null } | null;
@@ -122,6 +124,7 @@ export type NotificationType =
   | "ASSIGNED_CONVERSATION"
   | "UNRESOLVED_REMINDER"
   | "CONVERSATION_DELEGATED"
+  | "DELEGATION_RESPONSE"
   | (string & {});
 
 export interface AgentNotification {
@@ -135,6 +138,7 @@ export interface AgentNotification {
   readAt?: string | null;
   dismissedAt?: string | null;
   dedupeKey?: string | null;
+  payload?: Record<string, unknown> | null;
 }
 
 export interface NotificationListResponse {

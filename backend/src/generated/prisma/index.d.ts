@@ -10808,6 +10808,8 @@ export namespace Prisma {
     actorAgentId: string | null
     action: string | null
     reason: string | null
+    response: string | null
+    respondedAt: Date | null
     createdAt: Date | null
   }
 
@@ -10819,6 +10821,8 @@ export namespace Prisma {
     actorAgentId: string | null
     action: string | null
     reason: string | null
+    response: string | null
+    respondedAt: Date | null
     createdAt: Date | null
   }
 
@@ -10830,6 +10834,8 @@ export namespace Prisma {
     actorAgentId: number
     action: number
     reason: number
+    response: number
+    respondedAt: number
     createdAt: number
     _all: number
   }
@@ -10843,6 +10849,8 @@ export namespace Prisma {
     actorAgentId?: true
     action?: true
     reason?: true
+    response?: true
+    respondedAt?: true
     createdAt?: true
   }
 
@@ -10854,6 +10862,8 @@ export namespace Prisma {
     actorAgentId?: true
     action?: true
     reason?: true
+    response?: true
+    respondedAt?: true
     createdAt?: true
   }
 
@@ -10865,6 +10875,8 @@ export namespace Prisma {
     actorAgentId?: true
     action?: true
     reason?: true
+    response?: true
+    respondedAt?: true
     createdAt?: true
     _all?: true
   }
@@ -10949,6 +10961,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason: string | null
+    response: string | null
+    respondedAt: Date | null
     createdAt: Date
     _count: ConversationAssignmentCountAggregateOutputType | null
     _min: ConversationAssignmentMinAggregateOutputType | null
@@ -10977,6 +10991,8 @@ export namespace Prisma {
     actorAgentId?: boolean
     action?: boolean
     reason?: boolean
+    response?: boolean
+    respondedAt?: boolean
     createdAt?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
@@ -10992,6 +11008,8 @@ export namespace Prisma {
     actorAgentId?: boolean
     action?: boolean
     reason?: boolean
+    response?: boolean
+    respondedAt?: boolean
     createdAt?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
@@ -11007,6 +11025,8 @@ export namespace Prisma {
     actorAgentId?: boolean
     action?: boolean
     reason?: boolean
+    response?: boolean
+    respondedAt?: boolean
     createdAt?: boolean
   }
 
@@ -11039,6 +11059,8 @@ export namespace Prisma {
       actorAgentId: string
       action: string
       reason: string | null
+      response: string | null
+      respondedAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["conversationAssignment"]>
     composites: {}
@@ -11444,6 +11466,8 @@ export namespace Prisma {
     readonly actorAgentId: FieldRef<"ConversationAssignment", 'String'>
     readonly action: FieldRef<"ConversationAssignment", 'String'>
     readonly reason: FieldRef<"ConversationAssignment", 'String'>
+    readonly response: FieldRef<"ConversationAssignment", 'String'>
+    readonly respondedAt: FieldRef<"ConversationAssignment", 'DateTime'>
     readonly createdAt: FieldRef<"ConversationAssignment", 'DateTime'>
   }
     
@@ -26373,6 +26397,8 @@ export namespace Prisma {
     actorAgentId: 'actorAgentId',
     action: 'action',
     reason: 'reason',
+    response: 'response',
+    respondedAt: 'respondedAt',
     createdAt: 'createdAt'
   };
 
@@ -27417,6 +27443,8 @@ export namespace Prisma {
     actorAgentId?: StringFilter<"ConversationAssignment"> | string
     action?: StringFilter<"ConversationAssignment"> | string
     reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    response?: StringNullableFilter<"ConversationAssignment"> | string | null
+    respondedAt?: DateTimeNullableFilter<"ConversationAssignment"> | Date | string | null
     createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     fromAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -27432,6 +27460,8 @@ export namespace Prisma {
     actorAgentId?: SortOrder
     action?: SortOrder
     reason?: SortOrderInput | SortOrder
+    response?: SortOrderInput | SortOrder
+    respondedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     conversation?: ConversationOrderByWithRelationInput
     fromAgent?: AgentOrderByWithRelationInput
@@ -27450,6 +27480,8 @@ export namespace Prisma {
     actorAgentId?: StringFilter<"ConversationAssignment"> | string
     action?: StringFilter<"ConversationAssignment"> | string
     reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    response?: StringNullableFilter<"ConversationAssignment"> | string | null
+    respondedAt?: DateTimeNullableFilter<"ConversationAssignment"> | Date | string | null
     createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     fromAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
@@ -27465,6 +27497,8 @@ export namespace Prisma {
     actorAgentId?: SortOrder
     action?: SortOrder
     reason?: SortOrderInput | SortOrder
+    response?: SortOrderInput | SortOrder
+    respondedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ConversationAssignmentCountOrderByAggregateInput
     _max?: ConversationAssignmentMaxOrderByAggregateInput
@@ -27482,6 +27516,8 @@ export namespace Prisma {
     actorAgentId?: StringWithAggregatesFilter<"ConversationAssignment"> | string
     action?: StringWithAggregatesFilter<"ConversationAssignment"> | string
     reason?: StringNullableWithAggregatesFilter<"ConversationAssignment"> | string | null
+    response?: StringNullableWithAggregatesFilter<"ConversationAssignment"> | string | null
+    respondedAt?: DateTimeNullableWithAggregatesFilter<"ConversationAssignment"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ConversationAssignment"> | Date | string
   }
 
@@ -29309,6 +29345,8 @@ export namespace Prisma {
     id?: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
     conversation: ConversationCreateNestedOneWithoutAssignmentsInput
     fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
@@ -29324,6 +29362,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -29331,6 +29371,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
     fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
@@ -29346,6 +29388,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29357,6 +29401,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -29364,6 +29410,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29375,6 +29423,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -31293,6 +31343,8 @@ export namespace Prisma {
     actorAgentId?: SortOrder
     action?: SortOrder
     reason?: SortOrder
+    response?: SortOrder
+    respondedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -31304,6 +31356,8 @@ export namespace Prisma {
     actorAgentId?: SortOrder
     action?: SortOrder
     reason?: SortOrder
+    response?: SortOrder
+    respondedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -31315,6 +31369,8 @@ export namespace Prisma {
     actorAgentId?: SortOrder
     action?: SortOrder
     reason?: SortOrder
+    response?: SortOrder
+    respondedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -35370,6 +35426,8 @@ export namespace Prisma {
     id?: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
     conversation: ConversationCreateNestedOneWithoutAssignmentsInput
     toAgent: AgentCreateNestedOneWithoutAssignmentToInput
@@ -35383,6 +35441,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -35400,6 +35460,8 @@ export namespace Prisma {
     id?: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
     conversation: ConversationCreateNestedOneWithoutAssignmentsInput
     fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
@@ -35413,6 +35475,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -35430,6 +35494,8 @@ export namespace Prisma {
     id?: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
     conversation: ConversationCreateNestedOneWithoutAssignmentsInput
     fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
@@ -35443,6 +35509,8 @@ export namespace Prisma {
     toAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -35853,6 +35921,8 @@ export namespace Prisma {
     actorAgentId?: StringFilter<"ConversationAssignment"> | string
     action?: StringFilter<"ConversationAssignment"> | string
     reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    response?: StringNullableFilter<"ConversationAssignment"> | string | null
+    respondedAt?: DateTimeNullableFilter<"ConversationAssignment"> | Date | string | null
     createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
   }
 
@@ -36505,6 +36575,8 @@ export namespace Prisma {
     id?: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
     fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
     toAgent: AgentCreateNestedOneWithoutAssignmentToInput
@@ -36518,6 +36590,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -40974,6 +41048,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -40984,6 +41060,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -40994,6 +41072,8 @@ export namespace Prisma {
     toAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -41203,6 +41283,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
     toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
@@ -41216,6 +41298,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41226,6 +41310,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41233,6 +41319,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
     fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
@@ -41246,6 +41334,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41256,6 +41346,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41263,6 +41355,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
     fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
@@ -41276,6 +41370,8 @@ export namespace Prisma {
     toAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41286,6 +41382,8 @@ export namespace Prisma {
     toAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41761,6 +41859,8 @@ export namespace Prisma {
     actorAgentId: string
     action: string
     reason?: string | null
+    response?: string | null
+    respondedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -41920,6 +42020,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
     toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
@@ -41933,6 +42035,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41943,6 +42047,8 @@ export namespace Prisma {
     actorAgentId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    response?: NullableStringFieldUpdateOperationsInput | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

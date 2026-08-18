@@ -12,6 +12,7 @@ router.post("/conversations/:id/read", authMiddleware, requirePermission("conver
 router.post("/conversations/:id/assume", authMiddleware, requirePermission("conversations", "assume"), (req, res) => conversationsController.assume(req, res));
 router.get("/conversations/:id/assignees", authMiddleware, requirePermission("conversations", "delegate"), (req, res) => conversationsController.listEligibleAssignees(req, res));
 router.post("/conversations/:id/delegate", authMiddleware, requirePermission("conversations", "delegate"), (req, res) => conversationsController.delegate(req, res));
+router.post("/conversations/:id/delegation-response", authMiddleware, requirePermission("conversations", "view"), (req, res) => conversationsController.respondToDelegation(req as any, res));
 router.post("/conversations/:id/transfer", authMiddleware, requirePermission("conversations", "update"), (req, res) => conversationsController.transfer(req, res));
 router.post("/conversations/:id/close", authMiddleware, requirePermission("conversations", "close"), (req, res) => conversationsController.close(req, res));
 router.post("/conversations/:id", authMiddleware, requirePermission("conversations", "send_message"), (req, res) => conversationsController.sendMessage(req, res));

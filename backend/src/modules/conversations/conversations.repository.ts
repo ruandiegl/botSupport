@@ -410,6 +410,75 @@ export class ConversationsRepository {
     });
   }
 
+  async respondToDelegation(id: string, assignmentId: string, agentId: string, decision: "ACCEPT" | "DECLINE") {
+    return prisma.$transaction(async (transaction) => {
+      const assignment = await transaction.conversationAssignment.findFirst({
+        where: {
+          id: assignmentId,
+          conversationId: id,
+          action: "DELEGATE",
+          toAgentId: agentId,
+        },
+        include: {
+          fromAgent: { select: { id: true, name: true } },
+          toAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+          actorAgent: { select: { id: true, name: true } },
+          conversation: { select: { id: true, status: true, assignedAgentId: true, departmentId: true, department: { select: { name: true } } } },
+        },
+      });
+      if (!assignment) return { kind: "NOT_FOUND" as const };
+      if (assignment.respondedAt || assignment.response) return { kind: "ALREADY_RESPONDED" as const, assignment };
+      if (assignment.conversation.status === "CLOSED") return { kind: "CLOSED" as const };
+
+      const now = new Date();
+      const accepted = decision === "ACCEPT";
+      const nextStatus = accepted ? "IN_PROGRESS" : assignment.fromAgentId ? "IN_PROGRESS" : "OPEN";
+      const nextAssignedAgentId = accepted ? agentId : assignment.fromAgentId;
+      const responseUpdate = await transaction.conversationAssignment.updateMany({
+        where: { id: assignment.id, respondedAt: null, response: null },
+        data: { response: accepted ? "ACCEPTED" : "DECLINED", respondedAt: now },
+      });
+      if (responseUpdate.count !== 1) return { kind: "ALREADY_RESPONDED" as const, assignment };
+      const updatedAssignment = await transaction.conversationAssignment.findUniqueOrThrow({
+        where: { id: assignment.id },
+        include: {
+          fromAgent: { select: { id: true, name: true } },
+          toAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+          actorAgent: { select: { id: true, name: true } },
+        },
+      });
+      const updatedConversation = await transaction.conversation.update({
+        where: { id },
+        data: {
+          assignedAgentId: nextAssignedAgentId,
+          status: nextStatus,
+          queuedAt: nextStatus === "OPEN" ? now : assignment.conversation.status === "OPEN" ? now : undefined,
+          lastActivityAt: now,
+          warningSentAt: null,
+        },
+        select: { id: true, status: true, assignedAgentId: true, departmentId: true },
+      });
+
+      // Keep the acceptance visible in the internal transcript. This is an
+      // audit message for attendants and is intentionally not sent to Z-API.
+      const message = accepted
+        ? await transaction.message.create({
+            data: {
+              conversationId: id,
+              direction: "OUT",
+              senderType: "AGENT",
+              senderAgentId: agentId,
+              senderNameSnapshot: assignment.toAgent.name,
+              senderDepartmentSnapshot: assignment.toAgent.department?.name ?? assignment.conversation.department?.name ?? null,
+              content: `Atendimento assumido por ${assignment.toAgent.name}.`,
+            },
+          })
+        : null;
+
+      return { kind: "OK" as const, assignment: updatedAssignment, conversation: updatedConversation, message, accepted };
+    });
+  }
+
   async recordAssignment(data: { conversationId: string; fromAgentId?: string | null; toAgentId: string; actorAgentId: string; action: string; reason?: string | null }) {
     return prisma.conversationAssignment.create({
       data: {

@@ -5,6 +5,7 @@ import {
   ListConversationsQuerySchema,
   AssumeConversationBodySchema,
   DelegateConversationBodySchema,
+  DelegationResponseBodySchema,
   SendMessageBodySchema,
   ListMessagesQuerySchema,
 } from "./conversations.schemas.js";
@@ -129,6 +130,30 @@ export class ConversationsController {
         return;
       case "CONFLICT":
         res.status(409).json({ error: "O chamado foi alterado por outro atendente. Atualize e tente novamente." });
+        return;
+      case "OK":
+        res.json(result.conversation);
+        return;
+    }
+  }
+
+  async respondToDelegation(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const id = getParam(req, "id");
+    const body = DelegationResponseBodySchema.safeParse(req.body);
+    if (!body.success) {
+      res.status(400).json({ error: body.error.message });
+      return;
+    }
+    const result = await conversationsService.respondToDelegation(id, body.data.assignmentId, body.data.decision, req.user);
+    switch (result.kind) {
+      case "NOT_FOUND":
+        res.status(404).json({ error: "Delegação não encontrada ou sem acesso." });
+        return;
+      case "ALREADY_RESPONDED":
+        res.status(409).json({ error: "Esta delegação já recebeu uma resposta." });
+        return;
+      case "CLOSED":
+        res.status(409).json({ error: "Chamados encerrados não podem receber resposta de delegação." });
         return;
       case "OK":
         res.json(result.conversation);

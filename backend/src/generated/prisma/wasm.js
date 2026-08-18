@@ -207,6 +207,8 @@ exports.Prisma.ConversationAssignmentScalarFieldEnum = {
   actorAgentId: 'actorAgentId',
   action: 'action',
   reason: 'reason',
+  response: 'response',
+  respondedAt: 'respondedAt',
   createdAt: 'createdAt'
 };
 
