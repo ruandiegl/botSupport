@@ -85,7 +85,7 @@ Ao selecionar Suporte, a revisão inicial deve poder enviar a mensagem configura
 
 ### 8.1 Cooldown anti-spam
 
-Saudação, lista de departamentos e prompts de triagem respeitam `BOT_REPLY_COOLDOWN_MINUTES` (padrão: 15). O backend consulta a última mensagem `BOT` persistida antes de executar novamente o fluxo. Mensagens recebidas durante a janela continuam no histórico, mas não disparam nova resposta automática; uma seleção explícita de botão/lista pode avançar uma decisão. Conversas em `QUEUED` ou `AWAITING_DETAILS` não reiniciam a saudação. O cooldown é server-side e não depende de polling ou estado do navegador.
+Saudação e lista de departamentos respeitam `BOT_REPLY_COOLDOWN_MINUTES` (padrão: 15) quando o fluxo está aguardando uma decisão e recebe uma opção inválida repetida. O backend consulta a última mensagem `BOT` persistida sem atrasar entradas válidas: respostas de triagem avançam normalmente, e uma escolha de rota por botão, lista, índice ou texto exato do rótulo é processada imediatamente. Conversas em `QUEUED` ou `AWAITING_DETAILS` não reiniciam a saudação. O cooldown é server-side e não depende de polling ou estado do navegador.
 
 ---
 

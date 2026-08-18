@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AlertTriangle, Download, FileText, Headphones, Image as ImageIcon, Video, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { AlertTriangle, Download, FileText, Headphones, Image as ImageIcon, Move, Video, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import type { ConversationMedia } from "@/types";
 import {
   Attachment,
@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/attachment";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { requestMediaAccess, resolveMediaUrl, useMediaAccess } from "../hooks/use-media-access";
 
 type Props = {
@@ -59,6 +60,11 @@ function MediaUnavailable({ media }: { media: ConversationMedia }) {
 export function MessageMedia({ conversationId, messageId, media }: Props) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const dragStartRef = useRef({ pointerX: 0, pointerY: 0, imageX: 0, imageY: 0 });
   const purpose = media.type === "IMAGE" && media.hasThumbnail ? "thumbnail" : "content";
   const shouldLoad = media.available && media.type !== "DOCUMENT";
   const access = useMediaAccess(conversationId, messageId, purpose, shouldLoad);
@@ -73,9 +79,63 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
+  const clampPosition = useCallback((next: { x: number; y: number }, nextZoom = zoom) => {
+    const stage = stageRef.current;
+    const image = imageRef.current;
+    if (!stage || !image || nextZoom <= 1) return { x: 0, y: 0 };
+
+    const maxX = Math.max(0, (image.clientWidth * nextZoom - stage.clientWidth) / 2);
+    const maxY = Math.max(0, (image.clientHeight * nextZoom - stage.clientHeight) / 2);
+    return {
+      x: Math.min(maxX, Math.max(-maxX, next.x)),
+      y: Math.min(maxY, Math.max(-maxY, next.y)),
+    };
+  }, [zoom]);
+
   useEffect(() => {
-    if (previewOpen) setZoom(1);
+    if (previewOpen) {
+      setZoom(1);
+      setPosition({ x: 0, y: 0 });
+    }
   }, [previewOpen]);
+
+  useEffect(() => {
+    setPosition((current) => clampPosition(current, zoom));
+  }, [clampPosition, zoom]);
+
+  useEffect(() => {
+    const handleResize = () => setPosition((current) => clampPosition(current));
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [clampPosition]);
+
+  const beginPan = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (zoom <= 1) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragStartRef.current = {
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      imageX: position.x,
+      imageY: position.y,
+    };
+    setDragging(true);
+  };
+
+  const movePan = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const start = dragStartRef.current;
+    setPosition(clampPosition({
+      x: start.imageX + event.clientX - start.pointerX,
+      y: start.imageY + event.clientY - start.pointerY,
+    }));
+  };
+
+  const endPan = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    setDragging(false);
+  };
 
   if (!media.available) return <MediaUnavailable media={media} />;
 
@@ -142,7 +202,7 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
 
   return (
     <>
-      <Attachment orientation="vertical" className="w-80 max-w-full">
+      <Attachment orientation="vertical" className="w-96 max-w-full">
         <AttachmentMedia variant="image" className="aspect-[4/3] w-full bg-muted">
           <img className="h-full w-full object-contain" src={source} alt={media.caption || "Imagem recebida no WhatsApp"} loading="lazy" />
         </AttachmentMedia>
@@ -153,41 +213,65 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
         <AttachmentTrigger aria-label="Ampliar imagem" onClick={() => setPreviewOpen(true)} />
       </Attachment>
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="w-[calc(100vw-2rem)] sm:w-[60vw] max-w-[720px] aspect-square bg-card p-4 text-card-foreground ring-border">
-          <DialogHeader>
+        <DialogContent className="!grid !h-[88dvh] !w-[94vw] !max-w-[1200px] grid-rows-[auto_minmax(0,1fr)_auto] gap-3 overflow-hidden bg-card p-4 text-card-foreground ring-border sm:!max-w-[1200px]">
+          <DialogHeader className="shrink-0 pr-10">
             <DialogTitle>Imagem recebida</DialogTitle>
             <DialogDescription>Prévia protegida pela sessão do atendimento.</DialogDescription>
           </DialogHeader>
           <div
-            className="flex min-h-0 aspect-square items-center justify-center overflow-hidden rounded-xl bg-muted p-2"
+            ref={stageRef}
+            className={cn(
+              "relative flex min-h-0 items-center justify-center overflow-hidden rounded-xl bg-muted p-3",
+              zoom > 1 ? (dragging ? "cursor-grabbing" : "cursor-grab") : "cursor-zoom-in",
+            )}
             onWheel={(event) => {
               event.preventDefault();
               setZoom((current) => Math.min(4, Math.max(1, current + (event.deltaY < 0 ? 0.15 : -0.15))));
             }}
-            onDoubleClick={() => setZoom((current) => current === 1 ? 2 : 1)}
+            onDoubleClick={() => {
+              setZoom((current) => current === 1 ? 2 : 1);
+              if (zoom > 1) setPosition({ x: 0, y: 0 });
+            }}
+            onPointerDown={beginPan}
+            onPointerMove={movePan}
+            onPointerUp={endPan}
+            onPointerCancel={endPan}
+            style={{ touchAction: "none" }}
             aria-label="Área de zoom da imagem"
           >
             {fullImageAccess.isLoading ? (
               <Skeleton className="size-full" />
             ) : (
               <img
-                className="max-h-full max-w-full rounded-lg object-contain transition-transform duration-150"
-                style={{ transform: `scale(${zoom})` }}
+                ref={imageRef}
+                className="max-h-full max-w-full select-none rounded-lg object-contain"
+                style={{
+                  transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${zoom})`,
+                  transformOrigin: "center",
+                  transition: dragging ? "none" : "transform 150ms ease-out",
+                  pointerEvents: "none",
+                }}
                 src={fullImageSource || source}
                 alt={media.caption || "Imagem recebida no WhatsApp"}
+                draggable={false}
+                onLoad={() => setPosition((current) => clampPosition(current))}
               />
             )}
+            <Badge className="pointer-events-none absolute bottom-3 left-3" variant="secondary">
+              <Move data-icon="inline-start" />
+              {zoom > 1 ? "Arraste para navegar" : "Amplie para navegar pela imagem"}
+            </Badge>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <DialogFooter className="!mx-0 !mb-0 !flex-row flex-wrap items-center justify-between rounded-lg border bg-muted/50 p-2 sm:justify-between">
             <div className="flex items-center gap-1" aria-label="Controles de zoom">
-              <Button variant="outline" size="icon-sm" aria-label="Reduzir zoom" title="Reduzir zoom" disabled={zoom <= 1} onClick={() => setZoom((current) => Math.max(1, current - 0.25))}><ZoomOut /></Button>
+              <Button variant="outline" size="icon-sm" aria-label="Reduzir zoom" title="Reduzir zoom" disabled={zoom <= 1} onClick={() => setZoom((current) => Math.max(1, current - 0.25))}><ZoomOut data-icon="icon" /></Button>
               <span className="min-w-12 text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
-              <Button variant="outline" size="icon-sm" aria-label="Aumentar zoom" title="Aumentar zoom" disabled={zoom >= 4} onClick={() => setZoom((current) => Math.min(4, current + 0.25))}><ZoomIn /></Button>
-              <Button variant="ghost" size="icon-sm" aria-label="Redefinir zoom" title="Redefinir zoom" disabled={zoom === 1} onClick={() => setZoom(1)}><RotateCcw /></Button>
+              <Button variant="outline" size="icon-sm" aria-label="Aumentar zoom" title="Aumentar zoom" disabled={zoom >= 4} onClick={() => setZoom((current) => Math.min(4, current + 0.25))}><ZoomIn data-icon="icon" /></Button>
+              <Button variant="ghost" size="icon-sm" aria-label="Redefinir zoom" title="Redefinir zoom" disabled={zoom === 1} onClick={() => { setZoom(1); setPosition({ x: 0, y: 0 }); }}><RotateCcw data-icon="icon" /></Button>
             </div>
             <Badge variant="secondary">Expira em {new Date(media.expiresAt).toLocaleDateString("pt-BR")}</Badge>
             <Button variant="outline" onClick={() => setPreviewOpen(false)}>Fechar</Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

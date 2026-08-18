@@ -7,8 +7,33 @@ type RuntimeRevision = NonNullable<Awaited<ReturnType<typeof flowExecutionReposi
 function normalize(value: string) { return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, " ").trim().toLowerCase(); }
 function nextTransition(revision: RuntimeRevision, nodeId: string) { return revision.transitions.filter((item) => item.fromNodeId === nodeId).sort((a, b) => a.sortOrder - b.sortOrder)[0]; }
 function contextRecord(value: unknown): Record<string, unknown> { return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {}; }
+function findDecisionChoice(revision: RuntimeRevision, node: FlowNode, content: string, selectedOptionId?: string) {
+  const outgoing = revision.transitions.filter((item) => item.fromNodeId === node.id && item.optionKey).sort((a, b) => a.sortOrder - b.sortOrder);
+  return outgoing.find((item, index) => (
+    item.optionKey === selectedOptionId ||
+    String(index + 1) === selectedOptionId ||
+    normalize(item.label ?? "") === normalize(content)
+  ));
+}
 
 export class FlowExecutionService {
+  async inspectInput(conversationId: string, content: string, selectedOptionId?: string) {
+    const conversation = await flowExecutionRepository.getConversation(conversationId);
+    if (!conversation) return { nodeType: null, isDecisionSelection: false };
+    const revision = conversation.flowRevisionId
+      ? await flowExecutionRepository.getRevision(conversation.flowRevisionId)
+      : await flowExecutionRepository.getPublishedRevision();
+    if (!revision) return { nodeType: null, isDecisionSelection: false };
+    const node = conversation.currentFlowNodeId
+      ? revision.nodes.find((item) => item.id === conversation.currentFlowNodeId)
+      : revision.nodes.find((item) => item.type === "ENTRY");
+    if (!node) return { nodeType: null, isDecisionSelection: false };
+    return {
+      nodeType: node.type,
+      isDecisionSelection: node.type === "DECISION" && Boolean(findDecisionChoice(revision, node, content, selectedOptionId)),
+    };
+  }
+
   async rollbackDelivery(conversationId: string, nodeId: string | null, context: unknown) {
     await flowExecutionRepository.updateState(conversationId, nodeId, contextRecord(context));
     logger.warn({ conversationId, nodeId }, "Estado do fluxo restaurado após falha de entrega");
@@ -25,8 +50,7 @@ export class FlowExecutionService {
     const actions: FlowExecutionAction[] = [];
 
     if (!input.isNewConversation && node.type === "DECISION") {
-      const outgoing = revision.transitions.filter((item) => item.fromNodeId === node!.id && item.optionKey).sort((a, b) => a.sortOrder - b.sortOrder);
-      const chosen = outgoing.find((item, index) => item.optionKey === input.selectedOptionId || String(index + 1) === input.selectedOptionId || normalize(item.label ?? "") === normalize(input.content));
+      const chosen = findDecisionChoice(revision, node, input.content, input.selectedOptionId);
       if (!chosen) return this.waitAtDecision(revision, node, conversation!.id);
       node = revision.nodes.find((item) => item.id === chosen.toNodeId);
       if (!node) throw new Error("FLOW_NODE_NOT_FOUND");

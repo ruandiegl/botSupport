@@ -42,7 +42,7 @@ Também será aprimorada a visualização de imagens recebidas: miniatura maior 
 
 - Adicionar consulta `findLastBotMessageAt` no repositório Z-API.
 - Criar constante e normalização do cooldown de 15 minutos.
-- Antes do executor v2/legado, retornar `bot_cooldown` quando a janela estiver ativa e não houver seleção explícita.
+- Antes de repetir uma decisão inválida no executor v2/legado, retornar `bot_cooldown` quando a janela estiver ativa. Seleções válidas por ID, índice ou texto do rótulo e respostas de triagem nunca são atrasadas.
 - Não reiniciar fluxo em `QUEUED`/`AWAITING_DETAILS`.
 - Manter idempotência por `messageId`, persistência de mensagens e avanço por botão.
 - Cobrir logs sem conteúdo sensível e sem alterar mensagens históricas.
@@ -64,7 +64,7 @@ Também será aprimorada a visualização de imagens recebidas: miniatura maior 
 ## 5. Critérios de aceite
 
 - Duas ou mais mensagens livres em até 15 minutos não repetem saudação, botões ou triagem.
-- A seleção explícita de um botão continua sendo processada dentro do cooldown.
+- A seleção de uma rota por botão, lista, índice ou texto exato continua sendo processada imediatamente dentro do cooldown.
 - Chamados em `QUEUED`/`AWAITING_DETAILS` não reiniciam a saudação do bot.
 - Após o cooldown, uma nova mensagem pode retomar o fluxo de forma determinística.
 - Miniatura ocupa área maior e preserva proporção sem distorção.

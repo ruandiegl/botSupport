@@ -91,7 +91,7 @@ No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `A
 
 Imagens usam miniatura maior no histórico e um `Dialog` shadcn opaco, quadrático e centralizado para o conteúdo original protegido. O preview oferece zoom, reset, roda do mouse e fechamento acessível sem expor a URL temporária.
 
-O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão). Mensagens recebidas continuam sendo armazenadas durante a janela, mas não repetem menus/triagens; seleções explícitas de botão podem avançar decisões. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.
+O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão) somente enquanto o fluxo aguarda uma decisão inválida. Mensagens recebidas continuam sendo armazenadas, respostas de triagem nunca são atrasadas e escolhas de rota válidas avançam imediatamente, sejam entregues pela Z-API como `buttonId`/`selectedRowId`, índice ou texto exato do rótulo. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.
 
 ## 6. Colaboração, identidade e delegação
 

@@ -82,8 +82,10 @@ test("motor executa decisão, triagem editável e handoff sem transporte externo
     const welcome = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Olá", isNewConversation: true });
     assert.equal(welcome.status, "waiting_decision");
     assert.equal(welcome.actions.some((action) => action.type === "SEND_OPTIONS" && action.options[0]?.optionKey === "support"), true);
+    const textSelection = await flowExecutionService.inspectInput(fixture.conversation.id, "Suporte");
+    assert.deepEqual(textSelection, { nodeType: "DECISION", isDecisionSelection: true });
 
-    const selected = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Suporte", selectedOptionId: "support", isNewConversation: false });
+    const selected = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Suporte", isNewConversation: false });
     assert.equal(selected.status, "waiting_triage");
     assert.equal(selected.actions.some((action) => action.type === "SEND_TEXT" && action.content === "Dados"), true);
     let conversation = await flowIntegrationRepository.getConversation(fixture.conversation.id);

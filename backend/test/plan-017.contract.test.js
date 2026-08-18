@@ -18,16 +18,21 @@ test("cooldown anti-spam de 15 minutos é configurável e server-side", () => {
 
 test("seleção explícita e estados de atendimento não repetem o fluxo", () => {
   const service = read("src/modules/zapi/zapi.service.ts");
-  assert.match(service, /!incoming\.selectedOptionId/);
+  const execution = read("src/modules/flow-execution/flow-execution.service.ts");
+  assert.match(service, /isWaitingAtDecision && !isIntentionalSelection/);
+  assert.match(service, /inspectInput/);
+  assert.match(execution, /isDecisionSelection/);
   assert.match(service, /currentStep === "QUEUED"/);
   assert.match(service, /currentStep === "AWAITING_DETAILS"/);
   assert.match(service, /waiting_for_agent/);
 });
 
-test("preview de imagem usa card ampliado, dialog e controles de zoom", () => {
+test("preview de imagem usa dialog amplo, zoom e navegação por arraste", () => {
   const media = read("../frontend/src/pages/conversation/components/MessageMedia.tsx");
   assert.match(media, /DialogContent/);
   assert.match(media, /Ampliar imagem/);
   assert.match(media, /zoom/);
-  assert.match(media, /aspect-square/);
+  assert.match(media, /onPointerMove/);
+  assert.match(media, /translate3d/);
+  assert.match(media, /!max-w-\[1200px\]/);
 });

@@ -759,12 +759,25 @@ export class ZApiService {
       return { status: "waiting_for_agent" };
     }
 
-    // A client may send several messages while the bot is still waiting for
-    // an agent. Persist every message, but do not resend the same menu/triage
-    // prompt until the cooldown expires. Explicit button/list selections are
-    // always allowed through so an intentional choice is never blocked.
+    // The cooldown protects only repeated invalid answers while the flow is
+    // waiting at a decision. It must never delay valid route selections or
+    // triage answers. Some Z-API clients deliver a button choice as plain text
+    // instead of buttonsResponseMessage, so the flow evaluates both formats.
     const cooldownMs = botReplyCooldownMs();
-    if (!isNewConversation && cooldownMs > 0 && !incoming.selectedOptionId) {
+    const flowInput = !isNewConversation
+      ? await flowExecutionService.inspectInput(conversationId, incoming.content, incoming.selectedOptionId)
+      : { nodeType: null, isDecisionSelection: false };
+    let isIntentionalSelection = flowInput.isDecisionSelection;
+    let isWaitingAtDecision = flowInput.nodeType === "DECISION";
+
+    if (!flowInput.nodeType && !isNewConversation) {
+      const legacyFlow = await zApiRepository.getLatestFlow();
+      const legacyOptions = ((legacyFlow?.options as BotOption[]) || []);
+      isIntentionalSelection = Boolean(findSelectedOption(legacyOptions, incoming.content, incoming.selectedOptionId));
+      isWaitingAtDecision = legacyOptions.length > 0;
+    }
+
+    if (!isNewConversation && cooldownMs > 0 && isWaitingAtDecision && !isIntentionalSelection) {
       const lastBotMessageAt = await zApiRepository.findLastBotMessageAt(conversationId);
       if (lastBotMessageAt && Date.now() - lastBotMessageAt.getTime() < cooldownMs) {
         return { status: "bot_cooldown", retryAfterMs: cooldownMs - (Date.now() - lastBotMessageAt.getTime()) };
