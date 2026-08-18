@@ -128,7 +128,7 @@ export class ConversationsRepository {
               messages: {
                 take: 1,
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-                select: { id: true, content: true, direction: true, senderType: true, createdAt: true },
+                select: { id: true, content: true, direction: true, senderType: true, createdAt: true, senderNameSnapshot: true },
               },
               _count: {
                 select: { messages: { where: { direction: "IN", readAt: null } } },
@@ -236,7 +236,16 @@ export class ConversationsRepository {
           ...(messageWhere ? { where: messageWhere } : {}),
           orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           ...(messageLimit ? { take: messageLimit + 1 } : {}),
-          include: { media: true },
+          include: { media: true, senderAgent: { include: { department: true } }, senderContact: true },
+        },
+        assignments: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
+          include: {
+            fromAgent: { select: { id: true, name: true } },
+            toAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+            actorAgent: { select: { id: true, name: true } },
+          },
         },
         _count: {
           select: { messages: { where: { direction: "IN", readAt: null } } },
@@ -256,6 +265,15 @@ export class ConversationsRepository {
         contact: { select: { name: true, phone: true } },
         department: { select: { name: true } },
         assignedAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+        assignments: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
+          include: {
+            fromAgent: { select: { id: true, name: true } },
+            toAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
+            actorAgent: { select: { id: true, name: true } },
+          },
+        },
       },
     });
   }
@@ -274,7 +292,7 @@ export class ConversationsRepository {
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: options.limit + 1,
-      include: { media: true, senderAgent: { select: { name: true } } },
+      include: { media: true, senderAgent: { include: { department: true } }, senderContact: true },
     });
     const hasPrevious = rows.length > options.limit;
     const items = rows.slice(0, options.limit).reverse();
@@ -313,6 +331,9 @@ export class ConversationsRepository {
     direction: string;
     senderType: string;
     senderAgentId?: string | null;
+    senderContactId?: string | null;
+    senderNameSnapshot?: string | null;
+    senderDepartmentSnapshot?: string | null;
     content: string;
   }) {
     const message = await prisma.message.create({
@@ -321,6 +342,9 @@ export class ConversationsRepository {
         direction: data.direction,
         senderType: data.senderType,
         senderAgentId: data.senderAgentId ?? null,
+        senderContactId: data.senderContactId ?? null,
+        senderNameSnapshot: data.senderNameSnapshot ?? null,
+        senderDepartmentSnapshot: data.senderDepartmentSnapshot ?? null,
         content: data.content,
       },
     });
@@ -350,6 +374,52 @@ export class ConversationsRepository {
     return prisma.agent.findUnique({
       where: { id },
       include: { department: true },
+    });
+  }
+
+  async findEligibleAssignees(conversationId: string, actor: { id: string; role: string; departmentId?: string | null }) {
+    const conversation = await prisma.conversation.findUnique({ where: { id: conversationId }, select: { departmentId: true } });
+    if (!conversation) return null;
+    const departmentFilter = actor.role === "SUPERVISOR" && actor.departmentId
+      ? { departmentId: actor.departmentId }
+      : actor.role === "AGENT" && actor.departmentId
+      ? { departmentId: actor.departmentId }
+      : {};
+    return prisma.agent.findMany({
+      where: { isActive: true, ...departmentFilter },
+      orderBy: [{ isOnline: "desc" }, { name: "asc" }],
+      select: { id: true, name: true, email: true, role: true, isOnline: true, departmentId: true, department: { select: { name: true } } },
+    });
+  }
+
+  async delegate(id: string, targetAgentId: string, actorAgentId: string, reason?: string | null) {
+    return prisma.$transaction(async (transaction) => {
+      const current = await transaction.conversation.findUnique({ where: { id }, select: { assignedAgentId: true, status: true } });
+      if (!current) return { kind: "NOT_FOUND" as const };
+      if (current.status === "CLOSED") return { kind: "CLOSED" as const };
+      const updated = await transaction.conversation.updateMany({
+        where: { id, status: { not: "CLOSED" }, assignedAgentId: current.assignedAgentId },
+        data: { assignedAgentId: targetAgentId, status: "IN_PROGRESS", lastActivityAt: new Date(), warningSentAt: null },
+      });
+      if (updated.count !== 1) return { kind: "CONFLICT" as const };
+      const assignment = await transaction.conversationAssignment.create({
+        data: { conversationId: id, fromAgentId: current.assignedAgentId, toAgentId: targetAgentId, actorAgentId, action: "DELEGATE", reason: reason || null },
+        include: { fromAgent: { select: { id: true, name: true } }, toAgent: { select: { id: true, name: true, department: { select: { name: true } } } }, actorAgent: { select: { id: true, name: true } } },
+      });
+      return { kind: "OK" as const, assignment };
+    });
+  }
+
+  async recordAssignment(data: { conversationId: string; fromAgentId?: string | null; toAgentId: string; actorAgentId: string; action: string; reason?: string | null }) {
+    return prisma.conversationAssignment.create({
+      data: {
+        conversationId: data.conversationId,
+        fromAgentId: data.fromAgentId ?? null,
+        toAgentId: data.toAgentId,
+        actorAgentId: data.actorAgentId,
+        action: data.action,
+        reason: data.reason ?? null,
+      },
     });
   }
 

@@ -109,3 +109,7 @@ O callback `ReceivedCallback` aceita no máximo um objeto `image`, `audio`, `vid
 A aplicação utiliza o storage temporário da Z-API, documentado com retenção de 30 dias em [Prazo de expiração dos arquivos](https://developer.z-api.io/tips/file-expiration). Nenhum binário é copiado para infraestrutura própria. A exibição é feita pelo proxy do backend com RBAC, ticket HMAC curto, allowlist de hosts, bloqueio de IP privado, limite de bytes, timeout, Range e `Cache-Control: private, no-store`.
 
 `downloadError` e `viewOnce` geram mídia `UNAVAILABLE` sem URL utilizável. O tempo `momment` aceita Unix em segundos ou milissegundos; `expiresAt` é limitado a 30 dias a partir da origem. O job de expiração marca `EXPIRED` e apaga os ciphertexts.
+
+## 10.1 Identidade do remetente
+
+O webhook persiste `senderNameSnapshot` e `senderContactId` na mensagem recebida. Para grupos, o snapshot usa o participante (`participantPhone`/`participantLid` conforme o parser), nunca o nome do grupo como remetente. A assinatura de mensagens humanas enviadas pelo painel é resolvida pelo agente autenticado e seu departamento; nenhum `agentId` informado pelo navegador pode alterar a autoria.

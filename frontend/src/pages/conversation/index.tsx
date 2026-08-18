@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock } from "lucide-react";
+import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import {
   useGetConversation,
@@ -8,6 +8,8 @@ import {
   useSendMessage,
   useAssumeConversation,
   useCloseConversation,
+  useDelegateConversation,
+  useEligibleAssignees,
   useLoadPreviousMessages,
 } from "./hooks/use-conversation";
 import { DetailPanel } from "./components/DetailPanel";
@@ -26,6 +28,7 @@ import { Message, MessageContent, MessageFooter } from "@/components/ui/message"
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageMedia } from "./components/MessageMedia";
+import { DelegationDialog } from "./components/DelegationDialog";
 
 const timeLabel = (date?: string) =>
   date
@@ -44,6 +47,9 @@ export default function ConversationPage() {
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
+  const [delegationOpen, setDelegationOpen] = useState(false);
+  const [delegationConfirmOpen, setDelegationConfirmOpen] = useState(false);
+  const [delegationDraft, setDelegationDraft] = useState<{ agentId: string; reason?: string } | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const previousMessagesHeightRef = useRef<number | null>(null);
   const lastReadAttemptRef = useRef<string | null>(null);
@@ -61,6 +67,9 @@ export default function ConversationPage() {
   const sendMessage = useSendMessage(id);
   const assume = useAssumeConversation(id);
   const close = useCloseConversation(id);
+  const canDelegate = can("conversations", "delegate");
+  const { data: assigneeData } = useEligibleAssignees(id, canDelegate);
+  const delegate = useDelegateConversation(id);
   const loadPrevious = useLoadPreviousMessages(id);
   const registerShortcutUse = useRegisterShortcutUse();
 
@@ -100,6 +109,10 @@ export default function ConversationPage() {
         queryClient.invalidateQueries({ queryKey: ["conversation", id] });
       }
     }
+  }, [id]));
+
+  useSocketEvent("conversation:delegated", useCallback((data: any) => {
+    if (data.conversationId === id) queryClient.invalidateQueries({ queryKey: ["conversation", id] });
   }, [id]));
 
   useSocketEvent("conversation:labels_updated", useCallback((data: any) => {
@@ -244,6 +257,19 @@ export default function ConversationPage() {
     });
   };
 
+  const handleDelegationSubmit = (draft: { agentId: string; reason?: string }) => {
+    setDelegationDraft(draft);
+    setDelegationOpen(false);
+    setDelegationConfirmOpen(true);
+  };
+
+  const handleDelegationConfirm = async () => {
+    if (!delegationDraft) return;
+    await delegate.mutateAsync(delegationDraft);
+    setDelegationDraft(null);
+    setDelegationConfirmOpen(false);
+  };
+
   return (
     <div className="content conversation-page">
       <section className="panel thread">
@@ -290,6 +316,17 @@ export default function ConversationPage() {
                 <Archive size={14} /> Encerrar
               </Button>
             )}
+            {canDelegate && conversation.status !== "CLOSED" && (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!assigneeData?.items?.length || delegate.isPending}
+                onClick={() => setDelegationOpen(true)}
+                data-testid="button-delegate-conversation"
+              >
+                <UserRoundCheck data-icon="inline-start" /> Delegar
+              </Button>
+            )}
           </div>
         </div>
 
@@ -328,9 +365,7 @@ export default function ConversationPage() {
                   </BubbleContent>
                 </Bubble>
                 <MessageFooter>
-                  {item.direction === "OUT"
-                    ? timeLabel(item.createdAt)
-                    : `${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)} · ${timeLabel(item.createdAt)}`}
+                  {`${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)}${item.senderDepartmentName ? ` · ${item.senderDepartmentName}` : ""} · ${timeLabel(item.createdAt)}`}
                 </MessageFooter>
               </MessageContent>
             </Message>
@@ -382,10 +417,31 @@ export default function ConversationPage() {
         canUseShortcuts={can("shortcuts", "use")}
         canManageLabels={can("labels", "update")}
         agentDeptName={activeAgentDeptName}
+        agentName={activeAgentName}
         onInsertShortcut={(shortcut) => {
           setMessage(shortcut.message);
           setSelectedShortcutId(shortcut.id);
         }}
+      />
+      <DelegationDialog
+        open={delegationOpen}
+        onOpenChange={setDelegationOpen}
+        agents={assigneeData?.items || []}
+        currentAgentId={conversation.assignedAgentId}
+        isPending={delegate.isPending}
+        error={delegate.error?.message}
+        onSubmit={handleDelegationSubmit}
+      />
+      <ConfirmationDialog
+        open={delegationConfirmOpen}
+        onOpenChange={(open) => { if (!delegate.isPending) setDelegationConfirmOpen(open); }}
+        tone="warning"
+        title="Delegar este atendimento?"
+        description="O atendente selecionado será o novo responsável e receberá uma notificação com acesso ao chamado."
+        confirmLabel="Confirmar delegação"
+        details={<strong>{assigneeData?.items.find((agent) => agent.id === delegationDraft?.agentId)?.name || "Atendente selecionado"}</strong>}
+        onConfirm={handleDelegationConfirm}
+        testId="button-confirm-delegate-conversation"
       />
       <ConfirmationDialog
         open={assumeConfirmOpen}

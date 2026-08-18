@@ -132,3 +132,10 @@ Antes de solicitar code review ou fazer merge de uma funcionalidade:
 ### 6.3 Observabilidade segura
 
 Logs estruturados podem conter `conversationId`, `flowRevisionId`, `flowNodeId`, `eventId`, tipo de ação, duração e resultado. Métricas devem cobrir falha de publicação, conflito `409`, eventos duplicados, falha/retry Z-API, tempo em `BOT`, abandono e handoffs. Dados pessoais e segredos são proibidos em logs, métricas e traces.
+
+### 6.4 Identidade e atribuição
+
+- Nunca use `Conversation.assignedAgent` como autor de uma mensagem; use `Message.senderAgentId` e snapshots persistidos.
+- Toda resposta humana deve resolver o agente pelo JWT no backend. Campos de autoria enviados pelo frontend são ignorados.
+- Delegação deve ser uma transação autorizada, com RBAC, escopo de departamento, controle otimista de concorrência e auditoria.
+- Eventos Socket.IO e notificações devem ser direcionados ao destinatário e conter somente dados mínimos.

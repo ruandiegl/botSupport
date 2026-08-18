@@ -1,17 +1,17 @@
 import { rbacRepository } from "./rbac.repository.js";
 
 export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports"] as const;
-export const RBAC_ACTIONS = ["view", "assume", "close", "send_message", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
+export const RBAC_ACTIONS = ["view", "assume", "delegate", "close", "send_message", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
 
 type PermissionMap = Record<string, string[]>;
 
 const defaults: Record<string, PermissionMap> = {
   ADMIN: {
-    conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
+    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
     departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
   },
   SUPERVISOR: {
-    conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"],
+    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"],
   },
   AGENT: {
     conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"],
@@ -31,6 +31,15 @@ export class RbacService {
       ...Object.entries(roleDefaults)
         .filter(([resource]) => !existingResources.has(resource))
         .map(([resource, actions]) => rbacRepository.upsert(role, resource, actions)),
+      ...Object.entries(roleDefaults)
+        .filter(([resource, actions]) => {
+          const existing = current.find((item) => item.resource === resource);
+          return Boolean(existing && actions.includes("delegate") && !existing.actions.includes("delegate"));
+        })
+        .map(([resource, actions]) => {
+          const existing = current.find((item) => item.resource === resource)!;
+          return rbacRepository.upsert(role, resource, [...new Set([...existing.actions, ...actions.filter((action) => action === "delegate")])]);
+        }),
       ...screens
         .filter((path) => !existingResources.has(screenResource(path)))
         .map((path) => rbacRepository.upsert(role, screenResource(path), role === "ADMIN" || path === "/" || path === "/my-conversations" || path === "/conversation/:id" || path === "/admin/shortcuts" ? ["view"] : [])),

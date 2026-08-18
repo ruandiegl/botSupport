@@ -690,6 +690,8 @@ export class ZApiService {
       conversationId,
       externalMessageId: payload.messageId,
       content: incoming.content,
+      senderContactId: contact.id,
+      senderNameSnapshot: incoming.senderName,
       media: mediaData,
     });
     if (persisted.duplicate) return { status: "duplicate_event" };
@@ -702,7 +704,8 @@ export class ZApiService {
         id: savedMsg.id,
         direction: savedMsg.direction,
         senderType: savedMsg.senderType,
-        senderName: incoming.senderName,
+        senderName: savedMsg.senderNameSnapshot || incoming.senderName,
+        senderContactId: savedMsg.senderContactId,
         content: savedMsg.content,
         createdAt: savedMsg.createdAt.toISOString(),
         media: savedMsg.media ? mediaService.toPublic(savedMsg.media) : null,

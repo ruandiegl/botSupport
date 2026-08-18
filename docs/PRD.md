@@ -65,6 +65,15 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 - **Banco de Dados**: PostgreSQL 16 com ORM Prisma.
 - **API Backend**: RESTful com suporte a JSON e validação com Zod.
 - **Interface**: React 18, Vite 5, Tailwind CSS v4 com design system responsivo e moderno.
+
+### Colaboração, identidade e delegação
+
+- Cada mensagem preserva o remetente real no momento do envio/recebimento; o responsável atual nunca substitui a autoria histórica.
+- Respostas do painel usam exclusivamente o agente autenticado no JWT e o departamento do seu perfil.
+- Atendentes autorizados do departamento podem colaborar no mesmo chamado sem alterar a atribuição.
+- Administradores e supervisores com `conversations:delegate` podem delegar chamados para atendentes ativos elegíveis.
+- A delegação registra ator, origem, destino, motivo e horário, atualiza a fila e notifica o destinatário por REST e Socket.IO.
+- Mensagens de participantes de grupos exibem o participante individual por mensagem, mantendo a vinculação do Plano 015.
 ## Mídia recebida em chamados
 
 - Imagens, áudios, vídeos e documentos recebidos pelo webhook Z-API aparecem dentro da conversa para atendentes autorizados.

@@ -417,6 +417,8 @@ sequenceDiagram
 - [ ] O fallback para polling funciona quando o socket está desconectado.
 - [ ] Backend e frontend compilam sem erros (`npm run build`).
 - [ ] Nenhum token, credencial ou dado sensível trafega por eventos socket.
+- [ ] `conversation:delegated` atualiza a conversa em tempo real e `notification:new` chega somente ao agente destinatário.
+- [ ] Eventos de delegação não expõem telefone completo, JID, token ou conteúdo sensível.
 
 ---
 

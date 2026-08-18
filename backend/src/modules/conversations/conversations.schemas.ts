@@ -49,8 +49,13 @@ export const ListMessagesQuerySchema = z.object({
 }).strict();
 
 export const AssumeConversationBodySchema = z.object({
-  agentId: z.string(),
+  agentId: z.string().uuid(),
 });
+
+export const DelegateConversationBodySchema = z.object({
+  agentId: z.string().uuid(),
+  reason: z.string().trim().max(500).optional(),
+}).strict();
 
 export const SendMessageBodySchema = z.object({
   content: z.string().min(1, "Mensagem não pode ser vazia"),
@@ -58,5 +63,6 @@ export const SendMessageBodySchema = z.object({
 
 export type ListConversationsQuery = z.infer<typeof ListConversationsQuerySchema>;
 export type AssumeConversationBody = z.infer<typeof AssumeConversationBodySchema>;
+export type DelegateConversationBody = z.infer<typeof DelegateConversationBodySchema>;
 export type SendMessageBody = z.infer<typeof SendMessageBodySchema>;
 export type ListMessagesQuery = z.infer<typeof ListMessagesQuerySchema>;

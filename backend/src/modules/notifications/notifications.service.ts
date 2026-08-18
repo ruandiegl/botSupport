@@ -11,6 +11,9 @@ export type NotificationEvent = {
   departmentId?: string | null;
   assignedAgentId?: string | null;
   queuedAt?: string | Date | null;
+  actorName?: string | null;
+  reason?: string | null;
+  assignmentId?: string;
 };
 
 let initialized = false;
@@ -70,7 +73,9 @@ export class NotificationsService {
     const effectiveDepartmentId = event.departmentId ?? context.departmentId;
     const effectiveAssignedAgentId = event.assignedAgentId ?? context.assignedAgentId;
     const effectiveQueuedAt = event.queuedAt ?? context.queuedAt;
-    const type = event.eventType === "ASSIGNED" && effectiveAssignedAgentId
+    const type = event.eventType === "DELEGATED" && effectiveAssignedAgentId
+      ? "CONVERSATION_DELEGATED"
+      : event.eventType === "ASSIGNED" && effectiveAssignedAgentId
       ? "ASSIGNED_CONVERSATION"
       : event.eventType === "MESSAGE_RECEIVED" || event.eventType === "NEW_MESSAGE"
       ? "NEW_MESSAGE"
@@ -81,6 +86,8 @@ export class NotificationsService {
 
     const occurrence = type === "NEW_MESSAGE"
       ? event.messageId || String(effectiveQueuedAt || Date.now())
+      : type === "CONVERSATION_DELEGATED"
+      ? event.assignmentId || String(Date.now())
       : String(effectiveQueuedAt || event.conversationId);
     // No department/assignee means there is no safe recipient scope. Do not
     // broadcast a potentially private conversation to every agent.
@@ -89,12 +96,12 @@ export class NotificationsService {
     const created = await notificationsRepository.createManyIdempotent(agents.map(({ id }) => ({
       agentId: id,
       type,
-      title: type === "NEW_MESSAGE" ? "Nova mensagem recebida" : type === "ASSIGNED_CONVERSATION" ? "Atendimento assumido" : "Novo chamado na fila",
-      body: type === "NEW_MESSAGE" ? "Uma conversa recebeu uma nova mensagem." : type === "ASSIGNED_CONVERSATION" ? "Um atendimento foi atribuído a você." : "Uma nova conversa aguarda atendimento.",
+      title: type === "NEW_MESSAGE" ? "Nova mensagem recebida" : type === "CONVERSATION_DELEGATED" ? "Chamado delegado para você" : type === "ASSIGNED_CONVERSATION" ? "Atendimento assumido" : "Novo chamado na fila",
+      body: type === "NEW_MESSAGE" ? "Uma conversa recebeu uma nova mensagem." : type === "CONVERSATION_DELEGATED" ? `${event.actorName || "Um gestor"} delegou um atendimento para você.${event.reason ? ` Motivo: ${event.reason}` : ""}` : type === "ASSIGNED_CONVERSATION" ? "Um atendimento foi atribuído a você." : "Uma nova conversa aguarda atendimento.",
       conversationId: event.conversationId,
       departmentId: effectiveDepartmentId ?? null,
       dedupeKey: `${type}:${event.conversationId}:${occurrence}`,
-      payload: { conversationId: event.conversationId, status: effectiveStatus },
+      payload: { conversationId: event.conversationId, status: effectiveStatus, actorName: event.actorName ?? null, reason: event.reason ?? null },
     })));
     for (const notification of created) {
       socketEmitter.emitToAgent(notification.agentId, "notification:new", {

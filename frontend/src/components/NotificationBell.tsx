@@ -12,6 +12,7 @@ const notificationTypeLabel: Record<string, string> = {
   NEW_QUEUE_CONVERSATION: "Novo chamado na fila",
   NEW_MESSAGE: "Nova mensagem",
   ASSIGNED_CONVERSATION: "Atendimento assumido",
+  CONVERSATION_DELEGATED: "Chamado delegado para você",
   UNRESOLVED_REMINDER: "Chamado aguardando atenção",
 };
 

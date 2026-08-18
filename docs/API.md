@@ -331,6 +331,18 @@ As rotas exigem autenticação e permissões no recurso `labels`. Etiquetas de s
 
 `GET /conversations` aceita `labelIds=uuid,uuid` (máximo 20) e combina o filtro com status, departamento, busca e período. Os itens da fila e o detalhe incluem `labels[]` e `groupChatName`; JIDs de participantes nunca são retornados.
 
+## Identidade e delegação de chamados
+
+Mensagens em `GET /conversations/:id` e `GET /conversations/:id/messages` incluem `senderName`, `senderDepartmentName` (quando agente) e `senderContactId` opcional. Esses campos representam o remetente da mensagem, não o responsável atual.
+
+### `GET /conversations/:id/assignees`
+
+Requer `conversations:delegate`. Retorna `{ items: [{ id, name, email, role, isOnline, isActive, departmentId, departmentName }] }` somente com atendentes ativos dentro do escopo do usuário.
+
+### `POST /conversations/:id/delegate`
+
+Requer `conversations:delegate` e recebe `{ "agentId": "uuid", "reason": "Cobertura temporária" }`. O agente do JWT é o ator; `agentId` é apenas o destinatário. A operação é transacional, registra `ConversationAssignment`, atualiza o responsável e notifica o destino. Respostas: `200`, `400` payload inválido, `401`, `403`, `404` ou `409` para encerramento, destino inválido ou conflito concorrente.
+
 ## Menções em grupos Z-API
 
 `PUT /zapi/config` também aceita:

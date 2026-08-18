@@ -17,12 +17,14 @@ export function DetailPanel({
   canUseShortcuts,
   onInsertShortcut,
   agentDeptName,
+  agentName: currentAgentName,
   canManageLabels,
 }: {
   conversation: Conversation;
   canUseShortcuts: boolean;
   onInsertShortcut: (shortcut: Shortcut) => void;
   agentDeptName?: string;
+  agentName?: string;
   canManageLabels: boolean;
 }) {
   const { data: shortcuts = [], isLoading } = useAvailableShortcuts(
@@ -46,7 +48,7 @@ export function DetailPanel({
   const removeLabel = useRemoveConversationLabel(conversation.id);
   const activeLabelIds = new Set((conversation.labels || []).map((label) => label.id));
 
-  const agentName = conversation.assignedAgentName || "Atendente";
+  const agentName = currentAgentName || conversation.assignedAgentName || "Atendente";
   const contactName = conversation.contact.name || "Cliente";
   const departmentName = agentDeptName || conversation.departmentName || "Suporte";
 
@@ -81,6 +83,21 @@ export function DetailPanel({
           <span className="subtle">departamento responsável</span>
         </div>
       </div>
+
+      {conversation.assignments?.length ? (
+        <div className="detail-section">
+          <div className="detail-label">Histórico de responsáveis</div>
+          <div className="flex flex-col gap-2">
+            {conversation.assignments.slice(0, 4).map((assignment) => (
+              <div key={assignment.id} className="rounded-lg border border-border bg-muted/30 px-3 py-2 text-xs">
+                <strong>{assignment.toAgent?.name || "Atendente"}</strong>
+                <span className="subtle"> · {assignment.action === "DELEGATE" ? "delegado" : "assumido"}</span>
+                <div className="subtle">por {assignment.actorAgent?.name || "Sistema"} · {new Date(assignment.createdAt).toLocaleString("pt-BR")}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="detail-section">
         <div className="detail-label">Responsável</div>

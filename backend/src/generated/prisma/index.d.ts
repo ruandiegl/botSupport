@@ -49,6 +49,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
+ * Model ConversationAssignment
+ * 
+ */
+export type ConversationAssignment = $Result.DefaultSelection<Prisma.$ConversationAssignmentPayload>
+/**
  * Model ConversationMedia
  * 
  */
@@ -412,6 +417,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs>;
+
+  /**
+   * `prisma.conversationAssignment`: Exposes CRUD operations for the **ConversationAssignment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ConversationAssignments
+    * const conversationAssignments = await prisma.conversationAssignment.findMany()
+    * ```
+    */
+  get conversationAssignment(): Prisma.ConversationAssignmentDelegate<ExtArgs>;
 
   /**
    * `prisma.conversationMedia`: Exposes CRUD operations for the **ConversationMedia** model.
@@ -1000,6 +1015,7 @@ export namespace Prisma {
     Contact: 'Contact',
     Conversation: 'Conversation',
     Message: 'Message',
+    ConversationAssignment: 'ConversationAssignment',
     ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
@@ -1029,7 +1045,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1520,6 +1536,76 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      ConversationAssignment: {
+        payload: Prisma.$ConversationAssignmentPayload<ExtArgs>
+        fields: Prisma.ConversationAssignmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConversationAssignmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConversationAssignmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          findFirst: {
+            args: Prisma.ConversationAssignmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConversationAssignmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          findMany: {
+            args: Prisma.ConversationAssignmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>[]
+          }
+          create: {
+            args: Prisma.ConversationAssignmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          createMany: {
+            args: Prisma.ConversationAssignmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConversationAssignmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>[]
+          }
+          delete: {
+            args: Prisma.ConversationAssignmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          update: {
+            args: Prisma.ConversationAssignmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConversationAssignmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConversationAssignmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ConversationAssignmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationAssignmentPayload>
+          }
+          aggregate: {
+            args: Prisma.ConversationAssignmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConversationAssignment>
+          }
+          groupBy: {
+            args: Prisma.ConversationAssignmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConversationAssignmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConversationAssignmentCountArgs<ExtArgs>
+            result: $Utils.Optional<ConversationAssignmentCountAggregateOutputType> | number
           }
         }
       }
@@ -2733,6 +2819,9 @@ export namespace Prisma {
   export type AgentCountOutputType = {
     conversations: number
     messages: number
+    assignmentFrom: number
+    assignmentTo: number
+    assignmentActor: number
     ownedShortcuts: number
     createdShortcuts: number
     updatedShortcuts: number
@@ -2745,6 +2834,9 @@ export namespace Prisma {
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | AgentCountOutputTypeCountConversationsArgs
     messages?: boolean | AgentCountOutputTypeCountMessagesArgs
+    assignmentFrom?: boolean | AgentCountOutputTypeCountAssignmentFromArgs
+    assignmentTo?: boolean | AgentCountOutputTypeCountAssignmentToArgs
+    assignmentActor?: boolean | AgentCountOutputTypeCountAssignmentActorArgs
     ownedShortcuts?: boolean | AgentCountOutputTypeCountOwnedShortcutsArgs
     createdShortcuts?: boolean | AgentCountOutputTypeCountCreatedShortcutsArgs
     updatedShortcuts?: boolean | AgentCountOutputTypeCountUpdatedShortcutsArgs
@@ -2777,6 +2869,27 @@ export namespace Prisma {
    */
   export type AgentCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountAssignmentFromArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationAssignmentWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountAssignmentToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationAssignmentWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountAssignmentActorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationAssignmentWhereInput
   }
 
   /**
@@ -2835,10 +2948,12 @@ export namespace Prisma {
 
   export type ContactCountOutputType = {
     conversations: number
+    messageSenders: number
   }
 
   export type ContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | ContactCountOutputTypeCountConversationsArgs
+    messageSenders?: boolean | ContactCountOutputTypeCountMessageSendersArgs
   }
 
   // Custom InputTypes
@@ -2859,6 +2974,13 @@ export namespace Prisma {
     where?: ConversationWhereInput
   }
 
+  /**
+   * ContactCountOutputType without action
+   */
+  export type ContactCountOutputTypeCountMessageSendersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+  }
+
 
   /**
    * Count Type ConversationCountOutputType
@@ -2868,6 +2990,7 @@ export namespace Prisma {
     messages: number
     flowEvents: number
     notifications: number
+    assignments: number
     media: number
     labels: number
   }
@@ -2876,6 +2999,7 @@ export namespace Prisma {
     messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
     flowEvents?: boolean | ConversationCountOutputTypeCountFlowEventsArgs
     notifications?: boolean | ConversationCountOutputTypeCountNotificationsArgs
+    assignments?: boolean | ConversationCountOutputTypeCountAssignmentsArgs
     media?: boolean | ConversationCountOutputTypeCountMediaArgs
     labels?: boolean | ConversationCountOutputTypeCountLabelsArgs
   }
@@ -2910,6 +3034,13 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationAssignmentWhereInput
   }
 
   /**
@@ -5338,6 +5469,9 @@ export namespace Prisma {
     department?: boolean | Agent$departmentArgs<ExtArgs>
     conversations?: boolean | Agent$conversationsArgs<ExtArgs>
     messages?: boolean | Agent$messagesArgs<ExtArgs>
+    assignmentFrom?: boolean | Agent$assignmentFromArgs<ExtArgs>
+    assignmentTo?: boolean | Agent$assignmentToArgs<ExtArgs>
+    assignmentActor?: boolean | Agent$assignmentActorArgs<ExtArgs>
     ownedShortcuts?: boolean | Agent$ownedShortcutsArgs<ExtArgs>
     createdShortcuts?: boolean | Agent$createdShortcutsArgs<ExtArgs>
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
@@ -5378,6 +5512,9 @@ export namespace Prisma {
     department?: boolean | Agent$departmentArgs<ExtArgs>
     conversations?: boolean | Agent$conversationsArgs<ExtArgs>
     messages?: boolean | Agent$messagesArgs<ExtArgs>
+    assignmentFrom?: boolean | Agent$assignmentFromArgs<ExtArgs>
+    assignmentTo?: boolean | Agent$assignmentToArgs<ExtArgs>
+    assignmentActor?: boolean | Agent$assignmentActorArgs<ExtArgs>
     ownedShortcuts?: boolean | Agent$ownedShortcutsArgs<ExtArgs>
     createdShortcuts?: boolean | Agent$createdShortcutsArgs<ExtArgs>
     updatedShortcuts?: boolean | Agent$updatedShortcutsArgs<ExtArgs>
@@ -5398,6 +5535,9 @@ export namespace Prisma {
       department: Prisma.$DepartmentPayload<ExtArgs> | null
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      assignmentFrom: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
+      assignmentTo: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
+      assignmentActor: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       ownedShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       createdShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       updatedShortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
@@ -5784,6 +5924,9 @@ export namespace Prisma {
     department<T extends Agent$departmentArgs<ExtArgs> = {}>(args?: Subset<T, Agent$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     conversations<T extends Agent$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     messages<T extends Agent$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Agent$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    assignmentFrom<T extends Agent$assignmentFromArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentFromArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
+    assignmentTo<T extends Agent$assignmentToArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentToArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
+    assignmentActor<T extends Agent$assignmentActorArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentActorArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     ownedShortcuts<T extends Agent$ownedShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$ownedShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     createdShortcuts<T extends Agent$createdShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$createdShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     updatedShortcuts<T extends Agent$updatedShortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$updatedShortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
@@ -6200,6 +6343,66 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.assignmentFrom
+   */
+  export type Agent$assignmentFromArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    where?: ConversationAssignmentWhereInput
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    cursor?: ConversationAssignmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.assignmentTo
+   */
+  export type Agent$assignmentToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    where?: ConversationAssignmentWhereInput
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    cursor?: ConversationAssignmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.assignmentActor
+   */
+  export type Agent$assignmentActorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    where?: ConversationAssignmentWhereInput
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    cursor?: ConversationAssignmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
   }
 
   /**
@@ -7403,6 +7606,7 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
+    messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contact"]>
 
@@ -7422,6 +7626,7 @@ export namespace Prisma {
 
   export type ContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
+    messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7430,6 +7635,7 @@ export namespace Prisma {
     name: "Contact"
     objects: {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
+      messageSenders: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7801,6 +8007,7 @@ export namespace Prisma {
   export interface Prisma__ContactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     conversations<T extends Contact$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
+    messageSenders<T extends Contact$messageSendersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$messageSendersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8168,6 +8375,26 @@ export namespace Prisma {
   }
 
   /**
+   * Contact.messageSenders
+   */
+  export type Contact$messageSendersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * Contact without action
    */
   export type ContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8446,6 +8673,7 @@ export namespace Prisma {
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
+    assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
@@ -8505,6 +8733,7 @@ export namespace Prisma {
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
+    assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
@@ -8528,6 +8757,7 @@ export namespace Prisma {
       currentFlowNode: Prisma.$FlowNodePayload<ExtArgs> | null
       flowEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      assignments: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       media: Prisma.$ConversationMediaPayload<ExtArgs>[]
       labels: Prisma.$ConversationLabelPayload<ExtArgs>[]
     }
@@ -8921,6 +9151,7 @@ export namespace Prisma {
     currentFlowNode<T extends Conversation$currentFlowNodeArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$currentFlowNodeArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     flowEvents<T extends Conversation$flowEventsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
     notifications<T extends Conversation$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
+    assignments<T extends Conversation$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     media<T extends Conversation$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany"> | Null>
     labels<T extends Conversation$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
     /**
@@ -9407,6 +9638,26 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.assignments
+   */
+  export type Conversation$assignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    where?: ConversationAssignmentWhereInput
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    cursor?: ConversationAssignmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
    * Conversation.media
    */
   export type Conversation$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9478,6 +9729,9 @@ export namespace Prisma {
     direction: string | null
     senderType: string | null
     senderAgentId: string | null
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    senderDepartmentSnapshot: string | null
     content: string | null
     createdAt: Date | null
     readAt: Date | null
@@ -9490,6 +9744,9 @@ export namespace Prisma {
     direction: string | null
     senderType: string | null
     senderAgentId: string | null
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    senderDepartmentSnapshot: string | null
     content: string | null
     createdAt: Date | null
     readAt: Date | null
@@ -9502,6 +9759,9 @@ export namespace Prisma {
     direction: number
     senderType: number
     senderAgentId: number
+    senderContactId: number
+    senderNameSnapshot: number
+    senderDepartmentSnapshot: number
     content: number
     createdAt: number
     readAt: number
@@ -9516,6 +9776,9 @@ export namespace Prisma {
     direction?: true
     senderType?: true
     senderAgentId?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    senderDepartmentSnapshot?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -9528,6 +9791,9 @@ export namespace Prisma {
     direction?: true
     senderType?: true
     senderAgentId?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    senderDepartmentSnapshot?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -9540,6 +9806,9 @@ export namespace Prisma {
     direction?: true
     senderType?: true
     senderAgentId?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    senderDepartmentSnapshot?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -9625,6 +9894,9 @@ export namespace Prisma {
     direction: string
     senderType: string
     senderAgentId: string | null
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    senderDepartmentSnapshot: string | null
     content: string
     createdAt: Date
     readAt: Date | null
@@ -9654,11 +9926,15 @@ export namespace Prisma {
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    senderDepartmentSnapshot?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
@@ -9669,11 +9945,15 @@ export namespace Prisma {
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    senderDepartmentSnapshot?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    senderContact?: boolean | Message$senderContactArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectScalar = {
@@ -9683,6 +9963,9 @@ export namespace Prisma {
     direction?: boolean
     senderType?: boolean
     senderAgentId?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    senderDepartmentSnapshot?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
@@ -9691,11 +9974,13 @@ export namespace Prisma {
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
+    senderContact?: boolean | Message$senderContactArgs<ExtArgs>
   }
 
   export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9703,6 +9988,7 @@ export namespace Prisma {
     objects: {
       conversation: Prisma.$ConversationPayload<ExtArgs>
       senderAgent: Prisma.$AgentPayload<ExtArgs> | null
+      senderContact: Prisma.$ContactPayload<ExtArgs> | null
       media: Prisma.$ConversationMediaPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9712,6 +9998,9 @@ export namespace Prisma {
       direction: string
       senderType: string
       senderAgentId: string | null
+      senderContactId: string | null
+      senderNameSnapshot: string | null
+      senderDepartmentSnapshot: string | null
       content: string
       createdAt: Date
       readAt: Date | null
@@ -10081,6 +10370,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     senderAgent<T extends Message$senderAgentArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    senderContact<T extends Message$senderContactArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderContactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     media<T extends Message$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Message$mediaArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10117,6 +10407,9 @@ export namespace Prisma {
     readonly direction: FieldRef<"Message", 'String'>
     readonly senderType: FieldRef<"Message", 'String'>
     readonly senderAgentId: FieldRef<"Message", 'String'>
+    readonly senderContactId: FieldRef<"Message", 'String'>
+    readonly senderNameSnapshot: FieldRef<"Message", 'String'>
+    readonly senderDepartmentSnapshot: FieldRef<"Message", 'String'>
     readonly content: FieldRef<"Message", 'String'>
     readonly createdAt: FieldRef<"Message", 'DateTime'>
     readonly readAt: FieldRef<"Message", 'DateTime'>
@@ -10453,6 +10746,21 @@ export namespace Prisma {
   }
 
   /**
+   * Message.senderContact
+   */
+  export type Message$senderContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+  }
+
+  /**
    * Message.media
    */
   export type Message$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10479,6 +10787,1008 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ConversationAssignment
+   */
+
+  export type AggregateConversationAssignment = {
+    _count: ConversationAssignmentCountAggregateOutputType | null
+    _min: ConversationAssignmentMinAggregateOutputType | null
+    _max: ConversationAssignmentMaxAggregateOutputType | null
+  }
+
+  export type ConversationAssignmentMinAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    fromAgentId: string | null
+    toAgentId: string | null
+    actorAgentId: string | null
+    action: string | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type ConversationAssignmentMaxAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    fromAgentId: string | null
+    toAgentId: string | null
+    actorAgentId: string | null
+    action: string | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type ConversationAssignmentCountAggregateOutputType = {
+    id: number
+    conversationId: number
+    fromAgentId: number
+    toAgentId: number
+    actorAgentId: number
+    action: number
+    reason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ConversationAssignmentMinAggregateInputType = {
+    id?: true
+    conversationId?: true
+    fromAgentId?: true
+    toAgentId?: true
+    actorAgentId?: true
+    action?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type ConversationAssignmentMaxAggregateInputType = {
+    id?: true
+    conversationId?: true
+    fromAgentId?: true
+    toAgentId?: true
+    actorAgentId?: true
+    action?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type ConversationAssignmentCountAggregateInputType = {
+    id?: true
+    conversationId?: true
+    fromAgentId?: true
+    toAgentId?: true
+    actorAgentId?: true
+    action?: true
+    reason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ConversationAssignmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationAssignment to aggregate.
+     */
+    where?: ConversationAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationAssignments to fetch.
+     */
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConversationAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ConversationAssignments
+    **/
+    _count?: true | ConversationAssignmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConversationAssignmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConversationAssignmentMaxAggregateInputType
+  }
+
+  export type GetConversationAssignmentAggregateType<T extends ConversationAssignmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateConversationAssignment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConversationAssignment[P]>
+      : GetScalarType<T[P], AggregateConversationAssignment[P]>
+  }
+
+
+
+
+  export type ConversationAssignmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationAssignmentWhereInput
+    orderBy?: ConversationAssignmentOrderByWithAggregationInput | ConversationAssignmentOrderByWithAggregationInput[]
+    by: ConversationAssignmentScalarFieldEnum[] | ConversationAssignmentScalarFieldEnum
+    having?: ConversationAssignmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConversationAssignmentCountAggregateInputType | true
+    _min?: ConversationAssignmentMinAggregateInputType
+    _max?: ConversationAssignmentMaxAggregateInputType
+  }
+
+  export type ConversationAssignmentGroupByOutputType = {
+    id: string
+    conversationId: string
+    fromAgentId: string | null
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason: string | null
+    createdAt: Date
+    _count: ConversationAssignmentCountAggregateOutputType | null
+    _min: ConversationAssignmentMinAggregateOutputType | null
+    _max: ConversationAssignmentMaxAggregateOutputType | null
+  }
+
+  type GetConversationAssignmentGroupByPayload<T extends ConversationAssignmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConversationAssignmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConversationAssignmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConversationAssignmentGroupByOutputType[P]>
+            : GetScalarType<T[P], ConversationAssignmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConversationAssignmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    fromAgentId?: boolean
+    toAgentId?: boolean
+    actorAgentId?: boolean
+    action?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
+    toAgent?: boolean | AgentDefaultArgs<ExtArgs>
+    actorAgent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationAssignment"]>
+
+  export type ConversationAssignmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    fromAgentId?: boolean
+    toAgentId?: boolean
+    actorAgentId?: boolean
+    action?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
+    toAgent?: boolean | AgentDefaultArgs<ExtArgs>
+    actorAgent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationAssignment"]>
+
+  export type ConversationAssignmentSelectScalar = {
+    id?: boolean
+    conversationId?: boolean
+    fromAgentId?: boolean
+    toAgentId?: boolean
+    actorAgentId?: boolean
+    action?: boolean
+    reason?: boolean
+    createdAt?: boolean
+  }
+
+  export type ConversationAssignmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
+    toAgent?: boolean | AgentDefaultArgs<ExtArgs>
+    actorAgent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+  export type ConversationAssignmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    fromAgent?: boolean | ConversationAssignment$fromAgentArgs<ExtArgs>
+    toAgent?: boolean | AgentDefaultArgs<ExtArgs>
+    actorAgent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+
+  export type $ConversationAssignmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ConversationAssignment"
+    objects: {
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+      fromAgent: Prisma.$AgentPayload<ExtArgs> | null
+      toAgent: Prisma.$AgentPayload<ExtArgs>
+      actorAgent: Prisma.$AgentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      conversationId: string
+      fromAgentId: string | null
+      toAgentId: string
+      actorAgentId: string
+      action: string
+      reason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["conversationAssignment"]>
+    composites: {}
+  }
+
+  type ConversationAssignmentGetPayload<S extends boolean | null | undefined | ConversationAssignmentDefaultArgs> = $Result.GetResult<Prisma.$ConversationAssignmentPayload, S>
+
+  type ConversationAssignmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ConversationAssignmentFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ConversationAssignmentCountAggregateInputType | true
+    }
+
+  export interface ConversationAssignmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ConversationAssignment'], meta: { name: 'ConversationAssignment' } }
+    /**
+     * Find zero or one ConversationAssignment that matches the filter.
+     * @param {ConversationAssignmentFindUniqueArgs} args - Arguments to find a ConversationAssignment
+     * @example
+     * // Get one ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConversationAssignmentFindUniqueArgs>(args: SelectSubset<T, ConversationAssignmentFindUniqueArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ConversationAssignment that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ConversationAssignmentFindUniqueOrThrowArgs} args - Arguments to find a ConversationAssignment
+     * @example
+     * // Get one ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConversationAssignmentFindUniqueOrThrowArgs>(args: SelectSubset<T, ConversationAssignmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ConversationAssignment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentFindFirstArgs} args - Arguments to find a ConversationAssignment
+     * @example
+     * // Get one ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConversationAssignmentFindFirstArgs>(args?: SelectSubset<T, ConversationAssignmentFindFirstArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ConversationAssignment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentFindFirstOrThrowArgs} args - Arguments to find a ConversationAssignment
+     * @example
+     * // Get one ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConversationAssignmentFindFirstOrThrowArgs>(args?: SelectSubset<T, ConversationAssignmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ConversationAssignments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ConversationAssignments
+     * const conversationAssignments = await prisma.conversationAssignment.findMany()
+     * 
+     * // Get first 10 ConversationAssignments
+     * const conversationAssignments = await prisma.conversationAssignment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const conversationAssignmentWithIdOnly = await prisma.conversationAssignment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConversationAssignmentFindManyArgs>(args?: SelectSubset<T, ConversationAssignmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ConversationAssignment.
+     * @param {ConversationAssignmentCreateArgs} args - Arguments to create a ConversationAssignment.
+     * @example
+     * // Create one ConversationAssignment
+     * const ConversationAssignment = await prisma.conversationAssignment.create({
+     *   data: {
+     *     // ... data to create a ConversationAssignment
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConversationAssignmentCreateArgs>(args: SelectSubset<T, ConversationAssignmentCreateArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ConversationAssignments.
+     * @param {ConversationAssignmentCreateManyArgs} args - Arguments to create many ConversationAssignments.
+     * @example
+     * // Create many ConversationAssignments
+     * const conversationAssignment = await prisma.conversationAssignment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConversationAssignmentCreateManyArgs>(args?: SelectSubset<T, ConversationAssignmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ConversationAssignments and returns the data saved in the database.
+     * @param {ConversationAssignmentCreateManyAndReturnArgs} args - Arguments to create many ConversationAssignments.
+     * @example
+     * // Create many ConversationAssignments
+     * const conversationAssignment = await prisma.conversationAssignment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ConversationAssignments and only return the `id`
+     * const conversationAssignmentWithIdOnly = await prisma.conversationAssignment.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConversationAssignmentCreateManyAndReturnArgs>(args?: SelectSubset<T, ConversationAssignmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ConversationAssignment.
+     * @param {ConversationAssignmentDeleteArgs} args - Arguments to delete one ConversationAssignment.
+     * @example
+     * // Delete one ConversationAssignment
+     * const ConversationAssignment = await prisma.conversationAssignment.delete({
+     *   where: {
+     *     // ... filter to delete one ConversationAssignment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConversationAssignmentDeleteArgs>(args: SelectSubset<T, ConversationAssignmentDeleteArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ConversationAssignment.
+     * @param {ConversationAssignmentUpdateArgs} args - Arguments to update one ConversationAssignment.
+     * @example
+     * // Update one ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConversationAssignmentUpdateArgs>(args: SelectSubset<T, ConversationAssignmentUpdateArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ConversationAssignments.
+     * @param {ConversationAssignmentDeleteManyArgs} args - Arguments to filter ConversationAssignments to delete.
+     * @example
+     * // Delete a few ConversationAssignments
+     * const { count } = await prisma.conversationAssignment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConversationAssignmentDeleteManyArgs>(args?: SelectSubset<T, ConversationAssignmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConversationAssignments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ConversationAssignments
+     * const conversationAssignment = await prisma.conversationAssignment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConversationAssignmentUpdateManyArgs>(args: SelectSubset<T, ConversationAssignmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ConversationAssignment.
+     * @param {ConversationAssignmentUpsertArgs} args - Arguments to update or create a ConversationAssignment.
+     * @example
+     * // Update or create a ConversationAssignment
+     * const conversationAssignment = await prisma.conversationAssignment.upsert({
+     *   create: {
+     *     // ... data to create a ConversationAssignment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ConversationAssignment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConversationAssignmentUpsertArgs>(args: SelectSubset<T, ConversationAssignmentUpsertArgs<ExtArgs>>): Prisma__ConversationAssignmentClient<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ConversationAssignments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentCountArgs} args - Arguments to filter ConversationAssignments to count.
+     * @example
+     * // Count the number of ConversationAssignments
+     * const count = await prisma.conversationAssignment.count({
+     *   where: {
+     *     // ... the filter for the ConversationAssignments we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConversationAssignmentCountArgs>(
+      args?: Subset<T, ConversationAssignmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConversationAssignmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ConversationAssignment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConversationAssignmentAggregateArgs>(args: Subset<T, ConversationAssignmentAggregateArgs>): Prisma.PrismaPromise<GetConversationAssignmentAggregateType<T>>
+
+    /**
+     * Group by ConversationAssignment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAssignmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConversationAssignmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConversationAssignmentGroupByArgs['orderBy'] }
+        : { orderBy?: ConversationAssignmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConversationAssignmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConversationAssignmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ConversationAssignment model
+   */
+  readonly fields: ConversationAssignmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ConversationAssignment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConversationAssignmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    fromAgent<T extends ConversationAssignment$fromAgentArgs<ExtArgs> = {}>(args?: Subset<T, ConversationAssignment$fromAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    toAgent<T extends AgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgentDefaultArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    actorAgent<T extends AgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgentDefaultArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ConversationAssignment model
+   */ 
+  interface ConversationAssignmentFieldRefs {
+    readonly id: FieldRef<"ConversationAssignment", 'String'>
+    readonly conversationId: FieldRef<"ConversationAssignment", 'String'>
+    readonly fromAgentId: FieldRef<"ConversationAssignment", 'String'>
+    readonly toAgentId: FieldRef<"ConversationAssignment", 'String'>
+    readonly actorAgentId: FieldRef<"ConversationAssignment", 'String'>
+    readonly action: FieldRef<"ConversationAssignment", 'String'>
+    readonly reason: FieldRef<"ConversationAssignment", 'String'>
+    readonly createdAt: FieldRef<"ConversationAssignment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ConversationAssignment findUnique
+   */
+  export type ConversationAssignmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationAssignment to fetch.
+     */
+    where: ConversationAssignmentWhereUniqueInput
+  }
+
+  /**
+   * ConversationAssignment findUniqueOrThrow
+   */
+  export type ConversationAssignmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationAssignment to fetch.
+     */
+    where: ConversationAssignmentWhereUniqueInput
+  }
+
+  /**
+   * ConversationAssignment findFirst
+   */
+  export type ConversationAssignmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationAssignment to fetch.
+     */
+    where?: ConversationAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationAssignments to fetch.
+     */
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationAssignments.
+     */
+    cursor?: ConversationAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationAssignments.
+     */
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationAssignment findFirstOrThrow
+   */
+  export type ConversationAssignmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationAssignment to fetch.
+     */
+    where?: ConversationAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationAssignments to fetch.
+     */
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationAssignments.
+     */
+    cursor?: ConversationAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationAssignments.
+     */
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationAssignment findMany
+   */
+  export type ConversationAssignmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationAssignments to fetch.
+     */
+    where?: ConversationAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationAssignments to fetch.
+     */
+    orderBy?: ConversationAssignmentOrderByWithRelationInput | ConversationAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ConversationAssignments.
+     */
+    cursor?: ConversationAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationAssignments.
+     */
+    skip?: number
+    distinct?: ConversationAssignmentScalarFieldEnum | ConversationAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationAssignment create
+   */
+  export type ConversationAssignmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ConversationAssignment.
+     */
+    data: XOR<ConversationAssignmentCreateInput, ConversationAssignmentUncheckedCreateInput>
+  }
+
+  /**
+   * ConversationAssignment createMany
+   */
+  export type ConversationAssignmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ConversationAssignments.
+     */
+    data: ConversationAssignmentCreateManyInput | ConversationAssignmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConversationAssignment createManyAndReturn
+   */
+  export type ConversationAssignmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ConversationAssignments.
+     */
+    data: ConversationAssignmentCreateManyInput | ConversationAssignmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ConversationAssignment update
+   */
+  export type ConversationAssignmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ConversationAssignment.
+     */
+    data: XOR<ConversationAssignmentUpdateInput, ConversationAssignmentUncheckedUpdateInput>
+    /**
+     * Choose, which ConversationAssignment to update.
+     */
+    where: ConversationAssignmentWhereUniqueInput
+  }
+
+  /**
+   * ConversationAssignment updateMany
+   */
+  export type ConversationAssignmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ConversationAssignments.
+     */
+    data: XOR<ConversationAssignmentUpdateManyMutationInput, ConversationAssignmentUncheckedUpdateManyInput>
+    /**
+     * Filter which ConversationAssignments to update
+     */
+    where?: ConversationAssignmentWhereInput
+  }
+
+  /**
+   * ConversationAssignment upsert
+   */
+  export type ConversationAssignmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ConversationAssignment to update in case it exists.
+     */
+    where: ConversationAssignmentWhereUniqueInput
+    /**
+     * In case the ConversationAssignment found by the `where` argument doesn't exist, create a new ConversationAssignment with this data.
+     */
+    create: XOR<ConversationAssignmentCreateInput, ConversationAssignmentUncheckedCreateInput>
+    /**
+     * In case the ConversationAssignment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConversationAssignmentUpdateInput, ConversationAssignmentUncheckedUpdateInput>
+  }
+
+  /**
+   * ConversationAssignment delete
+   */
+  export type ConversationAssignmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter which ConversationAssignment to delete.
+     */
+    where: ConversationAssignmentWhereUniqueInput
+  }
+
+  /**
+   * ConversationAssignment deleteMany
+   */
+  export type ConversationAssignmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationAssignments to delete
+     */
+    where?: ConversationAssignmentWhereInput
+  }
+
+  /**
+   * ConversationAssignment.fromAgent
+   */
+  export type ConversationAssignment$fromAgentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * ConversationAssignment without action
+   */
+  export type ConversationAssignmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationAssignment
+     */
+    select?: ConversationAssignmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationAssignmentInclude<ExtArgs> | null
   }
 
 
@@ -25044,12 +26354,29 @@ export namespace Prisma {
     direction: 'direction',
     senderType: 'senderType',
     senderAgentId: 'senderAgentId',
+    senderContactId: 'senderContactId',
+    senderNameSnapshot: 'senderNameSnapshot',
+    senderDepartmentSnapshot: 'senderDepartmentSnapshot',
     content: 'content',
     createdAt: 'createdAt',
     readAt: 'readAt'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+  export const ConversationAssignmentScalarFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    fromAgentId: 'fromAgentId',
+    toAgentId: 'toAgentId',
+    actorAgentId: 'actorAgentId',
+    action: 'action',
+    reason: 'reason',
+    createdAt: 'createdAt'
+  };
+
+  export type ConversationAssignmentScalarFieldEnum = (typeof ConversationAssignmentScalarFieldEnum)[keyof typeof ConversationAssignmentScalarFieldEnum]
 
 
   export const ConversationMediaScalarFieldEnum: {
@@ -25631,6 +26958,9 @@ export namespace Prisma {
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     conversations?: ConversationListRelationFilter
     messages?: MessageListRelationFilter
+    assignmentFrom?: ConversationAssignmentListRelationFilter
+    assignmentTo?: ConversationAssignmentListRelationFilter
+    assignmentActor?: ConversationAssignmentListRelationFilter
     ownedShortcuts?: ShortcutListRelationFilter
     createdShortcuts?: ShortcutListRelationFilter
     updatedShortcuts?: ShortcutListRelationFilter
@@ -25654,6 +26984,9 @@ export namespace Prisma {
     department?: DepartmentOrderByWithRelationInput
     conversations?: ConversationOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
+    assignmentFrom?: ConversationAssignmentOrderByRelationAggregateInput
+    assignmentTo?: ConversationAssignmentOrderByRelationAggregateInput
+    assignmentActor?: ConversationAssignmentOrderByRelationAggregateInput
     ownedShortcuts?: ShortcutOrderByRelationAggregateInput
     createdShortcuts?: ShortcutOrderByRelationAggregateInput
     updatedShortcuts?: ShortcutOrderByRelationAggregateInput
@@ -25680,6 +27013,9 @@ export namespace Prisma {
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     conversations?: ConversationListRelationFilter
     messages?: MessageListRelationFilter
+    assignmentFrom?: ConversationAssignmentListRelationFilter
+    assignmentTo?: ConversationAssignmentListRelationFilter
+    assignmentActor?: ConversationAssignmentListRelationFilter
     ownedShortcuts?: ShortcutListRelationFilter
     createdShortcuts?: ShortcutListRelationFilter
     updatedShortcuts?: ShortcutListRelationFilter
@@ -25782,6 +27118,7 @@ export namespace Prisma {
     name?: StringFilter<"Contact"> | string
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
+    messageSenders?: MessageListRelationFilter
   }
 
   export type ContactOrderByWithRelationInput = {
@@ -25790,6 +27127,7 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrder
     conversations?: ConversationOrderByRelationAggregateInput
+    messageSenders?: MessageOrderByRelationAggregateInput
   }
 
   export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -25801,6 +27139,7 @@ export namespace Prisma {
     name?: StringFilter<"Contact"> | string
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
+    messageSenders?: MessageListRelationFilter
   }, "id" | "phone">
 
   export type ContactOrderByWithAggregationInput = {
@@ -25852,6 +27191,7 @@ export namespace Prisma {
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
     notifications?: NotificationListRelationFilter
+    assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
   }
@@ -25882,6 +27222,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeOrderByWithRelationInput
     flowEvents?: FlowExecutionEventOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
+    assignments?: ConversationAssignmentOrderByRelationAggregateInput
     media?: ConversationMediaOrderByRelationAggregateInput
     labels?: ConversationLabelOrderByRelationAggregateInput
   }
@@ -25915,6 +27256,7 @@ export namespace Prisma {
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
     notifications?: NotificationListRelationFilter
+    assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
   }, "id">
@@ -25975,11 +27317,15 @@ export namespace Prisma {
     direction?: StringFilter<"Message"> | string
     senderType?: StringFilter<"Message"> | string
     senderAgentId?: StringNullableFilter<"Message"> | string | null
+    senderContactId?: StringNullableFilter<"Message"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
+    senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
   }
 
@@ -25990,11 +27336,15 @@ export namespace Prisma {
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrderInput | SortOrder
+    senderContactId?: SortOrderInput | SortOrder
+    senderNameSnapshot?: SortOrderInput | SortOrder
+    senderDepartmentSnapshot?: SortOrderInput | SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrderInput | SortOrder
     conversation?: ConversationOrderByWithRelationInput
     senderAgent?: AgentOrderByWithRelationInput
+    senderContact?: ContactOrderByWithRelationInput
     media?: ConversationMediaOrderByWithRelationInput
   }
 
@@ -26008,11 +27358,15 @@ export namespace Prisma {
     direction?: StringFilter<"Message"> | string
     senderType?: StringFilter<"Message"> | string
     senderAgentId?: StringNullableFilter<"Message"> | string | null
+    senderContactId?: StringNullableFilter<"Message"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
+    senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
   }, "id" | "externalMessageId">
 
@@ -26023,6 +27377,9 @@ export namespace Prisma {
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrderInput | SortOrder
+    senderContactId?: SortOrderInput | SortOrder
+    senderNameSnapshot?: SortOrderInput | SortOrder
+    senderDepartmentSnapshot?: SortOrderInput | SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrderInput | SortOrder
@@ -26041,9 +27398,91 @@ export namespace Prisma {
     direction?: StringWithAggregatesFilter<"Message"> | string
     senderType?: StringWithAggregatesFilter<"Message"> | string
     senderAgentId?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    senderContactId?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    senderNameSnapshot?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    senderDepartmentSnapshot?: StringNullableWithAggregatesFilter<"Message"> | string | null
     content?: StringWithAggregatesFilter<"Message"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     readAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
+  }
+
+  export type ConversationAssignmentWhereInput = {
+    AND?: ConversationAssignmentWhereInput | ConversationAssignmentWhereInput[]
+    OR?: ConversationAssignmentWhereInput[]
+    NOT?: ConversationAssignmentWhereInput | ConversationAssignmentWhereInput[]
+    id?: StringFilter<"ConversationAssignment"> | string
+    conversationId?: StringFilter<"ConversationAssignment"> | string
+    fromAgentId?: StringNullableFilter<"ConversationAssignment"> | string | null
+    toAgentId?: StringFilter<"ConversationAssignment"> | string
+    actorAgentId?: StringFilter<"ConversationAssignment"> | string
+    action?: StringFilter<"ConversationAssignment"> | string
+    reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    fromAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    toAgent?: XOR<AgentRelationFilter, AgentWhereInput>
+    actorAgent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }
+
+  export type ConversationAssignmentOrderByWithRelationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    fromAgentId?: SortOrderInput | SortOrder
+    toAgentId?: SortOrder
+    actorAgentId?: SortOrder
+    action?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    conversation?: ConversationOrderByWithRelationInput
+    fromAgent?: AgentOrderByWithRelationInput
+    toAgent?: AgentOrderByWithRelationInput
+    actorAgent?: AgentOrderByWithRelationInput
+  }
+
+  export type ConversationAssignmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ConversationAssignmentWhereInput | ConversationAssignmentWhereInput[]
+    OR?: ConversationAssignmentWhereInput[]
+    NOT?: ConversationAssignmentWhereInput | ConversationAssignmentWhereInput[]
+    conversationId?: StringFilter<"ConversationAssignment"> | string
+    fromAgentId?: StringNullableFilter<"ConversationAssignment"> | string | null
+    toAgentId?: StringFilter<"ConversationAssignment"> | string
+    actorAgentId?: StringFilter<"ConversationAssignment"> | string
+    action?: StringFilter<"ConversationAssignment"> | string
+    reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    fromAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    toAgent?: XOR<AgentRelationFilter, AgentWhereInput>
+    actorAgent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }, "id">
+
+  export type ConversationAssignmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    fromAgentId?: SortOrderInput | SortOrder
+    toAgentId?: SortOrder
+    actorAgentId?: SortOrder
+    action?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ConversationAssignmentCountOrderByAggregateInput
+    _max?: ConversationAssignmentMaxOrderByAggregateInput
+    _min?: ConversationAssignmentMinOrderByAggregateInput
+  }
+
+  export type ConversationAssignmentScalarWhereWithAggregatesInput = {
+    AND?: ConversationAssignmentScalarWhereWithAggregatesInput | ConversationAssignmentScalarWhereWithAggregatesInput[]
+    OR?: ConversationAssignmentScalarWhereWithAggregatesInput[]
+    NOT?: ConversationAssignmentScalarWhereWithAggregatesInput | ConversationAssignmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ConversationAssignment"> | string
+    conversationId?: StringWithAggregatesFilter<"ConversationAssignment"> | string
+    fromAgentId?: StringNullableWithAggregatesFilter<"ConversationAssignment"> | string | null
+    toAgentId?: StringWithAggregatesFilter<"ConversationAssignment"> | string
+    actorAgentId?: StringWithAggregatesFilter<"ConversationAssignment"> | string
+    action?: StringWithAggregatesFilter<"ConversationAssignment"> | string
+    reason?: StringNullableWithAggregatesFilter<"ConversationAssignment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ConversationAssignment"> | Date | string
   }
 
   export type ConversationMediaWhereInput = {
@@ -27365,6 +28804,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -27387,6 +28829,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -27409,6 +28854,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -27431,6 +28879,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -27538,6 +28989,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
+    messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
   }
 
   export type ContactUncheckedCreateInput = {
@@ -27546,6 +28998,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
   }
 
   export type ContactUpdateInput = {
@@ -27554,6 +29007,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
   }
 
   export type ContactUncheckedUpdateInput = {
@@ -27562,6 +29016,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
   }
 
   export type ContactCreateManyInput = {
@@ -27606,6 +29061,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -27631,6 +29087,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -27656,6 +29113,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -27681,6 +29139,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -27745,11 +29204,14 @@ export namespace Prisma {
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
@@ -27760,6 +29222,9 @@ export namespace Prisma {
     direction: string
     senderType: string
     senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -27771,11 +29236,14 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
@@ -27786,6 +29254,9 @@ export namespace Prisma {
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27799,6 +29270,9 @@ export namespace Prisma {
     direction: string
     senderType: string
     senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -27809,6 +29283,8 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27821,9 +29297,85 @@ export namespace Prisma {
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationAssignmentCreateInput = {
+    id?: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutAssignmentsInput
+    fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
+    toAgent: AgentCreateNestedOneWithoutAssignmentToInput
+    actorAgent: AgentCreateNestedOneWithoutAssignmentActorInput
+  }
+
+  export type ConversationAssignmentUncheckedCreateInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
+    fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
+    toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
+    actorAgent?: AgentUpdateOneRequiredWithoutAssignmentActorNestedInput
+  }
+
+  export type ConversationAssignmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentCreateManyInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationMediaCreateInput = {
@@ -29339,6 +30891,12 @@ export namespace Prisma {
     none?: MessageWhereInput
   }
 
+  export type ConversationAssignmentListRelationFilter = {
+    every?: ConversationAssignmentWhereInput
+    some?: ConversationAssignmentWhereInput
+    none?: ConversationAssignmentWhereInput
+  }
+
   export type ShortcutAuditListRelationFilter = {
     every?: ShortcutAuditWhereInput
     some?: ShortcutAuditWhereInput
@@ -29369,6 +30927,10 @@ export namespace Prisma {
   }
 
   export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ConversationAssignmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29663,6 +31225,11 @@ export namespace Prisma {
     isNot?: ConversationWhereInput
   }
 
+  export type ContactNullableRelationFilter = {
+    is?: ContactWhereInput | null
+    isNot?: ContactWhereInput | null
+  }
+
   export type ConversationMediaNullableRelationFilter = {
     is?: ConversationMediaWhereInput | null
     isNot?: ConversationMediaWhereInput | null
@@ -29675,6 +31242,9 @@ export namespace Prisma {
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    senderDepartmentSnapshot?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
@@ -29687,6 +31257,9 @@ export namespace Prisma {
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    senderDepartmentSnapshot?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
@@ -29699,9 +31272,50 @@ export namespace Prisma {
     direction?: SortOrder
     senderType?: SortOrder
     senderAgentId?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    senderDepartmentSnapshot?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
+  }
+
+  export type AgentRelationFilter = {
+    is?: AgentWhereInput
+    isNot?: AgentWhereInput
+  }
+
+  export type ConversationAssignmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    fromAgentId?: SortOrder
+    toAgentId?: SortOrder
+    actorAgentId?: SortOrder
+    action?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ConversationAssignmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    fromAgentId?: SortOrder
+    toAgentId?: SortOrder
+    actorAgentId?: SortOrder
+    action?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ConversationAssignmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    fromAgentId?: SortOrder
+    toAgentId?: SortOrder
+    actorAgentId?: SortOrder
+    action?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EnumMediaProviderFilter<$PrismaModel = never> = {
@@ -30374,11 +31988,6 @@ export namespace Prisma {
     not?: NestedEnumShortcutScopeFilter<$PrismaModel> | $Enums.ShortcutScope
   }
 
-  export type AgentRelationFilter = {
-    is?: AgentWhereInput
-    isNot?: AgentWhereInput
-  }
-
   export type ShortcutCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -30848,6 +32457,27 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type ConversationAssignmentCreateNestedManyWithoutFromAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
+    createMany?: ConversationAssignmentCreateManyFromAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentCreateNestedManyWithoutToAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput> | ConversationAssignmentCreateWithoutToAgentInput[] | ConversationAssignmentUncheckedCreateWithoutToAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutToAgentInput | ConversationAssignmentCreateOrConnectWithoutToAgentInput[]
+    createMany?: ConversationAssignmentCreateManyToAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentCreateNestedManyWithoutActorAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput> | ConversationAssignmentCreateWithoutActorAgentInput[] | ConversationAssignmentUncheckedCreateWithoutActorAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutActorAgentInput | ConversationAssignmentCreateOrConnectWithoutActorAgentInput[]
+    createMany?: ConversationAssignmentCreateManyActorAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
   export type ShortcutCreateNestedManyWithoutOwnerInput = {
     create?: XOR<ShortcutCreateWithoutOwnerInput, ShortcutUncheckedCreateWithoutOwnerInput> | ShortcutCreateWithoutOwnerInput[] | ShortcutUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: ShortcutCreateOrConnectWithoutOwnerInput | ShortcutCreateOrConnectWithoutOwnerInput[]
@@ -30915,6 +32545,27 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutSenderAgentInput | MessageCreateOrConnectWithoutSenderAgentInput[]
     createMany?: MessageCreateManySenderAgentInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
+    createMany?: ConversationAssignmentCreateManyFromAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput> | ConversationAssignmentCreateWithoutToAgentInput[] | ConversationAssignmentUncheckedCreateWithoutToAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutToAgentInput | ConversationAssignmentCreateOrConnectWithoutToAgentInput[]
+    createMany?: ConversationAssignmentCreateManyToAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput> | ConversationAssignmentCreateWithoutActorAgentInput[] | ConversationAssignmentUncheckedCreateWithoutActorAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutActorAgentInput | ConversationAssignmentCreateOrConnectWithoutActorAgentInput[]
+    createMany?: ConversationAssignmentCreateManyActorAgentInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
   }
 
   export type ShortcutUncheckedCreateNestedManyWithoutOwnerInput = {
@@ -31012,6 +32663,48 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderAgentInput | MessageUpdateWithWhereUniqueWithoutSenderAgentInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderAgentInput | MessageUpdateManyWithWhereWithoutSenderAgentInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type ConversationAssignmentUpdateManyWithoutFromAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput[]
+    createMany?: ConversationAssignmentCreateManyFromAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutFromAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutFromAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutFromAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutFromAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
+  export type ConversationAssignmentUpdateManyWithoutToAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput> | ConversationAssignmentCreateWithoutToAgentInput[] | ConversationAssignmentUncheckedCreateWithoutToAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutToAgentInput | ConversationAssignmentCreateOrConnectWithoutToAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutToAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutToAgentInput[]
+    createMany?: ConversationAssignmentCreateManyToAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutToAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutToAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutToAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutToAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
+  export type ConversationAssignmentUpdateManyWithoutActorAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput> | ConversationAssignmentCreateWithoutActorAgentInput[] | ConversationAssignmentUncheckedCreateWithoutActorAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutActorAgentInput | ConversationAssignmentCreateOrConnectWithoutActorAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutActorAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutActorAgentInput[]
+    createMany?: ConversationAssignmentCreateManyActorAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutActorAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutActorAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutActorAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutActorAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
   }
 
   export type ShortcutUpdateManyWithoutOwnerNestedInput = {
@@ -31150,6 +32843,48 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput[]
+    createMany?: ConversationAssignmentCreateManyFromAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutFromAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutFromAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutFromAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutFromAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput> | ConversationAssignmentCreateWithoutToAgentInput[] | ConversationAssignmentUncheckedCreateWithoutToAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutToAgentInput | ConversationAssignmentCreateOrConnectWithoutToAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutToAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutToAgentInput[]
+    createMany?: ConversationAssignmentCreateManyToAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutToAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutToAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutToAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutToAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput> | ConversationAssignmentCreateWithoutActorAgentInput[] | ConversationAssignmentUncheckedCreateWithoutActorAgentInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutActorAgentInput | ConversationAssignmentCreateOrConnectWithoutActorAgentInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutActorAgentInput | ConversationAssignmentUpsertWithWhereUniqueWithoutActorAgentInput[]
+    createMany?: ConversationAssignmentCreateManyActorAgentInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutActorAgentInput | ConversationAssignmentUpdateWithWhereUniqueWithoutActorAgentInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutActorAgentInput | ConversationAssignmentUpdateManyWithWhereWithoutActorAgentInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
   export type ShortcutUncheckedUpdateManyWithoutOwnerNestedInput = {
     create?: XOR<ShortcutCreateWithoutOwnerInput, ShortcutUncheckedCreateWithoutOwnerInput> | ShortcutCreateWithoutOwnerInput[] | ShortcutUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: ShortcutCreateOrConnectWithoutOwnerInput | ShortcutCreateOrConnectWithoutOwnerInput[]
@@ -31274,11 +33009,25 @@ export namespace Prisma {
     connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutSenderContactInput = {
+    create?: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput> | MessageCreateWithoutSenderContactInput[] | MessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
+    createMany?: MessageCreateManySenderContactInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutContactInput = {
     create?: XOR<ConversationCreateWithoutContactInput, ConversationUncheckedCreateWithoutContactInput> | ConversationCreateWithoutContactInput[] | ConversationUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutContactInput | ConversationCreateOrConnectWithoutContactInput[]
     createMany?: ConversationCreateManyContactInputEnvelope
     connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutSenderContactInput = {
+    create?: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput> | MessageCreateWithoutSenderContactInput[] | MessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
+    createMany?: MessageCreateManySenderContactInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type ConversationUpdateManyWithoutContactNestedInput = {
@@ -31295,6 +33044,20 @@ export namespace Prisma {
     deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutSenderContactNestedInput = {
+    create?: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput> | MessageCreateWithoutSenderContactInput[] | MessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutSenderContactInput | MessageUpsertWithWhereUniqueWithoutSenderContactInput[]
+    createMany?: MessageCreateManySenderContactInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateManyWithoutContactNestedInput = {
     create?: XOR<ConversationCreateWithoutContactInput, ConversationUncheckedCreateWithoutContactInput> | ConversationCreateWithoutContactInput[] | ConversationUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutContactInput | ConversationCreateOrConnectWithoutContactInput[]
@@ -31307,6 +33070,20 @@ export namespace Prisma {
     update?: ConversationUpdateWithWhereUniqueWithoutContactInput | ConversationUpdateWithWhereUniqueWithoutContactInput[]
     updateMany?: ConversationUpdateManyWithWhereWithoutContactInput | ConversationUpdateManyWithWhereWithoutContactInput[]
     deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutSenderContactNestedInput = {
+    create?: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput> | MessageCreateWithoutSenderContactInput[] | MessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutSenderContactInput | MessageUpsertWithWhereUniqueWithoutSenderContactInput[]
+    createMany?: MessageCreateManySenderContactInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type ContactCreateNestedOneWithoutConversationsInput = {
@@ -31360,6 +33137,13 @@ export namespace Prisma {
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
+  export type ConversationAssignmentCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput> | ConversationAssignmentCreateWithoutConversationInput[] | ConversationAssignmentUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutConversationInput | ConversationAssignmentCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationAssignmentCreateManyConversationInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+  }
+
   export type ConversationMediaCreateNestedManyWithoutConversationInput = {
     create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
@@ -31393,6 +33177,13 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutConversationInput | NotificationCreateOrConnectWithoutConversationInput[]
     createMany?: NotificationCreateManyConversationInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput> | ConversationAssignmentCreateWithoutConversationInput[] | ConversationAssignmentUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutConversationInput | ConversationAssignmentCreateOrConnectWithoutConversationInput[]
+    createMany?: ConversationAssignmentCreateManyConversationInputEnvelope
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
   }
 
   export type ConversationMediaUncheckedCreateNestedManyWithoutConversationInput = {
@@ -31503,6 +33294,20 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type ConversationAssignmentUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput> | ConversationAssignmentCreateWithoutConversationInput[] | ConversationAssignmentUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutConversationInput | ConversationAssignmentCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutConversationInput | ConversationAssignmentUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationAssignmentCreateManyConversationInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutConversationInput | ConversationAssignmentUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutConversationInput | ConversationAssignmentUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
   export type ConversationMediaUpdateManyWithoutConversationNestedInput = {
     create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
@@ -31573,6 +33378,20 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput> | ConversationAssignmentCreateWithoutConversationInput[] | ConversationAssignmentUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutConversationInput | ConversationAssignmentCreateOrConnectWithoutConversationInput[]
+    upsert?: ConversationAssignmentUpsertWithWhereUniqueWithoutConversationInput | ConversationAssignmentUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ConversationAssignmentCreateManyConversationInputEnvelope
+    set?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    disconnect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    delete?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    connect?: ConversationAssignmentWhereUniqueInput | ConversationAssignmentWhereUniqueInput[]
+    update?: ConversationAssignmentUpdateWithWhereUniqueWithoutConversationInput | ConversationAssignmentUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ConversationAssignmentUpdateManyWithWhereWithoutConversationInput | ConversationAssignmentUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+  }
+
   export type ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<ConversationMediaCreateWithoutConversationInput, ConversationMediaUncheckedCreateWithoutConversationInput> | ConversationMediaCreateWithoutConversationInput[] | ConversationMediaUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
@@ -31613,6 +33432,12 @@ export namespace Prisma {
     connect?: AgentWhereUniqueInput
   }
 
+  export type ContactCreateNestedOneWithoutMessageSendersInput = {
+    create?: XOR<ContactCreateWithoutMessageSendersInput, ContactUncheckedCreateWithoutMessageSendersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutMessageSendersInput
+    connect?: ContactWhereUniqueInput
+  }
+
   export type ConversationMediaCreateNestedOneWithoutMessageInput = {
     create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
@@ -31643,6 +33468,16 @@ export namespace Prisma {
     update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutMessagesInput, AgentUpdateWithoutMessagesInput>, AgentUncheckedUpdateWithoutMessagesInput>
   }
 
+  export type ContactUpdateOneWithoutMessageSendersNestedInput = {
+    create?: XOR<ContactCreateWithoutMessageSendersInput, ContactUncheckedCreateWithoutMessageSendersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutMessageSendersInput
+    upsert?: ContactUpsertWithoutMessageSendersInput
+    disconnect?: ContactWhereInput | boolean
+    delete?: ContactWhereInput | boolean
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutMessageSendersInput, ContactUpdateWithoutMessageSendersInput>, ContactUncheckedUpdateWithoutMessageSendersInput>
+  }
+
   export type ConversationMediaUpdateOneWithoutMessageNestedInput = {
     create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
@@ -31661,6 +33496,64 @@ export namespace Prisma {
     delete?: ConversationMediaWhereInput | boolean
     connect?: ConversationMediaWhereUniqueInput
     update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ConversationCreateNestedOneWithoutAssignmentsInput = {
+    create?: XOR<ConversationCreateWithoutAssignmentsInput, ConversationUncheckedCreateWithoutAssignmentsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutAssignmentsInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutAssignmentFromInput = {
+    create?: XOR<AgentCreateWithoutAssignmentFromInput, AgentUncheckedCreateWithoutAssignmentFromInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentFromInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutAssignmentToInput = {
+    create?: XOR<AgentCreateWithoutAssignmentToInput, AgentUncheckedCreateWithoutAssignmentToInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentToInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutAssignmentActorInput = {
+    create?: XOR<AgentCreateWithoutAssignmentActorInput, AgentUncheckedCreateWithoutAssignmentActorInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentActorInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type ConversationUpdateOneRequiredWithoutAssignmentsNestedInput = {
+    create?: XOR<ConversationCreateWithoutAssignmentsInput, ConversationUncheckedCreateWithoutAssignmentsInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutAssignmentsInput
+    upsert?: ConversationUpsertWithoutAssignmentsInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutAssignmentsInput, ConversationUpdateWithoutAssignmentsInput>, ConversationUncheckedUpdateWithoutAssignmentsInput>
+  }
+
+  export type AgentUpdateOneWithoutAssignmentFromNestedInput = {
+    create?: XOR<AgentCreateWithoutAssignmentFromInput, AgentUncheckedCreateWithoutAssignmentFromInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentFromInput
+    upsert?: AgentUpsertWithoutAssignmentFromInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutAssignmentFromInput, AgentUpdateWithoutAssignmentFromInput>, AgentUncheckedUpdateWithoutAssignmentFromInput>
+  }
+
+  export type AgentUpdateOneRequiredWithoutAssignmentToNestedInput = {
+    create?: XOR<AgentCreateWithoutAssignmentToInput, AgentUncheckedCreateWithoutAssignmentToInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentToInput
+    upsert?: AgentUpsertWithoutAssignmentToInput
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutAssignmentToInput, AgentUpdateWithoutAssignmentToInput>, AgentUncheckedUpdateWithoutAssignmentToInput>
+  }
+
+  export type AgentUpdateOneRequiredWithoutAssignmentActorNestedInput = {
+    create?: XOR<AgentCreateWithoutAssignmentActorInput, AgentUncheckedCreateWithoutAssignmentActorInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutAssignmentActorInput
+    upsert?: AgentUpsertWithoutAssignmentActorInput
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutAssignmentActorInput, AgentUpdateWithoutAssignmentActorInput>, AgentUncheckedUpdateWithoutAssignmentActorInput>
   }
 
   export type MessageCreateNestedOneWithoutMediaInput = {
@@ -32931,6 +34824,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -32952,6 +34848,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -32992,6 +34891,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -33016,6 +34916,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -33385,6 +35286,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -33409,6 +35311,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -33428,10 +35331,13 @@ export namespace Prisma {
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
@@ -33441,6 +35347,9 @@ export namespace Prisma {
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -33454,6 +35363,96 @@ export namespace Prisma {
 
   export type MessageCreateManySenderAgentInputEnvelope = {
     data: MessageCreateManySenderAgentInput | MessageCreateManySenderAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationAssignmentCreateWithoutFromAgentInput = {
+    id?: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutAssignmentsInput
+    toAgent: AgentCreateNestedOneWithoutAssignmentToInput
+    actorAgent: AgentCreateNestedOneWithoutAssignmentActorInput
+  }
+
+  export type ConversationAssignmentUncheckedCreateWithoutFromAgentInput = {
+    id?: string
+    conversationId: string
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateOrConnectWithoutFromAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    create: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput>
+  }
+
+  export type ConversationAssignmentCreateManyFromAgentInputEnvelope = {
+    data: ConversationAssignmentCreateManyFromAgentInput | ConversationAssignmentCreateManyFromAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationAssignmentCreateWithoutToAgentInput = {
+    id?: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutAssignmentsInput
+    fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
+    actorAgent: AgentCreateNestedOneWithoutAssignmentActorInput
+  }
+
+  export type ConversationAssignmentUncheckedCreateWithoutToAgentInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateOrConnectWithoutToAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    create: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput>
+  }
+
+  export type ConversationAssignmentCreateManyToAgentInputEnvelope = {
+    data: ConversationAssignmentCreateManyToAgentInput | ConversationAssignmentCreateManyToAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationAssignmentCreateWithoutActorAgentInput = {
+    id?: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutAssignmentsInput
+    fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
+    toAgent: AgentCreateNestedOneWithoutAssignmentToInput
+  }
+
+  export type ConversationAssignmentUncheckedCreateWithoutActorAgentInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    toAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateOrConnectWithoutActorAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    create: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput>
+  }
+
+  export type ConversationAssignmentCreateManyActorAgentInputEnvelope = {
+    data: ConversationAssignmentCreateManyActorAgentInput | ConversationAssignmentCreateManyActorAgentInput[]
     skipDuplicates?: boolean
   }
 
@@ -33819,9 +35818,74 @@ export namespace Prisma {
     direction?: StringFilter<"Message"> | string
     senderType?: StringFilter<"Message"> | string
     senderAgentId?: StringNullableFilter<"Message"> | string | null
+    senderContactId?: StringNullableFilter<"Message"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
+    senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
+  }
+
+  export type ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    update: XOR<ConversationAssignmentUpdateWithoutFromAgentInput, ConversationAssignmentUncheckedUpdateWithoutFromAgentInput>
+    create: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateWithWhereUniqueWithoutFromAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    data: XOR<ConversationAssignmentUpdateWithoutFromAgentInput, ConversationAssignmentUncheckedUpdateWithoutFromAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateManyWithWhereWithoutFromAgentInput = {
+    where: ConversationAssignmentScalarWhereInput
+    data: XOR<ConversationAssignmentUpdateManyMutationInput, ConversationAssignmentUncheckedUpdateManyWithoutFromAgentInput>
+  }
+
+  export type ConversationAssignmentScalarWhereInput = {
+    AND?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+    OR?: ConversationAssignmentScalarWhereInput[]
+    NOT?: ConversationAssignmentScalarWhereInput | ConversationAssignmentScalarWhereInput[]
+    id?: StringFilter<"ConversationAssignment"> | string
+    conversationId?: StringFilter<"ConversationAssignment"> | string
+    fromAgentId?: StringNullableFilter<"ConversationAssignment"> | string | null
+    toAgentId?: StringFilter<"ConversationAssignment"> | string
+    actorAgentId?: StringFilter<"ConversationAssignment"> | string
+    action?: StringFilter<"ConversationAssignment"> | string
+    reason?: StringNullableFilter<"ConversationAssignment"> | string | null
+    createdAt?: DateTimeFilter<"ConversationAssignment"> | Date | string
+  }
+
+  export type ConversationAssignmentUpsertWithWhereUniqueWithoutToAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    update: XOR<ConversationAssignmentUpdateWithoutToAgentInput, ConversationAssignmentUncheckedUpdateWithoutToAgentInput>
+    create: XOR<ConversationAssignmentCreateWithoutToAgentInput, ConversationAssignmentUncheckedCreateWithoutToAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateWithWhereUniqueWithoutToAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    data: XOR<ConversationAssignmentUpdateWithoutToAgentInput, ConversationAssignmentUncheckedUpdateWithoutToAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateManyWithWhereWithoutToAgentInput = {
+    where: ConversationAssignmentScalarWhereInput
+    data: XOR<ConversationAssignmentUpdateManyMutationInput, ConversationAssignmentUncheckedUpdateManyWithoutToAgentInput>
+  }
+
+  export type ConversationAssignmentUpsertWithWhereUniqueWithoutActorAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    update: XOR<ConversationAssignmentUpdateWithoutActorAgentInput, ConversationAssignmentUncheckedUpdateWithoutActorAgentInput>
+    create: XOR<ConversationAssignmentCreateWithoutActorAgentInput, ConversationAssignmentUncheckedCreateWithoutActorAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateWithWhereUniqueWithoutActorAgentInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    data: XOR<ConversationAssignmentUpdateWithoutActorAgentInput, ConversationAssignmentUncheckedUpdateWithoutActorAgentInput>
+  }
+
+  export type ConversationAssignmentUpdateManyWithWhereWithoutActorAgentInput = {
+    where: ConversationAssignmentScalarWhereInput
+    data: XOR<ConversationAssignmentUpdateManyMutationInput, ConversationAssignmentUncheckedUpdateManyWithoutActorAgentInput>
   }
 
   export type ShortcutUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -34044,6 +36108,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -34068,6 +36133,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -34079,6 +36145,46 @@ export namespace Prisma {
 
   export type ConversationCreateManyContactInputEnvelope = {
     data: ConversationCreateManyContactInput | ConversationCreateManyContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutSenderContactInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+    senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateWithoutSenderContactInput = {
+    id?: string
+    conversationId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderAgentId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageCreateOrConnectWithoutSenderContactInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput>
+  }
+
+  export type MessageCreateManySenderContactInputEnvelope = {
+    data: MessageCreateManySenderContactInput | MessageCreateManySenderContactInput[]
     skipDuplicates?: boolean
   }
 
@@ -34098,11 +36204,28 @@ export namespace Prisma {
     data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyWithoutContactInput>
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutSenderContactInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutSenderContactInput, MessageUncheckedUpdateWithoutSenderContactInput>
+    create: XOR<MessageCreateWithoutSenderContactInput, MessageUncheckedCreateWithoutSenderContactInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutSenderContactInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutSenderContactInput, MessageUncheckedUpdateWithoutSenderContactInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutSenderContactInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderContactInput>
+  }
+
   export type ContactCreateWithoutConversationsInput = {
     id?: string
     phone: string
     name: string
     createdAt?: Date | string
+    messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
   }
 
   export type ContactUncheckedCreateWithoutConversationsInput = {
@@ -34110,6 +36233,7 @@ export namespace Prisma {
     phone: string
     name: string
     createdAt?: Date | string
+    messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
   }
 
   export type ContactCreateOrConnectWithoutConversationsInput = {
@@ -34155,6 +36279,9 @@ export namespace Prisma {
     createdAt?: Date | string
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -34176,6 +36303,9 @@ export namespace Prisma {
     isOnline?: boolean
     createdAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -34196,10 +36326,13 @@ export namespace Prisma {
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
   }
 
@@ -34209,6 +36342,9 @@ export namespace Prisma {
     direction: string
     senderType: string
     senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -34365,6 +36501,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ConversationAssignmentCreateWithoutConversationInput = {
+    id?: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+    fromAgent?: AgentCreateNestedOneWithoutAssignmentFromInput
+    toAgent: AgentCreateNestedOneWithoutAssignmentToInput
+    actorAgent: AgentCreateNestedOneWithoutAssignmentActorInput
+  }
+
+  export type ConversationAssignmentUncheckedCreateWithoutConversationInput = {
+    id?: string
+    fromAgentId?: string | null
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateOrConnectWithoutConversationInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    create: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationAssignmentCreateManyConversationInputEnvelope = {
+    data: ConversationAssignmentCreateManyConversationInput | ConversationAssignmentCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ConversationMediaCreateWithoutConversationInput = {
     id?: string
     whatsappMessageId: string
@@ -34473,6 +36639,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutConversationsInput = {
@@ -34480,6 +36647,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
   }
 
   export type DepartmentUpsertWithoutConversationsInput = {
@@ -34537,6 +36705,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -34558,6 +36729,9 @@ export namespace Prisma {
     isOnline?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -34714,6 +36888,22 @@ export namespace Prisma {
     data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type ConversationAssignmentUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    update: XOR<ConversationAssignmentUpdateWithoutConversationInput, ConversationAssignmentUncheckedUpdateWithoutConversationInput>
+    create: XOR<ConversationAssignmentCreateWithoutConversationInput, ConversationAssignmentUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ConversationAssignmentUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ConversationAssignmentWhereUniqueInput
+    data: XOR<ConversationAssignmentUpdateWithoutConversationInput, ConversationAssignmentUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ConversationAssignmentUpdateManyWithWhereWithoutConversationInput = {
+    where: ConversationAssignmentScalarWhereInput
+    data: XOR<ConversationAssignmentUpdateManyMutationInput, ConversationAssignmentUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type ConversationMediaUpsertWithWhereUniqueWithoutConversationInput = {
     where: ConversationMediaWhereUniqueInput
     update: XOR<ConversationMediaUpdateWithoutConversationInput, ConversationMediaUncheckedUpdateWithoutConversationInput>
@@ -34799,6 +36989,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -34823,6 +37014,7 @@ export namespace Prisma {
     groupParticipant?: string | null
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -34843,6 +37035,9 @@ export namespace Prisma {
     createdAt?: Date | string
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -34864,6 +37059,9 @@ export namespace Prisma {
     isOnline?: boolean
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -34877,6 +37075,27 @@ export namespace Prisma {
   export type AgentCreateOrConnectWithoutMessagesInput = {
     where: AgentWhereUniqueInput
     create: XOR<AgentCreateWithoutMessagesInput, AgentUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ContactCreateWithoutMessageSendersInput = {
+    id?: string
+    phone: string
+    name: string
+    createdAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutMessageSendersInput = {
+    id?: string
+    phone: string
+    name: string
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutMessageSendersInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutMessageSendersInput, ContactUncheckedCreateWithoutMessageSendersInput>
   }
 
   export type ConversationMediaCreateWithoutMessageInput = {
@@ -34973,6 +37192,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -34997,6 +37217,7 @@ export namespace Prisma {
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -35023,6 +37244,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -35044,6 +37268,9 @@ export namespace Prisma {
     isOnline?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -35052,6 +37279,33 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type ContactUpsertWithoutMessageSendersInput = {
+    update: XOR<ContactUpdateWithoutMessageSendersInput, ContactUncheckedUpdateWithoutMessageSendersInput>
+    create: XOR<ContactCreateWithoutMessageSendersInput, ContactUncheckedCreateWithoutMessageSendersInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutMessageSendersInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutMessageSendersInput, ContactUncheckedUpdateWithoutMessageSendersInput>
+  }
+
+  export type ContactUpdateWithoutMessageSendersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutMessageSendersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ConversationMediaUpsertWithoutMessageInput = {
@@ -35123,16 +37377,471 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationCreateWithoutAssignmentsInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutAssignmentsInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutAssignmentsInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutAssignmentsInput, ConversationUncheckedCreateWithoutAssignmentsInput>
+  }
+
+  export type AgentCreateWithoutAssignmentFromInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutAssignmentFromInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutAssignmentFromInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutAssignmentFromInput, AgentUncheckedCreateWithoutAssignmentFromInput>
+  }
+
+  export type AgentCreateWithoutAssignmentToInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutAssignmentToInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutAssignmentToInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutAssignmentToInput, AgentUncheckedCreateWithoutAssignmentToInput>
+  }
+
+  export type AgentCreateWithoutAssignmentActorInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutAssignmentActorInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutAssignmentActorInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutAssignmentActorInput, AgentUncheckedCreateWithoutAssignmentActorInput>
+  }
+
+  export type ConversationUpsertWithoutAssignmentsInput = {
+    update: XOR<ConversationUpdateWithoutAssignmentsInput, ConversationUncheckedUpdateWithoutAssignmentsInput>
+    create: XOR<ConversationCreateWithoutAssignmentsInput, ConversationUncheckedCreateWithoutAssignmentsInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutAssignmentsInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutAssignmentsInput, ConversationUncheckedUpdateWithoutAssignmentsInput>
+  }
+
+  export type ConversationUpdateWithoutAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type AgentUpsertWithoutAssignmentFromInput = {
+    update: XOR<AgentUpdateWithoutAssignmentFromInput, AgentUncheckedUpdateWithoutAssignmentFromInput>
+    create: XOR<AgentCreateWithoutAssignmentFromInput, AgentUncheckedCreateWithoutAssignmentFromInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutAssignmentFromInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutAssignmentFromInput, AgentUncheckedUpdateWithoutAssignmentFromInput>
+  }
+
+  export type AgentUpdateWithoutAssignmentFromInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutAssignmentFromInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type AgentUpsertWithoutAssignmentToInput = {
+    update: XOR<AgentUpdateWithoutAssignmentToInput, AgentUncheckedUpdateWithoutAssignmentToInput>
+    create: XOR<AgentCreateWithoutAssignmentToInput, AgentUncheckedCreateWithoutAssignmentToInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutAssignmentToInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutAssignmentToInput, AgentUncheckedUpdateWithoutAssignmentToInput>
+  }
+
+  export type AgentUpdateWithoutAssignmentToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutAssignmentToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type AgentUpsertWithoutAssignmentActorInput = {
+    update: XOR<AgentUpdateWithoutAssignmentActorInput, AgentUncheckedUpdateWithoutAssignmentActorInput>
+    create: XOR<AgentCreateWithoutAssignmentActorInput, AgentUncheckedCreateWithoutAssignmentActorInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutAssignmentActorInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutAssignmentActorInput, AgentUncheckedUpdateWithoutAssignmentActorInput>
+  }
+
+  export type AgentUpdateWithoutAssignmentActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutAssignmentActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+  }
+
   export type MessageCreateWithoutMediaInput = {
     id?: string
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
   }
 
   export type MessageUncheckedCreateWithoutMediaInput = {
@@ -35142,6 +37851,9 @@ export namespace Prisma {
     direction: string
     senderType: string
     senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -35173,6 +37885,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
@@ -35197,6 +37910,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
@@ -35221,11 +37935,14 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutMediaInput = {
@@ -35235,6 +37952,9 @@ export namespace Prisma {
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35272,6 +37992,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
@@ -35296,6 +38017,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
@@ -35418,6 +38140,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
   }
 
@@ -35442,6 +38165,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
   }
 
@@ -35487,6 +38211,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -35508,6 +38235,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -35554,6 +38284,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
   }
 
@@ -35578,6 +38309,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
   }
 
@@ -35635,6 +38367,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -35656,6 +38391,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -35700,6 +38438,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -35721,6 +38462,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -35823,6 +38567,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -35847,6 +38592,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -35943,6 +38689,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -35964,6 +38713,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -36190,6 +38942,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -36214,6 +38967,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -36650,6 +39404,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -36674,6 +39429,7 @@ export namespace Prisma {
     groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -36786,6 +39542,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -36810,6 +39567,7 @@ export namespace Prisma {
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -36937,6 +39695,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
@@ -36958,6 +39719,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
@@ -36984,6 +39748,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
@@ -37005,6 +39772,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
@@ -37031,6 +39801,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
@@ -37052,6 +39825,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
@@ -37148,6 +39924,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
@@ -37169,6 +39948,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
@@ -37201,6 +39983,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
@@ -37222,6 +40007,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
@@ -37254,6 +40042,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
@@ -37275,6 +40066,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
@@ -37351,6 +40145,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -37372,6 +40169,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -37454,6 +40254,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -37475,6 +40278,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -37496,6 +40302,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -37517,6 +40326,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -37551,6 +40363,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
@@ -37575,6 +40388,7 @@ export namespace Prisma {
     groupParticipant?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -37607,6 +40421,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -37628,6 +40445,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -37668,6 +40488,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -37692,6 +40513,7 @@ export namespace Prisma {
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -37708,6 +40530,9 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
@@ -37729,6 +40554,9 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
     createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
     updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -37766,6 +40594,9 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -37787,6 +40618,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -37892,6 +40726,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
@@ -37913,6 +40750,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
     createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -37954,6 +40794,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -37978,6 +40819,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -38117,9 +40959,42 @@ export namespace Prisma {
     externalMessageId?: string | null
     direction: string
     senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+  }
+
+  export type ConversationAssignmentCreateManyFromAgentInput = {
+    id?: string
+    conversationId: string
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateManyToAgentInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ConversationAssignmentCreateManyActorAgentInput = {
+    id?: string
+    conversationId: string
+    fromAgentId?: string | null
+    toAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
   }
 
   export type ShortcutCreateManyOwnerInput = {
@@ -38231,6 +41106,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -38255,6 +41131,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -38283,10 +41160,13 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
@@ -38296,6 +41176,9 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38308,9 +41191,102 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationAssignmentUpdateWithoutFromAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
+    toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
+    actorAgent?: AgentUpdateOneRequiredWithoutAssignmentActorNestedInput
+  }
+
+  export type ConversationAssignmentUncheckedUpdateWithoutFromAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutFromAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUpdateWithoutToAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
+    fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
+    actorAgent?: AgentUpdateOneRequiredWithoutAssignmentActorNestedInput
+  }
+
+  export type ConversationAssignmentUncheckedUpdateWithoutToAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutToAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUpdateWithoutActorAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutAssignmentsNestedInput
+    fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
+    toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
+  }
+
+  export type ConversationAssignmentUncheckedUpdateWithoutActorAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutActorAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShortcutUpdateWithoutOwnerInput = {
@@ -38613,6 +41589,20 @@ export namespace Prisma {
     groupParticipant?: string | null
   }
 
+  export type MessageCreateManySenderContactInput = {
+    id?: string
+    conversationId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderAgentId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
   export type ConversationUpdateWithoutContactInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -38633,6 +41623,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -38657,6 +41648,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -38680,12 +41672,59 @@ export namespace Prisma {
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type MessageUpdateWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateManyWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type MessageCreateManyConversationInput = {
     id?: string
     externalMessageId?: string | null
     direction: string
     senderType: string
     senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -38713,6 +41752,16 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     dismissedAt?: Date | string | null
+  }
+
+  export type ConversationAssignmentCreateManyConversationInput = {
+    id?: string
+    fromAgentId?: string | null
+    toAgentId: string
+    actorAgentId: string
+    action: string
+    reason?: string | null
+    createdAt?: Date | string
   }
 
   export type ConversationMediaCreateManyConversationInput = {
@@ -38756,10 +41805,13 @@ export namespace Prisma {
     externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
   }
 
@@ -38769,6 +41821,9 @@ export namespace Prisma {
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38781,6 +41836,9 @@ export namespace Prisma {
     direction?: StringFieldUpdateOperationsInput | string
     senderType?: StringFieldUpdateOperationsInput | string
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38856,6 +41914,36 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ConversationAssignmentUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fromAgent?: AgentUpdateOneWithoutAssignmentFromNestedInput
+    toAgent?: AgentUpdateOneRequiredWithoutAssignmentToNestedInput
+    actorAgent?: AgentUpdateOneRequiredWithoutAssignmentActorNestedInput
+  }
+
+  export type ConversationAssignmentUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationAssignmentUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    toAgentId?: StringFieldUpdateOperationsInput | string
+    actorAgentId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationMediaUpdateWithoutConversationInput = {
@@ -39187,6 +42275,7 @@ export namespace Prisma {
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -39211,6 +42300,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -39385,6 +42475,7 @@ export namespace Prisma {
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
@@ -39409,6 +42500,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -39563,6 +42655,10 @@ export namespace Prisma {
      * @deprecated Use MessageDefaultArgs instead
      */
     export type MessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = MessageDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ConversationAssignmentDefaultArgs instead
+     */
+    export type ConversationAssignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationAssignmentDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ConversationMediaDefaultArgs instead
      */

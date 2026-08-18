@@ -34,25 +34,28 @@ model Procedure {
 }
 
 model Agent {
-  id                     String          @id @default(uuid())
-  name                   String
-  email                  String          @unique
-  password               String          @default("$2a$10$e8Tj4yqgO.tL5zD6.e8Tj.e8Tj4yqgO.tL5zD6")
-  role                   String          @default("AGENT")
-  isActive               Boolean         @default(true) @map("is_active")
-  departmentId           String?         @map("department_id")
-  isOnline               Boolean         @default(false) @map("is_online")
-  createdAt              DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  department             Department?     @relation(fields: [departmentId], references: [id])
-  conversations          Conversation[]
-  messages               Message[]
-  ownedShortcuts         Shortcut[]      @relation("ShortcutOwner")
-  createdShortcuts       Shortcut[]      @relation("ShortcutCreatedBy")
-  updatedShortcuts       Shortcut[]      @relation("ShortcutUpdatedBy")
-  shortcutAudits         ShortcutAudit[]
-  publishedFlowRevisions FlowRevision[]  @relation("FlowRevisionPublisher")
-  notifications          Notification[]
-  notificationPreference NotificationPreference?
+  id                      String                   @id @default(uuid())
+  name                    String
+  email                   String                   @unique
+  password                String                   @default("$2a$10$e8Tj4yqgO.tL5zD6.e8Tj.e8Tj4yqgO.tL5zD6")
+  role                    String                   @default("AGENT")
+  isActive                Boolean                  @default(true) @map("is_active")
+  departmentId            String?                  @map("department_id")
+  isOnline                Boolean                  @default(false) @map("is_online")
+  createdAt               DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+  department              Department?              @relation(fields: [departmentId], references: [id])
+  conversations           Conversation[]
+  messages                Message[]
+  assignmentFrom          ConversationAssignment[] @relation("AssignmentFrom")
+  assignmentTo            ConversationAssignment[] @relation("AssignmentTo")
+  assignmentActor         ConversationAssignment[] @relation("AssignmentActor")
+  ownedShortcuts          Shortcut[]               @relation("ShortcutOwner")
+  createdShortcuts        Shortcut[]               @relation("ShortcutCreatedBy")
+  updatedShortcuts        Shortcut[]               @relation("ShortcutUpdatedBy")
+  shortcutAudits          ShortcutAudit[]
+  publishedFlowRevisions  FlowRevision[]           @relation("FlowRevisionPublisher")
+  notifications           Notification[]
+  notificationPreference  NotificationPreference?
   addedConversationLabels ConversationLabel[]
 
   @@map("gtf_agents")
@@ -71,43 +74,45 @@ model RolePermission {
 }
 
 model Contact {
-  id            String         @id @default(uuid())
-  phone         String         @unique
-  name          String
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  conversations Conversation[]
+  id             String         @id @default(uuid())
+  phone          String         @unique
+  name           String
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  conversations  Conversation[]
+  messageSenders Message[]      @relation("MessageSenderContact")
 
   @@map("gtf_contacts")
 }
 
 model Conversation {
-  id                String               @id @default(uuid())
-  contactId         String               @map("contact_id")
-  status            String               @default("OPEN")
-  departmentId      String?              @map("department_id")
-  assignedAgentId   String?              @map("assigned_agent_id")
-  currentStep       String?              @map("current_step")
-  flowRevisionId    String?              @map("flow_revision_id")
-  currentFlowNodeId String?              @map("current_flow_node_id")
-  flowContext       Json?                @map("flow_context")
-  startedAt         DateTime             @default(now()) @map("started_at") @db.Timestamptz
-  queuedAt          DateTime?            @map("queued_at") @db.Timestamptz
-  lastActivityAt    DateTime             @default(now()) @map("last_activity_at") @db.Timestamptz
-  closedAt          DateTime?            @map("closed_at") @db.Timestamptz
-  warningSentAt     DateTime?            @map("warning_sent_at") @db.Timestamptz
-  closeReason       String?              @map("close_reason")
-  contact           Contact              @relation(fields: [contactId], references: [id])
-  department        Department?          @relation(fields: [departmentId], references: [id])
-  assignedAgent     Agent?               @relation(fields: [assignedAgentId], references: [id])
+  id                String                   @id @default(uuid())
+  contactId         String                   @map("contact_id")
+  status            String                   @default("OPEN")
+  departmentId      String?                  @map("department_id")
+  assignedAgentId   String?                  @map("assigned_agent_id")
+  currentStep       String?                  @map("current_step")
+  flowRevisionId    String?                  @map("flow_revision_id")
+  currentFlowNodeId String?                  @map("current_flow_node_id")
+  flowContext       Json?                    @map("flow_context")
+  startedAt         DateTime                 @default(now()) @map("started_at") @db.Timestamptz
+  queuedAt          DateTime?                @map("queued_at") @db.Timestamptz
+  lastActivityAt    DateTime                 @default(now()) @map("last_activity_at") @db.Timestamptz
+  closedAt          DateTime?                @map("closed_at") @db.Timestamptz
+  warningSentAt     DateTime?                @map("warning_sent_at") @db.Timestamptz
+  closeReason       String?                  @map("close_reason")
+  contact           Contact                  @relation(fields: [contactId], references: [id])
+  department        Department?              @relation(fields: [departmentId], references: [id])
+  assignedAgent     Agent?                   @relation(fields: [assignedAgentId], references: [id])
   messages          Message[]
-  flowRevision      FlowRevision?        @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
-  currentFlowNode   FlowNode?            @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
+  flowRevision      FlowRevision?            @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
+  currentFlowNode   FlowNode?                @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
   flowEvents        FlowExecutionEvent[]
   notifications     Notification[]
+  assignments       ConversationAssignment[]
   media             ConversationMedia[]
   labels            ConversationLabel[]
-  groupChatName     String?              @map("group_chat_name")
-  groupParticipant  String?              @map("group_participant")
+  groupChatName     String?                  @map("group_chat_name")
+  groupParticipant  String?                  @map("group_participant")
 
   @@index([flowRevisionId])
   @@index([currentFlowNodeId])
@@ -120,22 +125,46 @@ model Conversation {
 }
 
 model Message {
-  id                String             @id @default(uuid())
-  conversationId    String             @map("conversation_id")
-  externalMessageId String?            @unique @map("external_message_id")
-  direction         String
-  senderType        String             @map("sender_type")
-  senderAgentId     String?            @map("sender_agent_id")
-  content           String
-  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz
-  readAt            DateTime?          @map("read_at") @db.Timestamptz
-  conversation      Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  senderAgent       Agent?             @relation(fields: [senderAgentId], references: [id])
-  media             ConversationMedia?
+  id                       String             @id @default(uuid())
+  conversationId           String             @map("conversation_id")
+  externalMessageId        String?            @unique @map("external_message_id")
+  direction                String
+  senderType               String             @map("sender_type")
+  senderAgentId            String?            @map("sender_agent_id")
+  senderContactId          String?            @map("sender_contact_id")
+  senderNameSnapshot       String?            @map("sender_name_snapshot")
+  senderDepartmentSnapshot String?            @map("sender_department_snapshot")
+  content                  String
+  createdAt                DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  readAt                   DateTime?          @map("read_at") @db.Timestamptz
+  conversation             Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderAgent              Agent?             @relation(fields: [senderAgentId], references: [id])
+  senderContact            Contact?           @relation("MessageSenderContact", fields: [senderContactId], references: [id], onDelete: SetNull)
+  media                    ConversationMedia?
 
   @@index([conversationId, direction, readAt])
   @@index([conversationId, createdAt])
+  @@index([senderContactId])
   @@map("gtf_messages")
+}
+
+model ConversationAssignment {
+  id             String       @id @default(uuid())
+  conversationId String       @map("conversation_id")
+  fromAgentId    String?      @map("from_agent_id")
+  toAgentId      String       @map("to_agent_id")
+  actorAgentId   String       @map("actor_agent_id")
+  action         String
+  reason         String?
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  fromAgent      Agent?       @relation("AssignmentFrom", fields: [fromAgentId], references: [id], onDelete: SetNull)
+  toAgent        Agent        @relation("AssignmentTo", fields: [toAgentId], references: [id], onDelete: Restrict)
+  actorAgent     Agent        @relation("AssignmentActor", fields: [actorAgentId], references: [id], onDelete: Restrict)
+
+  @@index([conversationId, createdAt])
+  @@index([toAgentId, createdAt])
+  @@map("gtf_conversation_assignments")
 }
 
 enum MediaProvider {
@@ -416,19 +445,19 @@ model ShortcutAudit {
 }
 
 model Notification {
-  id             String       @id @default(uuid())
-  agentId        String       @map("agent_id")
+  id             String        @id @default(uuid())
+  agentId        String        @map("agent_id")
   type           String
   title          String
   body           String
-  conversationId String?      @map("conversation_id")
-  departmentId   String?      @map("department_id")
-  dedupeKey      String       @map("dedupe_key")
+  conversationId String?       @map("conversation_id")
+  departmentId   String?       @map("department_id")
+  dedupeKey      String        @map("dedupe_key")
   payload        Json?
-  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  readAt         DateTime?    @map("read_at") @db.Timestamptz
-  dismissedAt    DateTime?    @map("dismissed_at") @db.Timestamptz
-  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  readAt         DateTime?     @map("read_at") @db.Timestamptz
+  dismissedAt    DateTime?     @map("dismissed_at") @db.Timestamptz
+  agent          Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
   conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@unique([agentId, dedupeKey])
@@ -444,7 +473,7 @@ model NotificationPreference {
   browserEnabled             Boolean  @default(false) @map("browser_enabled")
   unresolvedRemindersEnabled Boolean  @default(true) @map("unresolved_reminders_enabled")
   unresolvedReminderMinutes  Int      @default(30) @map("unresolved_reminder_minutes")
-  reminderRepeatMinutes     Int      @default(30) @map("reminder_repeat_minutes")
+  reminderRepeatMinutes      Int      @default(30) @map("reminder_repeat_minutes")
   updatedAt                  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
   agent                      Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 

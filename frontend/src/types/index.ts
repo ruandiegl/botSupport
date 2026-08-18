@@ -24,6 +24,8 @@ export interface Message {
   direction: MessageDirection;
   senderType: SenderType;
   senderName: string | null;
+  senderDepartmentName?: string | null;
+  senderContactId?: string | null;
   content: string;
   createdAt: string;
   media?: ConversationMedia | null;
@@ -72,6 +74,17 @@ export interface Conversation {
   lastActivityAt?: string | null;
   labels?: ConversationLabel[];
   groupChatName?: string | null;
+  assignments?: ConversationAssignment[];
+}
+
+export interface ConversationAssignment {
+  id: string;
+  action: "ASSUME" | "DELEGATE" | "RELEASE" | string;
+  reason?: string | null;
+  createdAt: string;
+  fromAgent?: { id: string; name: string } | null;
+  toAgent?: { id: string; name: string; departmentName?: string | null } | null;
+  actorAgent?: { id: string; name: string } | null;
 }
 
 /** Lightweight row returned by the paginated queue endpoint. */
@@ -108,6 +121,7 @@ export type NotificationType =
   | "NEW_MESSAGE"
   | "ASSIGNED_CONVERSATION"
   | "UNRESOLVED_REMINDER"
+  | "CONVERSATION_DELEGATED"
   | (string & {});
 
 export interface AgentNotification {

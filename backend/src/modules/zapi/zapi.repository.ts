@@ -140,6 +140,9 @@ export class ZApiRepository {
     direction: string;
     senderType: string;
     senderAgentId?: string | null;
+    senderContactId?: string | null;
+    senderNameSnapshot?: string | null;
+    senderDepartmentSnapshot?: string | null;
     content: string;
   }) {
     const message = await prisma.message.create({
@@ -148,6 +151,9 @@ export class ZApiRepository {
         direction: data.direction,
         senderType: data.senderType,
         senderAgentId: data.senderAgentId ?? null,
+        senderContactId: data.senderContactId ?? null,
+        senderNameSnapshot: data.senderNameSnapshot ?? null,
+        senderDepartmentSnapshot: data.senderDepartmentSnapshot ?? null,
         content: data.content,
       },
     });
@@ -184,6 +190,8 @@ export class ZApiRepository {
     conversationId: string;
     externalMessageId: string;
     content: string;
+    senderContactId?: string | null;
+    senderNameSnapshot?: string | null;
     media?: {
       type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
       status: "AVAILABLE" | "UNAVAILABLE" | "EXPIRED";
@@ -219,6 +227,8 @@ export class ZApiRepository {
             externalMessageId: data.externalMessageId,
             direction: "IN",
             senderType: "CLIENT",
+            senderContactId: data.senderContactId ?? null,
+            senderNameSnapshot: data.senderNameSnapshot ?? null,
             content: data.content,
             ...(data.media
               ? {

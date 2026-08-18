@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
-import type { Conversation, Message, MessagePage } from "@/types";
+import type { Agent, Conversation, Message, MessagePage } from "@/types";
 
 export function useGetConversation(id: string) {
   return useQuery<Conversation>({
@@ -78,6 +78,30 @@ export function useAssumeConversation(id: string) {
     onSuccess: (updated) => {
       queryClient.setQueryData(["conversation", id], updated);
       queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
+    },
+  });
+}
+
+export function useEligibleAssignees(id: string, enabled = true) {
+  return useQuery<{ items: Agent[] }>({
+    queryKey: ["conversation-assignees", id],
+    queryFn: () => apiFetch<{ items: Agent[] }>(`/conversations/${id}/assignees`),
+    enabled: Boolean(id) && enabled,
+    staleTime: 30_000,
+  });
+}
+
+export function useDelegateConversation(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<Conversation, Error, { agentId: string; reason?: string }>({
+    mutationFn: (data) => apiFetch<Conversation>(`/conversations/${id}/delegate`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["conversation", id], updated);
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 }

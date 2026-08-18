@@ -9,7 +9,7 @@ export interface Role {
 
 export interface RolePermissionData {
   role: string;
-  resources: Record<string, { view: boolean; create: boolean; update: boolean; delete: boolean; publish?: boolean; use?: boolean }>;
+  resources: Record<string, { view: boolean; create: boolean; update: boolean; delete: boolean; delegate?: boolean; publish?: boolean; use?: boolean }>;
   screens: Record<string, boolean>;
 }
 

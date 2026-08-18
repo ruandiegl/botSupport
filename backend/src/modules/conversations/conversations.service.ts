@@ -38,7 +38,10 @@ export class ConversationsService {
     if (!user || user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
     if (user.role !== "AGENT") return true;
     if (conversation.assignedAgentId === user.id) return true;
-    return Boolean(conversation.status === "OPEN" && user.departmentId && conversation.departmentId === user.departmentId);
+    // Collaboration is allowed for agents in the ticket department even after
+    // another agent assumed it. Assignment still controls ownership and queue
+    // ordering, but it must not rewrite message authorship.
+    return Boolean(user.departmentId && conversation.departmentId === user.departmentId);
   }
 
   private formatMessage(message: any, conversation: any) {
@@ -48,10 +51,14 @@ export class ConversationsService {
       senderType: message.senderType,
       senderName:
         message.senderType === "AGENT"
-          ? message.senderAgent?.name ?? conversation.assignedAgent?.name ?? "Atendente"
+          ? message.senderNameSnapshot ?? message.senderAgent?.name ?? "Atendente"
           : message.senderType === "BOT"
           ? "GTF-Bot"
-          : conversation.contact?.name ?? "Cliente",
+          : message.senderNameSnapshot ?? message.senderContact?.name ?? conversation.contact?.name ?? "Cliente",
+      senderDepartmentName: message.senderType === "AGENT"
+        ? message.senderDepartmentSnapshot ?? message.senderAgent?.department?.name ?? null
+        : null,
+      senderContactId: message.senderContactId ?? null,
       content: message.content,
       createdAt: message.createdAt.toISOString(),
       media: message.media ? mediaService.toPublic(message.media) : null,
@@ -115,6 +122,15 @@ export class ConversationsService {
       assignedAgentName: conversation.assignedAgent?.name ?? null,
       labels: (conversation.labels || []).map((item: any) => item.label),
       groupChatName: conversation.groupChatName ?? null,
+      assignments: (conversation.assignments || []).map((assignment: any) => ({
+        id: assignment.id,
+        action: assignment.action,
+        reason: assignment.reason,
+        createdAt: assignment.createdAt.toISOString(),
+        fromAgent: assignment.fromAgent ? { id: assignment.fromAgent.id, name: assignment.fromAgent.name } : null,
+        toAgent: assignment.toAgent ? { id: assignment.toAgent.id, name: assignment.toAgent.name, departmentName: assignment.toAgent.department?.name ?? null } : null,
+        actorAgent: assignment.actorAgent ? { id: assignment.actorAgent.id, name: assignment.actorAgent.name } : null,
+      })),
       unreadCount,
       lastMessage,
       messages: messages.map((m) => this.formatMessage(m, conversation)),
@@ -210,6 +226,15 @@ export class ConversationsService {
       assignedAgentName: conversation.assignedAgent?.name ?? null,
       labels: (conversation.labels || []).map((item: any) => item.label),
       groupChatName: conversation.groupChatName ?? null,
+      assignments: (conversation.assignments || []).map((assignment: any) => ({
+        id: assignment.id,
+        action: assignment.action,
+        reason: assignment.reason,
+        createdAt: assignment.createdAt.toISOString(),
+        fromAgent: assignment.fromAgent ? { id: assignment.fromAgent.id, name: assignment.fromAgent.name } : null,
+        toAgent: assignment.toAgent ? { id: assignment.toAgent.id, name: assignment.toAgent.name, departmentName: assignment.toAgent.department?.name ?? null } : null,
+        actorAgent: assignment.actorAgent ? { id: assignment.actorAgent.id, name: assignment.actorAgent.name } : null,
+      })),
       unreadCount,
       lastMessage,
       messages: messages.map((m: any) => this.formatMessage(m, conversation)),
@@ -260,12 +285,79 @@ export class ConversationsService {
     // Agents can only assume a conversation for their own identity. Supervisors
     // and administrators retain the ability to assign another eligible agent.
     if (user?.role === "AGENT" && agentId !== user.id) return null;
+    const target = await conversationsRepository.findAgentById(agentId);
+    if (!target || !target.isActive) return null;
+    if (user?.role === "SUPERVISOR" && user.departmentId && target.departmentId !== user.departmentId) return null;
 
     await conversationsRepository.updateStatusAndAgent(id, "IN_PROGRESS", agentId);
+    if (user) {
+      await conversationsRepository.recordAssignment({
+        conversationId: id,
+        fromAgentId: conversation.assignedAgentId,
+        toAgentId: agentId,
+        actorAgentId: user.id,
+        action: "ASSUME",
+      });
+    }
 
     conversationEvents.emit("conversation_updated", { conversationId: id, eventType: "ASSIGNED", assignedAgentId: agentId });
 
     return this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
+  }
+
+  async listEligibleAssignees(id: string, user?: AuthenticatedRequest["user"]) {
+    const conversation = await conversationsRepository.findAccessById(id);
+    if (!conversation || !this.canAccess(conversation, user)) return null;
+    if (!user || user.role === "AGENT") return { forbidden: true } as const;
+    const items = await conversationsRepository.findEligibleAssignees(id, user);
+    return {
+      items: (items || []).map((agent: any) => ({
+        id: agent.id,
+        name: agent.name,
+        email: agent.email,
+        role: agent.role,
+        isOnline: agent.isOnline,
+        isActive: true,
+        departmentId: agent.departmentId,
+        departmentName: agent.department?.name ?? null,
+      })),
+    };
+  }
+
+  async delegate(id: string, targetAgentId: string, reason?: string, user?: AuthenticatedRequest["user"]) {
+    const conversation = await conversationsRepository.findAccessById(id);
+    if (!conversation || !this.canAccess(conversation, user)) return { kind: "NOT_FOUND" as const };
+    if (!user || user.role === "AGENT") return { kind: "FORBIDDEN" as const };
+    if (conversation.assignedAgentId === targetAgentId) return { kind: "INVALID_TARGET" as const };
+
+    const target = await conversationsRepository.findAgentById(targetAgentId);
+    if (!target || !target.isActive) return { kind: "INVALID_TARGET" as const };
+    if (user.role === "SUPERVISOR" && (!user.departmentId || target.departmentId !== user.departmentId)) {
+      return { kind: "FORBIDDEN" as const };
+    }
+    const result = await conversationsRepository.delegate(id, targetAgentId, user.id, reason?.trim() || null);
+    if (result.kind !== "OK") return result;
+
+    conversationEvents.emit("conversation_updated", {
+      conversationId: id,
+      status: "IN_PROGRESS",
+      eventType: "DELEGATED",
+      assignedAgentId: targetAgentId,
+      departmentId: conversation.departmentId,
+      fromAgentId: conversation.assignedAgentId,
+      actorAgentId: user.id,
+      actorName: user.name,
+      reason: reason?.trim() || null,
+      assignmentId: result.assignment.id,
+    });
+    socketEmitter.emitToConversation(id, "conversation:delegated", {
+      conversationId: id,
+      assignedAgentId: targetAgentId,
+      assignedAgentName: target.name,
+      actorName: user.name,
+    });
+    const updated = await this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
+    return { kind: "OK" as const, conversation: updated, assignment: result.assignment };
   }
 
   async close(id: string, user?: AuthenticatedRequest["user"]) {
@@ -281,29 +373,26 @@ export class ConversationsService {
 
   async sendMessage(id: string, rawContent: string, user?: AuthenticatedRequest["user"]) {
     const conversation = await conversationsRepository.findAccessById(id);
-    if (!conversation || !this.canAccess(conversation, user)) return null;
+    if (!conversation || conversation.status === "CLOSED" || !this.canAccess(conversation, user) || !user) return null;
 
-    let agent = conversation.assignedAgent;
-    if (!agent && conversation.assignedAgentId) {
-      agent = await conversationsRepository.findAgentById(conversation.assignedAgentId);
-    }
-    if (!agent) {
-      agent = await conversationsRepository.findFirstAgent();
-    }
+    const agent = await conversationsRepository.findAgentById(user.id);
+    if (!agent || !agent.isActive) return null;
 
     const agentName = agent?.name ?? "Atendente";
     const deptName = agent?.department?.name || conversation.department?.name || "Suporte T.I.";
     const cleanContent = rawContent.trim();
 
-    const content = cleanContent.startsWith("*")
-      ? cleanContent
-      : `*${agentName} - ${deptName}:*\n\n${cleanContent}`;
+    const unsignedContent = cleanContent.replace(/^\*[^*\n]{1,200}:\*\s*/u, "").trim();
+    if (!unsignedContent) return null;
+    const content = `*${agentName} - ${deptName}:*\n\n${unsignedContent}`;
 
     const message = await conversationsRepository.addMessage({
       conversationId: id,
       direction: "OUT",
       senderType: "AGENT",
       senderAgentId: agent?.id ?? null,
+      senderNameSnapshot: agent.name,
+      senderDepartmentSnapshot: agent.department?.name ?? null,
       content,
     });
 
@@ -317,6 +406,8 @@ export class ConversationsService {
       direction: message.direction,
       senderType: message.senderType,
       senderName: agentName,
+      senderDepartmentName: agent.department?.name ?? null,
+      senderContactId: null,
       content: message.content,
       createdAt: message.createdAt.toISOString(),
     };

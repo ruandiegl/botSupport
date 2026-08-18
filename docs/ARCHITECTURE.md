@@ -88,3 +88,9 @@ O módulo `modules/media` segue Route → Controller → Service → Repository.
 O navegador primeiro solicita um ticket autenticado. Depois, o proxy valida ticket, expiração e destino HTTPS, resolve DNS, bloqueia redes privadas, revalida redirects, limita streams/tamanho/tempo e transmite com backpressure. A URL original e o JWT nunca são repassados entre as camadas externas. `mediaExpirationWorker` executa limpeza idempotente e o endpoint aplica a expiração de forma síncrona, sem depender do scheduler.
 
 No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `Attachment`, `Dialog`, `Badge`, `Button` e `Skeleton`. React Query guarda somente o ticket interno; imagem é lazy, áudio/vídeo não usam autoplay e documentos exigem ação explícita.
+
+## 6. Colaboração, identidade e delegação
+
+Mensagens mantêm autoria independente da atribuição da conversa. `Message.senderAgentId` e os snapshots `senderNameSnapshot`/`senderDepartmentSnapshot` representam respostas do painel; `senderContactId`/`senderNameSnapshot` representam mensagens externas, inclusive participantes de grupos. O formatter nunca usa `Conversation.assignedAgent` para reescrever o histórico.
+
+Delegação segue Route → Controller → Service → Repository. O Service resolve o ator pelo JWT, valida RBAC/escopo e o Repository executa atualização otimista e criação de `ConversationAssignment` na mesma transação. O evento `conversation_updated` alimenta a fila e o módulo de notificações cria `CONVERSATION_DELEGATED` direcionada ao novo responsável; Socket.IO é complementar ao REST.

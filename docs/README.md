@@ -34,6 +34,8 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Especificação da API REST**](API.md): Endpoints da API, schemas de requisição, respostas JSON e status HTTP.
 - [**Integração Z-API (WhatsApp)**](PRD_ZAPI.md): Especificação de webhooks de mensagens recebidas, envio e atualização de conversas.
 - [**PRD: Grupos, menções e etiquetas**](PRD_GRUPOS_MENCAO_ETIQUETAS.md): Atendimento privado originado por menção em grupos e organização de chamados por etiquetas.
+- [**Plano 016: Identidade e delegação de chamados**](../plans/plan-016-identidade-remetente-delegacao-chamados.md): colaboração entre atendentes, autoria por mensagem, delegação e notificações.
+- [**Runbook de identidade e delegação**](RUNBOOK_IDENTIDADE_DELEGACAO.md): migration, homologação, observabilidade e rollback.
 - [**Runbook de grupos e etiquetas**](RUNBOOK_GRUPOS_ETIQUETAS.md): ativação segura, homologação, monitoramento e rollback.
 - [**Guia de Configuração e Execução (Setup)**](SETUP.md): Instruções passo a passo para ambiente de desenvolvimento local e Docker Compose.
 - [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.

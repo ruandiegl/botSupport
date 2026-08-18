@@ -191,9 +191,23 @@ exports.Prisma.MessageScalarFieldEnum = {
   direction: 'direction',
   senderType: 'senderType',
   senderAgentId: 'senderAgentId',
+  senderContactId: 'senderContactId',
+  senderNameSnapshot: 'senderNameSnapshot',
+  senderDepartmentSnapshot: 'senderDepartmentSnapshot',
   content: 'content',
   createdAt: 'createdAt',
   readAt: 'readAt'
+};
+
+exports.Prisma.ConversationAssignmentScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  fromAgentId: 'fromAgentId',
+  toAgentId: 'toAgentId',
+  actorAgentId: 'actorAgentId',
+  action: 'action',
+  reason: 'reason',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ConversationMediaScalarFieldEnum = {
@@ -458,6 +472,7 @@ exports.Prisma.ModelName = {
   Contact: 'Contact',
   Conversation: 'Conversation',
   Message: 'Message',
+  ConversationAssignment: 'ConversationAssignment',
   ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',

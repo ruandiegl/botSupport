@@ -34,7 +34,7 @@ const resourceLabels: Record<string, string> = {
   rbac: "Permissões RBAC",
 };
 
-const permissionActions = ["view", "create", "update", "delete", "publish", "use"] as const;
+const permissionActions = ["view", "create", "update", "delete", "delegate", "publish", "use"] as const;
 
 export default function RbacAdmin() {
   const { data: roles = [], isLoading: isRolesLoading } = useGetRoles();
@@ -63,7 +63,7 @@ export default function RbacAdmin() {
     });
   };
 
-  const handleToggleResourceAction = (resourceKey: string, action: "view" | "create" | "update" | "delete" | "publish" | "use") => {
+  const handleToggleResourceAction = (resourceKey: string, action: "view" | "create" | "update" | "delete" | "delegate" | "publish" | "use") => {
     if (!permissionsState) return;
     const currentRes = permissionsState.resources[resourceKey] || { view: false, create: false, update: false, delete: false };
     setPermissionsState({
@@ -233,6 +233,7 @@ export default function RbacAdmin() {
                         <th className="text-center">Criar</th>
                         <th className="text-center">Editar</th>
                         <th className="text-center">Excluir</th>
+                        <th className="text-center">Delegar</th>
                         <th className="text-center">Publicar</th>
                         <th className="text-center">Usar</th>
                       </tr>
@@ -283,6 +284,9 @@ export default function RbacAdmin() {
                                 checked={actions.delete}
                                 onCheckedChange={() => handleToggleResourceAction(resKey, "delete")}
                               />
+                            </td>
+                            <td className="text-center">
+                              <Checkbox checked={Boolean(actions.delegate)} onCheckedChange={() => handleToggleResourceAction(resKey, "delegate")} />
                             </td>
                             <td className="text-center">
                               <Checkbox checked={Boolean(actions.publish)} onCheckedChange={() => handleToggleResourceAction(resKey, "publish")} />
