@@ -313,6 +313,7 @@ mentionedJids: z.array(z.string().max(200)).optional(), // JIDs mencionados
 
 **Aceite:**
 - [x] Segunda menção dentro de 60s retorna `{ status: "cooldown" }`
+- [x] Menções a outros participantes não ativam o bot nem criam chamado; somente o identificador da instância conectada é aceito
 - [x] Nenhum chamado duplicado criado
 - [x] Timer reinicia a cada nova menção processada com sucesso
 

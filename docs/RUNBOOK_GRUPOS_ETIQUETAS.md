@@ -22,6 +22,7 @@ Em Railway, a ativação controlada pode ser feita com `ZAPI_GROUPS_ENABLED=true
    - confirmação recebida por DM;
    - nenhuma confirmação pública enquanto `groupConfirmInGroup=false`.
 5. Repetir dentro do cooldown: deve retornar `cooldown`.
+6. Mencionar outro participante sem marcar a instância: deve retornar `ignored_not_mentioned` ou `ignored_no_mention`, sem mensagem do bot e sem novo chamado.
 6. Reenviar o mesmo `messageId`: deve retornar `duplicate_event`.
 7. Só depois da validação do destino da Z-API, testar a confirmação pública opt-in.
 

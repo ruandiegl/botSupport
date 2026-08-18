@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
-import { parseIncomingMessage } from "../dist/modules/zapi/zapi.service.js";
+import { isInstanceMentioned, parseIncomingMessage } from "../dist/modules/zapi/zapi.service.js";
 import { UpdateZApiConfigSchema, ZApiReceivedWebhookSchema } from "../dist/modules/zapi/zapi.schemas.js";
 import { ListConversationsQuerySchema } from "../dist/modules/conversations/conversations.schemas.js";
 
@@ -40,6 +40,16 @@ test("aceita o formato oficial da Z-API para participante e telefone conectado",
   };
   assert.equal(ZApiReceivedWebhookSchema.safeParse(payload).success, true);
   assert.equal(parseIncomingMessage(payload)?.phone, "5511777777777");
+});
+
+test("somente a menção da própria instância ativa o bot no grupo", () => {
+  const instancePhone = "5511666666666";
+  assert.equal(isInstanceMentioned({ mentioned: [instancePhone] }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ mentionedJids: [`${instancePhone}@s.whatsapp.net`] }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ text: { contextInfo: { mentionedJid: [`${instancePhone}@s.whatsapp.net`] } } }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
+  assert.equal(isInstanceMentioned({ text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
+  assert.equal(isInstanceMentioned({ text: { message: `@${instancePhone} preciso de suporte` } }, instancePhone), true);
 });
 
 test("configuração de grupos valida cooldown e variáveis permitidas", () => {

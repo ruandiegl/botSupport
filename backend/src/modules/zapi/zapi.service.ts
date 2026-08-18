@@ -185,7 +185,22 @@ function canonicalJid(value: string) { return value.trim().toLowerCase().split("
 function hashIdentifier(value: string) { return createHash("sha256").update(value.trim().toLowerCase()).digest("hex"); }
 function hasBroadcastMention(values: string[]) { return values.some((value) => /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(value)); }
 function collectMentionValues(payload: any): string[] {
-  const values = [payload?.mentionedJids, payload?.mentionedJid, payload?.mentions, payload?.mentioned]
+  const values = [
+    payload?.mentionedJids,
+    payload?.mentionedJid,
+    payload?.mentions,
+    payload?.mentioned,
+    payload?.contextInfo?.mentionedJid,
+    payload?.contextInfo?.mentionedJids,
+    payload?.text?.mentioned,
+    payload?.text?.mentionedJid,
+    payload?.text?.mentionedJids,
+    payload?.text?.contextInfo?.mentioned,
+    payload?.text?.contextInfo?.mentionedJid,
+    payload?.text?.contextInfo?.mentionedJids,
+    payload?.extendedTextMessage?.contextInfo?.mentionedJid,
+    payload?.extendedTextMessage?.contextInfo?.mentionedJids,
+  ]
     .flatMap((value) => (Array.isArray(value) ? value : value ? [value] : []));
 
   return values
@@ -197,12 +212,20 @@ function collectMentionValues(payload: any): string[] {
     .filter(Boolean);
 }
 
-function hasTextMention(payload: any): boolean {
+function hasTextMentionTarget(payload: any, instancePhone: string): boolean {
   const text = String(payload?.text?.message || payload?.body || payload?.caption || payload?.message || "");
-  // Some Z-API versions do not expose a mention array in ReceivedCallback, but
-  // preserve the WhatsApp @ token in the text. This fallback keeps that format
-  // functional while explicit mention arrays remain preferred when available.
-  return /(^|\s)@[~\w][^\s@]*/u.test(text);
+  const candidates = [...text.matchAll(/@([+\d][\d\s().-]{6,}\d)/g)];
+  return candidates.some((match) => canonicalJid(match[1] || "") === instancePhone);
+}
+
+export function isInstanceMentioned(payload: any, rawInstancePhone: string): boolean {
+  const instancePhone = canonicalJid(rawInstancePhone);
+  if (!instancePhone) return false;
+  const mentions = collectMentionValues(payload);
+  if (mentions.length) return mentions.some((jid) => canonicalJid(jid) === instancePhone);
+  // A bare @name is ambiguous and must never activate the bot. The text-only
+  // fallback is accepted solely when it contains the connected phone itself.
+  return hasTextMentionTarget(payload, instancePhone);
 }
 
 function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
@@ -611,17 +634,16 @@ export class ZApiService {
       const participant = payload.participantPhone || payload.participant;
       if (!participant || !payload.phone) return { status: "ignored_invalid_group_context" };
       const mentions = collectMentionValues(payload);
-      if (!mentions.length && !hasTextMention(payload)) return { status: "ignored_no_mention" };
       if (payload.broadcast === true || hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
       const instancePhone = canonicalJid(config.instancePhone || payload.connectedPhone || "");
       if (!instancePhone) return { status: "ignored_instance_phone_unavailable" };
-      // Prefer the explicit mention list. If the provider omits it, the text
-      // fallback is the only signal available and is guarded by the @ token.
-      if (mentions.length && !mentions.some((jid) => canonicalJid(jid) === instancePhone)) return { status: "ignored_not_mentioned" };
+      if (!isInstanceMentioned(payload, instancePhone)) {
+        return { status: mentions.length ? "ignored_not_mentioned" : "ignored_no_mention" };
+      }
       if (await zApiRepository.findIncomingMessage(payload.messageId)) return { status: "duplicate_event" };
       const reserved = await zApiRepository.reserveGroupMention(
         hashIdentifier(String(payload.phone)),
-        hashIdentifier(String(payload.participant)),
+        hashIdentifier(String(participant)),
         config.groupCooldownSeconds,
       );
       if (!reserved) return { status: "cooldown" };
