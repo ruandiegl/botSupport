@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { AlertTriangle, Download, FileText, Headphones, Image as ImageIcon, Video } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertTriangle, Download, FileText, Headphones, Image as ImageIcon, Video, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import type { ConversationMedia } from "@/types";
 import {
   Attachment,
@@ -58,6 +58,7 @@ function MediaUnavailable({ media }: { media: ConversationMedia }) {
 
 export function MessageMedia({ conversationId, messageId, media }: Props) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
   const purpose = media.type === "IMAGE" && media.hasThumbnail ? "thumbnail" : "content";
   const shouldLoad = media.available && media.type !== "DOCUMENT";
   const access = useMediaAccess(conversationId, messageId, purpose, shouldLoad);
@@ -71,6 +72,10 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
   const fullImageSource = fullImageAccess.data ? resolveMediaUrl(fullImageAccess.data.url) : source;
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (previewOpen) setZoom(1);
+  }, [previewOpen]);
 
   if (!media.available) return <MediaUnavailable media={media} />;
 
@@ -137,9 +142,9 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
 
   return (
     <>
-      <Attachment orientation="vertical" className="w-64 max-w-full">
-        <AttachmentMedia variant="image" className="aspect-video w-full">
-          <img src={source} alt={media.caption || "Imagem recebida no WhatsApp"} loading="lazy" />
+      <Attachment orientation="vertical" className="w-80 max-w-full">
+        <AttachmentMedia variant="image" className="aspect-[4/3] w-full bg-muted">
+          <img className="h-full w-full object-contain" src={source} alt={media.caption || "Imagem recebida no WhatsApp"} loading="lazy" />
         </AttachmentMedia>
         <AttachmentContent>
           <AttachmentTitle className="flex items-center gap-2"><ImageIcon data-icon="inline-start" /> Imagem</AttachmentTitle>
@@ -148,19 +153,38 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
         <AttachmentTrigger aria-label="Ampliar imagem" onClick={() => setPreviewOpen(true)} />
       </Attachment>
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-4xl bg-background">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:w-[60vw] max-w-[720px] aspect-square bg-card p-4 text-card-foreground ring-border">
           <DialogHeader>
             <DialogTitle>Imagem recebida</DialogTitle>
             <DialogDescription>Prévia protegida pela sessão do atendimento.</DialogDescription>
           </DialogHeader>
-          <div className="flex max-h-[70vh] items-center justify-center overflow-auto rounded-xl bg-muted p-2">
+          <div
+            className="flex min-h-0 aspect-square items-center justify-center overflow-hidden rounded-xl bg-muted p-2"
+            onWheel={(event) => {
+              event.preventDefault();
+              setZoom((current) => Math.min(4, Math.max(1, current + (event.deltaY < 0 ? 0.15 : -0.15))));
+            }}
+            onDoubleClick={() => setZoom((current) => current === 1 ? 2 : 1)}
+            aria-label="Área de zoom da imagem"
+          >
             {fullImageAccess.isLoading ? (
-              <Skeleton className="h-[60vh] w-full" />
+              <Skeleton className="size-full" />
             ) : (
-              <img className="max-h-[66vh] max-w-full rounded-lg object-contain" src={fullImageSource || source} alt={media.caption || "Imagem recebida no WhatsApp"} />
+              <img
+                className="max-h-full max-w-full rounded-lg object-contain transition-transform duration-150"
+                style={{ transform: `scale(${zoom})` }}
+                src={fullImageSource || source}
+                alt={media.caption || "Imagem recebida no WhatsApp"}
+              />
             )}
           </div>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-1" aria-label="Controles de zoom">
+              <Button variant="outline" size="icon-sm" aria-label="Reduzir zoom" title="Reduzir zoom" disabled={zoom <= 1} onClick={() => setZoom((current) => Math.max(1, current - 0.25))}><ZoomOut /></Button>
+              <span className="min-w-12 text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
+              <Button variant="outline" size="icon-sm" aria-label="Aumentar zoom" title="Aumentar zoom" disabled={zoom >= 4} onClick={() => setZoom((current) => Math.min(4, current + 0.25))}><ZoomIn /></Button>
+              <Button variant="ghost" size="icon-sm" aria-label="Redefinir zoom" title="Redefinir zoom" disabled={zoom === 1} onClick={() => setZoom(1)}><RotateCcw /></Button>
+            </div>
             <Badge variant="secondary">Expira em {new Date(media.expiresAt).toLocaleDateString("pt-BR")}</Badge>
             <Button variant="outline" onClick={() => setPreviewOpen(false)}>Fechar</Button>
           </div>

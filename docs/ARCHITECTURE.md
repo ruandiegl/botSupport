@@ -89,6 +89,10 @@ O navegador primeiro solicita um ticket autenticado. Depois, o proxy valida tick
 
 No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `Attachment`, `Dialog`, `Badge`, `Button` e `Skeleton`. React Query guarda somente o ticket interno; imagem é lazy, áudio/vídeo não usam autoplay e documentos exigem ação explícita.
 
+Imagens usam miniatura maior no histórico e um `Dialog` shadcn opaco, quadrático e centralizado para o conteúdo original protegido. O preview oferece zoom, reset, roda do mouse e fechamento acessível sem expor a URL temporária.
+
+O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão). Mensagens recebidas continuam sendo armazenadas durante a janela, mas não repetem menus/triagens; seleções explícitas de botão podem avançar decisões. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.
+
 ## 6. Colaboração, identidade e delegação
 
 Mensagens mantêm autoria independente da atribuição da conversa. `Message.senderAgentId` e os snapshots `senderNameSnapshot`/`senderDepartmentSnapshot` representam respostas do painel; `senderContactId`/`senderNameSnapshot` representam mensagens externas, inclusive participantes de grupos. O formatter nunca usa `Conversation.assignedAgent` para reescrever o histórico.

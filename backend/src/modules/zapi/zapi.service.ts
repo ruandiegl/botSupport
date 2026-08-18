@@ -9,6 +9,15 @@ import { mediaService } from "../media/media.service.js";
 import { createHash } from "node:crypto";
 import { labelsService } from "../labels/labels.service.js";
 
+const DEFAULT_BOT_REPLY_COOLDOWN_MINUTES = 15;
+const MAX_BOT_REPLY_COOLDOWN_MINUTES = 24 * 60;
+
+function botReplyCooldownMs() {
+  const configured = Number(process.env.BOT_REPLY_COOLDOWN_MINUTES ?? DEFAULT_BOT_REPLY_COOLDOWN_MINUTES);
+  if (!Number.isFinite(configured)) return DEFAULT_BOT_REPLY_COOLDOWN_MINUTES * 60_000;
+  return Math.min(MAX_BOT_REPLY_COOLDOWN_MINUTES, Math.max(0, configured)) * 60_000;
+}
+
 function parseZApiError(status: number, data: any): string {
   const rawMsg = data?.error || data?.message || data?.reason || "";
   
@@ -742,6 +751,25 @@ export class ZApiService {
     }
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
     if (activeConversation.status !== "OPEN") return { status: "message_logged" };
+
+    // Once a route has been handed to the queue (or the legacy triage is
+    // awaiting an attendant), incoming messages must not restart the greeting
+    // flow. They remain in the transcript for the human attendant.
+    if (activeConversation.currentStep === "QUEUED" || activeConversation.currentStep === "AWAITING_DETAILS") {
+      return { status: "waiting_for_agent" };
+    }
+
+    // A client may send several messages while the bot is still waiting for
+    // an agent. Persist every message, but do not resend the same menu/triage
+    // prompt until the cooldown expires. Explicit button/list selections are
+    // always allowed through so an intentional choice is never blocked.
+    const cooldownMs = botReplyCooldownMs();
+    if (!isNewConversation && cooldownMs > 0 && !incoming.selectedOptionId) {
+      const lastBotMessageAt = await zApiRepository.findLastBotMessageAt(conversationId);
+      if (lastBotMessageAt && Date.now() - lastBotMessageAt.getTime() < cooldownMs) {
+        return { status: "bot_cooldown", retryAfterMs: cooldownMs - (Date.now() - lastBotMessageAt.getTime()) };
+      }
+    }
 
     if (incoming.media && !incoming.media.caption?.trim() && !isNewConversation) {
       return { status: "media_logged" };

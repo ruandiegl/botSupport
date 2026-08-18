@@ -94,4 +94,6 @@ Antes de habilitar mídia em produção:
 5. aplique `npx prisma migrate deploy` antes de ativar `MEDIA_ZAPI_INGESTION_ENABLED` e `MEDIA_ZAPI_DISPLAY_ENABLED`;
 6. consulte [`RUNBOOK_MIDIA_ZAPI.md`](RUNBOOK_MIDIA_ZAPI.md) para canary, rotação e rollback.
 
+Para reduzir repetição de saudações e prompts de triagem, configure `BOT_REPLY_COOLDOWN_MINUTES=15` no backend. O valor `0` desativa o bloqueio temporariamente durante uma homologação controlada.
+
 Nunca use os placeholders de `.env.example` em produção e nunca adicione URLs reais de mídia a logs ou fixtures versionadas.

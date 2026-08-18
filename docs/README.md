@@ -40,6 +40,7 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Guia de Configuração e Execução (Setup)**](SETUP.md): Instruções passo a passo para ambiente de desenvolvimento local e Docker Compose.
 - [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.
 - [**Matriz QA de mídia Z-API**](QA_MIDIA_ZAPI.md): contratos, segurança, expiração e regressão.
+- [**Plano 017: delay anti-spam e zoom de imagens**](../plans/plan-017-delay-anti-spam-midia-zoom.md): cooldown server-side para bot e prévia ampliada de mídia.
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```

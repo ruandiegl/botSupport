@@ -83,6 +83,10 @@ Credenciais são segredos operacionais e nunca devem aparecer em documentação,
 
 Ao selecionar Suporte, a revisão inicial deve poder enviar a mensagem configurada e aguardar a resposta antes do handoff. O conteúdo vem exclusivamente do nó `TRIAGE` publicado. Respostas são persistidas sob a chave configurada e ficam vinculadas à revisão da conversa; não devem ser reproduzidas em logs operacionais.
 
+### 8.1 Cooldown anti-spam
+
+Saudação, lista de departamentos e prompts de triagem respeitam `BOT_REPLY_COOLDOWN_MINUTES` (padrão: 15). O backend consulta a última mensagem `BOT` persistida antes de executar novamente o fluxo. Mensagens recebidas durante a janela continuam no histórico, mas não disparam nova resposta automática; uma seleção explícita de botão/lista pode avançar uma decisão. Conversas em `QUEUED` ou `AWAITING_DETAILS` não reiniciam a saudação. O cooldown é server-side e não depende de polling ou estado do navegador.
+
 ---
 
 ## 9. Modelo de Dados (`schema.prisma`)

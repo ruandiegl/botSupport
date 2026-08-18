@@ -161,6 +161,15 @@ export class ZApiRepository {
     return message;
   }
 
+  async findLastBotMessageAt(conversationId: string) {
+    const message = await prisma.message.findFirst({
+      where: { conversationId, senderType: "BOT", direction: "OUT" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      select: { createdAt: true },
+    });
+    return message?.createdAt ?? null;
+  }
+
   updateGroupContext(id: string, groupChatName?: string | null, groupParticipant?: string | null) {
     return prisma.conversation.update({ where: { id }, data: { groupChatName: groupChatName ?? null, groupParticipant: groupParticipant ?? null } });
   }
