@@ -8,6 +8,7 @@ import { mediaCryptoService } from "../media/media-crypto.service.js";
 import { mediaService } from "../media/media.service.js";
 import { createHash } from "node:crypto";
 import { labelsService } from "../labels/labels.service.js";
+import { botExclusionsService } from "../bot-exclusions/bot-exclusions.service.js";
 
 const DEFAULT_BOT_REPLY_COOLDOWN_MINUTES = 15;
 const MAX_BOT_REPLY_COOLDOWN_MINUTES = 24 * 60;
@@ -740,6 +741,26 @@ export class ZApiService {
     }
   }
 
+  /**
+   * Automated delivery guard. Human-agent sends continue to use sendText and
+   * are intentionally not affected by the bot exclusion list.
+   */
+  async sendBotText(phone: string, text: string) {
+    if (await botExclusionsService.isBlocked(phone)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot reply suppressed by exclusion list");
+      return { blocked: true as const, status: "bot_excluded" as const };
+    }
+    return this.sendText(phone, text);
+  }
+
+  async sendBotButtonList(phone: string, message: string, options: BotOption[]) {
+    if (await botExclusionsService.isBlocked(phone)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot button list suppressed by exclusion list");
+      return { blocked: true as const, status: "bot_excluded" as const };
+    }
+    return this.sendButtonList(phone, message, options);
+  }
+
   private async sendTextToTarget(target: string, text: string) {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
@@ -758,6 +779,10 @@ export class ZApiService {
   }
 
   async sendButtonList(phone: string, message: string, options: BotOption[]) {
+    if (await botExclusionsService.isBlocked(phone)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot button list suppressed by exclusion list");
+      return { blocked: true as const, status: "bot_excluded" as const };
+    }
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
 
@@ -1006,10 +1031,20 @@ export class ZApiService {
       logger.info({ conversationId }, "inactivity warning reset due to new client message");
     }
 
+    // Keep the inbound message and conversation history, but stop every
+    // automated branch before it can send a reply or advance the flow.
+    if (await botExclusionsService.isBlocked(phone)) {
+      return { status: "bot_excluded" };
+    }
+
     if (incoming.group) {
       const confirmation = renderGroupTemplate(config.groupConfirmMessage, incoming.senderName, incoming.group.name);
       const storedConfirmation = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: confirmation });
-      const directResult = await this.sendText(phone, confirmation);
+      const directResult = await this.sendBotText(phone, confirmation);
+      if (directResult && "blocked" in directResult && directResult.blocked) {
+        await zApiRepository.deleteMessage(storedConfirmation.id);
+        return { status: "bot_excluded" };
+      }
       if (!directResult || directResult?.error) {
         await zApiRepository.deleteMessage(storedConfirmation.id);
         logger.error({ conversationId, error: directResult?.error || "integration_inactive" }, "Falha ao confirmar menção por mensagem privada");
@@ -1063,7 +1098,12 @@ export class ZApiService {
       for (const action of execution.actions) {
         if (action.type === "SEND_TEXT") {
           const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
-          const delivery = await this.sendText(phone, action.content);
+          const delivery = await this.sendBotText(phone, action.content);
+          if (delivery && "blocked" in delivery && delivery.blocked) {
+            await zApiRepository.deleteMessage(storedMessage.id);
+            await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
+            return { status: "bot_excluded" };
+          }
           if (delivery?.error) {
             await zApiRepository.deleteMessage(storedMessage.id);
             await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
@@ -1072,7 +1112,12 @@ export class ZApiService {
           }
         } else if (action.type === "SEND_OPTIONS") {
           const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
-          const delivery = await this.sendButtonList(phone, action.content, action.options);
+          const delivery = await this.sendBotButtonList(phone, action.content, action.options);
+          if (delivery && "blocked" in delivery && delivery.blocked) {
+            await zApiRepository.deleteMessage(storedMessage.id);
+            await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
+            return { status: "bot_excluded" };
+          }
           if (delivery?.error) {
             await zApiRepository.deleteMessage(storedMessage.id);
             await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
@@ -1106,37 +1151,54 @@ export class ZApiService {
         departmentId: selectedOption.departmentId,
         currentStep: "AWAITING_DETAILS",
       });
-      await zApiRepository.addMessage({
+      const storedRouteMessage = await zApiRepository.addMessage({
         conversationId,
         direction: "OUT",
         senderType: "BOT",
         content: replyMessage,
       });
-      await this.sendText(phone, replyMessage);
+      const delivery = await this.sendBotText(phone, replyMessage);
+      if (delivery && "blocked" in delivery && delivery.blocked) {
+        await zApiRepository.deleteMessage(storedRouteMessage.id);
+        await zApiRepository.updateConversationStatus(conversationId, {
+          status: activeConversation.status,
+          departmentId: activeConversation.departmentId ?? undefined,
+          currentStep: activeConversation.currentStep ?? undefined,
+        });
+        return { status: "bot_excluded" };
+      }
       conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN", eventType: "NEW_QUEUE", departmentId: routedConversation.departmentId, assignedAgentId: routedConversation.assignedAgentId, queuedAt: routedConversation.queuedAt });
       return { status: "routed_to_department", departmentId: selectedOption.departmentId };
     }
 
     const menuMessage = `${flow.greeting}\n\n${flow.menuMessage}`;
-    await zApiRepository.addMessage({
+    const storedMenuMessage = await zApiRepository.addMessage({
       conversationId,
       direction: "OUT",
       senderType: "BOT",
       content: menuMessage,
     });
-    const textResult = await this.sendText(phone, menuMessage);
+    const textResult = await this.sendBotText(phone, menuMessage);
+    if (textResult && "blocked" in textResult && textResult.blocked) {
+      await zApiRepository.deleteMessage(storedMenuMessage.id);
+      return { status: "bot_excluded" };
+    }
     if (textResult?.error) {
       logger.error({ error: textResult.error }, "Falha ao enviar saudação do bot");
     }
 
     const buttonMessage = "Escolha uma equipe para iniciar o atendimento:";
-    await zApiRepository.addMessage({
+    const storedButtonMessage = await zApiRepository.addMessage({
       conversationId,
       direction: "OUT",
       senderType: "BOT",
       content: buttonMessage,
     });
-    const buttonResult = await this.sendButtonList(phone, buttonMessage, options);
+    const buttonResult = await this.sendBotButtonList(phone, buttonMessage, options);
+    if (buttonResult && "blocked" in buttonResult && buttonResult.blocked) {
+      await zApiRepository.deleteMessage(storedButtonMessage.id);
+      return { status: "bot_excluded" };
+    }
     if (buttonResult?.error) {
       logger.error({ error: buttonResult.error }, "Falha ao enviar botões do bot");
     }

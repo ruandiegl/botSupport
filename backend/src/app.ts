@@ -17,6 +17,7 @@ import mediaRoutes from "./modules/media/media.routes.js";
 import { mediaExpirationWorker } from "./modules/media/media-expiration.worker.js";
 import { inactivityWorker } from "./modules/conversations/inactivity.worker.js";
 import labelsRoutes from "./modules/labels/labels.routes.js";
+import botExclusionsRoutes from "./modules/bot-exclusions/bot-exclusions.routes.js";
 
 export const app = express();
 
@@ -84,6 +85,7 @@ app.use("/api", shortcutsRoutes);
 app.use("/api", notificationsRoutes);
 app.use("/api", mediaRoutes);
 app.use("/api", labelsRoutes);
+app.use("/api", botExclusionsRoutes);
 
 // Persists notification events and runs the idempotent unresolved-call reminder
 // worker. The worker is unref'd and therefore never prevents graceful shutdown.

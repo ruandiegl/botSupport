@@ -57,6 +57,9 @@ model Agent {
   notifications           Notification[]
   notificationPreference  NotificationPreference?
   addedConversationLabels ConversationLabel[]
+  botExclusionsCreated    BotExclusion[]           @relation("BotExclusionCreatedBy")
+  botExclusionsUpdated    BotExclusion[]           @relation("BotExclusionUpdatedBy")
+  botExclusionsDisabled   BotExclusion[]           @relation("BotExclusionDisabledBy")
 
   @@map("gtf_agents")
 }
@@ -82,6 +85,28 @@ model Contact {
   messageSenders Message[]      @relation("MessageSenderContact")
 
   @@map("gtf_contacts")
+}
+
+/// Contacts that must never receive automated bot replies. Messages and
+/// conversations are still persisted; this is an outbound bot guard only.
+model BotExclusion {
+  id                String    @id @default(uuid())
+  phone             String    @unique
+  label             String?
+  reason            String?
+  isActive          Boolean   @default(true) @map("is_active")
+  createdByAgentId  String?   @map("created_by_agent_id")
+  updatedByAgentId  String?   @map("updated_by_agent_id")
+  disabledAt        DateTime? @map("disabled_at") @db.Timestamptz
+  disabledByAgentId String?   @map("disabled_by_agent_id")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  createdByAgent    Agent?    @relation("BotExclusionCreatedBy", fields: [createdByAgentId], references: [id], onDelete: SetNull)
+  updatedByAgent    Agent?    @relation("BotExclusionUpdatedBy", fields: [updatedByAgentId], references: [id], onDelete: SetNull)
+  disabledByAgent   Agent?    @relation("BotExclusionDisabledBy", fields: [disabledByAgentId], references: [id], onDelete: SetNull)
+
+  @@index([isActive, phone])
+  @@map("gtf_bot_exclusions")
 }
 
 model Conversation {

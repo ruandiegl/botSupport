@@ -74,7 +74,11 @@ export class InactivityWorker {
 
       const message = buildWarningMessage(conv.id);
       try {
-        await zApiService.sendText(phone, message);
+        const delivery = await zApiService.sendBotText(phone, message);
+        if (delivery && "blocked" in delivery && delivery.blocked) {
+          logger.info({ conversationId: conv.id }, "inactivity-worker: warning suppressed by bot exclusion");
+          continue;
+        }
         await conversationsRepository.markWarningSent(conv.id);
         logger.info({ conversationId: conv.id }, "inactivity-worker: warning sent");
 
@@ -104,7 +108,10 @@ export class InactivityWorker {
         await conversationsRepository.close(conv.id, "AUTO_TIMEOUT");
 
         const message = buildCloseMessage(conv.id);
-        await zApiService.sendText(phone, message);
+        const delivery = await zApiService.sendBotText(phone, message);
+        if (delivery && "blocked" in delivery && delivery.blocked) {
+          logger.info({ conversationId: conv.id }, "inactivity-worker: close message suppressed by bot exclusion");
+        }
 
         logger.info({ conversationId: conv.id }, "inactivity-worker: conversation auto-closed");
 

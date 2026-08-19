@@ -41,6 +41,8 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.
 - [**Matriz QA de mídia Z-API**](QA_MIDIA_ZAPI.md): contratos, segurança, expiração e regressão.
 - [**Plano 017: delay anti-spam e zoom de imagens**](../plans/plan-017-delay-anti-spam-midia-zoom.md): cooldown server-side para bot e prévia ampliada de mídia.
+- [**Plano 018: exclusão de contatos das respostas do bot**](../plans/plan-018-exclusao-contatos-respostas-bot.md): bloqueio administrável de respostas automáticas com preservação do histórico.
+- [**Runbook de exclusões do bot**](RUNBOOK_EXCLUSOES_BOT.md): migração, validação, observabilidade e rollback.
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```

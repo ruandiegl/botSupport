@@ -87,6 +87,12 @@ Ao selecionar Suporte, a revisão inicial deve poder enviar a mensagem configura
 
 Saudação e lista de departamentos respeitam `BOT_REPLY_COOLDOWN_MINUTES` (padrão: 15) quando o fluxo está aguardando uma decisão e recebe uma opção inválida repetida. O backend consulta a última mensagem `BOT` persistida sem atrasar entradas válidas: respostas de triagem avançam normalmente, e uma escolha de rota por botão, lista, índice ou texto exato do rótulo é processada imediatamente. Conversas em `QUEUED` ou `AWAITING_DETAILS` não reiniciam a saudação. O cooldown é server-side e não depende de polling ou estado do navegador.
 
+### 8.2 Exclusões de respostas automáticas
+
+Antes de qualquer entrega automática, o serviço consulta a lista ativa de `BotExclusion` pelo telefone canônico do remetente. A barreira cobre saudação, menus, botões, fallback textual, triagem, confirmação de menção em grupo e mensagens do worker de inatividade. O webhook ainda persiste o evento e a mensagem recebida para que o atendimento humano possa ser localizado e assumido.
+
+O método de envio manual do painel permanece separado e não consulta essa lista. Em grupos, a chave é o participante individual (`participantPhone`/`participant`), nunca o JID do grupo. Ativar ou desativar uma regra não envia mensagens retroativas nem apaga histórico.
+
 ---
 
 ## 9. Modelo de Dados (`schema.prisma`)

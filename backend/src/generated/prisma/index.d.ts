@@ -39,6 +39,12 @@ export type RolePermission = $Result.DefaultSelection<Prisma.$RolePermissionPayl
  */
 export type Contact = $Result.DefaultSelection<Prisma.$ContactPayload>
 /**
+ * Model BotExclusion
+ * Contacts that must never receive automated bot replies. Messages and
+ * conversations are still persisted; this is an outbound bot guard only.
+ */
+export type BotExclusion = $Result.DefaultSelection<Prisma.$BotExclusionPayload>
+/**
  * Model Conversation
  * 
  */
@@ -397,6 +403,16 @@ export class PrismaClient<
     * ```
     */
   get contact(): Prisma.ContactDelegate<ExtArgs>;
+
+  /**
+   * `prisma.botExclusion`: Exposes CRUD operations for the **BotExclusion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BotExclusions
+    * const botExclusions = await prisma.botExclusion.findMany()
+    * ```
+    */
+  get botExclusion(): Prisma.BotExclusionDelegate<ExtArgs>;
 
   /**
    * `prisma.conversation`: Exposes CRUD operations for the **Conversation** model.
@@ -1013,6 +1029,7 @@ export namespace Prisma {
     Agent: 'Agent',
     RolePermission: 'RolePermission',
     Contact: 'Contact',
+    BotExclusion: 'BotExclusion',
     Conversation: 'Conversation',
     Message: 'Message',
     ConversationAssignment: 'ConversationAssignment',
@@ -1045,7 +1062,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "conversation" | "message" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "botExclusion" | "conversation" | "message" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1396,6 +1413,76 @@ export namespace Prisma {
           count: {
             args: Prisma.ContactCountArgs<ExtArgs>
             result: $Utils.Optional<ContactCountAggregateOutputType> | number
+          }
+        }
+      }
+      BotExclusion: {
+        payload: Prisma.$BotExclusionPayload<ExtArgs>
+        fields: Prisma.BotExclusionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BotExclusionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BotExclusionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          findFirst: {
+            args: Prisma.BotExclusionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BotExclusionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          findMany: {
+            args: Prisma.BotExclusionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>[]
+          }
+          create: {
+            args: Prisma.BotExclusionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          createMany: {
+            args: Prisma.BotExclusionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BotExclusionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>[]
+          }
+          delete: {
+            args: Prisma.BotExclusionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          update: {
+            args: Prisma.BotExclusionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          deleteMany: {
+            args: Prisma.BotExclusionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BotExclusionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BotExclusionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BotExclusionPayload>
+          }
+          aggregate: {
+            args: Prisma.BotExclusionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBotExclusion>
+          }
+          groupBy: {
+            args: Prisma.BotExclusionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BotExclusionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BotExclusionCountArgs<ExtArgs>
+            result: $Utils.Optional<BotExclusionCountAggregateOutputType> | number
           }
         }
       }
@@ -2829,6 +2916,9 @@ export namespace Prisma {
     publishedFlowRevisions: number
     notifications: number
     addedConversationLabels: number
+    botExclusionsCreated: number
+    botExclusionsUpdated: number
+    botExclusionsDisabled: number
   }
 
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2844,6 +2934,9 @@ export namespace Prisma {
     publishedFlowRevisions?: boolean | AgentCountOutputTypeCountPublishedFlowRevisionsArgs
     notifications?: boolean | AgentCountOutputTypeCountNotificationsArgs
     addedConversationLabels?: boolean | AgentCountOutputTypeCountAddedConversationLabelsArgs
+    botExclusionsCreated?: boolean | AgentCountOutputTypeCountBotExclusionsCreatedArgs
+    botExclusionsUpdated?: boolean | AgentCountOutputTypeCountBotExclusionsUpdatedArgs
+    botExclusionsDisabled?: boolean | AgentCountOutputTypeCountBotExclusionsDisabledArgs
   }
 
   // Custom InputTypes
@@ -2939,6 +3032,27 @@ export namespace Prisma {
    */
   export type AgentCountOutputTypeCountAddedConversationLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ConversationLabelWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountBotExclusionsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BotExclusionWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountBotExclusionsUpdatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BotExclusionWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountBotExclusionsDisabledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BotExclusionWhereInput
   }
 
 
@@ -5480,6 +5594,9 @@ export namespace Prisma {
     notifications?: boolean | Agent$notificationsArgs<ExtArgs>
     notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
     addedConversationLabels?: boolean | Agent$addedConversationLabelsArgs<ExtArgs>
+    botExclusionsCreated?: boolean | Agent$botExclusionsCreatedArgs<ExtArgs>
+    botExclusionsUpdated?: boolean | Agent$botExclusionsUpdatedArgs<ExtArgs>
+    botExclusionsDisabled?: boolean | Agent$botExclusionsDisabledArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agent"]>
 
@@ -5523,6 +5640,9 @@ export namespace Prisma {
     notifications?: boolean | Agent$notificationsArgs<ExtArgs>
     notificationPreference?: boolean | Agent$notificationPreferenceArgs<ExtArgs>
     addedConversationLabels?: boolean | Agent$addedConversationLabelsArgs<ExtArgs>
+    botExclusionsCreated?: boolean | Agent$botExclusionsCreatedArgs<ExtArgs>
+    botExclusionsUpdated?: boolean | Agent$botExclusionsUpdatedArgs<ExtArgs>
+    botExclusionsDisabled?: boolean | Agent$botExclusionsDisabledArgs<ExtArgs>
     _count?: boolean | AgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5546,6 +5666,9 @@ export namespace Prisma {
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
       addedConversationLabels: Prisma.$ConversationLabelPayload<ExtArgs>[]
+      botExclusionsCreated: Prisma.$BotExclusionPayload<ExtArgs>[]
+      botExclusionsUpdated: Prisma.$BotExclusionPayload<ExtArgs>[]
+      botExclusionsDisabled: Prisma.$BotExclusionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5935,6 +6058,9 @@ export namespace Prisma {
     notifications<T extends Agent$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     notificationPreference<T extends Agent$notificationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, Agent$notificationPreferenceArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     addedConversationLabels<T extends Agent$addedConversationLabelsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$addedConversationLabelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
+    botExclusionsCreated<T extends Agent$botExclusionsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, Agent$botExclusionsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findMany"> | Null>
+    botExclusionsUpdated<T extends Agent$botExclusionsUpdatedArgs<ExtArgs> = {}>(args?: Subset<T, Agent$botExclusionsUpdatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findMany"> | Null>
+    botExclusionsDisabled<T extends Agent$botExclusionsDisabledArgs<ExtArgs> = {}>(args?: Subset<T, Agent$botExclusionsDisabledArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6558,6 +6684,66 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.botExclusionsCreated
+   */
+  export type Agent$botExclusionsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    where?: BotExclusionWhereInput
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    cursor?: BotExclusionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.botExclusionsUpdated
+   */
+  export type Agent$botExclusionsUpdatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    where?: BotExclusionWhereInput
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    cursor?: BotExclusionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.botExclusionsDisabled
+   */
+  export type Agent$botExclusionsDisabledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    where?: BotExclusionWhereInput
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    cursor?: BotExclusionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
   }
 
   /**
@@ -8406,6 +8592,1068 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ContactInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BotExclusion
+   */
+
+  export type AggregateBotExclusion = {
+    _count: BotExclusionCountAggregateOutputType | null
+    _min: BotExclusionMinAggregateOutputType | null
+    _max: BotExclusionMaxAggregateOutputType | null
+  }
+
+  export type BotExclusionMinAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    label: string | null
+    reason: string | null
+    isActive: boolean | null
+    createdByAgentId: string | null
+    updatedByAgentId: string | null
+    disabledAt: Date | null
+    disabledByAgentId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BotExclusionMaxAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    label: string | null
+    reason: string | null
+    isActive: boolean | null
+    createdByAgentId: string | null
+    updatedByAgentId: string | null
+    disabledAt: Date | null
+    disabledByAgentId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BotExclusionCountAggregateOutputType = {
+    id: number
+    phone: number
+    label: number
+    reason: number
+    isActive: number
+    createdByAgentId: number
+    updatedByAgentId: number
+    disabledAt: number
+    disabledByAgentId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BotExclusionMinAggregateInputType = {
+    id?: true
+    phone?: true
+    label?: true
+    reason?: true
+    isActive?: true
+    createdByAgentId?: true
+    updatedByAgentId?: true
+    disabledAt?: true
+    disabledByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BotExclusionMaxAggregateInputType = {
+    id?: true
+    phone?: true
+    label?: true
+    reason?: true
+    isActive?: true
+    createdByAgentId?: true
+    updatedByAgentId?: true
+    disabledAt?: true
+    disabledByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BotExclusionCountAggregateInputType = {
+    id?: true
+    phone?: true
+    label?: true
+    reason?: true
+    isActive?: true
+    createdByAgentId?: true
+    updatedByAgentId?: true
+    disabledAt?: true
+    disabledByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BotExclusionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BotExclusion to aggregate.
+     */
+    where?: BotExclusionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BotExclusions to fetch.
+     */
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BotExclusionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BotExclusions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BotExclusions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BotExclusions
+    **/
+    _count?: true | BotExclusionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BotExclusionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BotExclusionMaxAggregateInputType
+  }
+
+  export type GetBotExclusionAggregateType<T extends BotExclusionAggregateArgs> = {
+        [P in keyof T & keyof AggregateBotExclusion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBotExclusion[P]>
+      : GetScalarType<T[P], AggregateBotExclusion[P]>
+  }
+
+
+
+
+  export type BotExclusionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BotExclusionWhereInput
+    orderBy?: BotExclusionOrderByWithAggregationInput | BotExclusionOrderByWithAggregationInput[]
+    by: BotExclusionScalarFieldEnum[] | BotExclusionScalarFieldEnum
+    having?: BotExclusionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BotExclusionCountAggregateInputType | true
+    _min?: BotExclusionMinAggregateInputType
+    _max?: BotExclusionMaxAggregateInputType
+  }
+
+  export type BotExclusionGroupByOutputType = {
+    id: string
+    phone: string
+    label: string | null
+    reason: string | null
+    isActive: boolean
+    createdByAgentId: string | null
+    updatedByAgentId: string | null
+    disabledAt: Date | null
+    disabledByAgentId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BotExclusionCountAggregateOutputType | null
+    _min: BotExclusionMinAggregateOutputType | null
+    _max: BotExclusionMaxAggregateOutputType | null
+  }
+
+  type GetBotExclusionGroupByPayload<T extends BotExclusionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BotExclusionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BotExclusionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BotExclusionGroupByOutputType[P]>
+            : GetScalarType<T[P], BotExclusionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BotExclusionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    label?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdByAgentId?: boolean
+    updatedByAgentId?: boolean
+    disabledAt?: boolean
+    disabledByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdByAgent?: boolean | BotExclusion$createdByAgentArgs<ExtArgs>
+    updatedByAgent?: boolean | BotExclusion$updatedByAgentArgs<ExtArgs>
+    disabledByAgent?: boolean | BotExclusion$disabledByAgentArgs<ExtArgs>
+  }, ExtArgs["result"]["botExclusion"]>
+
+  export type BotExclusionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    label?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdByAgentId?: boolean
+    updatedByAgentId?: boolean
+    disabledAt?: boolean
+    disabledByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdByAgent?: boolean | BotExclusion$createdByAgentArgs<ExtArgs>
+    updatedByAgent?: boolean | BotExclusion$updatedByAgentArgs<ExtArgs>
+    disabledByAgent?: boolean | BotExclusion$disabledByAgentArgs<ExtArgs>
+  }, ExtArgs["result"]["botExclusion"]>
+
+  export type BotExclusionSelectScalar = {
+    id?: boolean
+    phone?: boolean
+    label?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdByAgentId?: boolean
+    updatedByAgentId?: boolean
+    disabledAt?: boolean
+    disabledByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BotExclusionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdByAgent?: boolean | BotExclusion$createdByAgentArgs<ExtArgs>
+    updatedByAgent?: boolean | BotExclusion$updatedByAgentArgs<ExtArgs>
+    disabledByAgent?: boolean | BotExclusion$disabledByAgentArgs<ExtArgs>
+  }
+  export type BotExclusionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdByAgent?: boolean | BotExclusion$createdByAgentArgs<ExtArgs>
+    updatedByAgent?: boolean | BotExclusion$updatedByAgentArgs<ExtArgs>
+    disabledByAgent?: boolean | BotExclusion$disabledByAgentArgs<ExtArgs>
+  }
+
+  export type $BotExclusionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BotExclusion"
+    objects: {
+      createdByAgent: Prisma.$AgentPayload<ExtArgs> | null
+      updatedByAgent: Prisma.$AgentPayload<ExtArgs> | null
+      disabledByAgent: Prisma.$AgentPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      phone: string
+      label: string | null
+      reason: string | null
+      isActive: boolean
+      createdByAgentId: string | null
+      updatedByAgentId: string | null
+      disabledAt: Date | null
+      disabledByAgentId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["botExclusion"]>
+    composites: {}
+  }
+
+  type BotExclusionGetPayload<S extends boolean | null | undefined | BotExclusionDefaultArgs> = $Result.GetResult<Prisma.$BotExclusionPayload, S>
+
+  type BotExclusionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BotExclusionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BotExclusionCountAggregateInputType | true
+    }
+
+  export interface BotExclusionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BotExclusion'], meta: { name: 'BotExclusion' } }
+    /**
+     * Find zero or one BotExclusion that matches the filter.
+     * @param {BotExclusionFindUniqueArgs} args - Arguments to find a BotExclusion
+     * @example
+     * // Get one BotExclusion
+     * const botExclusion = await prisma.botExclusion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BotExclusionFindUniqueArgs>(args: SelectSubset<T, BotExclusionFindUniqueArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BotExclusion that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BotExclusionFindUniqueOrThrowArgs} args - Arguments to find a BotExclusion
+     * @example
+     * // Get one BotExclusion
+     * const botExclusion = await prisma.botExclusion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BotExclusionFindUniqueOrThrowArgs>(args: SelectSubset<T, BotExclusionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BotExclusion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionFindFirstArgs} args - Arguments to find a BotExclusion
+     * @example
+     * // Get one BotExclusion
+     * const botExclusion = await prisma.botExclusion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BotExclusionFindFirstArgs>(args?: SelectSubset<T, BotExclusionFindFirstArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BotExclusion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionFindFirstOrThrowArgs} args - Arguments to find a BotExclusion
+     * @example
+     * // Get one BotExclusion
+     * const botExclusion = await prisma.botExclusion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BotExclusionFindFirstOrThrowArgs>(args?: SelectSubset<T, BotExclusionFindFirstOrThrowArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BotExclusions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BotExclusions
+     * const botExclusions = await prisma.botExclusion.findMany()
+     * 
+     * // Get first 10 BotExclusions
+     * const botExclusions = await prisma.botExclusion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const botExclusionWithIdOnly = await prisma.botExclusion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BotExclusionFindManyArgs>(args?: SelectSubset<T, BotExclusionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BotExclusion.
+     * @param {BotExclusionCreateArgs} args - Arguments to create a BotExclusion.
+     * @example
+     * // Create one BotExclusion
+     * const BotExclusion = await prisma.botExclusion.create({
+     *   data: {
+     *     // ... data to create a BotExclusion
+     *   }
+     * })
+     * 
+     */
+    create<T extends BotExclusionCreateArgs>(args: SelectSubset<T, BotExclusionCreateArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BotExclusions.
+     * @param {BotExclusionCreateManyArgs} args - Arguments to create many BotExclusions.
+     * @example
+     * // Create many BotExclusions
+     * const botExclusion = await prisma.botExclusion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BotExclusionCreateManyArgs>(args?: SelectSubset<T, BotExclusionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BotExclusions and returns the data saved in the database.
+     * @param {BotExclusionCreateManyAndReturnArgs} args - Arguments to create many BotExclusions.
+     * @example
+     * // Create many BotExclusions
+     * const botExclusion = await prisma.botExclusion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BotExclusions and only return the `id`
+     * const botExclusionWithIdOnly = await prisma.botExclusion.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BotExclusionCreateManyAndReturnArgs>(args?: SelectSubset<T, BotExclusionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BotExclusion.
+     * @param {BotExclusionDeleteArgs} args - Arguments to delete one BotExclusion.
+     * @example
+     * // Delete one BotExclusion
+     * const BotExclusion = await prisma.botExclusion.delete({
+     *   where: {
+     *     // ... filter to delete one BotExclusion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BotExclusionDeleteArgs>(args: SelectSubset<T, BotExclusionDeleteArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BotExclusion.
+     * @param {BotExclusionUpdateArgs} args - Arguments to update one BotExclusion.
+     * @example
+     * // Update one BotExclusion
+     * const botExclusion = await prisma.botExclusion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BotExclusionUpdateArgs>(args: SelectSubset<T, BotExclusionUpdateArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BotExclusions.
+     * @param {BotExclusionDeleteManyArgs} args - Arguments to filter BotExclusions to delete.
+     * @example
+     * // Delete a few BotExclusions
+     * const { count } = await prisma.botExclusion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BotExclusionDeleteManyArgs>(args?: SelectSubset<T, BotExclusionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BotExclusions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BotExclusions
+     * const botExclusion = await prisma.botExclusion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BotExclusionUpdateManyArgs>(args: SelectSubset<T, BotExclusionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BotExclusion.
+     * @param {BotExclusionUpsertArgs} args - Arguments to update or create a BotExclusion.
+     * @example
+     * // Update or create a BotExclusion
+     * const botExclusion = await prisma.botExclusion.upsert({
+     *   create: {
+     *     // ... data to create a BotExclusion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BotExclusion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BotExclusionUpsertArgs>(args: SelectSubset<T, BotExclusionUpsertArgs<ExtArgs>>): Prisma__BotExclusionClient<$Result.GetResult<Prisma.$BotExclusionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BotExclusions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionCountArgs} args - Arguments to filter BotExclusions to count.
+     * @example
+     * // Count the number of BotExclusions
+     * const count = await prisma.botExclusion.count({
+     *   where: {
+     *     // ... the filter for the BotExclusions we want to count
+     *   }
+     * })
+    **/
+    count<T extends BotExclusionCountArgs>(
+      args?: Subset<T, BotExclusionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BotExclusionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BotExclusion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BotExclusionAggregateArgs>(args: Subset<T, BotExclusionAggregateArgs>): Prisma.PrismaPromise<GetBotExclusionAggregateType<T>>
+
+    /**
+     * Group by BotExclusion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BotExclusionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BotExclusionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BotExclusionGroupByArgs['orderBy'] }
+        : { orderBy?: BotExclusionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BotExclusionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBotExclusionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BotExclusion model
+   */
+  readonly fields: BotExclusionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BotExclusion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BotExclusionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    createdByAgent<T extends BotExclusion$createdByAgentArgs<ExtArgs> = {}>(args?: Subset<T, BotExclusion$createdByAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    updatedByAgent<T extends BotExclusion$updatedByAgentArgs<ExtArgs> = {}>(args?: Subset<T, BotExclusion$updatedByAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    disabledByAgent<T extends BotExclusion$disabledByAgentArgs<ExtArgs> = {}>(args?: Subset<T, BotExclusion$disabledByAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BotExclusion model
+   */ 
+  interface BotExclusionFieldRefs {
+    readonly id: FieldRef<"BotExclusion", 'String'>
+    readonly phone: FieldRef<"BotExclusion", 'String'>
+    readonly label: FieldRef<"BotExclusion", 'String'>
+    readonly reason: FieldRef<"BotExclusion", 'String'>
+    readonly isActive: FieldRef<"BotExclusion", 'Boolean'>
+    readonly createdByAgentId: FieldRef<"BotExclusion", 'String'>
+    readonly updatedByAgentId: FieldRef<"BotExclusion", 'String'>
+    readonly disabledAt: FieldRef<"BotExclusion", 'DateTime'>
+    readonly disabledByAgentId: FieldRef<"BotExclusion", 'String'>
+    readonly createdAt: FieldRef<"BotExclusion", 'DateTime'>
+    readonly updatedAt: FieldRef<"BotExclusion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BotExclusion findUnique
+   */
+  export type BotExclusionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter, which BotExclusion to fetch.
+     */
+    where: BotExclusionWhereUniqueInput
+  }
+
+  /**
+   * BotExclusion findUniqueOrThrow
+   */
+  export type BotExclusionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter, which BotExclusion to fetch.
+     */
+    where: BotExclusionWhereUniqueInput
+  }
+
+  /**
+   * BotExclusion findFirst
+   */
+  export type BotExclusionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter, which BotExclusion to fetch.
+     */
+    where?: BotExclusionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BotExclusions to fetch.
+     */
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BotExclusions.
+     */
+    cursor?: BotExclusionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BotExclusions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BotExclusions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BotExclusions.
+     */
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
+  }
+
+  /**
+   * BotExclusion findFirstOrThrow
+   */
+  export type BotExclusionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter, which BotExclusion to fetch.
+     */
+    where?: BotExclusionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BotExclusions to fetch.
+     */
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BotExclusions.
+     */
+    cursor?: BotExclusionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BotExclusions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BotExclusions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BotExclusions.
+     */
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
+  }
+
+  /**
+   * BotExclusion findMany
+   */
+  export type BotExclusionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter, which BotExclusions to fetch.
+     */
+    where?: BotExclusionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BotExclusions to fetch.
+     */
+    orderBy?: BotExclusionOrderByWithRelationInput | BotExclusionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BotExclusions.
+     */
+    cursor?: BotExclusionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BotExclusions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BotExclusions.
+     */
+    skip?: number
+    distinct?: BotExclusionScalarFieldEnum | BotExclusionScalarFieldEnum[]
+  }
+
+  /**
+   * BotExclusion create
+   */
+  export type BotExclusionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BotExclusion.
+     */
+    data: XOR<BotExclusionCreateInput, BotExclusionUncheckedCreateInput>
+  }
+
+  /**
+   * BotExclusion createMany
+   */
+  export type BotExclusionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BotExclusions.
+     */
+    data: BotExclusionCreateManyInput | BotExclusionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BotExclusion createManyAndReturn
+   */
+  export type BotExclusionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BotExclusions.
+     */
+    data: BotExclusionCreateManyInput | BotExclusionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BotExclusion update
+   */
+  export type BotExclusionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BotExclusion.
+     */
+    data: XOR<BotExclusionUpdateInput, BotExclusionUncheckedUpdateInput>
+    /**
+     * Choose, which BotExclusion to update.
+     */
+    where: BotExclusionWhereUniqueInput
+  }
+
+  /**
+   * BotExclusion updateMany
+   */
+  export type BotExclusionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BotExclusions.
+     */
+    data: XOR<BotExclusionUpdateManyMutationInput, BotExclusionUncheckedUpdateManyInput>
+    /**
+     * Filter which BotExclusions to update
+     */
+    where?: BotExclusionWhereInput
+  }
+
+  /**
+   * BotExclusion upsert
+   */
+  export type BotExclusionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BotExclusion to update in case it exists.
+     */
+    where: BotExclusionWhereUniqueInput
+    /**
+     * In case the BotExclusion found by the `where` argument doesn't exist, create a new BotExclusion with this data.
+     */
+    create: XOR<BotExclusionCreateInput, BotExclusionUncheckedCreateInput>
+    /**
+     * In case the BotExclusion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BotExclusionUpdateInput, BotExclusionUncheckedUpdateInput>
+  }
+
+  /**
+   * BotExclusion delete
+   */
+  export type BotExclusionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
+    /**
+     * Filter which BotExclusion to delete.
+     */
+    where: BotExclusionWhereUniqueInput
+  }
+
+  /**
+   * BotExclusion deleteMany
+   */
+  export type BotExclusionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BotExclusions to delete
+     */
+    where?: BotExclusionWhereInput
+  }
+
+  /**
+   * BotExclusion.createdByAgent
+   */
+  export type BotExclusion$createdByAgentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * BotExclusion.updatedByAgent
+   */
+  export type BotExclusion$updatedByAgentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * BotExclusion.disabledByAgent
+   */
+  export type BotExclusion$disabledByAgentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agent
+     */
+    select?: AgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentInclude<ExtArgs> | null
+    where?: AgentWhereInput
+  }
+
+  /**
+   * BotExclusion without action
+   */
+  export type BotExclusionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotExclusion
+     */
+    select?: BotExclusionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotExclusionInclude<ExtArgs> | null
   }
 
 
@@ -26360,6 +27608,23 @@ export namespace Prisma {
   export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
 
 
+  export const BotExclusionScalarFieldEnum: {
+    id: 'id',
+    phone: 'phone',
+    label: 'label',
+    reason: 'reason',
+    isActive: 'isActive',
+    createdByAgentId: 'createdByAgentId',
+    updatedByAgentId: 'updatedByAgentId',
+    disabledAt: 'disabledAt',
+    disabledByAgentId: 'disabledByAgentId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BotExclusionScalarFieldEnum = (typeof BotExclusionScalarFieldEnum)[keyof typeof BotExclusionScalarFieldEnum]
+
+
   export const ConversationScalarFieldEnum: {
     id: 'id',
     contactId: 'contactId',
@@ -27008,6 +28273,9 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
     addedConversationLabels?: ConversationLabelListRelationFilter
+    botExclusionsCreated?: BotExclusionListRelationFilter
+    botExclusionsUpdated?: BotExclusionListRelationFilter
+    botExclusionsDisabled?: BotExclusionListRelationFilter
   }
 
   export type AgentOrderByWithRelationInput = {
@@ -27034,6 +28302,9 @@ export namespace Prisma {
     notifications?: NotificationOrderByRelationAggregateInput
     notificationPreference?: NotificationPreferenceOrderByWithRelationInput
     addedConversationLabels?: ConversationLabelOrderByRelationAggregateInput
+    botExclusionsCreated?: BotExclusionOrderByRelationAggregateInput
+    botExclusionsUpdated?: BotExclusionOrderByRelationAggregateInput
+    botExclusionsDisabled?: BotExclusionOrderByRelationAggregateInput
   }
 
   export type AgentWhereUniqueInput = Prisma.AtLeast<{
@@ -27063,6 +28334,9 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableRelationFilter, NotificationPreferenceWhereInput> | null
     addedConversationLabels?: ConversationLabelListRelationFilter
+    botExclusionsCreated?: BotExclusionListRelationFilter
+    botExclusionsUpdated?: BotExclusionListRelationFilter
+    botExclusionsDisabled?: BotExclusionListRelationFilter
   }, "id" | "email">
 
   export type AgentOrderByWithAggregationInput = {
@@ -27199,6 +28473,97 @@ export namespace Prisma {
     phone?: StringWithAggregatesFilter<"Contact"> | string
     name?: StringWithAggregatesFilter<"Contact"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
+  }
+
+  export type BotExclusionWhereInput = {
+    AND?: BotExclusionWhereInput | BotExclusionWhereInput[]
+    OR?: BotExclusionWhereInput[]
+    NOT?: BotExclusionWhereInput | BotExclusionWhereInput[]
+    id?: StringFilter<"BotExclusion"> | string
+    phone?: StringFilter<"BotExclusion"> | string
+    label?: StringNullableFilter<"BotExclusion"> | string | null
+    reason?: StringNullableFilter<"BotExclusion"> | string | null
+    isActive?: BoolFilter<"BotExclusion"> | boolean
+    createdByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    updatedByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    disabledAt?: DateTimeNullableFilter<"BotExclusion"> | Date | string | null
+    disabledByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    createdAt?: DateTimeFilter<"BotExclusion"> | Date | string
+    updatedAt?: DateTimeFilter<"BotExclusion"> | Date | string
+    createdByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    updatedByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    disabledByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+  }
+
+  export type BotExclusionOrderByWithRelationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    label?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdByAgentId?: SortOrderInput | SortOrder
+    updatedByAgentId?: SortOrderInput | SortOrder
+    disabledAt?: SortOrderInput | SortOrder
+    disabledByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdByAgent?: AgentOrderByWithRelationInput
+    updatedByAgent?: AgentOrderByWithRelationInput
+    disabledByAgent?: AgentOrderByWithRelationInput
+  }
+
+  export type BotExclusionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    phone?: string
+    AND?: BotExclusionWhereInput | BotExclusionWhereInput[]
+    OR?: BotExclusionWhereInput[]
+    NOT?: BotExclusionWhereInput | BotExclusionWhereInput[]
+    label?: StringNullableFilter<"BotExclusion"> | string | null
+    reason?: StringNullableFilter<"BotExclusion"> | string | null
+    isActive?: BoolFilter<"BotExclusion"> | boolean
+    createdByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    updatedByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    disabledAt?: DateTimeNullableFilter<"BotExclusion"> | Date | string | null
+    disabledByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    createdAt?: DateTimeFilter<"BotExclusion"> | Date | string
+    updatedAt?: DateTimeFilter<"BotExclusion"> | Date | string
+    createdByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    updatedByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+    disabledByAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
+  }, "id" | "phone">
+
+  export type BotExclusionOrderByWithAggregationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    label?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdByAgentId?: SortOrderInput | SortOrder
+    updatedByAgentId?: SortOrderInput | SortOrder
+    disabledAt?: SortOrderInput | SortOrder
+    disabledByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BotExclusionCountOrderByAggregateInput
+    _max?: BotExclusionMaxOrderByAggregateInput
+    _min?: BotExclusionMinOrderByAggregateInput
+  }
+
+  export type BotExclusionScalarWhereWithAggregatesInput = {
+    AND?: BotExclusionScalarWhereWithAggregatesInput | BotExclusionScalarWhereWithAggregatesInput[]
+    OR?: BotExclusionScalarWhereWithAggregatesInput[]
+    NOT?: BotExclusionScalarWhereWithAggregatesInput | BotExclusionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BotExclusion"> | string
+    phone?: StringWithAggregatesFilter<"BotExclusion"> | string
+    label?: StringNullableWithAggregatesFilter<"BotExclusion"> | string | null
+    reason?: StringNullableWithAggregatesFilter<"BotExclusion"> | string | null
+    isActive?: BoolWithAggregatesFilter<"BotExclusion"> | boolean
+    createdByAgentId?: StringNullableWithAggregatesFilter<"BotExclusion"> | string | null
+    updatedByAgentId?: StringNullableWithAggregatesFilter<"BotExclusion"> | string | null
+    disabledAt?: DateTimeNullableWithAggregatesFilter<"BotExclusion"> | Date | string | null
+    disabledByAgentId?: StringNullableWithAggregatesFilter<"BotExclusion"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BotExclusion"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BotExclusion"> | Date | string
   }
 
   export type ConversationWhereInput = {
@@ -28869,6 +30234,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateInput = {
@@ -28894,6 +30262,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUpdateInput = {
@@ -28919,6 +30290,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateInput = {
@@ -28944,6 +30318,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentCreateManyInput = {
@@ -29092,6 +30469,101 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionCreateInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdByAgent?: AgentCreateNestedOneWithoutBotExclusionsCreatedInput
+    updatedByAgent?: AgentCreateNestedOneWithoutBotExclusionsUpdatedInput
+    disabledByAgent?: AgentCreateNestedOneWithoutBotExclusionsDisabledInput
+  }
+
+  export type BotExclusionUncheckedCreateInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdByAgent?: AgentUpdateOneWithoutBotExclusionsCreatedNestedInput
+    updatedByAgent?: AgentUpdateOneWithoutBotExclusionsUpdatedNestedInput
+    disabledByAgent?: AgentUpdateOneWithoutBotExclusionsDisabledNestedInput
+  }
+
+  export type BotExclusionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionCreateManyInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationCreateInput = {
@@ -31001,6 +32473,12 @@ export namespace Prisma {
     none?: ConversationLabelWhereInput
   }
 
+  export type BotExclusionListRelationFilter = {
+    every?: BotExclusionWhereInput
+    some?: BotExclusionWhereInput
+    none?: BotExclusionWhereInput
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -31022,6 +32500,10 @@ export namespace Prisma {
   }
 
   export type ConversationLabelOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BotExclusionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -31124,6 +32606,78 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrder
   }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type AgentNullableRelationFilter = {
+    is?: AgentWhereInput | null
+    isNot?: AgentWhereInput | null
+  }
+
+  export type BotExclusionCountOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdByAgentId?: SortOrder
+    updatedByAgentId?: SortOrder
+    disabledAt?: SortOrder
+    disabledByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BotExclusionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdByAgentId?: SortOrder
+    updatedByAgentId?: SortOrder
+    disabledAt?: SortOrder
+    disabledByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BotExclusionMinOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdByAgentId?: SortOrder
+    updatedByAgentId?: SortOrder
+    disabledAt?: SortOrder
+    disabledByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
   export type JsonNullableFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -31147,25 +32701,9 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type ContactRelationFilter = {
     is?: ContactWhereInput
     isNot?: ContactWhereInput
-  }
-
-  export type AgentNullableRelationFilter = {
-    is?: AgentWhereInput | null
-    isNot?: AgentWhereInput | null
   }
 
   export type FlowRevisionNullableRelationFilter = {
@@ -31279,20 +32817,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type ConversationRelationFilter = {
@@ -32617,6 +34141,27 @@ export namespace Prisma {
     connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
   }
 
+  export type BotExclusionCreateNestedManyWithoutCreatedByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput> | BotExclusionCreateWithoutCreatedByAgentInput[] | BotExclusionUncheckedCreateWithoutCreatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutCreatedByAgentInput | BotExclusionCreateOrConnectWithoutCreatedByAgentInput[]
+    createMany?: BotExclusionCreateManyCreatedByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+  }
+
+  export type BotExclusionCreateNestedManyWithoutUpdatedByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput> | BotExclusionCreateWithoutUpdatedByAgentInput[] | BotExclusionUncheckedCreateWithoutUpdatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutUpdatedByAgentInput | BotExclusionCreateOrConnectWithoutUpdatedByAgentInput[]
+    createMany?: BotExclusionCreateManyUpdatedByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+  }
+
+  export type BotExclusionCreateNestedManyWithoutDisabledByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput> | BotExclusionCreateWithoutDisabledByAgentInput[] | BotExclusionUncheckedCreateWithoutDisabledByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutDisabledByAgentInput | BotExclusionCreateOrConnectWithoutDisabledByAgentInput[]
+    createMany?: BotExclusionCreateManyDisabledByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -32705,6 +34250,27 @@ export namespace Prisma {
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutAddedByAgentInput | ConversationLabelCreateOrConnectWithoutAddedByAgentInput[]
     createMany?: ConversationLabelCreateManyAddedByAgentInputEnvelope
     connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
+  export type BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput> | BotExclusionCreateWithoutCreatedByAgentInput[] | BotExclusionUncheckedCreateWithoutCreatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutCreatedByAgentInput | BotExclusionCreateOrConnectWithoutCreatedByAgentInput[]
+    createMany?: BotExclusionCreateManyCreatedByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+  }
+
+  export type BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput> | BotExclusionCreateWithoutUpdatedByAgentInput[] | BotExclusionUncheckedCreateWithoutUpdatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutUpdatedByAgentInput | BotExclusionCreateOrConnectWithoutUpdatedByAgentInput[]
+    createMany?: BotExclusionCreateManyUpdatedByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+  }
+
+  export type BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput = {
+    create?: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput> | BotExclusionCreateWithoutDisabledByAgentInput[] | BotExclusionUncheckedCreateWithoutDisabledByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutDisabledByAgentInput | BotExclusionCreateOrConnectWithoutDisabledByAgentInput[]
+    createMany?: BotExclusionCreateManyDisabledByAgentInputEnvelope
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -32899,6 +34465,48 @@ export namespace Prisma {
     deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
   }
 
+  export type BotExclusionUpdateManyWithoutCreatedByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput> | BotExclusionCreateWithoutCreatedByAgentInput[] | BotExclusionUncheckedCreateWithoutCreatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutCreatedByAgentInput | BotExclusionCreateOrConnectWithoutCreatedByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutCreatedByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutCreatedByAgentInput[]
+    createMany?: BotExclusionCreateManyCreatedByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutCreatedByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutCreatedByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutCreatedByAgentInput | BotExclusionUpdateManyWithWhereWithoutCreatedByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
+  export type BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput> | BotExclusionCreateWithoutUpdatedByAgentInput[] | BotExclusionUncheckedCreateWithoutUpdatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutUpdatedByAgentInput | BotExclusionCreateOrConnectWithoutUpdatedByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutUpdatedByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutUpdatedByAgentInput[]
+    createMany?: BotExclusionCreateManyUpdatedByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutUpdatedByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutUpdatedByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutUpdatedByAgentInput | BotExclusionUpdateManyWithWhereWithoutUpdatedByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
+  export type BotExclusionUpdateManyWithoutDisabledByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput> | BotExclusionCreateWithoutDisabledByAgentInput[] | BotExclusionUncheckedCreateWithoutDisabledByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutDisabledByAgentInput | BotExclusionCreateOrConnectWithoutDisabledByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutDisabledByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutDisabledByAgentInput[]
+    createMany?: BotExclusionCreateManyDisabledByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutDisabledByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutDisabledByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutDisabledByAgentInput | BotExclusionUpdateManyWithWhereWithoutDisabledByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput = {
     create?: XOR<ConversationCreateWithoutAssignedAgentInput, ConversationUncheckedCreateWithoutAssignedAgentInput> | ConversationCreateWithoutAssignedAgentInput[] | ConversationUncheckedCreateWithoutAssignedAgentInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutAssignedAgentInput | ConversationCreateOrConnectWithoutAssignedAgentInput[]
@@ -33077,6 +34685,48 @@ export namespace Prisma {
     deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
   }
 
+  export type BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput> | BotExclusionCreateWithoutCreatedByAgentInput[] | BotExclusionUncheckedCreateWithoutCreatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutCreatedByAgentInput | BotExclusionCreateOrConnectWithoutCreatedByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutCreatedByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutCreatedByAgentInput[]
+    createMany?: BotExclusionCreateManyCreatedByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutCreatedByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutCreatedByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutCreatedByAgentInput | BotExclusionUpdateManyWithWhereWithoutCreatedByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
+  export type BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput> | BotExclusionCreateWithoutUpdatedByAgentInput[] | BotExclusionUncheckedCreateWithoutUpdatedByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutUpdatedByAgentInput | BotExclusionCreateOrConnectWithoutUpdatedByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutUpdatedByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutUpdatedByAgentInput[]
+    createMany?: BotExclusionCreateManyUpdatedByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutUpdatedByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutUpdatedByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutUpdatedByAgentInput | BotExclusionUpdateManyWithWhereWithoutUpdatedByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
+  export type BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput = {
+    create?: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput> | BotExclusionCreateWithoutDisabledByAgentInput[] | BotExclusionUncheckedCreateWithoutDisabledByAgentInput[]
+    connectOrCreate?: BotExclusionCreateOrConnectWithoutDisabledByAgentInput | BotExclusionCreateOrConnectWithoutDisabledByAgentInput[]
+    upsert?: BotExclusionUpsertWithWhereUniqueWithoutDisabledByAgentInput | BotExclusionUpsertWithWhereUniqueWithoutDisabledByAgentInput[]
+    createMany?: BotExclusionCreateManyDisabledByAgentInputEnvelope
+    set?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    disconnect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    delete?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    connect?: BotExclusionWhereUniqueInput | BotExclusionWhereUniqueInput[]
+    update?: BotExclusionUpdateWithWhereUniqueWithoutDisabledByAgentInput | BotExclusionUpdateWithWhereUniqueWithoutDisabledByAgentInput[]
+    updateMany?: BotExclusionUpdateManyWithWhereWithoutDisabledByAgentInput | BotExclusionUpdateManyWithWhereWithoutDisabledByAgentInput[]
+    deleteMany?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+  }
+
   export type RolePermissionCreateactionsInput = {
     set: string[]
   }
@@ -33168,6 +34818,58 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type AgentCreateNestedOneWithoutBotExclusionsCreatedInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsCreatedInput, AgentUncheckedCreateWithoutBotExclusionsCreatedInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsCreatedInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutBotExclusionsUpdatedInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsUpdatedInput, AgentUncheckedCreateWithoutBotExclusionsUpdatedInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsUpdatedInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutBotExclusionsDisabledInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsDisabledInput, AgentUncheckedCreateWithoutBotExclusionsDisabledInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsDisabledInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type AgentUpdateOneWithoutBotExclusionsCreatedNestedInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsCreatedInput, AgentUncheckedCreateWithoutBotExclusionsCreatedInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsCreatedInput
+    upsert?: AgentUpsertWithoutBotExclusionsCreatedInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutBotExclusionsCreatedInput, AgentUpdateWithoutBotExclusionsCreatedInput>, AgentUncheckedUpdateWithoutBotExclusionsCreatedInput>
+  }
+
+  export type AgentUpdateOneWithoutBotExclusionsUpdatedNestedInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsUpdatedInput, AgentUncheckedCreateWithoutBotExclusionsUpdatedInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsUpdatedInput
+    upsert?: AgentUpsertWithoutBotExclusionsUpdatedInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutBotExclusionsUpdatedInput, AgentUpdateWithoutBotExclusionsUpdatedInput>, AgentUncheckedUpdateWithoutBotExclusionsUpdatedInput>
+  }
+
+  export type AgentUpdateOneWithoutBotExclusionsDisabledNestedInput = {
+    create?: XOR<AgentCreateWithoutBotExclusionsDisabledInput, AgentUncheckedCreateWithoutBotExclusionsDisabledInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsDisabledInput
+    upsert?: AgentUpsertWithoutBotExclusionsDisabledInput
+    disconnect?: AgentWhereInput | boolean
+    delete?: AgentWhereInput | boolean
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutBotExclusionsDisabledInput, AgentUpdateWithoutBotExclusionsDisabledInput>, AgentUncheckedUpdateWithoutBotExclusionsDisabledInput>
   }
 
   export type ContactCreateNestedOneWithoutConversationsInput = {
@@ -33282,10 +34984,6 @@ export namespace Prisma {
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
     createMany?: ConversationLabelCreateManyConversationInputEnvelope
     connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type ContactUpdateOneRequiredWithoutConversationsNestedInput = {
@@ -34655,6 +36353,20 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -34676,20 +36388,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumMediaProviderFilter<$PrismaModel = never> = {
@@ -34919,6 +36617,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutDepartmentInput = {
@@ -34943,6 +36644,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutDepartmentInput = {
@@ -35839,6 +37543,114 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BotExclusionCreateWithoutCreatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    updatedByAgent?: AgentCreateNestedOneWithoutBotExclusionsUpdatedInput
+    disabledByAgent?: AgentCreateNestedOneWithoutBotExclusionsDisabledInput
+  }
+
+  export type BotExclusionUncheckedCreateWithoutCreatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionCreateOrConnectWithoutCreatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    create: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput>
+  }
+
+  export type BotExclusionCreateManyCreatedByAgentInputEnvelope = {
+    data: BotExclusionCreateManyCreatedByAgentInput | BotExclusionCreateManyCreatedByAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BotExclusionCreateWithoutUpdatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdByAgent?: AgentCreateNestedOneWithoutBotExclusionsCreatedInput
+    disabledByAgent?: AgentCreateNestedOneWithoutBotExclusionsDisabledInput
+  }
+
+  export type BotExclusionUncheckedCreateWithoutUpdatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionCreateOrConnectWithoutUpdatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    create: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput>
+  }
+
+  export type BotExclusionCreateManyUpdatedByAgentInputEnvelope = {
+    data: BotExclusionCreateManyUpdatedByAgentInput | BotExclusionCreateManyUpdatedByAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BotExclusionCreateWithoutDisabledByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdByAgent?: AgentCreateNestedOneWithoutBotExclusionsCreatedInput
+    updatedByAgent?: AgentCreateNestedOneWithoutBotExclusionsUpdatedInput
+  }
+
+  export type BotExclusionUncheckedCreateWithoutDisabledByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionCreateOrConnectWithoutDisabledByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    create: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput>
+  }
+
+  export type BotExclusionCreateManyDisabledByAgentInputEnvelope = {
+    data: BotExclusionCreateManyDisabledByAgentInput | BotExclusionCreateManyDisabledByAgentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DepartmentUpsertWithoutAgentsInput = {
     update: XOR<DepartmentUpdateWithoutAgentsInput, DepartmentUncheckedUpdateWithoutAgentsInput>
     create: XOR<DepartmentCreateWithoutAgentsInput, DepartmentUncheckedCreateWithoutAgentsInput>
@@ -36186,6 +37998,71 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ConversationLabel"> | Date | string
   }
 
+  export type BotExclusionUpsertWithWhereUniqueWithoutCreatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    update: XOR<BotExclusionUpdateWithoutCreatedByAgentInput, BotExclusionUncheckedUpdateWithoutCreatedByAgentInput>
+    create: XOR<BotExclusionCreateWithoutCreatedByAgentInput, BotExclusionUncheckedCreateWithoutCreatedByAgentInput>
+  }
+
+  export type BotExclusionUpdateWithWhereUniqueWithoutCreatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    data: XOR<BotExclusionUpdateWithoutCreatedByAgentInput, BotExclusionUncheckedUpdateWithoutCreatedByAgentInput>
+  }
+
+  export type BotExclusionUpdateManyWithWhereWithoutCreatedByAgentInput = {
+    where: BotExclusionScalarWhereInput
+    data: XOR<BotExclusionUpdateManyMutationInput, BotExclusionUncheckedUpdateManyWithoutCreatedByAgentInput>
+  }
+
+  export type BotExclusionScalarWhereInput = {
+    AND?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+    OR?: BotExclusionScalarWhereInput[]
+    NOT?: BotExclusionScalarWhereInput | BotExclusionScalarWhereInput[]
+    id?: StringFilter<"BotExclusion"> | string
+    phone?: StringFilter<"BotExclusion"> | string
+    label?: StringNullableFilter<"BotExclusion"> | string | null
+    reason?: StringNullableFilter<"BotExclusion"> | string | null
+    isActive?: BoolFilter<"BotExclusion"> | boolean
+    createdByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    updatedByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    disabledAt?: DateTimeNullableFilter<"BotExclusion"> | Date | string | null
+    disabledByAgentId?: StringNullableFilter<"BotExclusion"> | string | null
+    createdAt?: DateTimeFilter<"BotExclusion"> | Date | string
+    updatedAt?: DateTimeFilter<"BotExclusion"> | Date | string
+  }
+
+  export type BotExclusionUpsertWithWhereUniqueWithoutUpdatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    update: XOR<BotExclusionUpdateWithoutUpdatedByAgentInput, BotExclusionUncheckedUpdateWithoutUpdatedByAgentInput>
+    create: XOR<BotExclusionCreateWithoutUpdatedByAgentInput, BotExclusionUncheckedCreateWithoutUpdatedByAgentInput>
+  }
+
+  export type BotExclusionUpdateWithWhereUniqueWithoutUpdatedByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    data: XOR<BotExclusionUpdateWithoutUpdatedByAgentInput, BotExclusionUncheckedUpdateWithoutUpdatedByAgentInput>
+  }
+
+  export type BotExclusionUpdateManyWithWhereWithoutUpdatedByAgentInput = {
+    where: BotExclusionScalarWhereInput
+    data: XOR<BotExclusionUpdateManyMutationInput, BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentInput>
+  }
+
+  export type BotExclusionUpsertWithWhereUniqueWithoutDisabledByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    update: XOR<BotExclusionUpdateWithoutDisabledByAgentInput, BotExclusionUncheckedUpdateWithoutDisabledByAgentInput>
+    create: XOR<BotExclusionCreateWithoutDisabledByAgentInput, BotExclusionUncheckedCreateWithoutDisabledByAgentInput>
+  }
+
+  export type BotExclusionUpdateWithWhereUniqueWithoutDisabledByAgentInput = {
+    where: BotExclusionWhereUniqueInput
+    data: XOR<BotExclusionUpdateWithoutDisabledByAgentInput, BotExclusionUncheckedUpdateWithoutDisabledByAgentInput>
+  }
+
+  export type BotExclusionUpdateManyWithWhereWithoutDisabledByAgentInput = {
+    where: BotExclusionScalarWhereInput
+    data: XOR<BotExclusionUpdateManyMutationInput, BotExclusionUncheckedUpdateManyWithoutDisabledByAgentInput>
+  }
+
   export type ConversationCreateWithoutContactInput = {
     id?: string
     status?: string
@@ -36318,6 +38195,378 @@ export namespace Prisma {
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderContactInput>
   }
 
+  export type AgentCreateWithoutBotExclusionsCreatedInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutBotExclusionsCreatedInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutBotExclusionsCreatedInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutBotExclusionsCreatedInput, AgentUncheckedCreateWithoutBotExclusionsCreatedInput>
+  }
+
+  export type AgentCreateWithoutBotExclusionsUpdatedInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutBotExclusionsUpdatedInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutBotExclusionsUpdatedInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutBotExclusionsUpdatedInput, AgentUncheckedCreateWithoutBotExclusionsUpdatedInput>
+  }
+
+  export type AgentCreateWithoutBotExclusionsDisabledInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutBotExclusionsDisabledInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutBotExclusionsDisabledInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutBotExclusionsDisabledInput, AgentUncheckedCreateWithoutBotExclusionsDisabledInput>
+  }
+
+  export type AgentUpsertWithoutBotExclusionsCreatedInput = {
+    update: XOR<AgentUpdateWithoutBotExclusionsCreatedInput, AgentUncheckedUpdateWithoutBotExclusionsCreatedInput>
+    create: XOR<AgentCreateWithoutBotExclusionsCreatedInput, AgentUncheckedCreateWithoutBotExclusionsCreatedInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutBotExclusionsCreatedInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutBotExclusionsCreatedInput, AgentUncheckedUpdateWithoutBotExclusionsCreatedInput>
+  }
+
+  export type AgentUpdateWithoutBotExclusionsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutBotExclusionsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type AgentUpsertWithoutBotExclusionsUpdatedInput = {
+    update: XOR<AgentUpdateWithoutBotExclusionsUpdatedInput, AgentUncheckedUpdateWithoutBotExclusionsUpdatedInput>
+    create: XOR<AgentCreateWithoutBotExclusionsUpdatedInput, AgentUncheckedCreateWithoutBotExclusionsUpdatedInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutBotExclusionsUpdatedInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutBotExclusionsUpdatedInput, AgentUncheckedUpdateWithoutBotExclusionsUpdatedInput>
+  }
+
+  export type AgentUpdateWithoutBotExclusionsUpdatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutBotExclusionsUpdatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type AgentUpsertWithoutBotExclusionsDisabledInput = {
+    update: XOR<AgentUpdateWithoutBotExclusionsDisabledInput, AgentUncheckedUpdateWithoutBotExclusionsDisabledInput>
+    create: XOR<AgentCreateWithoutBotExclusionsDisabledInput, AgentUncheckedCreateWithoutBotExclusionsDisabledInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutBotExclusionsDisabledInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutBotExclusionsDisabledInput, AgentUncheckedUpdateWithoutBotExclusionsDisabledInput>
+  }
+
+  export type AgentUpdateWithoutBotExclusionsDisabledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutBotExclusionsDisabledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+  }
+
   export type ContactCreateWithoutConversationsInput = {
     id?: string
     phone: string
@@ -36388,6 +38637,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutConversationsInput = {
@@ -36412,6 +38664,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutConversationsInput = {
@@ -36818,6 +39073,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutConversationsInput = {
@@ -36842,6 +39100,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -37148,6 +39409,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutMessagesInput = {
@@ -37172,6 +39436,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutMessagesInput = {
@@ -37357,6 +39624,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutMessagesInput = {
@@ -37381,6 +39651,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type ContactUpsertWithoutMessageSendersInput = {
@@ -37556,6 +39829,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutAssignmentFromInput = {
@@ -37580,6 +39856,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutAssignmentFromInput = {
@@ -37609,6 +39888,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutAssignmentToInput = {
@@ -37633,6 +39915,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutAssignmentToInput = {
@@ -37662,6 +39947,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutAssignmentActorInput = {
@@ -37686,6 +39974,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutAssignmentActorInput = {
@@ -37787,6 +40078,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutAssignmentFromInput = {
@@ -37811,6 +40105,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUpsertWithoutAssignmentToInput = {
@@ -37846,6 +40143,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutAssignmentToInput = {
@@ -37870,6 +40170,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUpsertWithoutAssignmentActorInput = {
@@ -37905,6 +40208,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutAssignmentActorInput = {
@@ -37929,6 +40235,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type MessageCreateWithoutMediaInput = {
@@ -38323,6 +40632,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutAddedConversationLabelsInput = {
@@ -38347,6 +40659,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutAddedConversationLabelsInput = {
@@ -38479,6 +40794,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutAddedConversationLabelsInput = {
@@ -38503,6 +40821,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type FlowDefinitionCreateWithoutRevisionsInput = {
@@ -38550,6 +40871,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutPublishedFlowRevisionsInput = {
@@ -38574,6 +40898,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutPublishedFlowRevisionsInput = {
@@ -38801,6 +41128,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutPublishedFlowRevisionsInput = {
@@ -38825,6 +41155,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type FlowNodeUpsertWithWhereUniqueWithoutFlowRevisionInput = {
@@ -39807,6 +42140,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutOwnedShortcutsInput = {
@@ -39831,6 +42167,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutOwnedShortcutsInput = {
@@ -39860,6 +42199,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutCreatedShortcutsInput = {
@@ -39884,6 +42226,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutCreatedShortcutsInput = {
@@ -39913,6 +42258,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutUpdatedShortcutsInput = {
@@ -39937,6 +42285,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutUpdatedShortcutsInput = {
@@ -40036,6 +42387,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutOwnedShortcutsInput = {
@@ -40060,6 +42414,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUpsertWithoutCreatedShortcutsInput = {
@@ -40095,6 +42452,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutCreatedShortcutsInput = {
@@ -40119,6 +42479,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUpsertWithoutUpdatedShortcutsInput = {
@@ -40154,6 +42517,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutUpdatedShortcutsInput = {
@@ -40178,6 +42544,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type ShortcutAuditUpsertWithWhereUniqueWithoutShortcutInput = {
@@ -40257,6 +42626,9 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutShortcutAuditsInput = {
@@ -40281,6 +42653,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutShortcutAuditsInput = {
@@ -40366,6 +42741,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutShortcutAuditsInput = {
@@ -40390,6 +42768,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentCreateWithoutNotificationsInput = {
@@ -40414,6 +42795,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutNotificationsInput = {
@@ -40438,6 +42822,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutNotificationsInput = {
@@ -40533,6 +42920,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutNotificationsInput = {
@@ -40557,6 +42947,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type ConversationUpsertWithoutNotificationsInput = {
@@ -40642,6 +43035,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationCreateNestedManyWithoutAgentInput
     addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -40666,6 +43062,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
     addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
   }
 
   export type AgentCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -40706,6 +43105,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -40730,6 +43132,9 @@ export namespace Prisma {
     publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type ProcedureCreateManyDepartmentInput = {
@@ -40839,6 +43244,9 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateWithoutDepartmentInput = {
@@ -40863,6 +43271,9 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
     addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
   export type AgentUncheckedUpdateManyWithoutDepartmentInput = {
@@ -41192,6 +43603,45 @@ export namespace Prisma {
     conversationId: string
     labelId: string
     createdAt?: Date | string
+  }
+
+  export type BotExclusionCreateManyCreatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionCreateManyUpdatedByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    disabledAt?: Date | string | null
+    disabledByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotExclusionCreateManyDisabledByAgentInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    reason?: string | null
+    isActive?: boolean
+    createdByAgentId?: string | null
+    updatedByAgentId?: string | null
+    disabledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ConversationUpdateWithoutAssignedAgentInput = {
@@ -41694,6 +44144,123 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     labelId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUpdateWithoutCreatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedByAgent?: AgentUpdateOneWithoutBotExclusionsUpdatedNestedInput
+    disabledByAgent?: AgentUpdateOneWithoutBotExclusionsDisabledNestedInput
+  }
+
+  export type BotExclusionUncheckedUpdateWithoutCreatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUncheckedUpdateManyWithoutCreatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUpdateWithoutUpdatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdByAgent?: AgentUpdateOneWithoutBotExclusionsCreatedNestedInput
+    disabledByAgent?: AgentUpdateOneWithoutBotExclusionsDisabledNestedInput
+  }
+
+  export type BotExclusionUncheckedUpdateWithoutUpdatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disabledByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUpdateWithoutDisabledByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdByAgent?: AgentUpdateOneWithoutBotExclusionsCreatedNestedInput
+    updatedByAgent?: AgentUpdateOneWithoutBotExclusionsUpdatedNestedInput
+  }
+
+  export type BotExclusionUncheckedUpdateWithoutDisabledByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotExclusionUncheckedUpdateManyWithoutDisabledByAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    disabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationCreateManyContactInput = {
@@ -42781,6 +45348,10 @@ export namespace Prisma {
      * @deprecated Use ContactDefaultArgs instead
      */
     export type ContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ContactDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BotExclusionDefaultArgs instead
+     */
+    export type BotExclusionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BotExclusionDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ConversationDefaultArgs instead
      */

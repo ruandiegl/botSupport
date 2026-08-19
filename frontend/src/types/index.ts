@@ -191,6 +191,26 @@ export interface FlowDefinition {
   updatedAt: string;
 }
 
+export interface BotExclusion {
+  id: string;
+  phone: string;
+  label: string | null;
+  reason: string | null;
+  isActive: boolean;
+  disabledAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  createdByAgentId?: string | null;
+}
+
+export interface BotExclusionListResponse {
+  items: BotExclusion[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export type FlowRevisionStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 export type FlowNodeType = "ENTRY" | "MESSAGE" | "DECISION" | "ROUTE" | "TRIAGE" | "HANDOFF" | "END";
 

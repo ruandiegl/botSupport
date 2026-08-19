@@ -84,3 +84,12 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 - Mídias `viewOnce`, com `downloadError`, expiradas ou removidas antecipadamente recebem estados claros e não interrompem o restante do chamado.
 - Acesso segue o mesmo escopo da conversa: administrador/supervisor, atendente atribuído ou atendente do departamento enquanto o chamado estiver na fila.
 - Ao completar `expiresAt`, o acesso retorna `410`, as URLs cifradas são eliminadas e somente metadados mínimos permanecem no histórico.
+## Contatos excluídos das respostas automáticas
+
+Administradores podem cadastrar números que não devem receber respostas do bot, evitando loops com outros bots ou integrações. A regra é uma exclusão lógica e reversível: mensagens recebidas, contatos e chamados continuam no histórico para acompanhamento humano.
+
+- O número é normalizado para dígitos e identificado pelo remetente real; em grupos, usa o participante, nunca o JID do grupo.
+- O bloqueio ocorre no servidor antes da saudação, menu, triagem, confirmação de menção, fallback ou lembrete de inatividade.
+- O atendente continua podendo assumir o chamado e enviar mensagens manuais.
+- A tela `/admin/bot-exclusions` é protegida por RBAC (`bot_exclusions:view/create/update/delete`) e usa componentes shadcn.
+- Desativar uma regra não dispara mensagem retroativa; a próxima mensagem volta a seguir o fluxo normal.

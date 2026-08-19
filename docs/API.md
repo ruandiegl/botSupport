@@ -331,6 +331,17 @@ As rotas exigem autenticação e permissões no recurso `labels`. Etiquetas de s
 
 `GET /conversations` aceita `labelIds=uuid,uuid` (máximo 20) e combina o filtro com status, departamento, busca e período. Os itens da fila e o detalhe incluem `labels[]` e `groupChatName`; JIDs de participantes nunca são retornados.
 
+## Exclusões de respostas automáticas do bot
+
+As rotas exigem Bearer JWT e permissões no recurso `bot_exclusions`. Por padrão, somente ADMIN possui essas permissões; elas podem ser concedidas pelo RBAC sem alteração de schema.
+
+- `GET /bot-exclusions?q=&activeOnly=false&page=1&limit=100`: lista regras de bloqueio. O telefone retornado contém somente dígitos canônicos, nunca credenciais ou dados de mensagens (`bot_exclusions:view`).
+- `POST /bot-exclusions`: cria uma regra com `{ "phone": "+55 (24) 99999-9999", "label": "Bot de testes", "reason": "Evitar loop" }` (`bot_exclusions:create`). O número é normalizado antes da unicidade.
+- `PATCH /bot-exclusions/:id`: altera identificação, motivo ou `{ "isActive": false }` (`bot_exclusions:update`).
+- `DELETE /bot-exclusions/:id`: desativa a regra de forma lógica, preservando auditoria (`bot_exclusions:delete`).
+
+Uma exclusão ativa é uma barreira server-side apenas para entregas automatizadas: saudação, botões, triagem, confirmação de grupo, fallback textual e mensagens de inatividade são suprimidos. O webhook continua persistindo `Contact`, `Conversation` e `Message`, e o atendente ainda pode enviar mensagens manualmente. O matching usa o número do participante em grupos, não o JID do grupo, nome ou texto da mensagem.
+
 ## Identidade e delegação de chamados
 
 Mensagens em `GET /conversations/:id` e `GET /conversations/:id/messages` incluem `senderName`, `senderDepartmentName` (quando agente) e `senderContactId` opcional. Esses campos representam o remetente da mensagem, não o responsável atual.

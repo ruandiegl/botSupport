@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   MessagesSquare,
   Tags,
+  ShieldOff,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
@@ -125,6 +126,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     { href: "/admin/agents", label: "Atendentes", icon: Users },
     { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
     { href: "/admin/labels", label: "Etiquetas", icon: Tags },
+    { href: "/admin/bot-exclusions", label: "Contatos ignorados pelo bot", icon: ShieldOff },
     { href: "/admin/flow", label: "Fluxo do bot", icon: Bot },
     { href: "/admin/zapi", label: "Conexão Z-API", icon: Radio },
     { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
@@ -137,6 +139,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location.includes("agents")) return "Atendentes";
     if (location.includes("shortcuts")) return "Atalhos e procedimentos";
     if (location.includes("labels")) return "Etiquetas";
+    if (location.includes("bot-exclusions")) return "Contatos ignorados pelo bot";
     if (location.includes("flow")) return "Fluxo do bot";
     if (location.includes("zapi")) return "Conexão Z-API";
     if (location.includes("rbac")) return "Controle de Acesso (RBAC)";
@@ -151,6 +154,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location.includes("agents")) return "/admin/agents";
     if (location.includes("shortcuts")) return "/admin/shortcuts";
     if (location.includes("labels")) return "/admin/labels";
+    if (location.includes("bot-exclusions")) return "/admin/bot-exclusions";
     if (location.includes("flow")) return "/admin/flow";
     if (location.includes("zapi")) return "/admin/zapi";
     if (location.includes("rbac")) return "/admin/rbac";

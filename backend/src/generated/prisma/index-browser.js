@@ -164,6 +164,20 @@ exports.Prisma.ContactScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.BotExclusionScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  label: 'label',
+  reason: 'reason',
+  isActive: 'isActive',
+  createdByAgentId: 'createdByAgentId',
+  updatedByAgentId: 'updatedByAgentId',
+  disabledAt: 'disabledAt',
+  disabledByAgentId: 'disabledByAgentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ConversationScalarFieldEnum = {
   id: 'id',
   contactId: 'contactId',
@@ -473,6 +487,7 @@ exports.Prisma.ModelName = {
   Agent: 'Agent',
   RolePermission: 'RolePermission',
   Contact: 'Contact',
+  BotExclusion: 'BotExclusion',
   Conversation: 'Conversation',
   Message: 'Message',
   ConversationAssignment: 'ConversationAssignment',

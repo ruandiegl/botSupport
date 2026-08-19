@@ -21,6 +21,7 @@ const screenLabels: Record<string, string> = {
   "/admin/flow": "Fluxo do Bot WhatsApp",
   "/admin/zapi": "Conexão com Z-API",
   "/admin/rbac": "Controle de Acesso (RBAC)",
+  "/admin/bot-exclusions": "Contatos ignorados pelo bot",
 };
 
 const resourceLabels: Record<string, string> = {
@@ -32,6 +33,7 @@ const resourceLabels: Record<string, string> = {
   flow: "Fluxo do Bot WhatsApp",
   zapi: "Conexão Z-API",
   rbac: "Permissões RBAC",
+  bot_exclusions: "Contatos ignorados pelo bot",
 };
 
 const permissionActions = ["view", "create", "update", "delete", "delegate", "publish", "use"] as const;
