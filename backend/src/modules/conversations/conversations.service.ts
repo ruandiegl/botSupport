@@ -413,7 +413,6 @@ export class ConversationsService {
   async sendMessage(id: string, rawContent: string, user?: AuthenticatedRequest["user"]) {
     const conversation = await conversationsRepository.findAccessById(id);
     if (!conversation || !this.canAccess(conversation, user) || !user) return { kind: "NOT_FOUND" as const };
-    if (conversation.status === "CLOSED") return { kind: "CLOSED" as const };
 
     const agent = await conversationsRepository.findAgentById(user.id);
     if (!agent || !agent.isActive) return { kind: "AGENT_UNAVAILABLE" as const };

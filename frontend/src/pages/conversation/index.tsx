@@ -360,14 +360,12 @@ export default function ConversationPage() {
           ))}
         </div>
 
-        {conversation.status === "CLOSED" ? (
-          <div className="composer" role="status">
-            <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-              Este chamado está encerrado. Quando o cliente enviar uma nova mensagem, um novo atendimento será iniciado.
+        <div className="composer">
+          {conversation.status === "CLOSED" ? (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="status">
+              Este chamado está encerrado, mas você ainda pode enviar uma mensagem para o cliente.
             </div>
-          </div>
-        ) : (
-          <div className="composer">
+          ) : null}
           {can("shortcuts", "use") && (
             <div className="composer-toolbar">
               <ShortcutPicker 
@@ -409,7 +407,6 @@ export default function ConversationPage() {
             </Button>
           </div>
         </div>
-        )}
       </section>
 
       <DetailPanel

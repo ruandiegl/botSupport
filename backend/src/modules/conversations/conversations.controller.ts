@@ -184,9 +184,6 @@ export class ConversationsController {
       case "NOT_FOUND":
         res.status(404).json({ error: "Conversa não encontrada ou sem acesso" });
         return;
-      case "CLOSED":
-        res.status(409).json({ error: "Este chamado já foi encerrado. Aguarde uma nova mensagem do cliente para iniciar outro atendimento." });
-        return;
       case "AGENT_UNAVAILABLE":
         res.status(403).json({ error: "Seu usuário não está disponível para enviar mensagens." });
         return;
