@@ -322,6 +322,7 @@ function normalizeMentionName(value: string) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, "")
+    .replace(/\p{Cf}/gu, "")
     .trim()
     .replace(/\s+/g, " ")
     .toLowerCase();
@@ -345,10 +346,10 @@ function hasTextMentionAlias(payload: any, aliases: string[]): boolean {
         .split(" ")
         .filter(Boolean)
         .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-        .join("\\s+");
+        .join("[^a-z0-9]+");
       // Z-API/WhatsApp may render the mention as @Name, @~Name or with
       // invisible spacing between the marker and the display name.
-      return new RegExp(`(^|\\s)@(?:~\\s*)?${escaped}(?=$|[\\s,.;:!?])`, "i").test(text);
+      return new RegExp(`(?:^|[^a-z0-9])@[^a-z0-9]*${escaped}(?=$|[^a-z0-9])`, "i").test(text);
     }),
   );
 }
@@ -816,13 +817,22 @@ export class ZApiService {
       if (!instancePhone && !mentionAliases.length) return { status: "ignored_instance_identity_unavailable" };
       if (!isInstanceMentioned(payload, instancePhone, mentionAliases)) {
         const textCandidates = incomingTextCandidates(payload);
+        const normalizedTexts = textCandidates.map(normalizeMentionName);
+        const aliasTextMatch = hasTextMentionAlias(payload, mentionAliases);
+        const exactAliasMatch = hasExactBareAlias(payload, mentionAliases);
+        const numericTextMatch = instancePhone ? hasTextMentionTarget(payload, instancePhone) : false;
         logger.info(
           {
             externalEventId: payload.messageId,
+            fromMe: payload.fromMe === true,
             mentionMetadataCount: mentions.length,
             textCandidateCount: textCandidates.length,
             hasAtSign: textCandidates.some((text) => text.includes("@")),
             hasNumericAtTarget: textCandidates.some((text) => /@[+\d][\d\s().-]{6,}\d/.test(text)),
+            aliasTextMatch,
+            exactAliasMatch,
+            numericTextMatch,
+            hasSupportToken: normalizedTexts.some((text) => text.includes("suporte")),
             aliasCount: mentionAliases.length,
           },
           "Menção de grupo não reconhecida",
