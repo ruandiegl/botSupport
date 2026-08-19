@@ -28,5 +28,18 @@ export const resetPasswordSchema = z.object({
 
 export const statusSchema = z.object({ isActive: z.boolean() }).strict();
 
+const queryBoolean = z.preprocess((value) => {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return value;
+}, z.boolean());
+
+export const agentWorkloadQuerySchema = z.object({
+  departmentId: z.string().uuid("Departamento inválido").optional(),
+  includeOffline: queryBoolean.default(true),
+  limit: z.coerce.number().int().min(1).max(100).default(100),
+}).strict();
+
 export type CreateAgentInput = z.infer<typeof createAgentSchema>;
 export type UpdateAgentInput = z.infer<typeof updateAgentSchema>;
+export type AgentWorkloadQuery = z.infer<typeof agentWorkloadQuerySchema>;

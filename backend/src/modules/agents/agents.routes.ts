@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { agentsController } from "./agents.controller.js";
 import { authMiddleware, requirePermission, requireRole } from "../auth/auth.middleware.js";
+import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 
 const router = Router();
 
 router.get("/agents", authMiddleware, requirePermission("agents", "view"), (req, res) => agentsController.list(req, res));
+router.get("/agents/workload", authMiddleware, requirePermission("queue", "view_all"), (req, res) => agentsController.workload(req as AuthenticatedRequest, res));
 router.post("/agents", authMiddleware, requireRole(["ADMIN"]), (req, res) => agentsController.create(req, res));
 router.patch("/agents/:id", authMiddleware, requireRole(["ADMIN"]), (req, res) => agentsController.update(req, res));
 router.post("/agents/:id/reset-password", authMiddleware, requireRole(["ADMIN"]), (req, res) => agentsController.resetPassword(req, res));

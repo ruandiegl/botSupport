@@ -67,6 +67,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       conversationRefreshTimer.current = null;
       void queryClient.invalidateQueries({ queryKey: ["conversations"] });
       void queryClient.invalidateQueries({ queryKey: ["conversation-counts"] });
+      void queryClient.invalidateQueries({ queryKey: ["agent-workload"] });
     }, 100);
   }, [queryClient]);
   useEffect(() => () => {
@@ -74,6 +75,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }, []);
   const refreshAgents = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: ["agents"] });
+    void queryClient.invalidateQueries({ queryKey: ["agent-workload"] });
   }, [queryClient]);
   useSocketEvent("conversation:updated", refreshConversations);
   useSocketEvent("conversation:labels_updated", refreshConversations);

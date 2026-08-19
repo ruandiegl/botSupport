@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { Headphones, MessageCircle, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
+import { MessageCircle, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
+import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { useListAgents, useListConversations, useListDepartments, type ConversationFilters } from "./hooks/use-queue";
+import { useListConversations, useListDepartments, type ConversationFilters } from "./hooks/use-queue";
 import { ConversationRow } from "./components/ConversationRow";
 import { QueueCard } from "./components/QueueCard";
 import { DateRangeFilter, type DateRangeValue } from "./components/DateRangeFilter";
 import { LabelFilter } from "./components/LabelFilter";
+import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -41,6 +43,7 @@ type MetricFilter = "OPEN" | "IN_PROGRESS" | "ALL" | "CLOSED";
 export default function QueuePage(props?: { onlyMine?: boolean } & Record<string, unknown>) {
   const onlyMine = props?.onlyMine ?? false;
   const { activeAgent } = useActiveAgent();
+  const { can } = useAuth();
   const currentAgentId = activeAgent?.id || "";
   // The initial operational view excludes CLOSED conversations.  The status
   // select can still opt into the complete history explicitly.
@@ -79,7 +82,6 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   };
   const { data: result, isLoading, isError, refetch } = useListConversations(filters);
   const { data: departments } = useListDepartments();
-  const { data: agents = [] } = useListAgents();
 
   const all = result?.items ?? [];
   const locallyFiltered = useMemo(() => all.filter((item) => {
@@ -116,8 +118,6 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
   const allConversationCount = metricCounts.open + metricCounts.inProgress;
-  const onlineAgents = agents.filter((agent) => agent.isOnline);
-  const onlineNames = onlineAgents.map((agent) => agent.name).join(", ");
   const departmentLabel = department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
 
   return (
@@ -158,7 +158,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
             {total > 0 ? <div className="conversation-pagination"><span className="subtle">Exibindo {firstVisible}–{lastVisible} de {total}</span><Pagination className="sm:w-auto sm:justify-end"><PaginationContent><PaginationItem><PaginationPrevious href="#" aria-disabled={currentPage === 1} tabIndex={currentPage === 1 ? -1 : 0} className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.max(1, page - 1)); }} /></PaginationItem>{Array.from({ length: Math.min(totalPages, 7) }, (_, index) => index + 1).map((page) => <PaginationItem key={page}><PaginationLink href="#" isActive={page === currentPage} aria-label={`Ir para a página ${page}`} onClick={(event) => { event.preventDefault(); setCurrentPage(page); }}>{page}</PaginationLink></PaginationItem>)}<PaginationItem><PaginationNext href="#" aria-disabled={currentPage === totalPages} tabIndex={currentPage === totalPages ? -1 : 0} className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.min(totalPages, page + 1)); }} /></PaginationItem></PaginationContent></Pagination></div> : null}
           </QueryState>
         </div>
-        <div className="right-stack"><QueueCard conversations={all} fixedCounts={metricCounts} /><div className="panel service-card"><div className="service-icon"><Headphones size={16} /></div><div><h3>Plantão de suporte</h3><p>{onlineAgents.length > 0 ? `${onlineAgents.length} atendente(s) online: ${onlineNames}` : "Nenhum atendente online no momento."}</p></div></div></div>
+        <div className="right-stack"><AgentWorkloadCard enabled={can("queue", "view_all")} /><QueueCard conversations={all} fixedCounts={metricCounts} /></div>
       </div>
     </div>
   );

@@ -1,8 +1,63 @@
 import bcrypt from "bcryptjs";
 import { agentsRepository } from "./agents.repository.js";
-import type { CreateAgentInput, UpdateAgentInput } from "./agents.schemas.js";
+import type { AgentWorkloadQuery, CreateAgentInput, UpdateAgentInput } from "./agents.schemas.js";
 
 export class AgentsService {
+  async workload(query: AgentWorkloadQuery, actor: { id: string; role: string; departmentId?: string | null }) {
+    if (actor.role === "AGENT") {
+      const error = new Error("A visão da carga está disponível para supervisores e administradores.");
+      error.name = "WORKLOAD_FORBIDDEN";
+      throw error;
+    }
+
+    if (actor.role === "SUPERVISOR" && !actor.departmentId) {
+      return {
+        items: [],
+        totals: { agents: 0, online: 0, offline: 0, activeConversations: 0 },
+        generatedAt: new Date().toISOString(),
+      };
+    }
+
+    const departmentId = actor.role === "SUPERVISOR"
+      ? actor.departmentId ?? null
+      : query.departmentId ?? null;
+    const result = await agentsRepository.findWorkload({
+      departmentId,
+      includeOffline: query.includeOffline,
+      limit: query.limit,
+    });
+    const countByPresence = (online: boolean) => result.totals.find((item) => item.isOnline === online)?._count._all ?? 0;
+
+    return {
+      items: result.agents.map((agent) => ({
+        id: agent.id,
+        name: agent.name,
+        role: agent.role,
+        departmentId: agent.departmentId,
+        departmentName: agent.department?.name ?? null,
+        isOnline: agent.isOnline,
+        isActive: agent.isActive,
+        activeConversationCount: agent.conversations.length,
+        conversations: agent.conversations.map((conversation) => ({
+          id: conversation.id,
+          contactName: conversation.contact.name,
+          departmentName: conversation.department?.name ?? null,
+          status: conversation.status,
+          unreadCount: conversation._count.messages,
+          startedAt: conversation.startedAt,
+          lastActivityAt: conversation.lastActivityAt,
+        })),
+      })),
+      totals: {
+        agents: result.totals.reduce((sum, item) => sum + item._count._all, 0),
+        online: countByPresence(true),
+        offline: countByPresence(false),
+        activeConversations: result.activeConversations,
+      },
+      generatedAt: new Date().toISOString(),
+    };
+  }
+
   private formatAgent(agent: {
     id: string; name: string; email: string; role: string; isOnline: boolean; isActive: boolean;
     departmentId: string | null; department?: { name: string } | null;

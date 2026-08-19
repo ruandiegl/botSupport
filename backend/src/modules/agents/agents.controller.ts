@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { agentsService } from "./agents.service.js";
-import { agentIdSchema, createAgentSchema, resetPasswordSchema, updateAgentSchema } from "./agents.schemas.js";
+import { agentIdSchema, agentWorkloadQuerySchema, createAgentSchema, resetPasswordSchema, updateAgentSchema } from "./agents.schemas.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 
 function getParam(req: Request, key: string): string {
@@ -9,6 +9,20 @@ function getParam(req: Request, key: string): string {
 }
 
 export class AgentsController {
+  async workload(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const query = agentWorkloadQuerySchema.parse(req.query);
+      const user = req.user!;
+      res.json(await agentsService.workload(query, user));
+    } catch (err: any) {
+      if (err?.name === "WORKLOAD_FORBIDDEN") {
+        res.status(403).json({ error: err.message });
+        return;
+      }
+      res.status(400).json({ error: err.message || "Não foi possível carregar a carga dos atendentes." });
+    }
+  }
+
   async list(_req: Request, res: Response): Promise<void> {
     const agents = await agentsService.list();
     res.json(agents);

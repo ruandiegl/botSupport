@@ -176,6 +176,39 @@ export interface Agent {
   departmentName?: string | null;
 }
 
+export interface AssignedConversationSummary {
+  id: string;
+  contactName: string;
+  departmentName: string | null;
+  status: ConversationStatus;
+  unreadCount: number;
+  startedAt: string;
+  lastActivityAt: string;
+}
+
+export interface AgentWorkloadItem {
+  id: string;
+  name: string;
+  role: AgentRole;
+  departmentId: string | null;
+  departmentName: string | null;
+  isOnline: boolean;
+  isActive: boolean;
+  activeConversationCount: number;
+  conversations: AssignedConversationSummary[];
+}
+
+export interface AgentWorkloadResponse {
+  items: AgentWorkloadItem[];
+  totals: {
+    agents: number;
+    online: number;
+    offline: number;
+    activeConversations: number;
+  };
+  generatedAt: string;
+}
+
 export interface FlowOption {
   label: string;
   departmentId: string;

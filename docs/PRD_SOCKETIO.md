@@ -166,6 +166,13 @@ io.use(async (socket, next) => {
 
 ## 6. Requisitos Funcionais
 
+### RF-00A — Presença e carga da equipe
+
+- O cartão operacional de atendentes consome `GET /api/agents/workload` uma vez e usa Socket.IO para invalidar a consulta quando `agent:status` ou `conversation:updated` indicar mudança de presença, atribuição, transferência ou encerramento.
+- A presença é derivada de `Agent.isOnline`, atualizada no handshake/desconexão com debounce. A interface apresenta verde para online e vermelho para offline.
+- O endpoint retorna somente resumos de chamados `IN_PROGRESS` agrupados pelo responsável; não transmite histórico, mídia, telefone completo ou credenciais.
+- O escopo é validado no servidor: administradores veem todos os departamentos e supervisores somente o departamento do próprio perfil.
+
 ### RF-00 â€” SincronizaÃ§Ã£o incremental
 
 - A fila deve receber somente o resumo da conversa, sem histÃ³rico integral ou URLs de mÃ­dia.

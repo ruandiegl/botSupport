@@ -131,6 +131,43 @@ Remove um departamento.
 ### `GET /agents`
 Lista todos os atendentes e os status de presença e ativação. Requer permissão `agents:view`.
 
+### `GET /agents/workload`
+Retorna a presença da equipe e os chamados em atendimento agrupados por atendente. Requer `queue:view_all`.
+
+Query opcional: `departmentId` (UUID, somente para escopos autorizados), `includeOffline` (`true`/`false`, padrão `true`) e `limit` (1–100, padrão 100). Administradores podem consultar todos os departamentos; supervisores ficam limitados ao departamento do próprio perfil. O endpoint não aceita um `agentId` para ampliar o escopo.
+
+```json
+{
+  "items": [
+    {
+      "id": "uuid",
+      "name": "Administrador Sistema",
+      "role": "ADMIN",
+      "departmentId": "uuid",
+      "departmentName": "Suporte Geral",
+      "isOnline": true,
+      "isActive": true,
+      "activeConversationCount": 1,
+      "conversations": [
+        {
+          "id": "uuid",
+          "contactName": "João Marcos",
+          "departmentName": "Suporte Geral",
+          "status": "IN_PROGRESS",
+          "unreadCount": 0,
+          "startedAt": "2026-08-19T14:45:00.000Z",
+          "lastActivityAt": "2026-08-19T15:10:00.000Z"
+        }
+      ]
+    }
+  ],
+  "totals": { "agents": 1, "online": 1, "offline": 0, "activeConversations": 1 },
+  "generatedAt": "2026-08-19T15:10:01.000Z"
+}
+```
+
+Somente agentes ativos são listados. Os chamados são filtrados por `status=IN_PROGRESS` e responsável preenchido, ordenados por atividade recente. A resposta não inclui mensagens, mídias, telefones completos, URLs temporárias ou credenciais.
+
 ### `POST /agents`
 Cria atendente. Requer `ADMIN`. Body: `name`, `email`, `password` (mínimo 8), `role` e `departmentId` opcional.
 
