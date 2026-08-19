@@ -436,7 +436,7 @@ h3 { font-size: 14px; }
 @media (max-width: 420px) {
   .stats { grid-template-columns: 1fr; }
   .stat { min-height: auto; }
-  .crumb > span, .crumb > svg { display: none; }
+  .crumb > .crumb-link:first-of-type, .crumb > svg { display: none; }
   .top-actions .btn { font-size: 0 !important; width: 34px; padding: 0 !important; }
 }
 
@@ -496,6 +496,9 @@ body { color: #0d1b2e; }
 
 .topbar { background: rgba(255, 255, 255, .94); border-color: #d8e1ea; }
 .crumb { color: #7b8fa3; }
+.crumb-link { color: #71869a; text-decoration: none; transition: color .15s ease; }
+.crumb-link:hover { color: #2d89c8; text-decoration: underline; text-underline-offset: 3px; }
+.crumb-link.current { color: #0d1b2e; font-weight: 700; }
 .crumb strong, h1, h2, h3 { color: #0d1b2e; }
 .icon-btn { color: #526b80; border-color: transparent; }
 .icon-btn:hover { color: #0d1b2e; background: #edf3f7; border-color: #d8e1ea; }

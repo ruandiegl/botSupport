@@ -194,13 +194,14 @@ export class ConversationsRepository {
           },
         }
       : {};
+    const scopedWhere = { ...baseWhere, ...dateWhere };
     const [byStatus, all, mine, unread] = await Promise.all([
-      prisma.conversation.groupBy({ where: baseWhere, by: ["status"], _count: { _all: true } }),
-      prisma.conversation.count({ where: { ...baseWhere, ...dateWhere } }),
+      prisma.conversation.groupBy({ where: scopedWhere, by: ["status"], _count: { _all: true } }),
+      prisma.conversation.count({ where: scopedWhere }),
       scope.agentId
-        ? prisma.conversation.count({ where: { ...baseWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
+        ? prisma.conversation.count({ where: { ...scopedWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
         : Promise.resolve(0),
-      prisma.message.count({ where: { direction: "IN", readAt: null, conversation: baseWhere } }),
+      prisma.message.count({ where: { direction: "IN", readAt: null, conversation: scopedWhere } }),
     ]);
 
     const statusCount = (status: string) => byStatus.find((row) => row.status === status)?._count._all ?? 0;

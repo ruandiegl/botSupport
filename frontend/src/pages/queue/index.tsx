@@ -36,7 +36,7 @@ const defaultDateRange: DateRangeValue = { preset: "ALL", dateField: "lastActivi
 // IN_PROGRESS view, while "Com você" is the same status scoped to the
 // current agent; sharing the MINE key made the first click apply the wrong
 // query and required a second interaction to reach the expected list.
-type MetricFilter = "ALL" | "OPEN" | "IN_PROGRESS" | "MINE" | "UNREAD";
+type MetricFilter = "ACTIVE" | "OPEN" | "IN_PROGRESS" | "ALL" | "CLOSED";
 
 export default function QueuePage(props?: { onlyMine?: boolean } & Record<string, unknown>) {
   const onlyMine = props?.onlyMine ?? false;
@@ -45,23 +45,23 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   // There is one explicit metric state.  The queue starts unfiltered (all
   // conversations), while operational sorting still puts OPEN first.
   const [status, setStatus] = useState("ALL");
-  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(onlyMine ? "MINE" : null);
+  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(null);
   const [department, setDepartment] = useState("ALL");
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
   const [currentPage, setCurrentPage] = useState(1);
   const [labelIds, setLabelIds] = useState<string[]>([]);
 
-  const queryStatus = metricFilter === "ALL"
+  const queryStatus = metricFilter === "ALL" || metricFilter === "ACTIVE"
     ? "ALL"
     : metricFilter === "OPEN"
     ? "OPEN"
-    : metricFilter === "IN_PROGRESS" || metricFilter === "MINE"
+    : metricFilter === "IN_PROGRESS"
     ? "IN_PROGRESS"
-    : metricFilter === "UNREAD"
-    ? "ALL"
+    : metricFilter === "CLOSED"
+    ? "CLOSED"
     : status;
-  const queryMine = onlyMine || metricFilter === "MINE";
+  const queryMine = onlyMine;
   const filters: ConversationFilters = {
     status: queryStatus,
     departmentId: department,
@@ -73,8 +73,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     limit: CONVERSATIONS_PER_PAGE,
     assignedAgentId: queryMine ? "me" : undefined,
     fallbackAssignedAgentId: currentAgentId,
-    openOnly: metricFilter === "OPEN",
-    unreadOnly: metricFilter === "UNREAD",
+    openOnly: metricFilter === "ACTIVE",
     sort: "operational",
     labelIds,
   };
@@ -90,9 +89,9 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     const matchesSearch = !search.trim() || searchText.includes(search.trim().toLowerCase());
     const timestamp = dateRange.dateField === "createdAt" ? item.startedAt : item.lastActivityAt ?? item.startedAt;
     const matchesDate = (!dateRange.from || timestamp >= dateRange.from) && (!dateRange.to || timestamp < dateRange.to);
-    const matchesOpen = metricFilter !== "OPEN" || item.status !== "CLOSED";
-    const matchesUnread = metricFilter !== "UNREAD" || item.unreadCount > 0;
-    return matchesMine && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesUnread;
+    const matchesOpen = metricFilter !== "ACTIVE" || item.status !== "CLOSED";
+    const matchesStatus = metricFilter !== "CLOSED" || item.status === "CLOSED";
+    return matchesMine && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
   }), [all, currentAgentId, dateRange, department, metricFilter, onlyMine, queryMine, search]);
 
   const visibleConversations = result?.legacy ? locallyFiltered.slice((currentPage - 1) * CONVERSATIONS_PER_PAGE, currentPage * CONVERSATIONS_PER_PAGE) : locallyFiltered;
@@ -106,12 +105,13 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
   const activateMetric = (next: MetricFilter) => {
     const isActive = metricFilter === next;
-    const selected: MetricFilter | null = isActive ? (onlyMine ? "MINE" : null) : next;
+    const selected: MetricFilter | null = isActive ? null : next;
     setMetricFilter(selected);
-    setStatus(selected === "OPEN" ? "OPEN" : selected === "IN_PROGRESS" || selected === "MINE" ? "IN_PROGRESS" : "ALL");
+    setStatus(selected === "OPEN" ? "OPEN" : selected === "IN_PROGRESS" ? "IN_PROGRESS" : selected === "CLOSED" ? "CLOSED" : "ALL");
   };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
   const allConversationCount = metricCounts.all ?? metricCounts.open + metricCounts.inProgress + metricCounts.closed;
+  const activeConversationCount = metricCounts.open + metricCounts.inProgress;
   const onlineAgents = agents.filter((agent) => agent.isOnline);
   const onlineNames = onlineAgents.map((agent) => agent.name).join(", ");
   const departmentLabel = department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
@@ -125,11 +125,11 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       />
 
       <div className="stats">
-        {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="visão completa da operação" tone="primary" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL" || (!metricFilter && queryStatus === "ALL")} ariaLabel="Mostrar todas as conversas" testId="metric-all" /> : null}
+        {!onlyMine ? <MetricCard label="Em andamento" value={activeConversationCount} note="em aberto e em atendimento" tone="primary" onClick={() => activateMetric("ACTIVE")} selected={metricFilter === "ACTIVE"} ariaLabel="Filtrar conversas em andamento" testId="metric-active" /> : null}
         <MetricCard label="Em aberto" value={metricCounts.open} note="aguardando atendimento" tone="warning" onClick={() => activateMetric("OPEN")} selected={metricFilter === "OPEN" || (!metricFilter && queryStatus === "OPEN")} ariaLabel="Filtrar conversas em aberto" testId="metric-open" />
         <MetricCard label="Em atendimento" value={metricCounts.inProgress} note="atendimentos em curso" tone="success" onClick={() => activateMetric("IN_PROGRESS")} selected={metricFilter === "IN_PROGRESS" || (!metricFilter && queryStatus === "IN_PROGRESS")} ariaLabel="Filtrar atendimentos em curso" testId="metric-in-progress" />
-        <MetricCard label="Com você" value={metricCounts.mine} note="atendimentos sob sua gestão" onClick={() => activateMetric("MINE")} selected={metricFilter === "MINE"} ariaLabel="Filtrar meus atendimentos" testId="metric-mine" />
-        <MetricCard label="Não lidas" value={metricCounts.unread} note="mensagens recebidas" tone="info" onClick={() => activateMetric("UNREAD")} selected={metricFilter === "UNREAD"} ariaLabel="Filtrar conversas não lidas" testId="metric-unread" />
+        {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="visão completa da operação" tone="info" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL" || (!metricFilter && queryStatus === "ALL")} ariaLabel="Mostrar todas as conversas" testId="metric-all" /> : null}
+        {!onlyMine ? <MetricCard label="Encerradas" value={metricCounts.closed} note="atendimentos finalizados" tone="primary" onClick={() => activateMetric("CLOSED")} selected={metricFilter === "CLOSED" || (!metricFilter && queryStatus === "CLOSED")} ariaLabel="Filtrar conversas encerradas" testId="metric-closed" /> : null}
       </div>
 
       <div className="toolbar queue-toolbar">
@@ -149,7 +149,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
       <div className="split-layout">
         <div className="panel conversation-list">
-          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{onlyMine ? "Conversas assumidas" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : "Conversas recentes"}</h2></div><span className="subtle">{total} registros</span></div>
+          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{onlyMine ? "Conversas assumidas" : metricFilter === "ACTIVE" ? "Conversas em andamento" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
             {visibleConversations.map((item) => <ConversationRow key={item.id} conversation={item} />)}
             {total > 0 ? <div className="conversation-pagination"><span className="subtle">Exibindo {firstVisible}–{lastVisible} de {total}</span><Pagination className="sm:w-auto sm:justify-end"><PaginationContent><PaginationItem><PaginationPrevious href="#" aria-disabled={currentPage === 1} tabIndex={currentPage === 1 ? -1 : 0} className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.max(1, page - 1)); }} /></PaginationItem>{Array.from({ length: Math.min(totalPages, 7) }, (_, index) => index + 1).map((page) => <PaginationItem key={page}><PaginationLink href="#" isActive={page === currentPage} aria-label={`Ir para a página ${page}`} onClick={(event) => { event.preventDefault(); setCurrentPage(page); }}>{page}</PaginationLink></PaginationItem>)}<PaginationItem><PaginationNext href="#" aria-disabled={currentPage === totalPages} tabIndex={currentPage === totalPages ? -1 : 0} className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.min(totalPages, page + 1)); }} /></PaginationItem></PaginationContent></Pagination></div> : null}

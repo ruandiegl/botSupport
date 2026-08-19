@@ -143,6 +143,20 @@ export function Shell({ children }: { children: React.ReactNode }) {
     return "Meus atendimentos";
   };
 
+  const getPageHref = () => {
+    if (location === "/") return "/";
+    if (location === "/my-conversations") return "/my-conversations";
+    if (location.includes("conversation")) return "/";
+    if (location.includes("departments")) return "/admin/departments";
+    if (location.includes("agents")) return "/admin/agents";
+    if (location.includes("shortcuts")) return "/admin/shortcuts";
+    if (location.includes("labels")) return "/admin/labels";
+    if (location.includes("flow")) return "/admin/flow";
+    if (location.includes("zapi")) return "/admin/zapi";
+    if (location.includes("rbac")) return "/admin/rbac";
+    return "/my-conversations";
+  };
+
   const handleLogout = () => {
     logout();
     setLocation("/login");
@@ -225,9 +239,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
               >
                 <Menu size={16} />
               </Button>
-              <span>GTF-Bot</span>
+              <Link href="/" className="crumb-link" data-testid="breadcrumb-home">GTF-Bot</Link>
               <ChevronRight size={13} />
-              <strong>{getPageTitle()}</strong>
+              <Link href={getPageHref()} className="crumb-link current" data-testid="breadcrumb-current">{getPageTitle()}</Link>
             </div>
             <div className="top-actions">
               <NotificationBell />
