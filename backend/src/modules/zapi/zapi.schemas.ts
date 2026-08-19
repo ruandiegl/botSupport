@@ -92,6 +92,9 @@ const DocumentMediaSchema = z
   })
   .passthrough();
 
+const MentionItemSchema = z.union([z.string().max(200), z.record(z.unknown())]);
+const MentionFieldSchema = z.union([MentionItemSchema, z.array(MentionItemSchema).max(100)]);
+
 export const ZApiReceivedWebhookSchema = z
   .object({
     messageId: z.string().min(1).max(300),
@@ -112,10 +115,10 @@ export const ZApiReceivedWebhookSchema = z
     participant: z.string().max(200).optional(),
     participantPhone: z.string().max(200).nullable().optional(),
     participantLid: z.string().max(200).nullable().optional(),
-    mentionedJids: z.array(z.string().max(200)).max(100).optional(),
-    mentionedJid: z.union([z.string().max(200), z.array(z.string().max(200)).max(100)]).optional(),
-    mentions: z.array(z.union([z.string().max(200), z.record(z.unknown())])).max(100).optional(),
-    mentioned: z.array(z.union([z.string().max(200), z.record(z.unknown())])).max(100).optional(),
+    mentionedJids: MentionFieldSchema.optional(),
+    mentionedJid: MentionFieldSchema.optional(),
+    mentions: MentionFieldSchema.optional(),
+    mentioned: MentionFieldSchema.optional(),
     text: z.union([z.string(), z.object({ message: z.string().max(4096).optional() }).passthrough()]).optional(),
     body: z.string().max(4096).optional(),
     caption: z.string().max(4096).optional(),

@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { logger } from "../../shared/logger.js";
 import { zApiService } from "./zapi.service.js";
 import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema } from "./zapi.schemas.js";
 
@@ -71,6 +72,15 @@ export class ZApiController {
     }
     try {
       const result = await zApiService.handleIncomingWebhook(parsed.data);
+      logger.info(
+        {
+          callbackType: parsed.data.type,
+          externalEventId: parsed.data.messageId,
+          isGroup: parsed.data.isGroup === true,
+          result: result.status,
+        },
+        "Webhook Z-API processado",
+      );
       res.json(result);
     } catch (err: any) {
       res.status(500).json({ error: err.message });

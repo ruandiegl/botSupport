@@ -184,8 +184,53 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
 function canonicalJid(value: string) { return value.trim().toLowerCase().split(":")[0].replace(/\D/g, ""); }
 function hashIdentifier(value: string) { return createHash("sha256").update(value.trim().toLowerCase()).digest("hex"); }
 function hasBroadcastMention(values: string[]) { return values.some((value) => /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(value)); }
+
+function collectNestedStrings(value: unknown, maxDepth = 6, maxItems = 300): string[] {
+  const strings: string[] = [];
+  const visit = (current: unknown, depth: number) => {
+    if (strings.length >= maxItems || depth > maxDepth || current == null) return;
+    if (typeof current === "string") {
+      strings.push(current);
+      return;
+    }
+    if (Array.isArray(current)) {
+      current.forEach((item) => visit(item, depth + 1));
+      return;
+    }
+    if (typeof current === "object") {
+      Object.values(current as Record<string, unknown>).forEach((item) => visit(item, depth + 1));
+    }
+  };
+  visit(value, 0);
+  return strings;
+}
+
+const HISTORICAL_MESSAGE_KEY = /^(quoted|quotedMessage|reference|referencedMessage|reply|originalMessage|externalAdReply)$/i;
+
+function collectCurrentMessageStrings(value: unknown, maxDepth = 6, maxItems = 300): string[] {
+  const strings: string[] = [];
+  const visit = (current: unknown, depth: number) => {
+    if (strings.length >= maxItems || depth > maxDepth || current == null) return;
+    if (typeof current === "string") {
+      strings.push(current);
+      return;
+    }
+    if (Array.isArray(current)) {
+      current.forEach((item) => visit(item, depth + 1));
+      return;
+    }
+    if (typeof current === "object") {
+      for (const [key, child] of Object.entries(current as Record<string, unknown>)) {
+        if (!HISTORICAL_MESSAGE_KEY.test(key)) visit(child, depth + 1);
+      }
+    }
+  };
+  visit(value, 0);
+  return strings;
+}
+
 function collectMentionValues(payload: any): string[] {
-  const values = [
+  const knownValues = [
     payload?.mentionedJids,
     payload?.mentionedJid,
     payload?.mentions,
@@ -203,13 +248,33 @@ function collectMentionValues(payload: any): string[] {
   ]
     .flatMap((value) => (Array.isArray(value) ? value : value ? [value] : []));
 
-  return values
+  // A Z-API has used more than one nesting shape for mention metadata. Walk
+  // only properties whose name identifies a mention, so arbitrary numbers in
+  // the callback can never be mistaken for a tagged participant.
+  const discoveredValues: unknown[] = [];
+  const visitMentionFields = (value: unknown, depth = 0) => {
+    if (depth > 6 || value == null || typeof value !== "object") return;
+    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+      if (HISTORICAL_MESSAGE_KEY.test(key)) continue;
+      if (/mention(ed|s)?(jid|jids|phone|phones|lid|lids|number|numbers)?$/i.test(key)) {
+        discoveredValues.push(child);
+      }
+      visitMentionFields(child, depth + 1);
+    }
+  };
+  visitMentionFields(payload);
+
+  return [...knownValues, ...discoveredValues.flatMap((value) => collectNestedStrings(value, 3, 100))]
     .map((value) => {
       if (typeof value === "string") return value;
       if (!value || typeof value !== "object") return "";
       return String(value.jid || value.phone || value.id || value.participantPhone || "");
     })
-    .filter(Boolean);
+    .filter((value) => {
+      if (!value) return false;
+      const normalized = value.trim();
+      return canonicalJid(normalized).length >= 7 || /@(lid|s\.whatsapp\.net)$/i.test(normalized) || /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(normalized);
+    });
 }
 
 function incomingText(payload: any): string {
@@ -222,37 +287,52 @@ function incomingText(payload: any): string {
   );
 }
 
+function incomingTextCandidates(payload: any): string[] {
+  const primary = incomingText(payload);
+  const nested = collectCurrentMessageStrings(payload)
+    .filter((value) => value.length <= 4096 && value.includes("@"));
+  return [...new Set([primary, ...nested].filter(Boolean))];
+}
+
 function hasTextMentionTarget(payload: any, instancePhone: string): boolean {
-  const text = incomingText(payload);
-  const candidates = [...text.matchAll(/@([+\d][\d\s().-]{6,}\d)/g)];
-  return candidates.some((match) => canonicalJid(match[1] || "") === instancePhone);
+  return incomingTextCandidates(payload).some((text) => {
+    const candidates = [...text.matchAll(/@([+\d][\d\s().-]{6,}\d)/g)];
+    return candidates.some((match) => canonicalJid(match[1] || "") === instancePhone);
+  });
 }
 
 function normalizeMentionName(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toLowerCase();
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
 }
 
 function hasTextMentionAlias(payload: any, aliases: string[]): boolean {
-  const text = normalizeMentionName(incomingText(payload));
-  return aliases.some((rawAlias) => {
-    const alias = normalizeMentionName(rawAlias);
-    if (!alias) return false;
-    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`(^|\\s)@~?${escaped}(?=$|[\\s,.;:!?])`, "i").test(text);
-  });
+  const texts = incomingTextCandidates(payload).map(normalizeMentionName);
+  return texts.some((text) =>
+    aliases.some((rawAlias) => {
+      const alias = normalizeMentionName(rawAlias);
+      if (!alias) return false;
+      const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp(`(^|\\s)@~?${escaped}(?=$|[\\s,.;:!?])`, "i").test(text);
+    }),
+  );
 }
 
 export function isInstanceMentioned(payload: any, rawInstancePhone: string, aliases: string[] = []): boolean {
   const instancePhone = canonicalJid(rawInstancePhone);
-  if (!instancePhone) return false;
   const mentions = collectMentionValues(payload);
-  if (mentions.some((jid) => canonicalJid(jid) === instancePhone)) return true;
+  if (instancePhone && mentions.some((jid) => canonicalJid(jid) === instancePhone)) return true;
   const hasAuthoritativeDifferentPhone = mentions.some((jid) => !/@lid$/i.test(jid.trim()));
   if (hasAuthoritativeDifferentPhone) return false;
   // Some ReceivedCallback payloads expose only the visible @~name (or use a
   // LID that cannot be compared with connectedPhone). In that case only a
   // known alias of this instance is accepted; an arbitrary @name stays false.
-  return hasTextMentionTarget(payload, instancePhone) || hasTextMentionAlias(payload, aliases);
+  return (instancePhone ? hasTextMentionTarget(payload, instancePhone) : false) || hasTextMentionAlias(payload, aliases);
 }
 
 function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
@@ -694,8 +774,8 @@ export class ZApiService {
       const mentions = collectMentionValues(payload);
       if (payload.broadcast === true || hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
       const instancePhone = canonicalJid(config.instancePhone || payload.connectedPhone || "");
-      if (!instancePhone) return { status: "ignored_instance_phone_unavailable" };
       const mentionAliases = await this.getGroupMentionAliases(config);
+      if (!instancePhone && !mentionAliases.length) return { status: "ignored_instance_identity_unavailable" };
       if (!isInstanceMentioned(payload, instancePhone, mentionAliases)) {
         return { status: mentions.length ? "ignored_not_mentioned" : "ignored_no_mention" };
       }

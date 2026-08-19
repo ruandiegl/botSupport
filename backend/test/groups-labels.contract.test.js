@@ -20,6 +20,8 @@ const groupPayload = {
 
 test("callback de grupo valida participante e até 100 menções", () => {
   assert.equal(ZApiReceivedWebhookSchema.safeParse(groupPayload).success, true);
+  assert.equal(ZApiReceivedWebhookSchema.safeParse({ ...groupPayload, mentioned: "5511888888888@s.whatsapp.net" }).success, true);
+  assert.equal(ZApiReceivedWebhookSchema.safeParse({ ...groupPayload, mentions: { jid: "5511888888888@s.whatsapp.net" } }).success, true);
   assert.equal(ZApiReceivedWebhookSchema.safeParse({ ...groupPayload, mentionedJids: Array.from({ length: 101 }, (_, index) => String(index)) }).success, false);
 });
 
@@ -52,6 +54,11 @@ test("somente a menção da própria instância ativa o bot no grupo", () => {
   assert.equal(isInstanceMentioned({ text: { message: `@${instancePhone} preciso de suporte` } }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico preciso de ajuda" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: "@~Suporte Técnico" }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ messageData: { extendedText: { body: "@~Suporte Técnico" } } }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ messageData: { contextInfo: { mentioned: { jid: `${instancePhone}@s.whatsapp.net` } } } }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@\u2068~Suporte Técnico\u2069" } }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico" } }, "", ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@Letícia" }, quotedMessage: { text: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ mentioned: ["81896604192873@lid"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
 });
