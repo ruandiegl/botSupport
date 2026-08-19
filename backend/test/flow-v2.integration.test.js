@@ -100,3 +100,24 @@ test("motor executa decisão, triagem editável e handoff sem transporte externo
     assert.equal(conversation.flowContext.details, "Nome, emissora, cidade e necessidade");
   } finally { await flowIntegrationRepository.cleanup(fixture); }
 });
+
+test("motor executa submenu dentro da rota e preserva equipe e assunto selecionados", async () => {
+  const fixture = await flowIntegrationRepository.createFixture();
+  try {
+    const submenu = await flowIntegrationRepository.addRouteDecision(fixture);
+    const selectedRoute = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Suporte", selectedOptionId: "support", isNewConversation: false });
+    assert.equal(selectedRoute.status, "waiting_decision");
+    assert.equal(selectedRoute.actions.some((action) => action.type === "SEND_OPTIONS" && action.nodeId === submenu.id && action.options.length === 2), true);
+
+    await flowExecutionService.rememberDecisionPrompt(fixture.conversation.id, submenu.id, "prompt-submenu-1");
+    const stale = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Acesso e senha", selectedOptionId: "support-password", referenceMessageId: "prompt-antigo", isNewConversation: false });
+    assert.equal(stale.status, "invalid_option");
+
+    const selectedIssue = await flowExecutionService.execute({ conversationId: fixture.conversation.id, content: "Acesso e senha", selectedOptionId: "support-password", referenceMessageId: "prompt-submenu-1", isNewConversation: false });
+    assert.equal(selectedIssue.status, "waiting_triage");
+    const conversation = await flowIntegrationRepository.getConversation(fixture.conversation.id);
+    assert.equal(conversation.flowContext.teamName, "Suporte");
+    assert.equal(conversation.flowContext.selectedIssueKey, "support-password");
+    assert.equal(conversation.flowContext.selectedIssueLabel, "Acesso e senha");
+  } finally { await flowIntegrationRepository.cleanup(fixture); }
+});

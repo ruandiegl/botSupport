@@ -38,6 +38,7 @@ Credenciais são segredos operacionais e nunca devem aparecer em documentação,
   - Se status da conversa = `BOT`:
     - Delegar o evento ao motor do fluxo vinculado à revisão da conversa.
     - Resolver a escolha por `optionKey` estável; número ou texto são apenas fallback compatível.
+    - Permitir decisões secundárias dentro da rota, mantendo equipe e assunto selecionado em chaves separadas do `flowContext`.
     - Executar mensagens e triagens configuradas na rota, persistindo respostas em `flowContext`.
     - Manter a conversa em `BOT` enquanto aguarda decisão ou triagem.
     - Encaminhar para `QUEUED` apenas quando o motor executar `HANDOFF`.
@@ -69,6 +70,8 @@ Credenciais são segredos operacionais e nunca devem aparecer em documentação,
 
 > O endpoint de botões efetivamente configurado no cliente Z-API deve ser a fonte de verdade. O adaptador de transporte pode usar `send-option-list` ou `send-button-list` conforme o contrato suportado pela instância, mas o motor recebe e devolve um modelo interno único. Essa escolha não pode ficar espalhada na regra de negócio.
 
+`ZAPI_INTERACTIVE_MODE` aceita `auto`, `button` ou `option`. O modo automático usa botões para até três opções e lista para menus maiores. `send-option-list` é usado somente em conversas individuais; fluxos iniciados por menção em grupo continuam no privado. Toda opção envia `id=optionKey`, e falhas do provedor usam fallback textual numerado.
+
 ## 7. Contrato do motor e garantias do webhook
 
 1. O webhook valida token, forma e limites do payload antes de persistir ou executar o fluxo.
@@ -78,6 +81,7 @@ Credenciais são segredos operacionais e nunca devem aparecer em documentação,
 5. Falhas transitórias usam retentativa limitada com backoff. A conversa não avança sem registro recuperável do envio.
 6. Logs incluem IDs técnicos, tipo de evento, revisão, nó e resultado, mas nunca token, telefone completo, texto de triagem ou respostas do cliente.
 7. `autoReply=false`, `QUEUED` e `IN_PROGRESS` impedem que mensagens recebidas reiniciem o bot.
+8. `buttonsResponseMessage.buttonId` e `listResponseMessage.selectedRowId` são correlacionados ao nó atual. Quando presente, `referenceMessageId` deve corresponder ao último prompt enviado para impedir que uma escolha antiga avance outro submenu.
 
 ## 8. Triagem pós-rota
 
@@ -92,6 +96,10 @@ Saudação e lista de departamentos respeitam `BOT_REPLY_COOLDOWN_MINUTES` (padr
 Antes de qualquer entrega automática, o serviço consulta a lista ativa de `BotExclusion` pelo telefone canônico do remetente. A barreira cobre saudação, menus, botões, fallback textual, triagem, confirmação de menção em grupo e mensagens do worker de inatividade. O webhook ainda persiste o evento e a mensagem recebida para que o atendimento humano possa ser localizado e assumido.
 
 O método de envio manual do painel permanece separado e não consulta essa lista. Em grupos, a chave é o participante individual (`participantPhone`/`participant`), nunca o JID do grupo. Ativar ou desativar uma regra não envia mensagens retroativas nem apaga histórico.
+
+### 8.3 Submenus dentro das rotas
+
+Uma rota pode conter um nó `DECISION` secundário antes da triagem ou do encaminhamento. As opções ficam na revisão publicada, usam IDs estáveis e registram `selectedIssueKey`/`selectedIssueLabel` sem substituir `teamName`. Uma seleção válida avança imediatamente; uma resposta inválida repete apenas o submenu atual sob o cooldown. Revisões sem submenu continuam compatíveis.
 
 ---
 

@@ -31,7 +31,7 @@ export function FlowInspector({ node, departments, issues, onChange, onDuplicate
     HANDOFF: HandoffStepEditor,
     END: EndStepEditor,
   }[node.type];
-  const protectedNode = node.type === "ENTRY" || node.type === "DECISION";
+  const protectedNode = node.type === "ENTRY" || (node.type === "DECISION" && !node.config.parentRouteId);
   const canDuplicate = !protectedNode && node.type !== "HANDOFF";
   return (
     <Card className="flow-inspector-card">
@@ -50,4 +50,3 @@ export function FlowInspector({ node, departments, issues, onChange, onDuplicate
     </Card>
   );
 }
-

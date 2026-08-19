@@ -26,6 +26,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { getDecisionOptions } from "../lib/flow-model";
 
 const nodeMeta = {
   ENTRY: { label: "Entrada", icon: LogIn },
@@ -73,6 +74,7 @@ export function FlowNodeCard({
   const meta = nodeMeta[node.type];
   const Icon = meta.icon;
   const canDrag = Boolean(dragListeners);
+  const routeDecisionOptions = node.type === "DECISION" && node.config.parentRouteId ? getDecisionOptions(node) : [];
   return (
     <Card
       size="sm"
@@ -135,6 +137,7 @@ export function FlowNodeCard({
       </CardContent>
       <CardFooter className="flow-node-footer">
         {departmentName ? <Badge variant="secondary">{departmentName}</Badge> : <Badge variant="outline">{meta.label}</Badge>}
+        {routeDecisionOptions.length ? <Badge variant="secondary">{routeDecisionOptions.length} botão(ões)</Badge> : null}
         {issues.length ? <Badge variant="destructive">{issues.length} pendência(s)</Badge> : null}
       </CardFooter>
     </Card>

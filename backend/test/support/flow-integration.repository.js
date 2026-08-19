@@ -26,6 +26,30 @@ export const flowIntegrationRepository = {
   },
   async getConversation(id) { return prisma.conversation.findUnique({ where: { id } }); },
   async updateConversation(id, data) { return prisma.conversation.update({ where: { id }, data }); },
+  async addRouteDecision(fixture) {
+    await prisma.flowTransition.deleteMany({ where: { flowRevisionId: fixture.revision.id, fromNodeId: fixture.route.id, toNodeId: fixture.triage.id } });
+    const decision = await prisma.flowNode.create({ data: {
+      flowRevisionId: fixture.revision.id,
+      stableKey: "support-submenu",
+      type: "DECISION",
+      name: "Assunto de suporte",
+      content: "Qual assunto descreve melhor sua necessidade?",
+      config: {
+        parentRouteId: fixture.route.id,
+        decisionScope: "ROUTE",
+        decisionOptions: [
+          { optionKey: "support-password", label: "Acesso e senha" },
+          { optionKey: "support-network", label: "Rede e Internet" },
+        ],
+      },
+    } });
+    await prisma.flowTransition.createMany({ data: [
+      { flowRevisionId: fixture.revision.id, fromNodeId: fixture.route.id, toNodeId: decision.id },
+      { flowRevisionId: fixture.revision.id, fromNodeId: decision.id, toNodeId: fixture.triage.id, optionKey: "support-password", label: "Acesso e senha", sortOrder: 0 },
+      { flowRevisionId: fixture.revision.id, fromNodeId: decision.id, toNodeId: fixture.triage.id, optionKey: "support-network", label: "Rede e Internet", sortOrder: 1 },
+    ] });
+    return decision;
+  },
   async cleanup(fixture) {
     await prisma.conversation.deleteMany({ where: { id: fixture.conversation.id } });
     await prisma.contact.deleteMany({ where: { id: fixture.contact.id } });

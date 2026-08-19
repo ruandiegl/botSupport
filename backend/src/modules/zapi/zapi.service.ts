@@ -43,6 +43,7 @@ function parseZApiError(status: number, data: any): string {
 export type BotOption = {
   optionKey?: string;
   label: string;
+  description?: string;
   departmentId: string;
   procedureMessage?: string;
 };
@@ -52,6 +53,7 @@ export type ParsedIncomingMessage = {
   senderName: string;
   content: string;
   selectedOptionId?: string;
+  referenceMessageId?: string;
   externalEventId?: string;
   media?: ParsedIncomingMedia;
   group?: { jid: string; name: string; participant: string };
@@ -171,11 +173,13 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   ).trim();
 
   const externalEventId = String(payload.messageId || payload.ids?.[0] || payload.id || "").trim() || undefined;
+  const referenceMessageId = String(payload.referenceMessageId || buttonResponse?.referenceMessageId || listResponse?.referenceMessageId || "").trim() || undefined;
   return {
     phone,
     senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
     content,
     selectedOptionId,
+    ...(referenceMessageId ? { referenceMessageId } : {}),
     ...(externalEventId ? { externalEventId } : {}),
     ...(media ? { media } : {}),
     ...(payload.isGroup === true ? { group: { jid: String(payload.phone || payload.chatId || ""), name: String(payload.chatName || "Grupo do WhatsApp"), participant } } : {}),
@@ -427,6 +431,22 @@ export function buildButtonListPayload(phone: string, message: string, options: 
       buttons: options.map((option, index) => ({
         id: option.optionKey || String(index + 1),
         label: option.label,
+      })),
+    },
+  };
+}
+
+export function buildOptionListPayload(phone: string, message: string, options: BotOption[]) {
+  return {
+    phone,
+    message,
+    optionList: {
+      title: "Opções disponíveis",
+      buttonLabel: "Ver opções",
+      options: options.map((option, index) => ({
+        id: option.optionKey || String(index + 1),
+        title: option.label,
+        description: option.description || option.label,
       })),
     },
   };
@@ -758,7 +778,13 @@ export class ZApiService {
       logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot button list suppressed by exclusion list");
       return { blocked: true as const, status: "bot_excluded" as const };
     }
-    return this.sendButtonList(phone, message, options);
+    return this.sendInteractiveOptions(phone, message, options);
+  }
+
+  private sendInteractiveOptions(phone: string, message: string, options: BotOption[]) {
+    const configured = String(process.env.ZAPI_INTERACTIVE_MODE ?? "auto").trim().toLowerCase();
+    const useOptionList = configured === "option" || (configured === "auto" && options.length > 3);
+    return useOptionList ? this.sendOptionList(phone, message, options) : this.sendButtonList(phone, message, options);
   }
 
   private async sendTextToTarget(target: string, text: string) {
@@ -1093,7 +1119,14 @@ export class ZApiService {
       return { status: "media_logged" };
     }
 
-    const execution = await flowExecutionService.execute({ conversationId, content: incoming.content, selectedOptionId: incoming.selectedOptionId, isNewConversation });
+    const execution = await flowExecutionService.execute({
+      conversationId,
+      content: incoming.content,
+      selectedOptionId: incoming.selectedOptionId,
+      referenceMessageId: incoming.referenceMessageId,
+      externalEventId: incoming.externalEventId,
+      isNewConversation,
+    });
     if (execution.status !== "no_flow_configured") {
       for (const action of execution.actions) {
         if (action.type === "SEND_TEXT") {
@@ -1124,6 +1157,8 @@ export class ZApiService {
             logger.error({ error: delivery.error }, "Falha de entrega; avanço do fluxo revertido");
             return { status: "delivery_failed" };
           }
+          const promptMessageId = String(delivery?.messageId || delivery?.zaapId || delivery?.id || "").trim();
+          if (promptMessageId) await flowExecutionService.rememberDecisionPrompt(conversationId, action.nodeId, promptMessageId);
         }
       }
       const routed = execution.status === "routed_to_department";
@@ -1205,6 +1240,38 @@ export class ZApiService {
     conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN" });
 
     return { status: isNewConversation ? "welcome_sent" : "menu_resent" };
+  }
+
+  async sendOptionList(phone: string, message: string, options: BotOption[]) {
+    if (await botExclusionsService.isBlocked(phone)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot option list suppressed by exclusion list");
+      return { blocked: true as const, status: "bot_excluded" as const };
+    }
+    const config = await this.getConfig();
+    if (!config.isActive || !config.instanceId || !config.token) return null;
+
+    const formattedPhone = this.formatPhone(phone);
+    const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-option-list`;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
+        },
+        body: JSON.stringify(buildOptionListPayload(formattedPhone, message, options)),
+      });
+      const data = (await response.json().catch(() => ({}))) as any;
+      if (!response.ok || data?.error || data?.success === false) {
+        logger.warn({ status: response.status, optionCount: options.length }, "Lista de opções Z-API indisponível; usando fallback textual");
+        return this.sendText(phone, `${message}\n\n${options.map((option, index) => `${index + 1}. ${option.label}`).join("\n")}`);
+      }
+      logger.info({ status: response.status, optionCount: options.length }, "Lista de opções Z-API enviada com sucesso");
+      return data;
+    } catch (error) {
+      logger.warn({ error, optionCount: options.length }, "Falha na lista de opções Z-API; usando fallback textual");
+      return this.sendText(phone, `${message}\n\n${options.map((option, index) => `${index + 1}. ${option.label}`).join("\n")}`);
+    }
   }
 
 }

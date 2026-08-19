@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getBranchNodes, getMainNodes, getRouteNodes } from "../lib/flow-model";
+import { getBranchNodes, getDecisionOptions, getMainNodes, getRouteNodes } from "../lib/flow-model";
 
 export function WhatsAppFlowPreview({ revision }: { revision: FlowRevision }) {
   const routes = getRouteNodes(revision);
@@ -41,7 +41,14 @@ export function WhatsAppFlowPreview({ revision }: { revision: FlowRevision }) {
               <div className="flow-preview-message" key={node.id}>
                 <small>{node.name}</small>
                 <p>{node.content}</p>
-                {node.type === "DECISION" ? <div className="flow-preview-options">{routes.map((option) => <Button key={option.id} variant="outline" size="sm" tabIndex={-1}>{option.name}</Button>)}</div> : null}
+                {node.type === "DECISION" ? (
+                  <div className="flow-preview-options">
+                    {(node.config.parentRouteId
+                      ? getDecisionOptions(node).map((option) => ({ id: option.optionKey, name: option.label }))
+                      : routes.map((option) => ({ id: option.id, name: option.name })))
+                      .map((option) => <Button key={option.id} variant="outline" size="sm" tabIndex={-1}>{option.name}</Button>)}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

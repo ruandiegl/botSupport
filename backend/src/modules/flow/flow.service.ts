@@ -10,6 +10,7 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
   const nodeIds = new Set(nodes.map((node) => node.id));
   const stableKeys = new Set<string>();
   const optionKeys = new Set<string>();
+  const routeDecisionParents = new Set<string>();
   const entries = nodes.filter((node) => node.type === "ENTRY");
   if (entries.length !== 1) issues.push({ code: "ENTRY_COUNT", message: "O fluxo deve possuir exatamente uma entrada." });
   for (const node of nodes) {
@@ -17,6 +18,12 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
     stableKeys.add(node.stableKey);
     if (node.type === "TRIAGE" && (!node.content.trim() || typeof node.config?.responseKey !== "string" || !node.config.responseKey.trim())) issues.push({ code: "INVALID_TRIAGE", message: "Triagem exige mensagem e chave de resposta.", nodeId: node.id });
     if (node.type === "HANDOFF" && !node.departmentId) issues.push({ code: "HANDOFF_WITHOUT_DEPARTMENT", message: "Encaminhamento exige departamento.", nodeId: node.id });
+    if (node.type === "DECISION" && node.config?.parentRouteId) {
+      const parent = nodes.find((item) => item.id === node.config?.parentRouteId);
+      if (!parent || parent.type !== "ROUTE") issues.push({ code: "INVALID_DECISION_PARENT", message: "O submenu precisa pertencer a uma rota válida.", nodeId: node.id });
+      if (routeDecisionParents.has(node.config.parentRouteId)) issues.push({ code: "ROUTE_DECISION_LIMIT", message: "Cada rota pode possuir somente um submenu nesta versão.", nodeId: node.id });
+      routeDecisionParents.add(node.config.parentRouteId);
+    }
   }
   for (const transition of transitions) {
     if (!nodeIds.has(transition.fromNodeId) || !nodeIds.has(transition.toNodeId)) issues.push({ code: "UNKNOWN_NODE", message: "Transição aponta para nó inexistente.", transitionId: transition.id });
@@ -25,7 +32,17 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
       optionKeys.add(transition.optionKey);
     }
   }
-  for (const decision of nodes.filter((node) => node.type === "DECISION")) if (!transitions.some((item) => item.fromNodeId === decision.id && item.optionKey)) issues.push({ code: "DECISION_WITHOUT_OPTIONS", message: "Decisão exige uma opção de saída.", nodeId: decision.id });
+  for (const decision of nodes.filter((node) => node.type === "DECISION")) {
+    const outgoing = transitions.filter((item) => item.fromNodeId === decision.id);
+    if (!outgoing.some((item) => item.optionKey)) issues.push({ code: "DECISION_WITHOUT_OPTIONS", message: "Decisão exige uma opção de saída.", nodeId: decision.id });
+    if (outgoing.some((item) => !item.optionKey)) issues.push({ code: "DECISION_WITHOUT_OPTION_KEY", message: "Toda saída de uma decisão precisa de identificação estável.", nodeId: decision.id });
+    if (outgoing.length > 20) issues.push({ code: "DECISION_OPTION_LIMIT", message: "Decisão excede o limite de 20 opções.", nodeId: decision.id });
+    if (decision.config?.parentRouteId && Array.isArray(decision.config.decisionOptions)) {
+      const configured = new Set(decision.config.decisionOptions.map((item) => item.optionKey));
+      const persisted = new Set(outgoing.flatMap((item) => item.optionKey ? [item.optionKey] : []));
+      if (configured.size !== persisted.size || [...configured].some((key) => !persisted.has(key))) issues.push({ code: "DECISION_OPTIONS_MISMATCH", message: "Os botões configurados não correspondem às transições do submenu.", nodeId: decision.id });
+    }
+  }
   for (const triage of nodes.filter((node) => node.type === "TRIAGE")) if (transitions.filter((item) => item.fromNodeId === triage.id).length !== 1) issues.push({ code: "TRIAGE_NEXT", message: "Triagem exige exatamente uma próxima etapa.", nodeId: triage.id });
   if (entries.length === 1) {
     const reachable = new Set<string>(); const queue = [entries[0].id];
@@ -38,6 +55,12 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
     const terminalMemo = new Map<string, boolean>();
     const reachesTerminal = (id: string, path = new Set<string>()): boolean => { if (terminalMemo.has(id)) return terminalMemo.get(id)!; if (path.has(id)) return false; const current = nodes.find((item) => item.id === id); if (current?.type === "HANDOFF" || current?.type === "END") return true; const nextPath = new Set(path).add(id); const result = (adjacency.get(id) ?? []).some((next) => reachesTerminal(next, nextPath)); terminalMemo.set(id, result); return result; };
     nodes.filter((node) => node.type === "ROUTE" && !reachesTerminal(node.id)).forEach((node) => issues.push({ code: "ROUTE_WITHOUT_TERMINAL", message: "Toda rota deve terminar em encaminhamento ou fim.", nodeId: node.id }));
+    nodes.filter((node) => node.type === "DECISION" && !reachesTerminal(node.id)).forEach((node) => issues.push({ code: "DECISION_WITHOUT_TERMINAL", message: "Toda opção da decisão precisa alcançar um encaminhamento ou fim.", nodeId: node.id }));
+    for (const decision of nodes.filter((node) => node.type === "DECISION")) {
+      transitions
+        .filter((item) => item.fromNodeId === decision.id && item.optionKey && !reachesTerminal(item.toNodeId))
+        .forEach((item) => issues.push({ code: "DECISION_OPTION_WITHOUT_TERMINAL", message: "Esta opção não alcança um encaminhamento ou fim.", nodeId: decision.id, transitionId: item.id }));
+    }
   }
   return issues;
 }

@@ -22,6 +22,7 @@ ZAPI_INSTANCE_ID=<segredo>
 ZAPI_TOKEN=<segredo>
 ZAPI_CLIENT_TOKEN=<segredo>
 ZAPI_WEBHOOK_URL=https://<dominio-publico-da-api>/api/webhooks/z-api
+ZAPI_INTERACTIVE_MODE=auto
 ```
 
 Não copie `.env` para o repositório e não coloque `DATABASE_URL`, JWT ou tokens no front-end.

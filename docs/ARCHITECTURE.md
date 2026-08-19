@@ -68,6 +68,8 @@ O fluxo é dividido em três responsabilidades independentes:
 - `stableKey` e `optionKey` únicos dentro da revisão;
 - todos os nós são alcançáveis e não há ciclos infinitos;
 - toda decisão tem saída e toda rota termina em `HANDOFF` ou `END`;
+- decisões secundárias pertencem a uma rota, têm `optionKey` único e, nesta versão, há no máximo um submenu por rota;
+- toda opção de uma decisão alcança `HANDOFF` ou `END`; reordenar só altera `sortOrder`;
 - `TRIAGE` tem prompt, chave de resposta e próxima transição;
 - `HANDOFF` referencia departamento existente e ativo;
 - troca da revisão publicada é transacional;
@@ -91,7 +93,9 @@ No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `A
 
 Imagens usam miniatura maior no histórico e um `Dialog` shadcn opaco, quadrático e centralizado para o conteúdo original protegido. O preview oferece zoom, reset, roda do mouse e fechamento acessível sem expor a URL temporária.
 
-O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão) somente enquanto o fluxo aguarda uma decisão inválida. Mensagens recebidas continuam sendo armazenadas, respostas de triagem nunca são atrasadas e escolhas de rota válidas avançam imediatamente, sejam entregues pela Z-API como `buttonId`/`selectedRowId`, índice ou texto exato do rótulo. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.
+O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão) somente enquanto o fluxo aguarda uma decisão inválida. Mensagens recebidas continuam sendo armazenadas, respostas de triagem nunca são atrasadas e escolhas de rota ou submenu válidas avançam imediatamente, sejam entregues pela Z-API como `buttonId`/`selectedRowId`, índice ou texto exato do rótulo. O `referenceMessageId`, quando fornecido, precisa corresponder ao último prompt interativo persistido. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.
+
+O adaptador escolhe `send-button-list` ou `send-option-list` por `ZAPI_INTERACTIVE_MODE=auto|button|option`. Em `auto`, listas maiores que três opções usam `send-option-list`; erros retornam para texto numerado. Listas interativas são restritas à conversa privada e nunca são enviadas ao JID do grupo.
 
 ## 6. Colaboração, identidade e delegação
 

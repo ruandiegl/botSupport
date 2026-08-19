@@ -114,6 +114,8 @@ Antes de solicitar code review ou fazer merge de uma funcionalidade:
 
 - O editor grava somente `DRAFT`; publicar é uma operação explícita, validada e transacional.
 - Nunca use posição do array como identidade. Nós usam `stableKey` e escolhas externas usam `optionKey` imutável.
+- Decisões dentro de rotas usam `config.parentRouteId`, opções validadas e transições explícitas. Alterar label ou ordem nunca regenera `optionKey`.
+- Respostas interativas antigas não podem avançar o nó atual quando `referenceMessageId` divergir do último prompt persistido.
 - Toda conversa iniciada no bot recebe `flowRevisionId` e não migra automaticamente para outra revisão.
 - A transição `BOT -> QUEUED` pertence exclusivamente ao `HANDOFF`.
 - Textos, departamentos e triagens pertencem à revisão; o adaptador Z-API não contém regra de negócio hardcoded.

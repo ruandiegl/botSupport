@@ -15,6 +15,20 @@ export const UpdateFlowBodySchema = z.object({
 });
 
 export const FlowNodeTypeSchema = z.enum(["ENTRY", "MESSAGE", "DECISION", "ROUTE", "TRIAGE", "HANDOFF", "END"]);
+export const FlowDecisionOptionSchema = z.object({
+  optionKey: z.string().min(1).max(100).regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/, "Identificador de opção inválido"),
+  label: z.string().trim().min(1, "Rótulo é obrigatório").max(80),
+  description: z.string().trim().max(120).optional(),
+});
+export const FlowNodeConfigSchema = z.object({
+  parentRouteId: z.string().uuid().optional(),
+  responseKey: z.string().min(1).max(100).optional(),
+  optionKey: z.string().min(1).max(100).optional(),
+  legacyOptionIndex: z.number().int().min(0).optional(),
+  decisionScope: z.enum(["ROOT", "ROUTE"]).optional(),
+  decisionOptions: z.array(FlowDecisionOptionSchema).min(1).max(20).optional(),
+  buttonMessage: z.string().max(4000).optional(),
+}).passthrough();
 export const FlowNodeInputSchema = z.object({
   id: z.string().uuid(),
   stableKey: z.string().min(1).max(100),
@@ -22,7 +36,7 @@ export const FlowNodeInputSchema = z.object({
   name: z.string().min(1).max(120),
   content: z.string().max(4000).default(""),
   sortOrder: z.number().int().min(0).default(0),
-  config: z.record(z.unknown()).nullable().optional(),
+  config: FlowNodeConfigSchema.nullable().optional(),
   departmentId: z.string().uuid().nullable().optional(),
 });
 export const FlowTransitionInputSchema = z.object({

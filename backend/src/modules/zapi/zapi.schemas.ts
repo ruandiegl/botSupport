@@ -132,6 +132,7 @@ export const ZApiReceivedWebhookSchema = z
       .object({ selectedRowId: z.union([z.string(), z.number()]).optional(), title: z.string().max(4096).optional(), message: z.string().max(4096).optional() })
       .passthrough()
       .optional(),
+    referenceMessageId: z.union([z.string(), z.number()]).optional(),
     image: ImageMediaSchema.optional(),
     audio: AudioMediaSchema.optional(),
     video: VideoMediaSchema.optional(),

@@ -38,6 +38,9 @@ export class FlowExecutionService {
     await flowExecutionRepository.updateState(conversationId, nodeId, contextRecord(context));
     logger.warn({ conversationId, nodeId }, "Estado do fluxo restaurado após falha de entrega");
   }
+  async rememberDecisionPrompt(conversationId: string, nodeId: string, referenceMessageId: string) {
+    await flowExecutionRepository.mergeContext(conversationId, { lastPromptNodeId: nodeId, lastPromptMessageId: referenceMessageId });
+  }
   async execute(input: ExecuteFlowInput): Promise<{ status: string; actions: FlowExecutionAction[] }> {
     let conversation = await flowExecutionRepository.getConversation(input.conversationId);
     if (!conversation) throw new Error("CONVERSATION_NOT_FOUND");
@@ -50,11 +53,27 @@ export class FlowExecutionService {
     const actions: FlowExecutionAction[] = [];
 
     if (!input.isNewConversation && node.type === "DECISION") {
+      const expectedReference = typeof context.lastPromptMessageId === "string" ? context.lastPromptMessageId : undefined;
+      if (input.referenceMessageId && expectedReference && input.referenceMessageId !== expectedReference) {
+        logger.warn({ conversationId: conversation!.id, flowNodeId: node.id }, "Resposta interativa pertence a outro prompt do fluxo");
+        return this.waitAtDecision(revision, node, conversation!.id);
+      }
       const chosen = findDecisionChoice(revision, node, input.content, input.selectedOptionId);
       if (!chosen) return this.waitAtDecision(revision, node, conversation!.id);
+      const nodeConfig = contextRecord(node.config);
+      const selections = contextRecord(context.decisionSelections);
+      context.decisionSelections = { ...selections, [node.stableKey]: { optionKey: chosen.optionKey, label: chosen.label } };
+      if (nodeConfig.decisionScope === "ROUTE" || typeof nodeConfig.parentRouteId === "string") {
+        context.selectedIssueKey = chosen.optionKey;
+        context.selectedIssueLabel = chosen.label;
+      } else {
+        context.selectedOptionKey = chosen.optionKey;
+        context.teamName = chosen.label;
+      }
+      context.lastPromptMessageId = null;
+      context.lastPromptNodeId = null;
       node = revision.nodes.find((item) => item.id === chosen.toNodeId);
       if (!node) throw new Error("FLOW_NODE_NOT_FOUND");
-      context.selectedOptionKey = chosen.optionKey; context.teamName = chosen.label;
     } else if (!input.isNewConversation && node.type === "TRIAGE") {
       const config = contextRecord(node.config); const responseKey = typeof config.responseKey === "string" ? config.responseKey : node.stableKey;
       context[responseKey] = input.content;
@@ -75,7 +94,35 @@ export class FlowExecutionService {
     }
     logger.error({ conversationId: input.conversationId }, "Limite de passos do fluxo excedido"); throw new Error("FLOW_STEP_LIMIT");
   }
-  private decisionAction(revision: RuntimeRevision, node: FlowNode): FlowExecutionAction { const config = contextRecord(node.config); return { type: "SEND_OPTIONS", content: typeof config.buttonMessage === "string" ? config.buttonMessage : node.content, options: revision.transitions.filter((item) => item.fromNodeId === node.id && item.optionKey).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => { const target = revision.nodes.find((nodeItem) => nodeItem.id === item.toNodeId); return { optionKey: item.optionKey!, label: item.label ?? target?.name ?? "Opção", departmentId: target?.departmentId ?? "" }; }) }; }
+  private decisionAction(revision: RuntimeRevision, node: FlowNode): FlowExecutionAction {
+    const config = contextRecord(node.config);
+    const configuredOptions = Array.isArray(config.decisionOptions) ? config.decisionOptions : [];
+    const descriptionByKey = new Map(configuredOptions.flatMap((value) => {
+      if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+      const option = value as Record<string, unknown>;
+      return typeof option.optionKey === "string" && typeof option.description === "string"
+        ? [[option.optionKey, option.description] as const]
+        : [];
+    }));
+    return {
+      type: "SEND_OPTIONS",
+      nodeId: node.id,
+      content: typeof config.buttonMessage === "string" ? config.buttonMessage : node.content,
+      options: revision.transitions
+        .filter((item) => item.fromNodeId === node.id && item.optionKey)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((item) => {
+          const target = revision.nodes.find((nodeItem) => nodeItem.id === item.toNodeId);
+          const description = descriptionByKey.get(item.optionKey!);
+          return {
+            optionKey: item.optionKey!,
+            label: item.label ?? target?.name ?? "Opção",
+            ...(description ? { description } : {}),
+            departmentId: target?.departmentId ?? "",
+          };
+        }),
+    };
+  }
   private async waitAtDecision(revision: RuntimeRevision, node: FlowNode, conversationId: string) { await flowExecutionRepository.updateState(conversationId, node.id); return { status: "invalid_option", actions: [this.decisionAction(revision, node)] as FlowExecutionAction[] }; }
 }
 export const flowExecutionService = new FlowExecutionService();

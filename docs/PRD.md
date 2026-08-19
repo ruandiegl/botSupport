@@ -37,6 +37,8 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 - **Rascunho e publicação**: Edições permanecem em rascunho até publicação explícita. Uma publicação cria uma revisão imutável e não altera conversas em andamento.
 - **Continuidade operacional**: A conversa permanece em `BOT` durante decisões e triagens, e muda para `QUEUED` somente ao executar um nó `HANDOFF` válido.
 - **Reordenação estável**: Rotas e etapas podem ser reordenadas por arraste ou teclado sem alterar os identificadores estáveis utilizados por botões já enviados.
+- **Submenus por rota**: Uma rota pode incluir uma decisão secundária configurável. Ex.: após escolher Suporte, o contato escolhe “Acesso e senha”, “Rede e Internet” ou outro assunto antes da triagem.
+- **Compatibilidade interativa**: Botões e listas usam `optionKey` estável; quando o recurso interativo da Z-API estiver indisponível, o bot envia as mesmas opções em formato textual numerado.
 
 ### Tipos de etapa do fluxo
 
@@ -58,6 +60,8 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 6. Uma conversa iniciada em uma revisão termina nela, mesmo que outra revisão seja publicada.
 7. Um callback repetido não pode duplicar mensagens, respostas ou transições.
 8. Falha no envio externo mantém estado recuperável para retentativa e não avança silenciosamente.
+9. Como administrador, eu quero adicionar e reordenar botões dentro de uma rota para detalhar a necessidade antes do encaminhamento.
+10. Como solicitante, eu quero receber o submenu da rota escolhida e avançar imediatamente ao selecionar uma opção válida, sem repetição da saudação.
 
 ---
 

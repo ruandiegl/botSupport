@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 
 const branchTypes: Array<{ value: FlowNodeType; label: string }> = [
   { value: "MESSAGE", label: "Mensagem" },
+  { value: "DECISION", label: "Lista de botões" },
   { value: "TRIAGE", label: "Triagem (aguarda resposta)" },
   { value: "HANDOFF", label: "Encaminhamento para fila" },
   { value: "END", label: "Finalização" },

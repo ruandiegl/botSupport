@@ -206,6 +206,30 @@ Salva atomicamente o documento completo. O campo `revision` implementa controle 
 
 Retorna `409 Conflict` quando `revision` estiver desatualizado, sem sobrescrever o rascunho do outro editor.
 
+Uma decisão secundária dentro de uma rota utiliza o mesmo tipo `DECISION`, com configuração validada:
+
+```json
+{
+  "id": "uuid",
+  "stableKey": "support-submenu",
+  "type": "DECISION",
+  "name": "Detalhar necessidade",
+  "content": "Qual opção descreve melhor sua necessidade?",
+  "sortOrder": 0,
+  "config": {
+    "parentRouteId": "uuid-da-rota",
+    "decisionScope": "ROUTE",
+    "decisionOptions": [
+      { "optionKey": "support-password", "label": "Acesso e senha" },
+      { "optionKey": "support-network", "label": "Rede e Internet", "description": "Conectividade e acesso" }
+    ]
+  },
+  "departmentId": null
+}
+```
+
+Cada item também deve existir como `FlowTransition` saindo da decisão, com o mesmo `optionKey` e `label`. O backend rejeita divergência, duplicidade, submenu sem terminal e mais de um submenu por rota.
+
 ### `POST /flow/draft/:id/validate`
 
 Valida estrutura, grafo, limites e referências sem publicar. Um documento carregado retorna `200` com `{ "valid": true, "issues": [] }` ou `{ "valid": false, "issues": [...] }`. Cada issue possui `code`, `message` e, quando aplicável, `nodeId` ou `transitionId`. UUID/payload malformado retorna `400`.

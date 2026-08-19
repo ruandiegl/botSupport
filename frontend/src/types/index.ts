@@ -214,11 +214,20 @@ export interface BotExclusionListResponse {
 export type FlowRevisionStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 export type FlowNodeType = "ENTRY" | "MESSAGE" | "DECISION" | "ROUTE" | "TRIAGE" | "HANDOFF" | "END";
 
+export interface FlowDecisionOption {
+  optionKey: string;
+  label: string;
+  description?: string;
+}
+
 export interface FlowNodeConfig {
   parentRouteId?: string;
   responseKey?: string;
   optionKey?: string;
   legacyOptionIndex?: number;
+  decisionScope?: "ROOT" | "ROUTE";
+  decisionOptions?: FlowDecisionOption[];
+  buttonMessage?: string;
   [key: string]: unknown;
 }
 

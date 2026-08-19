@@ -29,6 +29,8 @@ Revisão realizada em 2026-08-12 sobre schema/migração, schemas Zod, validador
 | Motor | `BOT -> QUEUED` somente no handoff | implementação revisada | Pendente |
 | Motor | conversa permanece na revisão original | campo e leitura revisados | Pendente |
 | Webhook | texto, botão, lista e eventos ignorados | `zapi.service.test.js` | Automatizado |
+| Submenu | rota → decisão secundária → triagem preserva equipe e assunto | `flow-v2.integration.test.js` | Automatizado |
+| Submenu | `optionKey`, payload de lista e `referenceMessageId` | `flow-v2.service.test.js` + `zapi.service.test.js` | Automatizado |
 | Idempotência | callback duplicado não avança | claim atômico trata `P2002`; concorrência real não provada | Revisado |
 | Falha externa | envio Z-API não avança silenciosamente | sem outbox/teste de falha | Pendente |
 | Segurança | segredos ausentes da documentação | `PRD_ZAPI.md` | Revisado |
@@ -69,6 +71,8 @@ npm.cmd test
 Resultado intermediário: build e 14 testes passaram após regenerar os tipos Prisma. O Prisma reportou `EPERM` ao tentar substituir a DLL do query engine que estava em uso no Windows; parar o backend antes da geração resolve o bloqueio de arquivo.
 
 Resultado final após correção do empacotamento Prisma: build e suíte concluídos com exit code `0`; **27 testes descobertos, 22 aprovados e 5 marcados como TODO**. Permanecem lacunas integradas de API, PostgreSQL, falha externa e E2E.
+
+Rodada do Plano 020 em 2026-08-19: build backend e suíte completa concluídos com exit code `0`; **65 testes aprovados, sem falhas ou TODO**. Foram cobertos submenu dentro da rota, preservação da equipe/assunto, resposta ligada a prompt antigo, payloads `send-button-list`/`send-option-list` e compatibilidade do fluxo sem submenu. A homologação real na instância Z-API continua necessária para confirmar os limites comerciais da conta.
 
 ## Cenário E2E obrigatório em homologação
 

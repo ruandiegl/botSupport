@@ -20,6 +20,8 @@ const ids = {
   t2: "00000000-0000-4000-8000-000000000012",
   t3: "00000000-0000-4000-8000-000000000013",
   t4: "00000000-0000-4000-8000-000000000014",
+  submenu: "00000000-0000-4000-8000-000000000007",
+  t5: "00000000-0000-4000-8000-000000000015",
 };
 
 function validDocument() {
@@ -46,6 +48,33 @@ test("aceita documento v2 com rota, triagem e handoff", () => {
   assert.equal(parsed.success, true);
 });
 
+test("aceita submenu de botões com ids estáveis dentro da rota", () => {
+  const document = validDocument();
+  document.nodes.push({
+    id: ids.submenu,
+    stableKey: "support-submenu",
+    type: "DECISION",
+    name: "Assunto",
+    content: "Qual é o assunto?",
+    sortOrder: 0,
+    config: {
+      parentRouteId: ids.route,
+      decisionScope: "ROUTE",
+      decisionOptions: [
+        { optionKey: "support-password", label: "Acesso e senha" },
+        { optionKey: "support-network", label: "Rede e Internet", description: "Conectividade" },
+      ],
+    },
+  });
+  document.transitions = document.transitions.filter((transition) => transition.id !== ids.t3);
+  document.transitions.push(
+    { id: ids.t3, fromNodeId: ids.route, toNodeId: ids.submenu, sortOrder: 0 },
+    { id: ids.t5, fromNodeId: ids.submenu, toNodeId: ids.triage, optionKey: "support-password", label: "Acesso e senha", sortOrder: 0 },
+    { id: "00000000-0000-4000-8000-000000000016", fromNodeId: ids.submenu, toNodeId: ids.triage, optionKey: "support-network", label: "Rede e Internet", sortOrder: 1 },
+  );
+  assert.equal(SaveDraftBodySchema.safeParse(document).success, true);
+});
+
 test("rejeita UUID, texto e quantidade fora dos limites", () => {
   assert.equal(FlowNodeInputSchema.safeParse({
     id: "não-é-uuid",
@@ -69,6 +98,9 @@ test("serviço declara validações estruturais mínimas do grafo", () => {
     "UNKNOWN_NODE",
     "DUPLICATE_OPTION_KEY",
     "DECISION_WITHOUT_OPTIONS",
+    "DECISION_WITHOUT_OPTION_KEY",
+    "DECISION_OPTIONS_MISMATCH",
+    "DECISION_OPTION_WITHOUT_TERMINAL",
     "TRIAGE_NEXT",
     "UNREACHABLE_NODE",
     "CYCLE",

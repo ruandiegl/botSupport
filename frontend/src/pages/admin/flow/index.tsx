@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { FlowBuilder } from "./components/FlowBuilder";
 import {
   addRoute,
+  createDecisionOption,
   createNode,
   duplicateNode,
   insertNode,
@@ -97,7 +98,18 @@ export default function FlowAdmin() {
 
   const addStep = (type: FlowNodeType, parentRouteId?: string) => {
     if (!draft) return;
-    const node = createNode(type);
+    const node = createNode(type, type === "DECISION" && parentRouteId ? {
+      name: "Detalhar necessidade",
+      content: "Qual opção descreve melhor sua necessidade?",
+      config: {
+        parentRouteId,
+        decisionScope: "ROUTE",
+        decisionOptions: [
+          createDecisionOption("Primeira opção"),
+          createDecisionOption("Outra opção"),
+        ],
+      },
+    } : undefined);
     commitLocal(insertNode(draft, node, parentRouteId), node.id);
   };
 

@@ -1,4 +1,5 @@
 import type {
+  FlowDecisionOption,
   FlowDefinition,
   FlowNode,
   FlowNodeType,
@@ -23,6 +24,25 @@ const uuid = () => {
 };
 
 const stableKey = (prefix: string) => `${prefix}-${uuid()}`;
+export const MAX_ROUTE_DECISION_OPTIONS = 20;
+
+export function createDecisionOption(label = "Nova opção"): FlowDecisionOption {
+  return { optionKey: stableKey("choice"), label };
+}
+
+export function getDecisionOptions(node: FlowNode): FlowDecisionOption[] {
+  if (!Array.isArray(node.config.decisionOptions)) return [];
+  return node.config.decisionOptions.flatMap((value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+    const option = value as Partial<FlowDecisionOption>;
+    if (typeof option.optionKey !== "string" || typeof option.label !== "string") return [];
+    return [{
+      optionKey: option.optionKey,
+      label: option.label,
+      ...(typeof option.description === "string" && option.description.trim() ? { description: option.description } : {}),
+    }];
+  });
+}
 
 export function createNode(
   type: FlowNodeType,
@@ -147,6 +167,7 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
   const byId = new Map(nodes.map((node) => [node.id, node]));
   const parentByNode = new Map<string, string>();
   const optionByRoute = new Map<string, string>();
+  const optionsByDecision = new Map<string, FlowDecisionOption[]>();
   const routes = nodes.filter((node) => node.type === "ROUTE");
   for (const route of routes) {
     const incoming = input.transitions.find((transition) => transition.toNodeId === route.id && transition.optionKey);
@@ -163,6 +184,14 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
       input.transitions.filter((transition) => transition.fromNodeId === nodeId).forEach((transition) => queue.push(transition.toNodeId));
     }
   }
+  for (const node of nodes.filter((item) => item.type === "DECISION" && item.config.parentRouteId)) {
+    const configured = getDecisionOptions(node);
+    const derived = input.transitions
+      .filter((transition) => transition.fromNodeId === node.id && transition.optionKey)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((transition) => ({ optionKey: transition.optionKey!, label: transition.label ?? "Opção" }));
+    optionsByDecision.set(node.id, configured.length ? configured : derived);
+  }
   return {
     ...input,
     nodes: nodes.map((node) => ({
@@ -171,6 +200,10 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
         ...node.config,
         ...(parentByNode.has(node.id) ? { parentRouteId: parentByNode.get(node.id) } : {}),
         ...(optionByRoute.has(node.id) ? { optionKey: optionByRoute.get(node.id) } : {}),
+        ...(optionsByDecision.has(node.id) ? {
+          decisionScope: "ROUTE",
+          decisionOptions: optionsByDecision.get(node.id),
+        } : {}),
       },
     })),
   };
@@ -178,7 +211,7 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
 
 export function revisionToLegacy(revision: FlowRevision): FlowDefinition {
   const entry = revision.nodes.find((node) => node.type === "ENTRY");
-  const decision = revision.nodes.find((node) => node.type === "DECISION");
+  const decision = getMainNodes(revision).find((node) => node.type === "DECISION");
   const routes = getRouteNodes(revision);
   const fallback = revision.legacyDefinition;
   return {
@@ -282,7 +315,14 @@ export function duplicateNode(revision: FlowRevision, nodeId: string): { revisio
       ...node,
       id: undefined,
       stableKey: undefined,
-      config: { ...node.config, parentRouteId: route.id },
+      config: {
+        ...node.config,
+        parentRouteId: route.id,
+        ...(node.type === "DECISION" ? {
+          decisionScope: "ROUTE",
+          decisionOptions: getDecisionOptions(node).map((option) => ({ ...option, optionKey: stableKey("choice") })),
+        } : {}),
+      },
     }));
     return { revision: rebuildTransitions({ ...revision, nodes: [...revision.nodes, route, ...branch] }), nodeId: route.id };
   }
@@ -302,7 +342,7 @@ export function duplicateNode(revision: FlowRevision, nodeId: string): { revisio
 
 export function removeNode(revision: FlowRevision, nodeId: string): FlowRevision {
   const source = revision.nodes.find((node) => node.id === nodeId);
-  if (!source || source.type === "ENTRY" || source.type === "DECISION") return revision;
+  if (!source || source.type === "ENTRY" || (source.type === "DECISION" && !source.config.parentRouteId)) return revision;
   const removedIds = new Set([nodeId]);
   if (source.type === "ROUTE") {
     revision.nodes.filter((node) => node.config.parentRouteId === nodeId).forEach((node) => removedIds.add(node.id));
@@ -373,7 +413,16 @@ export function rebuildTransitions(revision: FlowRevision): FlowRevision {
     if (branch[0]) transitions.push(createTransition(route.id, branch[0].id));
     branch.forEach((node, index) => {
       const next = branch[index + 1];
-      if (next) transitions.push(createTransition(node.id, next.id, { sortOrder: index }));
+      if (!next) return;
+      if (node.type === "DECISION") {
+        getDecisionOptions(node).forEach((option, optionIndex) => transitions.push(createTransition(node.id, next.id, {
+          optionKey: option.optionKey,
+          label: option.label,
+          sortOrder: optionIndex,
+        })));
+        return;
+      }
+      transitions.push(createTransition(node.id, next.id, { sortOrder: index }));
     });
   });
   return { ...revision, nodes: [...main, ...routes, ...branchNodes, ...retained], transitions };
@@ -384,6 +433,7 @@ export function validateFlow(revision: FlowRevision): FlowValidationResult {
   const entries = revision.nodes.filter((node) => node.type === "ENTRY");
   const decisions = revision.nodes.filter((node) => node.type === "DECISION");
   const routes = getRouteNodes(revision);
+  const optionKeys = new Set<string>();
   if (entries.length !== 1) issues.push({ message: "O fluxo precisa ter exatamente uma entrada." });
   if (!decisions.length) issues.push({ message: "Adicione uma etapa de decisão." });
   if (!routes.length) issues.push({ message: "Adicione pelo menos uma rota." });
@@ -398,9 +448,29 @@ export function validateFlow(revision: FlowRevision): FlowValidationResult {
     if ((node.type === "ROUTE" || node.type === "HANDOFF") && !node.departmentId) {
       issues.push({ nodeId: node.id, field: "departmentId", message: "Selecione o departamento responsável." });
     }
+    if (node.type === "ROUTE") {
+      const optionKey = String(node.config.optionKey ?? node.stableKey);
+      if (optionKeys.has(optionKey)) issues.push({ nodeId: node.id, field: "optionKey", message: "Esta opção possui uma identificação duplicada." });
+      optionKeys.add(optionKey);
+    }
+    if (node.type === "DECISION" && node.config.parentRouteId) {
+      const options = getDecisionOptions(node);
+      if (!options.length) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Adicione pelo menos uma opção ao submenu." });
+      if (options.length > MAX_ROUTE_DECISION_OPTIONS) issues.push({ nodeId: node.id, field: "decisionOptions", message: `Use no máximo ${MAX_ROUTE_DECISION_OPTIONS} opções neste submenu.` });
+      options.forEach((option) => {
+        if (!option.label.trim()) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Todas as opções precisam de um rótulo." });
+        if (option.label.length > 80) issues.push({ nodeId: node.id, field: "decisionOptions", message: "O rótulo de cada opção deve ter até 80 caracteres." });
+        if (optionKeys.has(option.optionKey)) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Há opções com identificação duplicada." });
+        optionKeys.add(option.optionKey);
+      });
+    }
   });
   routes.forEach((route) => {
     const branch = getBranchNodes(revision, route.id);
+    const routeDecisions = branch.filter((node) => node.type === "DECISION");
+    if (routeDecisions.length > 1) {
+      issues.push({ nodeId: routeDecisions[1].id, message: "Nesta versão, cada rota pode ter somente um submenu de botões." });
+    }
     const terminals = branch.filter((node) => node.type === "HANDOFF" || node.type === "END");
     if (!terminals.length) {
       issues.push({ nodeId: route.id, message: "A rota precisa terminar em encaminhamento ou finalização." });

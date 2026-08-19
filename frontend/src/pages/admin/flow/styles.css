@@ -92,6 +92,12 @@
 .flow-inspector-title, .flow-preview-title { display: flex; align-items: center; gap: 8px; }
 .flow-inspector-title svg, .flow-preview-title svg { width: 17px; height: 17px; color: hsl(var(--primary)); }
 .flow-inspector-actions { display: flex; justify-content: space-between; gap: 8px; }
+.flow-decision-options { display: flex; flex-direction: column; gap: 10px; }
+.flow-decision-option { gap: 7px; padding: 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: 0 3px 12px hsl(var(--foreground) / .04); }
+.flow-decision-option[data-dragging="true"] { opacity: .55; box-shadow: 0 10px 28px hsl(var(--foreground) / .14); }
+.flow-decision-option-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.flow-decision-option-header strong { font-size: 12px; }
+.flow-decision-option-actions { display: flex; align-items: center; gap: 2px; }
 
 .flow-preview-content { display: flex; flex-direction: column; gap: 12px; }
 .flow-phone-preview { overflow: hidden; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) + 2px); background: hsl(var(--muted) / .45); }
@@ -118,4 +124,3 @@
   .flow-branch-sequence { padding-left: 12px; }
   .flow-add-step { grid-template-columns: 1fr; }
 }
-
