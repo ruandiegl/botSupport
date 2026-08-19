@@ -14,6 +14,17 @@ import { useBotExclusions, useCreateBotExclusion, useRemoveBotExclusion, useUpda
 
 const emptyForm = { phone: "", label: "", reason: "" };
 
+function formatPhoneInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 13);
+  if (!digits) return "";
+  let formatted = `+${digits.slice(0, 2)}`;
+  if (digits.length > 2) formatted += ` (${digits.slice(2, 4)}`;
+  if (digits.length >= 4) formatted += ")";
+  if (digits.length > 4) formatted += ` ${digits.slice(4, 9)}`;
+  if (digits.length > 9) formatted += `-${digits.slice(9, 13)}`;
+  return formatted;
+}
+
 function displayPhone(phone: string) {
   if (phone.length === 13) return `+${phone.slice(0, 2)} (${phone.slice(2, 4)}) ${phone.slice(4, 9)}-${phone.slice(9)}`;
   return `+${phone}`;
@@ -33,7 +44,7 @@ export default function BotExclusionsAdmin() {
   const [saveConfirmOpen, setSaveConfirmOpen] = useState(false);
 
   const reset = () => { setEditing(null); setForm(emptyForm); };
-  const startEdit = (item: BotExclusion) => { setEditing(item); setForm({ phone: item.phone, label: item.label || "", reason: item.reason || "" }); };
+  const startEdit = (item: BotExclusion) => { setEditing(item); setForm({ phone: formatPhoneInput(item.phone), label: item.label || "", reason: item.reason || "" }); };
   const visible = useMemo(() => (data?.items || []).filter((item) => `${item.phone} ${item.label || ""} ${item.reason || ""}`.toLowerCase().includes(query.toLowerCase())), [data?.items, query]);
   const invalid = form.phone.replace(/\D/g, "").length < 7;
   const saving = create.isPending || update.isPending;
@@ -57,7 +68,7 @@ export default function BotExclusionsAdmin() {
       <Card>
         <CardHeader><CardTitle>{editing ? "Editar bloqueio" : "Novo bloqueio"}</CardTitle><CardDescription>O contato continuará visível no histórico, mas o bot não enviará mensagens automáticas.</CardDescription></CardHeader>
         <CardContent><FieldGroup>
-          <Field><FieldLabel htmlFor="bot-exclusion-phone">Número do WhatsApp</FieldLabel><Input id="bot-exclusion-phone" inputMode="tel" value={form.phone} onChange={(event) => setForm((old) => ({ ...old, phone: event.target.value }))} placeholder="Ex.: +55 (24) 99999-9999" /><FieldDescription>Use o DDI e o DDD para evitar bloquear o contato errado.</FieldDescription></Field>
+          <Field><FieldLabel htmlFor="bot-exclusion-phone">Número do WhatsApp</FieldLabel><Input id="bot-exclusion-phone" inputMode="tel" autoComplete="tel" maxLength={19} value={form.phone} onChange={(event) => setForm((old) => ({ ...old, phone: formatPhoneInput(event.target.value) }))} placeholder="+55 (24) 99999-9999" /><FieldDescription>Formato automático: +xx (xx) xxxxx-xxxx. Use DDI e DDD para evitar bloquear o contato errado.</FieldDescription></Field>
           <Field><FieldLabel htmlFor="bot-exclusion-label">Nome ou identificação (opcional)</FieldLabel><Input id="bot-exclusion-label" value={form.label} onChange={(event) => setForm((old) => ({ ...old, label: event.target.value }))} placeholder="Ex.: Bot de testes" /></Field>
           <Field><FieldLabel htmlFor="bot-exclusion-reason">Motivo (opcional)</FieldLabel><Input id="bot-exclusion-reason" value={form.reason} onChange={(event) => setForm((old) => ({ ...old, reason: event.target.value }))} placeholder="Ex.: Evitar conversa automática entre bots" /></Field>
           <div className="flex justify-end gap-2"><Button variant="outline" onClick={reset}>Limpar</Button><Button disabled={invalid || saving || (editing ? !can("bot_exclusions", "update") : !can("bot_exclusions", "create"))} onClick={() => setSaveConfirmOpen(true)}>{saving ? "Salvando..." : editing ? "Salvar alteração" : "Adicionar número"}</Button></div>
