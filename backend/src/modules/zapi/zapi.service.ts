@@ -327,23 +327,37 @@ function normalizeMentionName(value: string) {
     .toLowerCase();
 }
 
+function normalizeMentionAlias(value: string) {
+  return normalizeMentionName(value)
+    .replace(/^[@~\s]+/, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
 function hasTextMentionAlias(payload: any, aliases: string[]): boolean {
   const texts = incomingTextCandidates(payload).map(normalizeMentionName);
   return texts.some((text) =>
     aliases.some((rawAlias) => {
-      const alias = normalizeMentionName(rawAlias);
+      const alias = normalizeMentionAlias(rawAlias);
       if (!alias) return false;
-      const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      return new RegExp(`(^|\\s)@~?${escaped}(?=$|[\\s,.;:!?])`, "i").test(text);
+      const escaped = alias
+        .split(" ")
+        .filter(Boolean)
+        .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("\\s+");
+      // Z-API/WhatsApp may render the mention as @Name, @~Name or with
+      // invisible spacing between the marker and the display name.
+      return new RegExp(`(^|\\s)@(?:~\\s*)?${escaped}(?=$|[\\s,.;:!?])`, "i").test(text);
     }),
   );
 }
 
 function hasExactBareAlias(payload: any, aliases: string[]): boolean {
-  const texts = incomingTextCandidates(payload).map(normalizeMentionName);
+  const texts = incomingTextCandidates(payload).map(normalizeMentionAlias);
   return texts.some((text) => {
     const candidate = text.replace(/^[@~\s]+/, "").replace(/[\s,.;:!?]+$/, "");
-    return aliases.some((alias) => candidate === normalizeMentionName(alias));
+    return aliases.some((alias) => candidate === normalizeMentionAlias(alias));
   });
 }
 
