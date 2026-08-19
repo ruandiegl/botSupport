@@ -45,19 +45,21 @@ test("aceita o formato oficial da Z-API para participante e telefone conectado",
 });
 
 test("somente a menção da própria instância ativa o bot no grupo", () => {
-  const instancePhone = "5511666666666";
+  const instancePhone = "5511966666666";
   assert.equal(isInstanceMentioned({ mentioned: [instancePhone] }, instancePhone), true);
   assert.equal(isInstanceMentioned({ mentionedJids: [`${instancePhone}@s.whatsapp.net`] }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { contextInfo: { mentionedJid: [`${instancePhone}@s.whatsapp.net`] } } }, instancePhone), true);
   assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
   assert.equal(isInstanceMentioned({ text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
   assert.equal(isInstanceMentioned({ text: { message: `@${instancePhone} preciso de suporte` } }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@551166666666 preciso de suporte" } }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico preciso de ajuda" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: "@~Suporte Técnico" }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ messageData: { extendedText: { body: "@~Suporte Técnico" } } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ messageData: { contextInfo: { mentioned: { jid: `${instancePhone}@s.whatsapp.net` } } } }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { message: "@\u2068~Suporte Técnico\u2069" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico" } }, "", ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: { message: "@Letícia" }, quotedMessage: { text: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ mentioned: ["81896604192873@lid"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);

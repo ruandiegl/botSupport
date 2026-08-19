@@ -211,50 +211,38 @@ export default function ConversationPage() {
     });
   };
 
-  const handleClose = (reason: "NORMAL" | "INACTIVITY" = "NORMAL") => {
+  const handleClose = async (reason: "NORMAL" | "INACTIVITY" = "NORMAL") => {
     setCloseConfirmOpen(false);
-    close.mutate(undefined, {
-      onSuccess: () => {
-        let closingShortcut: any = null;
-        if (reason === "INACTIVITY") {
-          closingShortcut = availableShortcuts.find(
-            (s) =>
-              s.type === "CLOSING" &&
-              (s.title.toLowerCase().includes("interação") ||
-                s.title.toLowerCase().includes("inativid"))
-          );
-          if (!closingShortcut) {
-            const formatted = formatShortcutMessage(
-              "Olá, {contactName}! Seu atendimento está sendo encerrado por falta de interação/resposta. Caso ainda precise de ajuda, envie uma nova mensagem para iniciar um novo atendimento. Obrigado!",
-              {
-                agentName: activeAgentName,
-                contactName: conversation.contact.name,
-                departmentName: activeAgentDeptName,
-              }
-            );
-            setMessage(formatted);
-            return;
-          }
-        } else {
-          closingShortcut = availableShortcuts.find(
-            (s) =>
-              s.type === "CLOSING" &&
-              !s.title.toLowerCase().includes("interação") &&
-              !s.title.toLowerCase().includes("inativid")
-          );
-        }
+    let closingShortcut: any = null;
+    if (reason === "INACTIVITY") {
+      closingShortcut = availableShortcuts.find(
+        (s) => s.type === "CLOSING" && (s.title.toLowerCase().includes("interação") || s.title.toLowerCase().includes("inativid")),
+      );
+    } else {
+      closingShortcut = availableShortcuts.find(
+        (s) => s.type === "CLOSING" && !s.title.toLowerCase().includes("interação") && !s.title.toLowerCase().includes("inativid"),
+      );
+    }
 
-        if (closingShortcut) {
-          const formatted = formatShortcutMessage(closingShortcut.message, {
-            agentName: activeAgentName,
-            contactName: conversation.contact.name,
-            departmentName: activeAgentDeptName,
-          });
-          setMessage(formatted);
-          setSelectedShortcutId(closingShortcut.id);
-        }
-      },
+    const fallback = reason === "INACTIVITY"
+      ? "Olá, {contactName}! Seu atendimento está sendo encerrado por falta de interação/resposta. Caso ainda precise de ajuda, envie uma nova mensagem para iniciar um novo atendimento. Obrigado!"
+      : "Olá, {contactName}! Seu atendimento foi encerrado. Caso precise de algo mais, envie uma nova mensagem. Obrigado!";
+    const closingMessage = formatShortcutMessage(closingShortcut?.message || fallback, {
+      agentName: activeAgentName,
+      contactName: conversation.contact.name,
+      departmentName: activeAgentDeptName,
     });
+
+    try {
+      await sendMessage.mutateAsync({ content: closingMessage });
+      if (closingShortcut) await registerShortcutUse.mutateAsync({ id: closingShortcut.id, conversationId: id });
+      await close.mutateAsync();
+      setMessage("");
+      setSelectedShortcutId(null);
+    } catch {
+      // The mutation error is rendered next to the composer and the ticket is
+      // intentionally kept open when its closing message cannot be delivered.
+    }
   };
 
   const handleDelegationSubmit = (draft: { agentId: string; reason?: string }) => {
@@ -372,7 +360,14 @@ export default function ConversationPage() {
           ))}
         </div>
 
-        <div className="composer">
+        {conversation.status === "CLOSED" ? (
+          <div className="composer" role="status">
+            <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+              Este chamado está encerrado. Quando o cliente enviar uma nova mensagem, um novo atendimento será iniciado.
+            </div>
+          </div>
+        ) : (
+          <div className="composer">
           {can("shortcuts", "use") && (
             <div className="composer-toolbar">
               <ShortcutPicker 
@@ -398,7 +393,11 @@ export default function ConversationPage() {
             data-testid="textarea-message"
           />
           <div className="composer-foot">
-            <div />
+            <div>
+              {sendMessage.isError ? (
+                <p className="text-sm text-destructive" role="alert">{sendMessage.error.message}</p>
+              ) : null}
+            </div>
             <Button
               variant="default"
               size="lg"
@@ -410,6 +409,7 @@ export default function ConversationPage() {
             </Button>
           </div>
         </div>
+        )}
       </section>
 
       <DetailPanel
@@ -474,7 +474,7 @@ export default function ConversationPage() {
           <div className="grid grid-cols-1 gap-2.5 my-1">
             <button
               type="button"
-              disabled={close.isPending}
+              disabled={close.isPending || sendMessage.isPending}
               onClick={() => handleClose("NORMAL")}
               className="flex items-start gap-3 p-3.5 text-left rounded-lg border border-border bg-background hover:bg-muted hover:border-primary/50 transition-all group cursor-pointer"
               data-testid="button-close-normal"
@@ -499,7 +499,7 @@ export default function ConversationPage() {
 
             <button
               type="button"
-              disabled={close.isPending}
+              disabled={close.isPending || sendMessage.isPending}
               onClick={() => handleClose("INACTIVITY")}
               className="flex items-start gap-3 p-3.5 text-left rounded-lg border border-border bg-background hover:bg-muted hover:border-warning/50 transition-all group cursor-pointer"
               data-testid="button-close-inactivity"

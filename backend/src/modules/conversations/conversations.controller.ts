@@ -179,12 +179,24 @@ export class ConversationsController {
       return;
     }
 
-    const message = await conversationsService.sendMessage(id, body.data.content, (req as AuthenticatedRequest).user);
-    if (!message) {
-      res.status(404).json({ error: "Conversa não encontrada" });
-      return;
+    const result = await conversationsService.sendMessage(id, body.data.content, (req as AuthenticatedRequest).user);
+    switch (result.kind) {
+      case "NOT_FOUND":
+        res.status(404).json({ error: "Conversa não encontrada ou sem acesso" });
+        return;
+      case "CLOSED":
+        res.status(409).json({ error: "Este chamado já foi encerrado. Aguarde uma nova mensagem do cliente para iniciar outro atendimento." });
+        return;
+      case "AGENT_UNAVAILABLE":
+        res.status(403).json({ error: "Seu usuário não está disponível para enviar mensagens." });
+        return;
+      case "EMPTY":
+        res.status(400).json({ error: "Digite uma mensagem antes de enviar." });
+        return;
+      case "OK":
+        res.status(201).json(result.message);
+        return;
     }
-    res.status(201).json(message);
   }
 
   async transfer(req: Request, res: Response): Promise<void> {

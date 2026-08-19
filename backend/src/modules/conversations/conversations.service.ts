@@ -412,17 +412,18 @@ export class ConversationsService {
 
   async sendMessage(id: string, rawContent: string, user?: AuthenticatedRequest["user"]) {
     const conversation = await conversationsRepository.findAccessById(id);
-    if (!conversation || conversation.status === "CLOSED" || !this.canAccess(conversation, user) || !user) return null;
+    if (!conversation || !this.canAccess(conversation, user) || !user) return { kind: "NOT_FOUND" as const };
+    if (conversation.status === "CLOSED") return { kind: "CLOSED" as const };
 
     const agent = await conversationsRepository.findAgentById(user.id);
-    if (!agent || !agent.isActive) return null;
+    if (!agent || !agent.isActive) return { kind: "AGENT_UNAVAILABLE" as const };
 
     const agentName = agent?.name ?? "Atendente";
     const deptName = agent?.department?.name || conversation.department?.name || "Suporte T.I.";
     const cleanContent = rawContent.trim();
 
     const unsignedContent = cleanContent.replace(/^\*[^*\n]{1,200}:\*\s*/u, "").trim();
-    if (!unsignedContent) return null;
+    if (!unsignedContent) return { kind: "EMPTY" as const };
     const content = `*${agentName} - ${deptName}:*\n\n${unsignedContent}`;
 
     const message = await conversationsRepository.addMessage({
@@ -458,7 +459,7 @@ export class ConversationsService {
 
     conversationEvents.emit("conversation_updated", { conversationId: id, eventType: "MESSAGE_SENT", messageId: message.id });
 
-    return formattedMsg;
+    return { kind: "OK" as const, message: formattedMsg };
   }
 
   async transfer(id: string, departmentId: string, user?: AuthenticatedRequest["user"]) {

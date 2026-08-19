@@ -182,6 +182,22 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
 }
 
 function canonicalJid(value: string) { return value.trim().toLowerCase().split(":")[0].replace(/\D/g, ""); }
+function phoneVariants(value: string): Set<string> {
+  const phone = canonicalJid(value);
+  const variants = new Set<string>(phone ? [phone] : []);
+  // Brazilian WhatsApp JIDs may alternate between the legacy number and the
+  // same mobile number with the ninth digit. Keep this exception restricted
+  // to DDI 55 + DDD + mobile subscriber length.
+  if (phone.startsWith("55") && phone.length === 13 && phone[4] === "9") {
+    variants.add(`${phone.slice(0, 4)}${phone.slice(5)}`);
+  }
+  return variants;
+}
+function sameWhatsAppPhone(left: string, right: string): boolean {
+  const leftVariants = phoneVariants(left);
+  const rightVariants = phoneVariants(right);
+  return [...leftVariants].some((value) => rightVariants.has(value));
+}
 function hashIdentifier(value: string) { return createHash("sha256").update(value.trim().toLowerCase()).digest("hex"); }
 function hasBroadcastMention(values: string[]) { return values.some((value) => /(^|@)(all|everyone|every|broadcast)(@|$)/i.test(value)); }
 
@@ -297,7 +313,7 @@ function incomingTextCandidates(payload: any): string[] {
 function hasTextMentionTarget(payload: any, instancePhone: string): boolean {
   return incomingTextCandidates(payload).some((text) => {
     const candidates = [...text.matchAll(/@([+\d][\d\s().-]{6,}\d)/g)];
-    return candidates.some((match) => canonicalJid(match[1] || "") === instancePhone);
+    return candidates.some((match) => sameWhatsAppPhone(match[1] || "", instancePhone));
   });
 }
 
@@ -323,16 +339,24 @@ function hasTextMentionAlias(payload: any, aliases: string[]): boolean {
   );
 }
 
+function hasExactBareAlias(payload: any, aliases: string[]): boolean {
+  const texts = incomingTextCandidates(payload).map(normalizeMentionName);
+  return texts.some((text) => {
+    const candidate = text.replace(/^[@~\s]+/, "").replace(/[\s,.;:!?]+$/, "");
+    return aliases.some((alias) => candidate === normalizeMentionName(alias));
+  });
+}
+
 export function isInstanceMentioned(payload: any, rawInstancePhone: string, aliases: string[] = []): boolean {
   const instancePhone = canonicalJid(rawInstancePhone);
   const mentions = collectMentionValues(payload);
-  if (instancePhone && mentions.some((jid) => canonicalJid(jid) === instancePhone)) return true;
+  if (instancePhone && mentions.some((jid) => sameWhatsAppPhone(jid, instancePhone))) return true;
   const hasAuthoritativeDifferentPhone = mentions.some((jid) => !/@lid$/i.test(jid.trim()));
   if (hasAuthoritativeDifferentPhone) return false;
   // Some ReceivedCallback payloads expose only the visible @~name (or use a
   // LID that cannot be compared with connectedPhone). In that case only a
   // known alias of this instance is accepted; an arbitrary @name stays false.
-  return (instancePhone ? hasTextMentionTarget(payload, instancePhone) : false) || hasTextMentionAlias(payload, aliases);
+  return (instancePhone ? hasTextMentionTarget(payload, instancePhone) : false) || hasTextMentionAlias(payload, aliases) || hasExactBareAlias(payload, aliases);
 }
 
 function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
@@ -777,6 +801,18 @@ export class ZApiService {
       const mentionAliases = await this.getGroupMentionAliases(config);
       if (!instancePhone && !mentionAliases.length) return { status: "ignored_instance_identity_unavailable" };
       if (!isInstanceMentioned(payload, instancePhone, mentionAliases)) {
+        const textCandidates = incomingTextCandidates(payload);
+        logger.info(
+          {
+            externalEventId: payload.messageId,
+            mentionMetadataCount: mentions.length,
+            textCandidateCount: textCandidates.length,
+            hasAtSign: textCandidates.some((text) => text.includes("@")),
+            hasNumericAtTarget: textCandidates.some((text) => /@[+\d][\d\s().-]{6,}\d/.test(text)),
+            aliasCount: mentionAliases.length,
+          },
+          "Menção de grupo não reconhecida",
+        );
         return { status: mentions.length ? "ignored_not_mentioned" : "ignored_no_mention" };
       }
       if (await zApiRepository.findIncomingMessage(payload.messageId)) return { status: "duplicate_event" };
