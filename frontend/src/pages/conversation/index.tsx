@@ -361,11 +361,6 @@ export default function ConversationPage() {
         </div>
 
         <div className="composer">
-          {conversation.status === "CLOSED" ? (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="status">
-              Este chamado está encerrado, mas você ainda pode enviar uma mensagem para o cliente.
-            </div>
-          ) : null}
           {can("shortcuts", "use") && (
             <div className="composer-toolbar">
               <ShortcutPicker 
