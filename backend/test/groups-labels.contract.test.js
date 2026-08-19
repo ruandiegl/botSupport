@@ -50,6 +50,10 @@ test("somente a menção da própria instância ativa o bot no grupo", () => {
   assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
   assert.equal(isInstanceMentioned({ text: { message: "@Letícia, pode ajudar?" } }, instancePhone), false);
   assert.equal(isInstanceMentioned({ text: { message: `@${instancePhone} preciso de suporte` } }, instancePhone), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico preciso de ajuda" } }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ text: "@~Suporte Técnico" }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
+  assert.equal(isInstanceMentioned({ mentioned: ["81896604192873@lid"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
 });
 
 test("configuração de grupos valida cooldown e variáveis permitidas", () => {

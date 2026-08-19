@@ -23,6 +23,8 @@ Em Railway, a ativação controlada pode ser feita com `ZAPI_GROUPS_ENABLED=true
    - nenhuma confirmação pública enquanto `groupConfirmInGroup=false`.
 5. Repetir dentro do cooldown: deve retornar `cooldown`.
 6. Mencionar outro participante sem marcar a instância: deve retornar `ignored_not_mentioned` ou `ignored_no_mention`, sem mensagem do bot e sem novo chamado.
+
+Se o provedor entregar apenas o nome visível da menção, o backend consulta o nome da instância em `GET /me` e mantém cache por 15 minutos. `ZAPI_GROUP_MENTION_ALIASES` declara os nomes aceitos separados por vírgula e vem configurado para `Suporte Técnico,Suporte Técnico GTF`; atualize essa variável após uma troca do nome do perfil. Nenhuma marcação genérica a outro participante é aceita.
 6. Reenviar o mesmo `messageId`: deve retornar `duplicate_event`.
 7. Só depois da validação do destino da Z-API, testar a confirmação pública opt-in.
 
