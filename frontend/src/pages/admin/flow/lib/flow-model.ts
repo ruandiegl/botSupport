@@ -179,12 +179,12 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
       if (visited.has(nodeId)) continue;
       visited.add(nodeId);
       const node = byId.get(nodeId);
-      if (!node || node.type === "ROUTE" || node.type === "DECISION" || node.type === "ENTRY") continue;
+      if (!node || node.type === "ROUTE" || node.type === "ENTRY") continue;
       parentByNode.set(nodeId, route.id);
       input.transitions.filter((transition) => transition.fromNodeId === nodeId).forEach((transition) => queue.push(transition.toNodeId));
     }
   }
-  for (const node of nodes.filter((item) => item.type === "DECISION" && item.config.parentRouteId)) {
+  for (const node of nodes.filter((item) => item.type === "DECISION" && (item.config.parentRouteId || parentByNode.has(item.id)))) {
     const configured = getDecisionOptions(node);
     const derived = input.transitions
       .filter((transition) => transition.fromNodeId === node.id && transition.optionKey)
@@ -194,18 +194,34 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
   }
   return {
     ...input,
-    nodes: nodes.map((node) => ({
-      ...node,
-      config: {
-        ...node.config,
-        ...(parentByNode.has(node.id) ? { parentRouteId: parentByNode.get(node.id) } : {}),
-        ...(optionByRoute.has(node.id) ? { optionKey: optionByRoute.get(node.id) } : {}),
-        ...(optionsByDecision.has(node.id) ? {
-          decisionScope: "ROUTE",
-          decisionOptions: optionsByDecision.get(node.id),
-        } : {}),
-      },
-    })),
+    nodes: nodes.map((node) => {
+      const parentRouteId = parentByNode.get(node.id) ?? node.config.parentRouteId;
+      const parentRoute = parentRouteId ? nodes.find((item) => item.id === parentRouteId && item.type === "ROUTE") : undefined;
+      const branchHandoffDepartment = node.type === "ROUTE"
+        ? nodes.find((item) => item.type === "HANDOFF" && (parentByNode.get(item.id) ?? item.config.parentRouteId) === node.id)?.departmentId
+        : null;
+      const inheritedDepartment = node.type === "ROUTE"
+        ? node.departmentId ?? branchHandoffDepartment ?? null
+        : node.type === "HANDOFF"
+          ? node.departmentId ?? parentRoute?.departmentId ?? null
+          : node.departmentId;
+      const legacyDecisionMessage = typeof node.config.buttonMessage === "string" ? node.config.buttonMessage.trim() : "";
+      return {
+        ...node,
+        content: node.type === "DECISION" && !node.content.trim() && legacyDecisionMessage ? legacyDecisionMessage : node.content,
+        departmentId: inheritedDepartment,
+        config: {
+          ...node.config,
+          ...(parentRouteId ? { parentRouteId } : {}),
+          ...(node.type === "TRIAGE" && !String(node.config.responseKey ?? "").trim() ? { responseKey: `${node.stableKey}Response` } : {}),
+          ...(optionByRoute.has(node.id) ? { optionKey: optionByRoute.get(node.id) } : {}),
+          ...(optionsByDecision.has(node.id) ? {
+            decisionScope: "ROUTE",
+            decisionOptions: optionsByDecision.get(node.id),
+          } : {}),
+        },
+      };
+    }),
   };
 }
 

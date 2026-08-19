@@ -24,22 +24,7 @@
   flex-direction: column;
   gap: 12px;
 }
-.flow-sidebar-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
-}
-.flow-sidebar-tab-btn {
-  font-size: 12px;
-  font-weight: 600;
-  gap: 6px;
-  width: 100%;
-}
-.flow-map-card, .flow-inspector-card, .flow-preview-card { background: hsl(var(--card)); }
+.flow-map-card, .flow-preview-card { background: hsl(var(--card)); }
 .flow-map-card > [data-slot="card-content"] { padding: 0; }
 .flow-map {
   display: flex;
@@ -92,6 +77,13 @@
 .flow-inspector-title, .flow-preview-title { display: flex; align-items: center; gap: 8px; }
 .flow-inspector-title svg, .flow-preview-title svg { width: 17px; height: 17px; color: hsl(var(--primary)); }
 .flow-inspector-actions { display: flex; justify-content: space-between; gap: 8px; }
+.flow-editor-dialog { max-height: min(88vh, 820px); overflow-y: auto; }
+.flow-modal-editor { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.flow-modal-editor-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.flow-modal-editor-status > span { display: flex; align-items: center; gap: 8px; font-weight: 650; }
+.flow-modal-editor-status svg { width: 16px; height: 16px; color: hsl(var(--primary)); }
+.flow-modal-editor-fields { min-width: 0; }
+.flow-validation-description { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .flow-decision-options { display: flex; flex-direction: column; gap: 10px; }
 .flow-decision-option { gap: 7px; padding: 12px; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: 0 3px 12px hsl(var(--foreground) / .04); }
 .flow-decision-option[data-dragging="true"] { opacity: .55; box-shadow: 0 10px 28px hsl(var(--foreground) / .14); }
@@ -123,4 +115,6 @@
   .flow-route-heading [data-slot="button"] { width: 100%; }
   .flow-branch-sequence { padding-left: 12px; }
   .flow-add-step { grid-template-columns: 1fr; }
+  .flow-validation-description { align-items: stretch; flex-direction: column; }
+  .flow-validation-description [data-slot="button"] { width: 100%; }
 }

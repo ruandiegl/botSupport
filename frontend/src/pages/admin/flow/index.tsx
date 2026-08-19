@@ -6,10 +6,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { FlowBuilder } from "./components/FlowBuilder";
+import { FlowInspector } from "./components/FlowInspector";
 import {
   addRoute,
   createDecisionOption,
@@ -45,6 +47,7 @@ export default function FlowAdmin() {
   const [deleteNodeId, setDeleteNodeId] = useState<string | null>(null);
   const [publishConfirmOpen, setPublishConfirmOpen] = useState(false);
   const [discardConfirmOpen, setDiscardConfirmOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   useEffect(() => {
@@ -76,6 +79,17 @@ export default function FlowAdmin() {
     if (selectedId) setSelectedNodeId(selectedId);
   };
 
+  const editNode = (nodeId: string) => {
+    setSelectedNodeId(nodeId);
+    setEditorOpen(true);
+  };
+
+  const focusFirstIssue = () => {
+    const first = validation.issues.find((issue) => issue.nodeId);
+    if (first?.nodeId) editNode(first.nodeId);
+    setFeedback("Corrija as pendências destacadas antes de publicar o fluxo.");
+  };
+
   const changeNode = (node: FlowNode) => {
     if (!draft) return;
     let next = replaceNode(draft, node);
@@ -94,6 +108,7 @@ export default function FlowAdmin() {
     if (!draft) return;
     const result = addRoute(draft);
     commitLocal(result.revision, result.routeId);
+    setEditorOpen(true);
   };
 
   const addStep = (type: FlowNodeType, parentRouteId?: string) => {
@@ -111,6 +126,7 @@ export default function FlowAdmin() {
       },
     } : undefined);
     commitLocal(insertNode(draft, node, parentRouteId), node.id);
+    setEditorOpen(true);
   };
 
   const duplicateSelected = () => {
@@ -124,13 +140,14 @@ export default function FlowAdmin() {
     const next = removeNode(draft, deleteNodeId);
     commitLocal(next, next.nodes[0]?.id);
     setDeleteNodeId(null);
+    setEditorOpen(false);
   };
 
   const save = async () => {
     if (!draft) return;
     if (!validation.valid) {
       const first = validation.issues.find((issue) => issue.nodeId);
-      if (first?.nodeId) setSelectedNodeId(first.nodeId);
+      if (first?.nodeId) editNode(first.nodeId);
       setFeedback("Corrija as pendências destacadas antes de salvar o rascunho.");
       return;
     }
@@ -147,11 +164,7 @@ export default function FlowAdmin() {
 
   const publish = async () => {
     if (!draft) return;
-    if (!validation.valid) {
-      const first = validation.issues.find((issue) => issue.nodeId);
-      if (first?.nodeId) setSelectedNodeId(first.nodeId);
-      throw new Error("Existem pendências no fluxo. Corrija os cards destacados antes de publicar.");
-    }
+    if (!validation.valid) return focusFirstIssue();
     const published = await publishDraft.mutateAsync(draft);
     setDraft(cloneRevision(published));
     setBaseline(cloneRevision(published));
@@ -186,6 +199,11 @@ export default function FlowAdmin() {
   const deleteTarget = draft.nodes.find((node) => node.id === deleteNodeId);
   const positiveFeedback = Boolean(feedback && (feedback.includes("sucesso") || feedback.includes("publicado") || feedback.includes("descartadas")));
   const canPublish = isDirty || draft.status === "DRAFT";
+  const selectedIssues = validation.issues.filter((issue) => issue.nodeId === selectedNode.id);
+  const requestPublish = () => {
+    if (!validation.valid) return focusFirstIssue();
+    setPublishConfirmOpen(true);
+  };
   return (
     <div className="content flow-admin">
       <PageHeader
@@ -197,28 +215,48 @@ export default function FlowAdmin() {
             <Badge variant={isDirty ? "secondary" : "default"}>{isDirty ? "Rascunho alterado" : draft.status === "PUBLISHED" ? "Publicado" : "Rascunho salvo"}</Badge>
             <Button variant="outline" disabled={!isDirty || pending} onClick={() => setDiscardConfirmOpen(true)}><RotateCcw data-icon="inline-start" />Descartar</Button>
             <Button variant="secondary" disabled={!isDirty || pending} onClick={save}>{saveDraft.isPending ? <Spinner data-icon="inline-start" /> : <Save data-icon="inline-start" />}{saveDraft.isPending ? "Salvando..." : "Salvar rascunho"}</Button>
-            <Button variant="default" disabled={!canPublish || pending} onClick={() => setPublishConfirmOpen(true)}>{publishDraft.isPending ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{publishDraft.isPending ? "Publicando..." : "Publicar"}</Button>
+            <Button variant="default" disabled={!canPublish || pending} onClick={requestPublish}>{publishDraft.isPending ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}{publishDraft.isPending ? "Publicando..." : "Publicar"}</Button>
           </div>
         }
       />
 
       {feedback ? <Alert variant={positiveFeedback ? "default" : "destructive"} className="flow-feedback"><AlertTitle>{positiveFeedback ? "Tudo certo" : "Atenção"}</AlertTitle><AlertDescription>{feedback}</AlertDescription></Alert> : null}
-      {!validation.valid ? <Alert variant="destructive" className="flow-feedback"><AlertTitle>{validation.issues.length} pendência(s) no rascunho</AlertTitle><AlertDescription>Os cards com problemas estão identificados. A publicação permanece bloqueada até a correção.</AlertDescription></Alert> : null}
+      {!validation.valid ? <Alert variant="destructive" className="flow-feedback"><AlertTitle>{validation.issues.length} pendência(s) no rascunho</AlertTitle><AlertDescription className="flow-validation-description"><span>Os cards com problemas estão identificados. Revise a primeira pendência antes de publicar.</span><Button variant="outline" size="sm" onClick={focusFirstIssue}>Revisar pendência</Button></AlertDescription></Alert> : null}
 
       <FlowBuilder
         revision={draft}
         selectedNode={selectedNode}
         departments={departments}
         issues={validation.issues}
-        onSelect={setSelectedNodeId}
-        onChangeNode={changeNode}
+        onEdit={editNode}
         onReorder={(containerId, activeId, overId) => commitLocal(reorderContainer(draft, containerId, activeId, overId), activeId)}
         onMove={(nodeId, direction) => commitLocal(moveNode(draft, nodeId, direction), nodeId)}
         onAddRoute={addNewRoute}
         onAddStep={addStep}
-        onDuplicate={duplicateSelected}
-        onDelete={() => setDeleteNodeId(selectedNode.id)}
       />
+
+      <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
+        <DialogContent className="flow-editor-dialog sm:!max-w-[720px]">
+          <DialogHeader>
+            <DialogTitle>Editar {selectedNode.name}</DialogTitle>
+            <DialogDescription>Configure esta etapa. As alterações permanecem no rascunho até você salvar ou publicar.</DialogDescription>
+          </DialogHeader>
+          <FlowInspector
+            node={selectedNode}
+            departments={departments}
+            issues={selectedIssues}
+            onChange={changeNode}
+            onDuplicate={duplicateSelected}
+            onDelete={() => {
+              setEditorOpen(false);
+              setDeleteNodeId(selectedNode.id);
+            }}
+          />
+          <DialogFooter>
+            <DialogClose render={<Button variant="default" />}>Concluir edição</DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmationDialog
         open={publishConfirmOpen}
