@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, ChevronRight, CircleUserRound, Headphones, RefreshCw, UsersRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, ChevronRight, Headphones, RefreshCw, UsersRound } from "lucide-react";
 import { Link } from "wouter";
 import type { AgentRole, AgentWorkloadItem, AssignedConversationSummary } from "@/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { useAgentWorkload } from "../hooks/use-agent-workload";
 
 const roleLabels: Record<AgentRole, string> = {
@@ -51,16 +52,26 @@ function AgentWorkloadRow({ agent }: { agent: AgentWorkloadItem }) {
         aria-expanded={expanded}
         onClick={() => setExpanded((current) => !current)}
       >
-        {count > 0 ? (expanded ? <ChevronDown data-icon="inline-start" /> : <ChevronRight data-icon="inline-start" />) : <span className="agent-workload-chevron-spacer" aria-hidden="true" />}
-        <span className="agent-workload-avatar" aria-hidden="true">{initials(agent.name) || <CircleUserRound />}</span>
+        <Avatar size="lg">
+          <AvatarFallback>{initials(agent.name) || "AT"}</AvatarFallback>
+        </Avatar>
         <span className="agent-workload-agent-copy">
           <strong>{agent.name}</strong>
-          <span>{roleLabels[agent.role] ?? agent.role}{agent.departmentName ? ` · ${agent.departmentName}` : ""}</span>
+          <span className="agent-workload-role">{roleLabels[agent.role] ?? agent.role}{agent.departmentName ? ` · ${agent.departmentName}` : ""}</span>
+          <span className="agent-workload-meta">
+            <Badge
+              variant="outline"
+              className={cn("agent-workload-status-badge", agent.isOnline ? "online" : "offline")}
+            >
+              <i aria-hidden="true" />
+              {agent.isOnline ? "Online" : "Offline"}
+            </Badge>
+            <Badge variant={count > 0 ? "secondary" : "outline"}>
+              {count} {count === 1 ? "chamado" : "chamados"}
+            </Badge>
+          </span>
         </span>
-        <span className={`agent-workload-presence ${agent.isOnline ? "online" : "offline"}`}>
-          <i aria-hidden="true" />{agent.isOnline ? "Online" : "Offline"}
-        </span>
-        <Badge variant={count > 0 ? "default" : "outline"}>{count} {count === 1 ? "chamado" : "chamados"}</Badge>
+        {count > 0 ? (expanded ? <ChevronDown data-icon="inline-end" /> : <ChevronRight data-icon="inline-end" />) : <span className="agent-workload-chevron-spacer" aria-hidden="true" />}
       </Button>
       {expanded && count > 0 ? (
         <div className="agent-workload-conversations" aria-label={`Chamados de ${agent.name}`}>
@@ -74,18 +85,28 @@ function AgentWorkloadRow({ agent }: { agent: AgentWorkloadItem }) {
 
 export function AgentWorkloadCard({ enabled = true }: { enabled?: boolean }) {
   const { data, isLoading, isError, refetch } = useAgentWorkload(enabled);
-  const summary = useMemo(() => data ? `${data.totals.online} online · ${data.totals.offline} offline` : "Presença da equipe", [data]);
 
   if (!enabled) return null;
 
   return (
     <Card className="agent-workload-card">
-      <CardHeader>
-        <CardTitle className="agent-workload-title"><UsersRound data-icon="inline-start" />Atendentes online</CardTitle>
-        <CardDescription>{summary}</CardDescription>
+      <CardHeader className="agent-workload-header">
+        <div className="agent-workload-heading">
+          <span className="agent-workload-heading-icon" aria-hidden="true"><UsersRound /></span>
+          <span>
+            <CardTitle className="agent-workload-title">Atendentes online</CardTitle>
+            <CardDescription>Presença e chamados em atendimento</CardDescription>
+          </span>
+        </div>
+        {data ? (
+          <div className="agent-workload-summary" aria-label={`${data.totals.online} online e ${data.totals.offline} offline`}>
+            <Badge variant="outline" className="agent-workload-status-badge online"><i aria-hidden="true" />{data.totals.online} online</Badge>
+            <Badge variant="outline" className="agent-workload-status-badge offline"><i aria-hidden="true" />{data.totals.offline} offline</Badge>
+          </div>
+        ) : null}
       </CardHeader>
       <CardContent className="agent-workload-content">
-        {isLoading ? <div className="agent-workload-loading"><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div> : null}
+        {isLoading ? <div className="agent-workload-loading"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></div> : null}
         {isError ? (
           <Alert variant="destructive">
             <RefreshCw />
@@ -96,7 +117,7 @@ export function AgentWorkloadCard({ enabled = true }: { enabled?: boolean }) {
         {!isLoading && !isError && !data?.items.length ? <div className="agent-workload-empty-state"><Headphones /><span>Nenhum atendente ativo no escopo.</span></div> : null}
         {!isLoading && !isError && data?.items.length ? (
           <div className="agent-workload-list">
-            {data.items.map((agent, index) => <div key={agent.id}><AgentWorkloadRow agent={agent} />{index < data.items.length - 1 ? <Separator /> : null}</div>)}
+            {data.items.map((agent) => <AgentWorkloadRow key={agent.id} agent={agent} />)}
           </div>
         ) : null}
       </CardContent>
