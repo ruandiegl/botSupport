@@ -4,8 +4,14 @@ import { zApiService } from "./zapi.service.js";
 import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema } from "./zapi.schemas.js";
 
 function toPublicConfig(config: any) {
-  const { token, clientToken, instancePhone, ...publicConfig } = config;
-  return { ...publicConfig, hasToken: Boolean(token), hasClientToken: Boolean(clientToken), instancePhoneMasked: instancePhone ? `•••• ${String(instancePhone).slice(-4)}` : null };
+  const { token, clientToken, instancePhone, instanceLid, ...publicConfig } = config;
+  return {
+    ...publicConfig,
+    hasToken: Boolean(token),
+    hasClientToken: Boolean(clientToken),
+    instancePhoneMasked: instancePhone ? `•••• ${String(instancePhone).slice(-4)}` : null,
+    hasInstanceLid: Boolean(instanceLid),
+  };
 }
 
 export class ZApiController {

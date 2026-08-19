@@ -14054,6 +14054,7 @@ export namespace Prisma {
     isActive: boolean | null
     autoReply: boolean | null
     instancePhone: string | null
+    instanceLid: string | null
     groupsEnabled: boolean | null
     groupCooldownSeconds: number | null
     groupConfirmInGroup: boolean | null
@@ -14070,6 +14071,7 @@ export namespace Prisma {
     isActive: boolean | null
     autoReply: boolean | null
     instancePhone: string | null
+    instanceLid: string | null
     groupsEnabled: boolean | null
     groupCooldownSeconds: number | null
     groupConfirmInGroup: boolean | null
@@ -14086,6 +14088,7 @@ export namespace Prisma {
     isActive: number
     autoReply: number
     instancePhone: number
+    instanceLid: number
     groupsEnabled: number
     groupCooldownSeconds: number
     groupConfirmInGroup: number
@@ -14112,6 +14115,7 @@ export namespace Prisma {
     isActive?: true
     autoReply?: true
     instancePhone?: true
+    instanceLid?: true
     groupsEnabled?: true
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
@@ -14128,6 +14132,7 @@ export namespace Prisma {
     isActive?: true
     autoReply?: true
     instancePhone?: true
+    instanceLid?: true
     groupsEnabled?: true
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
@@ -14144,6 +14149,7 @@ export namespace Prisma {
     isActive?: true
     autoReply?: true
     instancePhone?: true
+    instanceLid?: true
     groupsEnabled?: true
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
@@ -14247,6 +14253,7 @@ export namespace Prisma {
     isActive: boolean
     autoReply: boolean
     instancePhone: string | null
+    instanceLid: string | null
     groupsEnabled: boolean
     groupCooldownSeconds: number
     groupConfirmInGroup: boolean
@@ -14282,6 +14289,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: boolean
+    instanceLid?: boolean
     groupsEnabled?: boolean
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
@@ -14298,6 +14306,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: boolean
+    instanceLid?: boolean
     groupsEnabled?: boolean
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
@@ -14314,6 +14323,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: boolean
+    instanceLid?: boolean
     groupsEnabled?: boolean
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
@@ -14334,6 +14344,7 @@ export namespace Prisma {
       isActive: boolean
       autoReply: boolean
       instancePhone: string | null
+      instanceLid: string | null
       groupsEnabled: boolean
       groupCooldownSeconds: number
       groupConfirmInGroup: boolean
@@ -14740,6 +14751,7 @@ export namespace Prisma {
     readonly isActive: FieldRef<"ZApiConfig", 'Boolean'>
     readonly autoReply: FieldRef<"ZApiConfig", 'Boolean'>
     readonly instancePhone: FieldRef<"ZApiConfig", 'String'>
+    readonly instanceLid: FieldRef<"ZApiConfig", 'String'>
     readonly groupsEnabled: FieldRef<"ZApiConfig", 'Boolean'>
     readonly groupCooldownSeconds: FieldRef<"ZApiConfig", 'Int'>
     readonly groupConfirmInGroup: FieldRef<"ZApiConfig", 'Boolean'>
@@ -26459,6 +26471,7 @@ export namespace Prisma {
     isActive: 'isActive',
     autoReply: 'autoReply',
     instancePhone: 'instancePhone',
+    instanceLid: 'instanceLid',
     groupsEnabled: 'groupsEnabled',
     groupCooldownSeconds: 'groupCooldownSeconds',
     groupConfirmInGroup: 'groupConfirmInGroup',
@@ -27763,6 +27776,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"ZApiConfig"> | boolean
     autoReply?: BoolFilter<"ZApiConfig"> | boolean
     instancePhone?: StringNullableFilter<"ZApiConfig"> | string | null
+    instanceLid?: StringNullableFilter<"ZApiConfig"> | string | null
     groupsEnabled?: BoolFilter<"ZApiConfig"> | boolean
     groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
@@ -27779,6 +27793,7 @@ export namespace Prisma {
     isActive?: SortOrder
     autoReply?: SortOrder
     instancePhone?: SortOrderInput | SortOrder
+    instanceLid?: SortOrderInput | SortOrder
     groupsEnabled?: SortOrder
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
@@ -27798,6 +27813,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"ZApiConfig"> | boolean
     autoReply?: BoolFilter<"ZApiConfig"> | boolean
     instancePhone?: StringNullableFilter<"ZApiConfig"> | string | null
+    instanceLid?: StringNullableFilter<"ZApiConfig"> | string | null
     groupsEnabled?: BoolFilter<"ZApiConfig"> | boolean
     groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
@@ -27814,6 +27830,7 @@ export namespace Prisma {
     isActive?: SortOrder
     autoReply?: SortOrder
     instancePhone?: SortOrderInput | SortOrder
+    instanceLid?: SortOrderInput | SortOrder
     groupsEnabled?: SortOrder
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
@@ -27838,6 +27855,7 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     autoReply?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     instancePhone?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
+    instanceLid?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
     groupsEnabled?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     groupCooldownSeconds?: IntWithAggregatesFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
@@ -29712,6 +29730,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: string | null
+    instanceLid?: string | null
     groupsEnabled?: boolean
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
@@ -29728,6 +29747,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: string | null
+    instanceLid?: string | null
     groupsEnabled?: boolean
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
@@ -29744,6 +29764,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
     instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
     groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
@@ -29760,6 +29781,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
     instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
     groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
@@ -29776,6 +29798,7 @@ export namespace Prisma {
     isActive?: boolean
     autoReply?: boolean
     instancePhone?: string | null
+    instanceLid?: string | null
     groupsEnabled?: boolean
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
@@ -29792,6 +29815,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
     instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
     groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
@@ -29808,6 +29832,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     autoReply?: BoolFieldUpdateOperationsInput | boolean
     instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
     groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
@@ -31657,6 +31682,7 @@ export namespace Prisma {
     isActive?: SortOrder
     autoReply?: SortOrder
     instancePhone?: SortOrder
+    instanceLid?: SortOrder
     groupsEnabled?: SortOrder
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
@@ -31677,6 +31703,7 @@ export namespace Prisma {
     isActive?: SortOrder
     autoReply?: SortOrder
     instancePhone?: SortOrder
+    instanceLid?: SortOrder
     groupsEnabled?: SortOrder
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
@@ -31693,6 +31720,7 @@ export namespace Prisma {
     isActive?: SortOrder
     autoReply?: SortOrder
     instancePhone?: SortOrder
+    instanceLid?: SortOrder
     groupsEnabled?: SortOrder
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder

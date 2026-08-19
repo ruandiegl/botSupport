@@ -243,6 +243,7 @@ model ZApiConfig {
   isActive             Boolean  @default(true) @map("is_active")
   autoReply            Boolean  @default(true) @map("auto_reply")
   instancePhone        String?  @map("instance_phone")
+  instanceLid          String?  @map("instance_lid")
   groupsEnabled        Boolean  @default(false) @map("groups_enabled")
   groupCooldownSeconds Int      @default(60) @map("group_cooldown_seconds")
   groupConfirmInGroup  Boolean  @default(false) @map("group_confirm_in_group")

@@ -109,6 +109,7 @@ export const ZApiReceivedWebhookSchema = z
     notification: z.unknown().optional(),
     instanceId: z.string().max(300).optional(),
     connectedPhone: z.string().max(200).optional(),
+    connectedLid: z.string().max(200).nullable().optional(),
     senderName: z.string().max(300).optional(),
     pushName: z.string().max(300).optional(),
     chatName: z.string().max(300).optional(),

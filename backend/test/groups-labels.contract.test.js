@@ -46,6 +46,7 @@ test("aceita o formato oficial da Z-API para participante e telefone conectado",
 
 test("somente a menção da própria instância ativa o bot no grupo", () => {
   const instancePhone = "5511966666666";
+  const instanceLid = "81896604192873@lid";
   assert.equal(isInstanceMentioned({ mentioned: [instancePhone] }, instancePhone), true);
   assert.equal(isInstanceMentioned({ mentionedJids: [`${instancePhone}@s.whatsapp.net`] }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { contextInfo: { mentionedJid: [`${instancePhone}@s.whatsapp.net`] } } }, instancePhone), true);
@@ -59,12 +60,22 @@ test("somente a menção da própria instância ativa o bot no grupo", () => {
   assert.equal(isInstanceMentioned({ messageData: { contextInfo: { mentioned: { jid: `${instancePhone}@s.whatsapp.net` } } } }, instancePhone), true);
   assert.equal(isInstanceMentioned({ text: { message: "@\u2068~Suporte Técnico\u2069" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico" } }, "", ["Suporte Técnico"]), true);
-  assert.equal(isInstanceMentioned({ text: { message: "Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ text: { message: "@~ Suporte Técnico" } }, instancePhone, ["@~Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: { message: "@Suporte-Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
   assert.equal(isInstanceMentioned({ text: { message: "@Letícia" }, quotedMessage: { text: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
   assert.equal(isInstanceMentioned({ mentioned: ["5511777777777"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), false);
-  assert.equal(isInstanceMentioned({ mentioned: ["81896604192873@lid"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"]), true);
+  assert.equal(isInstanceMentioned({ mentioned: [instanceLid], text: { message: "@81896604192873" } }, instancePhone, ["Suporte Técnico"], [instanceLid]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@81896604192873" } }, instancePhone, ["Suporte Técnico"], [instanceLid]), true);
+  assert.equal(isInstanceMentioned({ text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"], [instanceLid]), false);
+  assert.equal(isInstanceMentioned({ mentioned: ["77777777777777@lid"], text: { message: "@~Suporte Técnico" } }, instancePhone, ["Suporte Técnico"], [instanceLid]), false);
+  assert.equal(isInstanceMentioned({ text: { message: "@77777777777777" } }, instancePhone, ["Suporte Técnico"], [instanceLid]), false);
+});
+
+test("migration da identidade LID da instância é aditiva", async () => {
+  const sql = await readFile(new URL("../prisma/migrations/20260819110000_add_zapi_instance_lid/migration.sql", import.meta.url), "utf8");
+  assert.match(sql, /ADD COLUMN IF NOT EXISTS "instance_lid" TEXT/);
+  assert.doesNotMatch(sql, /DROP TABLE|DROP COLUMN|TRUNCATE/i);
 });
 
 test("configuração de grupos valida cooldown e variáveis permitidas", () => {

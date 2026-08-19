@@ -310,10 +310,11 @@ function incomingTextCandidates(payload: any): string[] {
   return [...new Set([primary, ...nested].filter(Boolean))];
 }
 
-function hasTextMentionTarget(payload: any, instancePhone: string): boolean {
+function hasTextMentionTarget(payload: any, identities: string | string[]): boolean {
+  const targets = (Array.isArray(identities) ? identities : [identities]).filter(Boolean);
   return incomingTextCandidates(payload).some((text) => {
     const candidates = [...text.matchAll(/@([+\d][\d\s().-]{6,}\d)/g)];
-    return candidates.some((match) => sameWhatsAppPhone(match[1] || "", instancePhone));
+    return candidates.some((match) => targets.some((target) => sameWhatsAppPhone(match[1] || "", target)));
   });
 }
 
@@ -354,24 +355,28 @@ function hasTextMentionAlias(payload: any, aliases: string[]): boolean {
   );
 }
 
-function hasExactBareAlias(payload: any, aliases: string[]): boolean {
-  const texts = incomingTextCandidates(payload).map(normalizeMentionAlias);
-  return texts.some((text) => {
-    const candidate = text.replace(/^[@~\s]+/, "").replace(/[\s,.;:!?]+$/, "");
-    return aliases.some((alias) => candidate === normalizeMentionAlias(alias));
-  });
-}
-
-export function isInstanceMentioned(payload: any, rawInstancePhone: string, aliases: string[] = []): boolean {
+export function isInstanceMentioned(
+  payload: any,
+  rawInstancePhone: string,
+  aliases: string[] = [],
+  instanceLids: string[] = [],
+): boolean {
   const instancePhone = canonicalJid(rawInstancePhone);
+  const identities = [instancePhone, ...instanceLids.map(canonicalJid)].filter(Boolean);
   const mentions = collectMentionValues(payload);
-  if (instancePhone && mentions.some((jid) => sameWhatsAppPhone(jid, instancePhone))) return true;
-  const hasAuthoritativeDifferentPhone = mentions.some((jid) => !/@lid$/i.test(jid.trim()));
-  if (hasAuthoritativeDifferentPhone) return false;
-  // Some ReceivedCallback payloads expose only the visible @~name (or use a
-  // LID that cannot be compared with connectedPhone). In that case only a
-  // known alias of this instance is accepted; an arbitrary @name stays false.
-  return (instancePhone ? hasTextMentionTarget(payload, instancePhone) : false) || hasTextMentionAlias(payload, aliases) || hasExactBareAlias(payload, aliases);
+  if (identities.length && mentions.some((jid) => identities.some((identity) => sameWhatsAppPhone(jid, identity)))) return true;
+  // Mention metadata is authoritative. When it exists and points only to
+  // another participant, a display-name coincidence must never activate the bot.
+  if (mentions.length) return false;
+  // Some callbacks omit mention metadata and replace the visible @name with
+  // the WhatsApp private LID in the message text. Compare that numeric target
+  // against the LID resolved for this instance, never against an arbitrary @.
+  const identityTextMatched = identities.length ? hasTextMentionTarget(payload, identities) : false;
+  if (identityTextMatched) return true;
+  // Once the private LID is known, it is the source of truth. Alias matching
+  // remains only as compatibility for accounts for which Z-API has not yet
+  // exposed a LID, avoiding activation from a merely typed display name.
+  return instanceLids.length === 0 && hasTextMentionAlias(payload, aliases);
 }
 
 function renderGroupTemplate(template: string | null | undefined, name: string, group: string) {
@@ -442,7 +447,7 @@ function normalizeWebhookUrl(webhookUrl: string): string {
 }
 
 export class ZApiService {
-  private groupMentionAliasCache = new Map<string, { aliases: string[]; expiresAt: number }>();
+  private groupMentionIdentityCache = new Map<string, { aliases: string[]; lids: string[]; phone: string; expiresAt: number }>();
 
   private formatPhone(phone: string): string {
     const cleaned = phone.replace(/\D/g, "");
@@ -452,32 +457,73 @@ export class ZApiService {
     return cleaned;
   }
 
-  private async getGroupMentionAliases(config: { instanceId: string; token: string; clientToken?: string | null }) {
+  private async getGroupMentionIdentity(config: {
+    instanceId: string;
+    token: string;
+    clientToken?: string | null;
+    instancePhone?: string | null;
+    instanceLid?: string | null;
+  }, connectedPhone?: string | null, connectedLid?: string | null) {
     const configured = String(process.env.ZAPI_GROUP_MENTION_ALIASES || "Suporte Técnico,Suporte Técnico GTF")
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-    const cached = this.groupMentionAliasCache.get(config.instanceId);
-    if (cached && cached.expiresAt > Date.now()) return [...new Set([...configured, ...cached.aliases])];
-    if (!config.instanceId || !config.token) return configured;
+    const configuredPhone = canonicalJid(config.instancePhone || "");
+    const phone = canonicalJid(connectedPhone || config.instancePhone || "");
+    const persistedLid = !configuredPhone || configuredPhone === phone ? config.instanceLid : null;
+    const storedLids = [persistedLid, connectedLid]
+      .map((value) => String(value || "").trim())
+      .filter(Boolean);
+    const cached = this.groupMentionIdentityCache.get(config.instanceId);
+    if (cached && cached.phone === phone && cached.expiresAt > Date.now()) {
+      return {
+        aliases: [...new Set([...configured, ...cached.aliases])],
+        lids: [...new Set([...storedLids, ...cached.lids])],
+      };
+    }
+    if (!config.instanceId || !config.token) return { aliases: configured, lids: storedLids };
 
     try {
-      const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/me`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
-        },
-        signal: AbortSignal.timeout(4_000),
-      });
-      const data = (await response.json().catch(() => ({}))) as any;
-      const aliases = [data.name, data.profileName, data.pushName, data.sessionName]
+      const headers = {
+        "Content-Type": "application/json",
+        ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
+      };
+      const fetchJson = async (url: string) => {
+        const response = await fetch(url, { headers, signal: AbortSignal.timeout(5_000) });
+        if (!response.ok) throw new Error(`zapi_identity_http_${response.status}`);
+        return response.json().catch(() => ({}));
+      };
+      const [profileResult, lidResult] = await Promise.allSettled([
+        fetchJson(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/me`),
+        phone
+          ? fetchJson(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/phone-exists/${encodeURIComponent(phone)}`)
+          : Promise.resolve({}),
+      ]);
+      const profile = profileResult.status === "fulfilled" ? profileResult.value as any : {};
+      const rawLidResult = lidResult.status === "fulfilled" ? lidResult.value as any : {};
+      const lidData = Array.isArray(rawLidResult) ? rawLidResult[0] || {} : rawLidResult;
+      const aliases = [profile.name, profile.profileName, profile.pushName, profile.sessionName]
         .map((item) => String(item || "").trim())
         .filter(Boolean);
-      this.groupMentionAliasCache.set(config.instanceId, { aliases, expiresAt: Date.now() + 15 * 60_000 });
-      return [...new Set([...configured, ...aliases])];
+      const resolvedLid = String(lidData.lid || lidData.chatLid || "").trim();
+      const lids = [...new Set([...storedLids, ...(resolvedLid ? [resolvedLid] : [])])];
+      const identityWasResolved = lids.length > 0;
+      this.groupMentionIdentityCache.set(config.instanceId, {
+        aliases,
+        lids,
+        phone,
+        expiresAt: Date.now() + (identityWasResolved ? 6 * 60 * 60_000 : 2 * 60_000),
+      });
+      if (phone && (phone !== canonicalJid(config.instancePhone || "") || (resolvedLid && canonicalJid(resolvedLid) !== canonicalJid(config.instanceLid || "")))) {
+        await zApiRepository.updateInstanceIdentity(phone, resolvedLid || config.instanceLid);
+      }
+      if (phone && !resolvedLid && !config.instanceLid) {
+        logger.warn({ profileResolved: profileResult.status === "fulfilled", lidLookupResolved: lidResult.status === "fulfilled" }, "LID da própria instância não foi retornado pela Z-API");
+      }
+      return { aliases: [...new Set([...configured, ...aliases])], lids };
     } catch (error) {
-      logger.warn({ error: error instanceof Error ? error.message : "alias_lookup_failed" }, "Não foi possível consultar o nome da instância para validar a menção");
-      return configured;
+      logger.warn({ error: error instanceof Error ? error.message : "identity_lookup_failed" }, "Não foi possível consultar a identidade da instância para validar a menção");
+      return { aliases: configured, lids: storedLids };
     }
   }
 
@@ -552,7 +598,7 @@ export class ZApiService {
       const connected = data.connected === true || data.status === "CONNECTED" || data.signed === true;
       const detectedPhone = canonicalJid(String(data.phone || data.connectedPhone || data.phoneNumber || data.device?.phone || ""));
       if (connected && detectedPhone && !overrideInstanceId && !overrideToken) {
-        await zApiRepository.updateInstancePhone(detectedPhone);
+        await zApiRepository.updateInstanceIdentity(detectedPhone);
       }
 
       return {
@@ -812,15 +858,18 @@ export class ZApiService {
       if (!participant || !payload.phone) return { status: "ignored_invalid_group_context" };
       const mentions = collectMentionValues(payload);
       if (payload.broadcast === true || hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
-      const instancePhone = canonicalJid(config.instancePhone || payload.connectedPhone || "");
-      const mentionAliases = await this.getGroupMentionAliases(config);
-      if (!instancePhone && !mentionAliases.length) return { status: "ignored_instance_identity_unavailable" };
-      if (!isInstanceMentioned(payload, instancePhone, mentionAliases)) {
+      const instancePhone = canonicalJid(payload.connectedPhone || config.instancePhone || "");
+      const mentionIdentity = await this.getGroupMentionIdentity(
+        config,
+        payload.connectedPhone,
+        typeof (payload as any).connectedLid === "string" ? (payload as any).connectedLid : null,
+      );
+      if (!instancePhone && !mentionIdentity.lids.length && !mentionIdentity.aliases.length) return { status: "ignored_instance_identity_unavailable" };
+      if (!isInstanceMentioned(payload, instancePhone, mentionIdentity.aliases, mentionIdentity.lids)) {
         const textCandidates = incomingTextCandidates(payload);
         const normalizedTexts = textCandidates.map(normalizeMentionName);
-        const aliasTextMatch = hasTextMentionAlias(payload, mentionAliases);
-        const exactAliasMatch = hasExactBareAlias(payload, mentionAliases);
-        const numericTextMatch = instancePhone ? hasTextMentionTarget(payload, instancePhone) : false;
+        const aliasTextMatch = hasTextMentionAlias(payload, mentionIdentity.aliases);
+        const numericTextMatch = hasTextMentionTarget(payload, [instancePhone, ...mentionIdentity.lids]);
         logger.info(
           {
             externalEventId: payload.messageId,
@@ -830,10 +879,10 @@ export class ZApiService {
             hasAtSign: textCandidates.some((text) => text.includes("@")),
             hasNumericAtTarget: textCandidates.some((text) => /@[+\d][\d\s().-]{6,}\d/.test(text)),
             aliasTextMatch,
-            exactAliasMatch,
             numericTextMatch,
             hasSupportToken: normalizedTexts.some((text) => text.includes("suporte")),
-            aliasCount: mentionAliases.length,
+            aliasCount: mentionIdentity.aliases.length,
+            instanceLidResolved: mentionIdentity.lids.length > 0,
           },
           "Menção de grupo não reconhecida",
         );

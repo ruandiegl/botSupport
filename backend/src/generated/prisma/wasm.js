@@ -260,6 +260,7 @@ exports.Prisma.ZApiConfigScalarFieldEnum = {
   isActive: 'isActive',
   autoReply: 'autoReply',
   instancePhone: 'instancePhone',
+  instanceLid: 'instanceLid',
   groupsEnabled: 'groupsEnabled',
   groupCooldownSeconds: 'groupCooldownSeconds',
   groupConfirmInGroup: 'groupConfirmInGroup',

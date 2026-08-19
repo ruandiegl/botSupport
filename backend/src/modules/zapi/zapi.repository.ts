@@ -191,8 +191,13 @@ export class ZApiRepository {
     return rows.length > 0;
   }
 
-  updateInstancePhone(instancePhone: string) {
-    return prisma.zApiConfig.updateMany({ data: { instancePhone } });
+  updateInstanceIdentity(instancePhone: string, instanceLid?: string | null) {
+    return prisma.zApiConfig.updateMany({
+      data: {
+        instancePhone,
+        ...(instanceLid ? { instanceLid } : {}),
+      },
+    });
   }
 
   async addIncomingMessage(data: {
