@@ -29,7 +29,8 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 ### Gestão de Atendentes
 - **Monitoramento de Presença**: Visualização da equipe com indicador de status Online/Offline.
 - **Vínculo com Departamento**: Atribuição de atendentes a departamentos específicos.
-- **Carga operacional na fila**: Administradores e supervisores visualizam, acima do pulso da operação, os atendentes ativos, sua presença e os chamados `IN_PROGRESS` assumidos por cada um. Cada chamado permite navegação direta para a conversa.
+- **Carga operacional na fila**: Administradores e supervisores visualizam, acima do pulso da operação, até quatro atendentes ativos, sua presença e os chamados `IN_PROGRESS` assumidos por cada um. O cartão oferece acesso à página de Atendentes para a visão completa.
+- **Visão operacional dos atendentes**: A página administrativa de Atendentes exibe toda a equipe em grade, com presença online/offline, expansão dos chamados ativos e contagem de carga também na tabela de cadastro. Cada chamado permite navegação direta para a conversa.
 
 ### Fluxo do Bot (WhatsApp Menu)
 - **Editor completo e versionado**: Configuração de entrada, mensagens, decisão, rotas, triagens, encaminhamentos e encerramentos sem necessidade de redeploy.

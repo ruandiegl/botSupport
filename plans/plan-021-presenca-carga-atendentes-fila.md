@@ -34,7 +34,7 @@ Este plano foi elaborado a partir de `docs/README.md`, `docs/PRD.md`, `docs/API.
 - Cada atendente terá contador e lista compacta de seus chamados ativos, ordenados por `lastActivityAt` descendente, depois `startedAt` ascendente.
 - A linha do chamado exibirá somente dados operacionais mínimos: nome do contato, departamento, status, horário da última atividade e quantidade de não lidas. Não incluir mensagens, mídia, URL temporária, token ou telefone completo.
 - O nome do contato e o chamado serão clicáveis e abrirão `/conversation/:id`, respeitando o escopo já aplicado ao detalhe da conversa.
-- Quando não houver chamados, mostrar “Nenhum chamado assumido”. Se a lista ultrapassar o limite visual, usar expansão por atendente e rolagem interna; não cortar silenciosamente a carga.
+- Quando não houver chamados, mostrar “Nenhum chamado assumido”. Na fila, o resumo exibe no máximo quatro atendentes ativos e informa a quantidade total, com ação “Ver todos” para `/admin/agents`. A página de Atendentes oferece a grade completa, expansão dos chamados e contagem na tabela administrativa.
 
 ### 2.3 Permissões e escopo
 
@@ -135,9 +135,11 @@ O contrato deverá ser documentado em `docs/API.md`. Erros esperados: `400` para
 
 **Responsável:** Frontend Developer (`agents/frontend-developer.agent.md`)
 
-- Criar `frontend/src/pages/queue/hooks/use-agent-workload.ts` isolando React Query e o contrato REST.
+- Criar `frontend/src/hooks/use-agent-workload.ts` isolando React Query e o contrato REST para reutilização entre fila e administração.
 - Criar `AgentWorkloadCard` e `AgentWorkloadRow` em `frontend/src/pages/queue/components/`.
 - Substituir o cartão “Plantão de suporte” por “Atendentes online”, posicionado **acima** do “Pulso da operação” no `right-stack`.
+- Limitar o resumo da fila a quatro atendentes e adicionar rodapé com total e navegação “Ver todos”.
+- Reutilizar o cartão em modo de grade na página `/admin/agents`, exibindo todos os atendentes permitidos pelo escopo e a contagem de chamados ativos na tabela.
 - Cada linha deverá usar componentes shadcn existentes (`Card`, `Badge`, `Avatar`/composição equivalente, `Collapsible`, `ScrollArea`, `Skeleton`) e Lucide:
   - bolinha verde/vermelha com texto acessível `Online`/`Offline`;
   - nome, função e departamento;
@@ -220,7 +222,7 @@ O contrato deverá ser documentado em `docs/API.md`. Erros esperados: `400` para
 ### Frontend
 
 - `frontend/src/types/index.ts` — tipos do workload;
-- `frontend/src/pages/queue/hooks/use-agent-workload.ts` — React Query;
+- `frontend/src/hooks/use-agent-workload.ts` — React Query compartilhado;
 - `frontend/src/pages/queue/components/AgentWorkloadCard.tsx`;
 - `frontend/src/pages/queue/components/AgentWorkloadRow.tsx`;
 - `frontend/src/pages/queue/index.tsx` — composição do right-stack e invalidação;
@@ -257,6 +259,7 @@ Ao abrir a fila, a supervisão terá uma leitura imediata da equipe: quem está 
 
 - Endpoint `GET /agents/workload` implementado com validação Zod, autorização `queue:view_all`, escopo obrigatório de supervisor e consulta relacional sem carregar histórico de mensagens.
 - Cartão `Atendentes online` implementado acima do pulso, com estados online/offline, expansão por atendente, contagem de chamados e navegação direta para cada conversa.
+- O cartão da fila foi limitado a quatro atendentes e recebeu acesso “Ver todos”; `/admin/agents` agora concentra a grade completa de presença/carga e a contagem de chamados ativos na tabela.
 - Invalidação do workload integrada aos eventos de presença e atualização de conversas via Socket.IO, com fallback de carregamento/erro e retry no cartão.
 - Nenhuma migration foi necessária: foram reutilizados `Agent.isOnline`, `Conversation.assignedAgentId`, `status`, `lastActivityAt` e os índices existentes.
 - Contratos documentados em `docs/API.md`, `docs/PRD.md` e `docs/PRD_SOCKETIO.md`.

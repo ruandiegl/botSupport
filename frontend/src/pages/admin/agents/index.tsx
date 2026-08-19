@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RefreshCw, UserPlus, Pencil, Trash2 } from "lucide-react";
 import { getInitials } from "@/app/Shell";
+import { AgentWorkloadCard } from "@/pages/queue/components/AgentWorkloadCard";
+import { useAgentWorkload } from "@/hooks/use-agent-workload";
+import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 import {
   useListAgents,
   useListDepartments,
@@ -10,6 +14,8 @@ import {
   useSetAgentStatus,
 } from "./hooks/use-agents";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AgentModal } from "./components/AgentModal";
@@ -17,7 +23,10 @@ import type { Agent } from "@/types";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export default function AgentsAdmin() {
+  const { can } = useAuth();
+  const canViewWorkload = can("queue", "view_all");
   const { data: agents, isLoading, isError, refetch } = useListAgents();
+  const { data: workload } = useAgentWorkload({ enabled: canViewWorkload, limit: 100 });
   const { data: departments = [] } = useListDepartments();
   const createAgent = useCreateAgent();
   const updateAgent = useUpdateAgent();
@@ -34,6 +43,10 @@ export default function AgentsAdmin() {
     : filter === "ONLINE"
       ? "Somente online"
       : departments.find((item) => item.id === filter)?.name || "Toda a equipe";
+  const workloadByAgent = useMemo(
+    () => new Map((workload?.items ?? []).map((item) => [item.id, item])),
+    [workload],
+  );
 
   const rows = (agents || []).filter(
     (item) =>
@@ -83,10 +96,10 @@ export default function AgentsAdmin() {
         description="Presença, permissões e cadastro de atendentes em tempo real."
         action={
           <div className="flex items-center gap-3">
-            <div className="tag">
-              <span style={{ color: "#10b981", marginRight: 5 }}>●</span>
-              {(agents || []).filter((item) => item.isOnline).length} online agora
-            </div>
+            <Badge variant="outline" className="agent-workload-status-badge online">
+              <i aria-hidden="true" />
+              {workload?.totals.online ?? (agents || []).filter((item) => item.isOnline).length} online agora
+            </Badge>
             <Button
               variant="default"
               size="lg"
@@ -99,13 +112,22 @@ export default function AgentsAdmin() {
         }
       />
 
+      <AgentWorkloadCard
+        enabled={canViewWorkload}
+        layout="grid"
+        limit={100}
+        showAllLink={false}
+        title="Chamados ativos por atendente"
+        description="Veja quem está online e acompanhe os atendimentos assumidos por cada usuário."
+      />
+
       <div className="toolbar">
         <Select
           value={filter}
           onValueChange={(value) => setFilter(value ?? "ALL")}
         >
           <SelectTrigger className="select"><SelectValue>{filterLabel}</SelectValue></SelectTrigger>
-          <SelectContent><SelectGroup>
+          <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup>
             <SelectItem value="ALL">Toda a equipe</SelectItem>
             <SelectItem value="ONLINE">Somente online</SelectItem>
             {departments.map((item) => <SelectItem value={item.id} key={item.id}>{item.name}</SelectItem>)}
@@ -135,16 +157,21 @@ export default function AgentsAdmin() {
                 <th>Função</th>
                 <th>Departamento</th>
                 <th>Presença</th>
+                <th>Chamados ativos</th>
                 <th>Status</th>
                 <th className="text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((item) => (
-                <tr key={item.id}>
+              {rows.map((item) => {
+                const workloadItem = workloadByAgent.get(item.id);
+                const activeConversationCount = workload ? workloadItem?.activeConversationCount ?? 0 : null;
+                return <tr key={item.id}>
                   <td>
                     <div className="agent-cell">
-                      <div className="avatar coral">{getInitials(item.name)}</div>
+                      <Avatar>
+                        <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
+                      </Avatar>
                       <div>
                         <strong>{item.name}</strong>
                         <div className="subtle">{item.email}</div>
@@ -152,15 +179,17 @@ export default function AgentsAdmin() {
                     </div>
                   </td>
                   <td>
-                    <span className="tag">{item.role}</span>
+                    <Badge variant="outline">{item.role === "ADMIN" ? "Administrador" : item.role === "SUPERVISOR" ? "Supervisor" : "Atendente"}</Badge>
                   </td>
                   <td>{item.departmentName || "Todos"}</td>
                   <td>
-                    <span className={`presence-chip ${item.isOnline ? "" : "offline"}`}>
+                    <Badge variant="outline" className={cn("agent-workload-status-badge", item.isOnline ? "online" : "offline")}>
+                      <i aria-hidden="true" />
                       {item.isOnline ? "Online" : "Offline"}
-                    </span>
+                    </Badge>
                   </td>
-                  <td><span className={`tag ${item.isActive ? "" : "opacity-60"}`}>{item.isActive ? "Ativo" : "Inativo"}</span></td>
+                  <td><Badge variant={activeConversationCount && activeConversationCount > 0 ? "secondary" : "outline"}>{activeConversationCount ?? "—"}</Badge></td>
+                  <td><Badge variant={item.isActive ? "secondary" : "outline"}>{item.isActive ? "Ativo" : "Inativo"}</Badge></td>
                   <td className="text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Button variant="ghost" size="sm" onClick={() => handleToggleStatus(item)} title={item.isActive ? "Desativar atendente" : "Ativar atendente"}>{item.isActive ? "Desativar" : "Ativar"}</Button>
@@ -184,8 +213,8 @@ export default function AgentsAdmin() {
                       </Button>
                     </div>
                   </td>
-                </tr>
-              ))}
+                </tr>;
+              })}
             </tbody>
           </table>
         )}

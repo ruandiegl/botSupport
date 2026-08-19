@@ -43,6 +43,8 @@ test("endpoint e consulta de carga filtram somente chamados em atendimento", () 
 test("fila exibe carga acima do pulso e revalida com eventos operacionais", () => {
   const queue = read("../frontend/src/pages/queue/index.tsx");
   const workloadCard = read("../frontend/src/pages/queue/components/AgentWorkloadCard.tsx");
+  const workloadHook = read("../frontend/src/hooks/use-agent-workload.ts");
+  const agentsPage = read("../frontend/src/pages/admin/agents/index.tsx");
   const shell = read("../frontend/src/app/Shell.tsx");
   const api = read("../docs/API.md");
   assert.match(queue, /<AgentWorkloadCard/);
@@ -51,7 +53,14 @@ test("fila exibe carga acima do pulso e revalida com eventos operacionais", () =
   assert.match(workloadCard, /Atendentes online/);
   assert.match(workloadCard, /Online/);
   assert.match(workloadCard, /Offline/);
+  assert.match(workloadCard, /limit = 4/);
+  assert.match(workloadCard, /Ver todos/);
+  assert.match(workloadCard, /href="\/admin\/agents"/);
   assert.match(workloadCard, /\/conversation\/\$\{conversation\.id\}/);
+  assert.match(workloadHook, /limit=\$\{limit\}/);
+  assert.match(agentsPage, /Chamados ativos por atendente/);
+  assert.match(agentsPage, /activeConversationCount/);
+  assert.match(agentsPage, /layout="grid"/);
   assert.match(shell, /\["agent-workload"\]/);
   assert.match(api, /GET `?\/agents\/workload/);
 });

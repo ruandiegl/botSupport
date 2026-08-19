@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronRight, Headphones, RefreshCw, UsersRound } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronRight, Headphones, RefreshCw, UsersRound } from "lucide-react";
 import { Link } from "wouter";
 import type { AgentRole, AgentWorkloadItem, AssignedConversationSummary } from "@/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAgentWorkload } from "@/hooks/use-agent-workload";
 import { cn } from "@/lib/utils";
-import { useAgentWorkload } from "../hooks/use-agent-workload";
 
 const roleLabels: Record<AgentRole, string> = {
   ADMIN: "Administrador",
@@ -83,19 +84,35 @@ function AgentWorkloadRow({ agent }: { agent: AgentWorkloadItem }) {
   );
 }
 
-export function AgentWorkloadCard({ enabled = true }: { enabled?: boolean }) {
-  const { data, isLoading, isError, refetch } = useAgentWorkload(enabled);
+interface AgentWorkloadCardProps {
+  description?: string;
+  enabled?: boolean;
+  layout?: "compact" | "grid";
+  limit?: number;
+  showAllLink?: boolean;
+  title?: string;
+}
+
+export function AgentWorkloadCard({
+  description = "Presença e chamados em atendimento",
+  enabled = true,
+  layout = "compact",
+  limit = 4,
+  showAllLink = true,
+  title = "Atendentes online",
+}: AgentWorkloadCardProps) {
+  const { data, isLoading, isError, refetch } = useAgentWorkload({ enabled, limit });
 
   if (!enabled) return null;
 
   return (
-    <Card className="agent-workload-card">
+    <Card className={cn("agent-workload-card", layout === "grid" && "agent-workload-card-grid")}>
       <CardHeader className="agent-workload-header">
         <div className="agent-workload-heading">
           <span className="agent-workload-heading-icon" aria-hidden="true"><UsersRound /></span>
           <span>
-            <CardTitle className="agent-workload-title">Atendentes online</CardTitle>
-            <CardDescription>Presença e chamados em atendimento</CardDescription>
+            <CardTitle className="agent-workload-title">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
           </span>
         </div>
         {data ? (
@@ -114,13 +131,30 @@ export function AgentWorkloadCard({ enabled = true }: { enabled?: boolean }) {
             <AlertDescription className="agent-workload-error"><span>Não foi possível carregar a equipe agora.</span><Button variant="outline" size="sm" onClick={() => refetch()}>Tentar novamente</Button></AlertDescription>
           </Alert>
         ) : null}
-        {!isLoading && !isError && !data?.items.length ? <div className="agent-workload-empty-state"><Headphones /><span>Nenhum atendente ativo no escopo.</span></div> : null}
+        {!isLoading && !isError && !data?.items.length ? (
+          <Empty className="agent-workload-empty-state">
+            <EmptyHeader>
+              <EmptyMedia variant="icon"><Headphones /></EmptyMedia>
+              <EmptyTitle>Nenhum atendente ativo</EmptyTitle>
+              <EmptyDescription>Não há usuários disponíveis neste escopo.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : null}
         {!isLoading && !isError && data?.items.length ? (
           <div className="agent-workload-list">
             {data.items.map((agent) => <AgentWorkloadRow key={agent.id} agent={agent} />)}
           </div>
         ) : null}
       </CardContent>
+      {showAllLink && data ? (
+        <CardFooter className="agent-workload-footer">
+          <span>Exibindo {data.items.length} de {data.totals.agents} atendentes ativos</span>
+          <Button variant="outline" size="sm" render={<Link href="/admin/agents" />}>
+            Ver todos
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 }

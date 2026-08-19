@@ -1261,8 +1261,16 @@ body { letter-spacing: 0; }
 .agent-workload-empty-state { display: flex; min-height: 88px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: hsl(var(--muted-foreground)); font-size: 11px; text-align: center; }
 .agent-workload-empty-state svg { color: hsl(var(--primary)); }
 .agent-workload-error { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.agent-workload-footer { justify-content: space-between; gap: 12px; color: hsl(var(--muted-foreground)); font-size: 10px; }
+.agent-workload-footer [data-slot="button"] { flex: 0 0 auto; }
+.agent-workload-card-grid { margin-bottom: 16px; }
+.agent-workload-card-grid .agent-workload-list { display: grid; max-height: none; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; overflow: visible; padding: 1px; }
+.agent-workload-card-grid .agent-workload-conversations { padding-left: 12px; }
 @media (max-width: 760px) {
   .agent-workload-trigger { padding: 11px; }
   .agent-workload-list { max-height: 420px; }
   .agent-workload-conversations { padding-left: 12px; }
+  .agent-workload-footer { align-items: stretch; flex-direction: column; }
+  .agent-workload-footer [data-slot="button"] { width: 100%; }
+  .agent-workload-card-grid .agent-workload-list { display: flex; max-height: none; }
 }
