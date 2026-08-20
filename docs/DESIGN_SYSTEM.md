@@ -8,7 +8,7 @@ Este documento define os padrões visuais, paleta de cores, tipografia e diretri
 
 O GTF-Bot utiliza um tema moderno, limpo e voltado para eficiência operacional em ambientes de suporte técnico e T.I.
 
-- **Estilo Base**: Dark Mode elegante com acentos vibrantes em Azul/Ciano e destaques em Esmeralda (Online/Sucesso) e Âmbar (Aguardando/Fila).
+- **Estilo Base**: tema operacional claro, com tema escuro equivalente e opcional. A mudança de tema nunca altera layout, densidade, hierarquia ou comportamento dos componentes.
 - **Framework Visual**: Tailwind CSS v4 com `tw-animate-css` e ícones `lucide-react`.
 
 ---
@@ -72,7 +72,7 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 
 ## 6. Confirmações de ações críticas
 
-- A paleta operacional clara de `docs/paleta.md` prevalece para novos componentes: superfície branca opaca, borda neutra e primária `#2D89C8`.
+- A paleta operacional clara de `docs/paleta.md` prevalece para novos componentes: superfície branca opaca, borda neutra e primária suavizada `#527087` (hover `#456277`). A marca da sidebar pode manter o azul institucional original.
 - Confirmações devem usar o `ConfirmationDialog`, composto sobre o `AlertDialog` do shadcn/ui. Formulários continuam usando `Dialog`.
 - Use `warning` para criar, editar, publicar, ativar/desativar, assumir atendimento, alterar credenciais, permissões ou sessão.
 - Use `danger` para excluir, arquivar, desconectar integrações e encerrar chamados.
@@ -102,3 +102,18 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 - O preview WhatsApp preserva quebras de linha e apresenta o ramo selecionado sem executar envios.
 - Publicação usa confirmação `warning`; exclusão de nó/rota usa `danger`. Em falha, o modal e o rascunho permanecem abertos.
 - No mobile, o inspector abre em `Sheet`; mapa e painéis não podem causar rolagem horizontal da aplicação.
+
+---
+
+## 8. Temas claro, escuro e do sistema
+
+- O seletor do cabeçalho oferece `Claro`, `Sistema` e `Escuro`, usando `Button`, `Popover` e `RadioGroup` do shadcn/Base UI.
+- O modo claro mantém integralmente a paleta operacional de `docs/paleta.md`. A sidebar `#1A2B3D` permanece igual nos dois temas para conservar a identidade e a orientação espacial.
+- O modo escuro usa fundo `#090D16`, painéis `#0D111D`, cards `#161B26`, hover `#1E2638`, bordas `#262F45`, campos `#334155`, texto principal `#F8FAFC`, texto secundário `#94A3B8` e foco `#00F0FF`.
+- A escolha explícita é persistida em `localStorage` pela chave `theme`. Em `Sistema`, a chave é removida e a aplicação acompanha `prefers-color-scheme`, inclusive quando a preferência muda durante a sessão.
+- O documento `<html>` recebe simultaneamente a classe `light`/`dark` e `data-theme="light"`/`data-theme="dark"`. A classe atende aos componentes Tailwind/shadcn e o atributo atende à camada visual legada.
+- Um script anterior à inicialização do React resolve o tema antes da primeira pintura, evitando o flash de superfície clara.
+- Novos componentes devem usar somente tokens semânticos (`background`, `card`, `popover`, `foreground`, `muted`, `border`, `input`, `ring`, `primary`) e não devem criar cores claras fixas.
+- Popovers, selects, dialogs, alert dialogs e outros elementos renderizados por portal precisam ser testados nos dois temas.
+- O foco deve permanecer visível, com contraste mínimo de 3:1. Texto normal deve alcançar WCAG AA de 4,5:1; azul e violeta de status não devem ser usados sozinhos como texto pequeno sobre superfície escura.
+- Logos, QR codes, fotos, vídeos e mídias recebidas nunca recebem filtro de cor ou inversão.

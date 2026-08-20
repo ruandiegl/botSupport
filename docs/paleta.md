@@ -20,8 +20,8 @@ O GTF-Bot adota uma interface **Operations Light / Editorial Clean**: uma área 
 | **Surface / Card** | `#FFFFFF` | `hsl(0, 0%, 100%)` | Cards, tabelas, modais, topbar e composer |
 | **Surface Muted** | `#EAF0F5` | `hsl(210, 29%, 94%)` | Chips, hovers, áreas secundárias e inputs auxiliares |
 | **Border** | `#D8E1EA` | `hsl(210, 24%, 88%)` | Divisores, cards, tabelas e inputs |
-| **Primary Blue** | `#2D89C8` | `hsl(205, 63%, 48%)` | CTAs, links, seleção de conversa e foco |
-| **Primary Hover** | `#2478B3` | `hsl(205, 66%, 42%)` | Hover de botões e ações primárias |
+| **Primary Blue** | `#527087` | `hsl(204, 25%, 42%)` | CTAs, badges, links e ações primárias |
+| **Primary Hover** | `#456277` | `hsl(204, 27%, 37%)` | Hover de botões e ações primárias |
 | **Success / Online** | `#2C9D7B` | `hsl(162, 56%, 39%)` | Atendente online e conversa em atendimento |
 | **Warning / Fila** | `#E9664D` | `hsl(10, 78%, 61%)` | Contatos aguardando atendimento |
 | **Info / Bot** | `#7088A8` | `hsl(214, 25%, 55%)` | Atendimento automatizado e informação neutra |
@@ -55,18 +55,18 @@ Para identificação visual instantânea pelos atendentes de suporte:
   --sidebar-foreground: 208 38% 73%;  /* #9CB8CF */
   --sidebar-border: 211 33% 23%;      /* #273C51 */
   --border: 210 24% 88%;              /* #D8E1EA */
-  --primary: 205 63% 48%;             /* #2D89C8 */
+  --primary: 204 25% 42%;             /* #527087 */
   --primary-foreground: 0 0% 100%;
   --secondary: 210 29% 94%;           /* #EAF0F5 */
   --secondary-foreground: 213 56% 12%;
-  --accent: 205 63% 48%;
+  --accent: 204 25% 42%;
   --accent-foreground: 0 0% 100%;
   --muted: 210 25% 94%;
   --muted-foreground: 211 18% 49%;    /* #687F96 */
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
   --input: 210 24% 88%;
-  --ring: 205 63% 48%;
+  --ring: 204 25% 42%;
   --radius: 0.75rem;
 }
 ```

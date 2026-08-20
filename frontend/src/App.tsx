@@ -47,7 +47,7 @@ function ProtectedRoute({ component: Component, screen }: { component: React.Com
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] text-slate-400">
+      <div className="flex items-center justify-center min-h-[400px] text-muted-foreground">
         <Loader2 className="animate-spin mr-2" size={24} />
         <span>Carregando sessão...</span>
       </div>
@@ -61,12 +61,12 @@ function ProtectedRoute({ component: Component, screen }: { component: React.Com
 
   if (screen && !canViewScreen(screen)) {
     return (
-      <div className="p-8 max-w-lg mx-auto text-center mt-12 bg-slate-900 border border-slate-800 rounded-2xl">
-        <div className="inline-flex p-4 rounded-full bg-amber-500/10 text-amber-400 mb-4">
+      <div className="p-8 max-w-lg mx-auto text-center mt-12 bg-card text-card-foreground border border-border rounded-2xl">
+        <div className="inline-flex p-4 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 mb-4">
           <ShieldAlert size={32} />
         </div>
-        <h2 className="text-xl font-bold text-slate-100 mb-2">Acesso Restrito</h2>
-        <p className="text-sm text-slate-400 mb-6">
+        <h2 className="text-xl font-bold text-foreground mb-2">Acesso Restrito</h2>
+        <p className="text-sm text-muted-foreground mb-6">
           Você não possui permissão para acessar esta tela.
         </p>
         <Link href="/" className="btn btn-primary">
@@ -84,7 +84,7 @@ function Router() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-950 text-slate-400">
+      <div className="flex items-center justify-center min-h-screen bg-background text-muted-foreground">
         <Loader2 className="animate-spin mr-2" size={28} />
         <span>Inicializando GTF-Bot...</span>
       </div>

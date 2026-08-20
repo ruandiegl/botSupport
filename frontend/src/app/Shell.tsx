@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Users,
   Bot,
-  HelpCircle,
   Settings2,
   ChevronRight,
   Menu,
@@ -17,6 +16,8 @@ import {
   Tags,
   ShieldOff,
   UserRound,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
@@ -26,6 +27,7 @@ import { Brand } from "@/components/ui/Brand";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { NotificationBell } from "@/components/NotificationBell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useSocketEvent } from "@/lib/use-socket-events";
 import { DelegationAlertDialog } from "@/components/DelegationAlertDialog";
 
@@ -54,6 +56,13 @@ export const getInitials = (name: string) =>
 export function Shell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("sidebar-collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [delegationAlert, setDelegationAlert] = useState<AgentNotification | null>(null);
   const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
@@ -199,11 +208,33 @@ export function Shell({ children }: { children: React.ReactNode }) {
     setLocation("/login");
   };
 
+  useEffect(() => {
+    try {
+      localStorage.setItem("sidebar-collapsed", String(sidebarCollapsed));
+    } catch {
+      // Prefer the layout to keep working when storage is unavailable.
+    }
+  }, [sidebarCollapsed]);
+
   return (
     <AgentContext.Provider value={{ activeAgent, agents, setActiveAgentId }}>
-      <div className="app-shell">
+      <div className={`app-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
         <aside className="sidebar" style={{ display: mobileOpen ? "flex" : undefined }}>
-          <Brand />
+          <div className="sidebar-header">
+            <Brand compact={sidebarCollapsed} />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="icon-btn sidebar-toggle"
+              onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+              aria-label={sidebarCollapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
+              aria-pressed={sidebarCollapsed}
+              title={sidebarCollapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
+              data-testid="button-toggle-sidebar"
+            >
+              {sidebarCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            </Button>
+          </div>
           {navSections.map(({ label: sectionLabel, items }) => (
             <section className="nav-section" key={sectionLabel} aria-label={sectionLabel}>
               <div className="nav-label">{sectionLabel}</div>
@@ -213,6 +244,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   href={href}
                   onClick={() => setMobileOpen(false)}
                   className={`nav-item ${location === href ? "active" : ""}`}
+                  aria-label={label}
+                  title={sidebarCollapsed ? label : undefined}
                   data-testid={`link-${label.toLowerCase().replace(/ /g, "-")}`}
                 >
                   <Icon /> <span>{label}</span>
@@ -223,11 +256,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
           ))}
 
           <div className="sidebar-spacer" />
-          <div className="nav-item">
-            <HelpCircle />
-            <span>Central de ajuda</span>
-          </div>
-
           <div className="agent-mini">
             <div className="avatar coral">
               {getInitials(activeAgent?.name || "Atendente")}
@@ -269,12 +297,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="top-actions">
               <NotificationBell />
-              <Button variant="ghost" size="icon" className="icon-btn" data-testid="button-help">
-                <HelpCircle size={16} />
-              </Button>
-              <Button variant="ghost" size="icon" className="icon-btn" data-testid="button-settings">
-                <Settings2 size={16} />
-              </Button>
+              <ThemeToggle triggerIcon={Settings2} className="icon-btn" />
               <div className="avatar coral" style={{ width: 32, height: 32 }}>
                 {getInitials(activeAgent?.name || "AT")}
               </div>
