@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
 import { parseIncomingMessage, parseSharedContact } from "../dist/modules/zapi/zapi.service.js";
 import { ZApiReceivedWebhookSchema } from "../dist/modules/zapi/zapi.schemas.js";
+
+const prismaSchema = readFileSync(join(process.cwd(), "prisma", "schema.prisma"), "utf8");
+const migration = readFileSync(join(process.cwd(), "prisma", "migrations", "20260820100000_add_contact_messages_and_contact_book", "migration.sql"), "utf8");
 
 const common = {
   messageId: "zapi-contact-message-1",
@@ -50,4 +55,9 @@ test("payload sem contato continua seguindo o parser de texto legado", () => {
   assert.equal(parsed?.messageType, undefined);
   assert.equal(parsed?.content, "Olá");
   assert.equal(parsed?.contactShare, undefined);
+});
+
+test("schema Prisma mapeia o nome do contato compartilhado para a coluna criada pela migration", () => {
+  assert.match(prismaSchema, /displayName\s+String\s+@map\("display_name"\)/);
+  assert.match(migration, /"display_name"\s+TEXT\s+NOT NULL/);
 });

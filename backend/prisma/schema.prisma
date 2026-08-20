@@ -199,7 +199,7 @@ model ContactShare {
   id                  String   @id @default(uuid())
   messageId           String   @unique @map("message_id")
   canonicalContactId  String?  @map("canonical_contact_id")
-  displayName         String
+  displayName         String   @map("display_name")
   phones              Json
   primaryPhone        String?  @map("primary_phone")
   email               String?
