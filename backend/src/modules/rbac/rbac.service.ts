@@ -18,7 +18,7 @@ const defaults: Record<string, PermissionMap> = {
   },
 };
 
-const screens = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac", "/admin/bot-exclusions"];
+const screens = ["/", "/my-conversations", "/contacts", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac", "/admin/bot-exclusions"];
 
 function screenResource(path: string) { return `screen:${path}`; }
 
@@ -42,7 +42,7 @@ export class RbacService {
         }),
       ...screens
         .filter((path) => !existingResources.has(screenResource(path)))
-        .map((path) => rbacRepository.upsert(role, screenResource(path), role === "ADMIN" || path === "/" || path === "/my-conversations" || path === "/conversation/:id" || path === "/admin/shortcuts" ? ["view"] : [])),
+        .map((path) => rbacRepository.upsert(role, screenResource(path), role === "ADMIN" || path === "/" || path === "/my-conversations" || path === "/contacts" || path === "/conversation/:id" || path === "/admin/shortcuts" ? ["view"] : [])),
     ];
     if (missing.length === 0) return current;
     await Promise.all(missing);

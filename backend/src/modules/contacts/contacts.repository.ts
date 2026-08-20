@@ -7,16 +7,12 @@ export type ContactAccessScope = {
 };
 
 function contactWhere(scope?: ContactAccessScope) {
-  if (!scope || scope.role !== "AGENT") return {};
-
-  const conversationScope = [
-    ...(scope.id ? [{ assignedAgentId: scope.id }] : []),
-    ...(scope.departmentId ? [{ departmentId: scope.departmentId }] : []),
-  ];
-
-  return conversationScope.length > 0
-    ? { conversations: { some: { OR: conversationScope } } }
-    : { conversations: { some: { assignedAgentId: "__agent_without_department__" } } };
+  // A agenda é protegida pelo recurso RBAC `contacts:view`. Restringi-la às
+  // conversas existentes faria um contato recém-criado desaparecer antes de
+  // o primeiro atendimento. O histórico relacionado continua usando
+  // `conversationWhere`, respeitando o departamento/atendente.
+  void scope;
+  return {};
 }
 
 export class ContactsRepository {
@@ -26,6 +22,8 @@ export class ContactsRepository {
           { name: { contains: filters.q, mode: "insensitive" as const } },
           { phone: { contains: filters.q } },
           { phoneNumbers: { some: { phone: { contains: filters.q } } } },
+          { email: { contains: filters.q, mode: "insensitive" as const } },
+          { organization: { contains: filters.q, mode: "insensitive" as const } },
         ] }
       : {};
     const where = { ...query, ...contactWhere(scope) };

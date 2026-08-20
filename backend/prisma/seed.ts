@@ -174,7 +174,7 @@ async function main() {
     ],
   });
 
-  const screenPaths = ["/", "/my-conversations", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac"];
+  const screenPaths = ["/", "/my-conversations", "/contacts", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac"];
   const roleActions: Record<string, Record<string, string[]>> = {
     ADMIN: {
       conversations: ["view", "assume", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"], departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"],
@@ -185,7 +185,7 @@ async function main() {
   await prisma.rolePermission.createMany({
     data: Object.entries(roleActions).flatMap(([role, resources]) => [
       ...Object.entries(resources).map(([resource, actions]) => ({ role, resource, actions })),
-      ...screenPaths.map((path) => ({ role, resource: `screen:${path}`, actions: role === "ADMIN" || ["/", "/my-conversations", "/conversation/:id", "/admin/shortcuts"].includes(path) ? ["view"] : [] })),
+      ...screenPaths.map((path) => ({ role, resource: `screen:${path}`, actions: role === "ADMIN" || ["/", "/my-conversations", "/contacts", "/conversation/:id", "/admin/shortcuts"].includes(path) ? ["view"] : [] })),
     ]),
   });
 

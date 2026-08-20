@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
+import { MessageCircle, MessageSquarePlus, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +14,7 @@ import { QueueCard } from "./components/QueueCard";
 import { DateRangeFilter, type DateRangeValue } from "./components/DateRangeFilter";
 import { LabelFilter } from "./components/LabelFilter";
 import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
+import { StartConversationDialog } from "@/pages/contacts/components/StartConversationDialog";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -54,6 +55,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
   const [currentPage, setCurrentPage] = useState(1);
   const [labelIds, setLabelIds] = useState<string[]>([]);
+  const [newConversationOpen, setNewConversationOpen] = useState(false);
 
   const queryStatus = metricFilter === "ALL"
     ? "ALL"
@@ -126,6 +128,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         eyebrow={onlyMine ? "Seu turno / acompanhamento" : "Central de atendimento / agora"}
         title={onlyMine ? "Meus atendimentos" : "Fila de atendimento"}
         description={onlyMine ? "Acompanhe os contatos que estão sob sua responsabilidade." : "Comece pela fila de contatos que aguardam atendimento."}
+        action={!onlyMine && can("contacts", "create") ? <Button onClick={() => setNewConversationOpen(true)}><MessageSquarePlus data-icon="inline-start" />Nova conversa</Button> : undefined}
       />
 
       <div className="stats">
@@ -160,6 +163,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         </div>
         <div className="right-stack"><AgentWorkloadCard enabled={can("queue", "view_all")} /><QueueCard conversations={all} fixedCounts={metricCounts} /></div>
       </div>
+      <StartConversationDialog open={newConversationOpen} onOpenChange={setNewConversationOpen} />
     </div>
   );
 }

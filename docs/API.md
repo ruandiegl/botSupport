@@ -451,11 +451,11 @@ Mensagens de contato recebidas no callback `ReceivedCallback` são persistidas c
 
 ### `GET /contacts`
 
-Lista contatos visíveis ao usuário autenticado. Aceita `q`, `page` e `limit` (5–100) e retorna `{ items, total, page, limit, totalPages }`. Para agentes, o servidor restringe o resultado a contatos de conversas do seu departamento ou atribuídas a ele.
+Lista a agenda compartilhada para usuários com `contacts:view`. Aceita `q` (nome, telefone, e-mail ou organização), `page` e `limit` (5–100) e retorna `{ items, total, page, limit, totalPages }`.
 
 ### `GET /contacts/:id`
 
-Retorna os dados editáveis do contato e seus telefones normalizados. O escopo de departamento é aplicado no servidor.
+Retorna os dados editáveis do contato e seus telefones normalizados. Exige `contacts:view`.
 
 ### `POST /contacts` / `PATCH /contacts/:id`
 
@@ -463,7 +463,7 @@ Criam ou atualizam contatos com `name`, `phones[]`, `email`, `organization` e `n
 
 ### `GET /contacts/:id/conversations`
 
-Retorna conversas relacionadas ao contato, com `openOnly`, `page` e `limit`. A resposta inclui status, departamento, responsável, não lidas e última atividade, sem mensagens ou dados sensíveis desnecessários.
+Retorna conversas relacionadas ao contato, com `openOnly`, `page` e `limit`. A resposta inclui status, departamento, responsável, não lidas e última atividade, sem mensagens ou dados sensíveis desnecessários. Para agentes, somente conversas do próprio departamento ou atribuídas ao usuário são retornadas.
 
 ### `POST /conversations`
 

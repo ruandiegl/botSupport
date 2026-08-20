@@ -110,5 +110,7 @@ O atendente pode:
 - editar um contato já salvo, com validação e máscara de telefone;
 - consultar conversas relacionadas ao contato;
 - iniciar uma nova conversa manual para um telefone do contato.
+- abrir a agenda em `/contacts` para buscar, visualizar, cadastrar e editar contatos;
+- iniciar a mesma jornada pelo botão **Nova conversa** na fila de atendimento.
 
-Os dados são normalizados no backend, o vCard bruto não é exposto no frontend e a operação respeita o RBAC `contacts:view/create/update`. A mensagem original permanece idempotente pelo `messageId` da Z-API e o cartão pode ser associado ao contato canônico sem alterar o histórico.
+Os dados são normalizados no backend, o vCard bruto não é exposto no frontend e a operação respeita o RBAC `contacts:view/create/update`. A agenda é compartilhada entre os usuários que possuem `contacts:view`; o histórico de conversas do contato continua limitado ao escopo operacional de cada atendente. A mensagem original permanece idempotente pelo `messageId` da Z-API e o cartão pode ser associado ao contato canônico sem alterar o histórico.

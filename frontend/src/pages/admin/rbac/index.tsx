@@ -15,6 +15,7 @@ import {
 const screenLabels: Record<string, string> = {
   "/": "Fila de Atendimento ao Vivo",
   "/my-conversations": "Meus Atendimentos",
+  "/contacts": "Agenda de Contatos",
   "/admin/departments": "Gerenciamento de Departamentos",
   "/admin/agents": "Gerenciamento de Atendentes",
   "/admin/shortcuts": "Atalhos e Procedimentos",

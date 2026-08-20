@@ -18,6 +18,27 @@ export interface ContactFormData {
   contactShareId?: string;
 }
 
+export interface ContactListResponse {
+  items: ContactDetail[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export function useContacts(filters: { q?: string; page?: number; limit?: number } = {}) {
+  const params = new URLSearchParams();
+  if (filters.q?.trim()) params.set("q", filters.q.trim());
+  params.set("page", String(filters.page ?? 1));
+  params.set("limit", String(filters.limit ?? 20));
+  return useQuery<ContactListResponse>({
+    queryKey: ["contacts", { q: filters.q?.trim() ?? "", page: filters.page ?? 1, limit: filters.limit ?? 20 }],
+    queryFn: () => apiFetch<ContactListResponse>(`/contacts?${params.toString()}`),
+    placeholderData: (previous) => previous,
+    staleTime: 10_000,
+  });
+}
+
 export function useContact(id?: string | null) {
   return useQuery<ContactDetail>({
     queryKey: ["contact", id],

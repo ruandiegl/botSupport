@@ -10,6 +10,7 @@ import LoginPage from "@/pages/login";
 import QueuePage from "@/pages/queue";
 import ConversationPage from "@/pages/conversation";
 import MyConversationsPage from "@/pages/my-conversations";
+import ContactsPage from "@/pages/contacts";
 import DepartmentAdmin from "@/pages/admin/departments";
 import AgentsAdmin from "@/pages/admin/agents";
 import FlowAdmin from "@/pages/admin/flow";
@@ -105,6 +106,9 @@ function Router() {
               </Route>
               <Route path="/my-conversations">
                 {() => <ProtectedRoute component={MyConversationsPage} />}
+              </Route>
+              <Route path="/contacts">
+                {() => <ProtectedRoute component={ContactsPage} screen="/contacts" />}
               </Route>
               <Route path="/admin/departments">
                 {() => <ProtectedRoute component={DepartmentAdmin} screen="/admin/departments" />}
