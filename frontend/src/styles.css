@@ -834,6 +834,8 @@ body { letter-spacing: 0; }
   --color-input: hsl(var(--input));
   --color-border: hsl(var(--border));
   --color-destructive: hsl(var(--destructive));
+  --color-success-foreground: var(--success-foreground);
+  --color-success: var(--success);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning: var(--warning);
   --color-accent-foreground: hsl(var(--accent-foreground));
@@ -1219,7 +1221,7 @@ body { letter-spacing: 0; }
 }
 
 /* Team presence and assigned workload ------------------------------------- */
-:root { --success: #2c9d7b; --offline: #d75b52; }
+:root { --success: #2c9d7b; --success-foreground: #ffffff; --offline: #d75b52; }
 .agent-workload-card { --card-spacing: 16px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); }
 .agent-workload-header { gap: 12px; }
 .agent-workload-heading { display: flex; min-width: 0; align-items: center; gap: 10px; }

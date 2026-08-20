@@ -128,7 +128,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         eyebrow={onlyMine ? "Seu turno / acompanhamento" : "Central de atendimento / agora"}
         title={onlyMine ? "Meus atendimentos" : "Fila de atendimento"}
         description={onlyMine ? "Acompanhe os contatos que estão sob sua responsabilidade." : "Comece pela fila de contatos que aguardam atendimento."}
-        action={!onlyMine && can("contacts", "create") ? <Button onClick={() => setNewConversationOpen(true)}><MessageSquarePlus data-icon="inline-start" />Nova conversa</Button> : undefined}
+        action={!onlyMine && can("contacts", "create") ? <Button variant="success" onClick={() => setNewConversationOpen(true)}><MessageSquarePlus data-icon="inline-start" />Nova conversa</Button> : undefined}
       />
 
       <div className="stats">

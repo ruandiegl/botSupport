@@ -86,3 +86,7 @@ test("iniciar conversa não abre chamado até o primeiro envio", () => {
   assert.match(contactsRepository, /status:\s*\{\s*notIn:\s*\["CLOSED",\s*"DRAFT"\]/);
   assert.match(zapiRepository, /status:\s*\{\s*notIn:\s*\["CLOSED",\s*"DRAFT"\]/);
 });
+
+test("detalhe da conversa expõe o contato para carregar o histórico", () => {
+  assert.match(conversationService, /private formatConversationRecord[\s\S]*?contact:\s*\{[\s\S]*?id:\s*conversation\.contact\?\.id/);
+});

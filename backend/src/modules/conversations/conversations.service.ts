@@ -267,8 +267,10 @@ export class ConversationsService {
     return {
       id: conversation.id,
       contact: {
+        id: conversation.contact?.id,
         name: conversation.contact?.name ?? "Contato sem nome",
         phone: conversation.contact?.phone ?? "",
+        isRegistered: conversation.contact?.isRegistered ?? false,
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
       status: conversation.status,
