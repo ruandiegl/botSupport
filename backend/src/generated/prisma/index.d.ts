@@ -7839,6 +7839,7 @@ export namespace Prisma {
     id: string | null
     phone: string | null
     name: string | null
+    isRegistered: boolean | null
     email: string | null
     organization: string | null
     notes: string | null
@@ -7850,6 +7851,7 @@ export namespace Prisma {
     id: string | null
     phone: string | null
     name: string | null
+    isRegistered: boolean | null
     email: string | null
     organization: string | null
     notes: string | null
@@ -7861,6 +7863,7 @@ export namespace Prisma {
     id: number
     phone: number
     name: number
+    isRegistered: number
     email: number
     organization: number
     notes: number
@@ -7874,6 +7877,7 @@ export namespace Prisma {
     id?: true
     phone?: true
     name?: true
+    isRegistered?: true
     email?: true
     organization?: true
     notes?: true
@@ -7885,6 +7889,7 @@ export namespace Prisma {
     id?: true
     phone?: true
     name?: true
+    isRegistered?: true
     email?: true
     organization?: true
     notes?: true
@@ -7896,6 +7901,7 @@ export namespace Prisma {
     id?: true
     phone?: true
     name?: true
+    isRegistered?: true
     email?: true
     organization?: true
     notes?: true
@@ -7980,6 +7986,7 @@ export namespace Prisma {
     id: string
     phone: string
     name: string
+    isRegistered: boolean
     email: string | null
     organization: string | null
     notes: string | null
@@ -8008,6 +8015,7 @@ export namespace Prisma {
     id?: boolean
     phone?: boolean
     name?: boolean
+    isRegistered?: boolean
     email?: boolean
     organization?: boolean
     notes?: boolean
@@ -8024,6 +8032,7 @@ export namespace Prisma {
     id?: boolean
     phone?: boolean
     name?: boolean
+    isRegistered?: boolean
     email?: boolean
     organization?: boolean
     notes?: boolean
@@ -8035,6 +8044,7 @@ export namespace Prisma {
     id?: boolean
     phone?: boolean
     name?: boolean
+    isRegistered?: boolean
     email?: boolean
     organization?: boolean
     notes?: boolean
@@ -8063,6 +8073,7 @@ export namespace Prisma {
       id: string
       phone: string
       name: string
+      isRegistered: boolean
       email: string | null
       organization: string | null
       notes: string | null
@@ -8468,6 +8479,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Contact", 'String'>
     readonly phone: FieldRef<"Contact", 'String'>
     readonly name: FieldRef<"Contact", 'String'>
+    readonly isRegistered: FieldRef<"Contact", 'Boolean'>
     readonly email: FieldRef<"Contact", 'String'>
     readonly organization: FieldRef<"Contact", 'String'>
     readonly notes: FieldRef<"Contact", 'String'>
@@ -29886,6 +29898,7 @@ export namespace Prisma {
     id: 'id',
     phone: 'phone',
     name: 'name',
+    isRegistered: 'isRegistered',
     email: 'email',
     organization: 'organization',
     notes: 'notes',
@@ -30747,6 +30760,7 @@ export namespace Prisma {
     id?: StringFilter<"Contact"> | string
     phone?: StringFilter<"Contact"> | string
     name?: StringFilter<"Contact"> | string
+    isRegistered?: BoolFilter<"Contact"> | boolean
     email?: StringNullableFilter<"Contact"> | string | null
     organization?: StringNullableFilter<"Contact"> | string | null
     notes?: StringNullableFilter<"Contact"> | string | null
@@ -30762,6 +30776,7 @@ export namespace Prisma {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    isRegistered?: SortOrder
     email?: SortOrderInput | SortOrder
     organization?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
@@ -30780,6 +30795,7 @@ export namespace Prisma {
     OR?: ContactWhereInput[]
     NOT?: ContactWhereInput | ContactWhereInput[]
     name?: StringFilter<"Contact"> | string
+    isRegistered?: BoolFilter<"Contact"> | boolean
     email?: StringNullableFilter<"Contact"> | string | null
     organization?: StringNullableFilter<"Contact"> | string | null
     notes?: StringNullableFilter<"Contact"> | string | null
@@ -30795,6 +30811,7 @@ export namespace Prisma {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    isRegistered?: SortOrder
     email?: SortOrderInput | SortOrder
     organization?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
@@ -30812,6 +30829,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Contact"> | string
     phone?: StringWithAggregatesFilter<"Contact"> | string
     name?: StringWithAggregatesFilter<"Contact"> | string
+    isRegistered?: BoolWithAggregatesFilter<"Contact"> | boolean
     email?: StringNullableWithAggregatesFilter<"Contact"> | string | null
     organization?: StringNullableWithAggregatesFilter<"Contact"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Contact"> | string | null
@@ -32918,6 +32936,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -32933,6 +32952,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -32948,6 +32968,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32963,6 +32984,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32978,6 +33000,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -32989,6 +33012,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33000,6 +33024,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35315,6 +35340,7 @@ export namespace Prisma {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
     notes?: SortOrder
@@ -35326,6 +35352,7 @@ export namespace Prisma {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
     notes?: SortOrder
@@ -35337,6 +35364,7 @@ export namespace Prisma {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
     notes?: SortOrder
@@ -41303,6 +41331,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -41317,6 +41346,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -41347,6 +41377,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41361,6 +41392,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41747,6 +41779,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -41761,6 +41794,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -42187,6 +42221,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42201,6 +42236,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42654,6 +42690,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -42668,6 +42705,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -42916,6 +42954,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42930,6 +42969,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43087,6 +43127,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -43101,6 +43142,7 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    isRegistered?: boolean
     email?: string | null
     organization?: string | null
     notes?: string | null
@@ -43176,6 +43218,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43190,6 +43233,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null

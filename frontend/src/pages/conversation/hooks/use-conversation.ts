@@ -108,10 +108,11 @@ export function useDelegateConversation(id: string) {
 
 export function useCloseConversation(id: string) {
   const queryClient = useQueryClient();
-  return useMutation<Conversation, Error, void>({
-    mutationFn: () =>
+  return useMutation<Conversation, Error, { reason?: "NORMAL" | "INACTIVITY" | "SILENT" } | void>({
+    mutationFn: (data) =>
       apiFetch<Conversation>(`/conversations/${id}/close`, {
         method: "POST",
+        ...(data ? { body: JSON.stringify(data) } : {}),
       }),
     onSuccess: (updated) => {
       queryClient.setQueryData(["conversation", id], updated);

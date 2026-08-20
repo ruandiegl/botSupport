@@ -109,7 +109,7 @@ O atendente pode:
 - adicionar o contato à agenda, informando nome, um ou mais telefones e dados opcionais;
 - editar um contato já salvo, com validação e máscara de telefone;
 - consultar conversas relacionadas ao contato;
-- iniciar uma nova conversa manual para um telefone do contato.
+- iniciar uma nova conversa manual para um telefone do contato ou somente informando um número, criando um contato mínimo editável quando ele ainda não existir.
 - abrir a agenda em `/contacts` para buscar, visualizar, cadastrar e editar contatos;
 - iniciar a mesma jornada pelo botão **Nova conversa** na fila de atendimento.
 

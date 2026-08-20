@@ -13,6 +13,7 @@ function contactDto(contact: any) {
   return {
     id: contact.id,
     name: contact.name,
+    isRegistered: contact.isRegistered ?? false,
     initials: initials(contact.name),
     phone: contact.phone,
     email: contact.email ?? null,

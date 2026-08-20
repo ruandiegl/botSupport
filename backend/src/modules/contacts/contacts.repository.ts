@@ -61,12 +61,13 @@ export class ContactsRepository {
     });
   }
 
-  create(data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null }) {
+  create(data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null; isRegistered?: boolean }) {
     const primary = data.phones.find((item) => item.isPrimary) ?? data.phones[0];
     return prisma.contact.create({
       data: {
         phone: primary.phone,
         name: data.name,
+        isRegistered: data.isRegistered ?? true,
         email: data.email ?? null,
         organization: data.organization ?? null,
         notes: data.notes ?? null,
@@ -77,7 +78,7 @@ export class ContactsRepository {
   }
 
   async createWithShare(
-    data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null },
+    data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null; isRegistered?: boolean },
     shareId: string,
     primaryPhone: string,
   ) {
@@ -97,6 +98,7 @@ export class ContactsRepository {
         data: {
           phone: primary.phone,
           name: data.name,
+          isRegistered: data.isRegistered ?? true,
           email: data.email ?? null,
           organization: data.organization ?? null,
           notes: data.notes ?? null,
@@ -118,6 +120,7 @@ export class ContactsRepository {
       const contact = await tx.contact.update({
         where: { id },
         data: {
+          isRegistered: true,
           ...(data.name !== undefined ? { name: data.name } : {}),
           ...(data.email !== undefined ? { email: data.email } : {}),
           ...(data.organization !== undefined ? { organization: data.organization } : {}),

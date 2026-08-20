@@ -7,6 +7,9 @@ import { ZApiReceivedWebhookSchema } from "../dist/modules/zapi/zapi.schemas.js"
 
 const prismaSchema = readFileSync(join(process.cwd(), "prisma", "schema.prisma"), "utf8");
 const migration = readFileSync(join(process.cwd(), "prisma", "migrations", "20260820100000_add_contact_messages_and_contact_book", "migration.sql"), "utf8");
+const conversationSchema = readFileSync(join(process.cwd(), "src", "modules", "conversations", "conversations.schemas.ts"), "utf8");
+const conversationService = readFileSync(join(process.cwd(), "src", "modules", "conversations", "conversations.service.ts"), "utf8");
+const zapiRepository = readFileSync(join(process.cwd(), "src", "modules", "zapi", "zapi.repository.ts"), "utf8");
 
 const common = {
   messageId: "zapi-contact-message-1",
@@ -60,4 +63,15 @@ test("payload sem contato continua seguindo o parser de texto legado", () => {
 test("schema Prisma mapeia o nome do contato compartilhado para a coluna criada pela migration", () => {
   assert.match(prismaSchema, /displayName\s+String\s+@map\("display_name"\)/);
   assert.match(migration, /"display_name"\s+TEXT\s+NOT NULL/);
+});
+
+test("nova conversa aceita somente telefone e prepara um contato mínimo", () => {
+  assert.match(conversationSchema, /contactId:\s*z\.string\(\)\.uuid\(\)\.optional\(\)/);
+  assert.match(conversationService, /findByPhone\(data\.phone\)/);
+  assert.match(conversationService, /name:\s*"Contato WhatsApp"/);
+});
+
+test("contatos automáticos ficam distinguíveis dos contatos confirmados na agenda", () => {
+  assert.match(prismaSchema, /isRegistered\s+Boolean\s+@default\(false\)\s+@map\("is_registered"\)/);
+  assert.match(zapiRepository, /isRegistered:\s*false/);
 });

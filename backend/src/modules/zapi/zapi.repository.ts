@@ -77,7 +77,7 @@ export class ZApiRepository {
 
   async createContact(phone: string, name: string) {
     return prisma.contact.create({
-      data: { phone, name },
+      data: { phone, name, isRegistered: false },
     });
   }
 

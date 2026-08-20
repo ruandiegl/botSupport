@@ -85,8 +85,10 @@ export class ConversationsService {
     return {
       id: summary.id,
       contact: {
+        id: summary.contact?.id,
         name: summary.contact?.name ?? "Contato sem nome",
         phone: summary.contact?.phone ?? "",
+        isRegistered: summary.contact?.isRegistered ?? false,
         initials: getInitials(summary.contact?.name ?? "CS"),
       },
       status: summary.status,
@@ -126,8 +128,10 @@ export class ConversationsService {
     return {
       id: conversation.id,
       contact: {
+        id: conversation.contact?.id,
         name: conversation.contact?.name ?? "Contato sem nome",
         phone: conversation.contact?.phone ?? "",
+        isRegistered: conversation.contact?.isRegistered ?? false,
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
       status: conversation.status,
@@ -216,14 +220,27 @@ export class ConversationsService {
     };
   }
 
-  async createManual(data: { contactId: string; phone: string; departmentId?: string }, user?: AuthenticatedRequest["user"]) {
-    const contact = await contactsRepository.findById(data.contactId);
-    if (!contact || !contact.phoneNumbers.some((item) => item.phone === data.phone) && contact.phone !== data.phone) return { kind: "NOT_FOUND" as const };
+  async createManual(data: { contactId?: string; phone: string; departmentId?: string }, user?: AuthenticatedRequest["user"]) {
+    let contact = data.contactId ? await contactsRepository.findById(data.contactId) : await contactsRepository.findByPhone(data.phone);
+    if (!contact && !data.contactId) {
+      try {
+        contact = await contactsRepository.create({
+          name: "Contato WhatsApp",
+          phones: [{ phone: data.phone, label: "WhatsApp", isPrimary: true }],
+          isRegistered: false,
+        });
+      } catch (error: any) {
+        // A unicidade do telefone resolve a corrida entre dois atendentes.
+        if (error?.code === "P2002") contact = await contactsRepository.findByPhone(data.phone);
+        else throw error;
+      }
+    }
+    if (!contact || (!contact.phoneNumbers.some((item) => item.phone === data.phone) && contact.phone !== data.phone)) return { kind: "NOT_FOUND" as const };
     if (user?.role === "AGENT" && data.departmentId && data.departmentId !== user.departmentId) return { kind: "FORBIDDEN" as const };
-    const existing = await contactsRepository.findActiveConversation(data.contactId, data.phone);
+    const existing = await contactsRepository.findActiveConversation(contact.id, data.phone);
     if (existing) return { kind: "CONFLICT" as const, conversationId: existing.id };
     try {
-      const conversation = await conversationsRepository.createManualConversation(data.contactId, data.departmentId);
+      const conversation = await conversationsRepository.createManualConversation(contact.id, data.departmentId);
       const formatted = await this.formatConversationRecord(await conversationsRepository.findById(conversation.id, { messageLimit: DEFAULT_MESSAGE_LIMIT }));
       conversationEvents.emit("conversation_updated", { conversationId: conversation.id, status: conversation.status, eventType: "CONVERSATION_CREATED", departmentId: data.departmentId ?? null, assignedAgentId: null });
       socketEmitter.emitToConversation(conversation.id, "conversation:updated", { conversationId: conversation.id, status: conversation.status });
@@ -431,13 +448,14 @@ export class ConversationsService {
     return { kind: "OK" as const, conversation: updated, assignment: result.assignment, response: result.accepted ? "ACCEPTED" as const : "DECLINED" as const };
   }
 
-  async close(id: string, user?: AuthenticatedRequest["user"]) {
+  async close(id: string, user?: AuthenticatedRequest["user"], reason: "NORMAL" | "INACTIVITY" | "SILENT" = "NORMAL") {
     const conversation = await conversationsRepository.findAccessById(id);
     if (!conversation || !this.canAccess(conversation, user)) return null;
 
-    await conversationsRepository.close(id);
+    const closeReason = reason === "INACTIVITY" ? "AUTO_TIMEOUT" : reason === "SILENT" ? "SILENT" : "MANUAL";
+    await conversationsRepository.close(id, closeReason);
 
-    conversationEvents.emit("conversation_updated", { conversationId: id, status: "CLOSED", eventType: "CLOSED" });
+    conversationEvents.emit("conversation_updated", { conversationId: id, status: "CLOSED", eventType: "CLOSED", closeReason });
 
     return this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
   }

@@ -133,7 +133,7 @@ export class ConversationsRepository {
               startedAt: true,
               closedAt: true,
               groupChatName: true,
-              contact: { select: { name: true, phone: true } },
+              contact: { select: { name: true, phone: true, isRegistered: true } },
               department: { select: { name: true } },
               assignedAgent: { select: { name: true } },
               labels: {
@@ -239,7 +239,7 @@ export class ConversationsRepository {
     return prisma.conversation.findUnique({
       where: { id },
       include: {
-        contact: true,
+        contact: { include: { phoneNumbers: { select: { id: true } } } },
         department: true,
         assignedAgent: {
           include: { department: true },

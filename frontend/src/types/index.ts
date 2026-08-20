@@ -16,6 +16,7 @@ export interface ConversationLabel {
 export interface Contact {
   id?: string;
   name: string;
+  isRegistered?: boolean;
   phone: string;
   initials: string;
   email?: string | null;

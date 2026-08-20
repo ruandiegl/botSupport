@@ -76,7 +76,7 @@ Altera o status da conversa para `IN_PROGRESS` e vincula o atendente informado.
 ```
 
 ### `POST /conversations/:id/close`
-Encerra a conversa (status `CLOSED`) e registra a data/hora de encerramento.
+Encerra a conversa (status `CLOSED`) e registra a data/hora de encerramento. O body opcional aceita `{ "reason": "NORMAL" | "INACTIVITY" | "SILENT" }`; `SILENT` encerra apenas no sistema, sem enviar mensagem ao cliente.
 
 ### `POST /conversations/:id`
 Envia uma nova mensagem para a conversa como atendente.
@@ -451,7 +451,7 @@ Mensagens de contato recebidas no callback `ReceivedCallback` são persistidas c
 
 ### `GET /contacts`
 
-Lista a agenda compartilhada para usuários com `contacts:view`. Aceita `q` (nome, telefone, e-mail ou organização), `page` e `limit` (5–100) e retorna `{ items, total, page, limit, totalPages }`.
+Lista a agenda compartilhada para usuários com `contacts:view`. Aceita `q` (nome, telefone, e-mail ou organização), `page` e `limit` (5–100) e retorna `{ items, total, page, limit, totalPages }`. Cada contato inclui `isRegistered`; registros criados automaticamente pela entrada do WhatsApp ficam como `false` até serem confirmados/editados na agenda.
 
 ### `GET /contacts/:id`
 
@@ -467,10 +467,10 @@ Retorna conversas relacionadas ao contato, com `openOnly`, `page` e `limit`. A r
 
 ### `POST /conversations`
 
-Cria uma conversa manual para um contato existente:
+Cria uma conversa manual. `contactId` é opcional: quando omitido, o backend procura o telefone e cria automaticamente um contato mínimo (“Contato WhatsApp”), que pode ser complementado depois na agenda:
 
 ```json
-{ "contactId": "uuid", "phone": "5511999999999", "departmentId": "uuid-opcional" }
+{ "contactId": "uuid-opcional", "phone": "5511999999999", "departmentId": "uuid-opcional" }
 ```
 
 O endpoint exige `contacts:create`, evita duplicar conversas abertas e respeita o departamento do atendente. A conversa criada inicia em `OPEN` e aparece na fila para o próximo atendimento.

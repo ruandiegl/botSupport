@@ -80,6 +80,7 @@ model Contact {
   id             String         @id @default(uuid())
   phone          String         @unique
   name           String
+  isRegistered   Boolean        @default(false) @map("is_registered")
   email          String?
   organization   String?
   notes          String?

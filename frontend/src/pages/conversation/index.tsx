@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck } from "lucide-react";
+import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck, MessageCircleOff } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import {
   useGetConversation,
@@ -32,8 +32,9 @@ import { DelegationDialog } from "./components/DelegationDialog";
 import { SharedContactCard } from "./components/SharedContactCard";
 import { ContactFormDialog } from "./components/ContactFormDialog";
 import { ContactConversationsDialog } from "./components/ContactConversationsDialog";
+import { ContactProfileDialog } from "./components/ContactProfileDialog";
 import { NewConversationDialog } from "./components/NewConversationDialog";
-import { useContact, useCreateContact, useCreateConversation, useUpdateContact } from "./hooks/use-contacts";
+import { useContact, useCreateContact, useCreateConversation, useUpdateContact, type ContactDetail } from "./hooks/use-contacts";
 import { useListDepartments } from "../admin/departments/hooks/use-departments";
 import type { ContactShare } from "@/types";
 
@@ -60,6 +61,9 @@ export default function ConversationPage() {
   const [selectedContactShare, setSelectedContactShare] = useState<ContactShare | null>(null);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [contactConversationsOpen, setContactConversationsOpen] = useState(false);
+  const [contactProfileOpen, setContactProfileOpen] = useState(false);
+  const [profileEditOpen, setProfileEditOpen] = useState(false);
+  const [profileEditContact, setProfileEditContact] = useState<ContactDetail | null>(null);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const [newConversationPhone, setNewConversationPhone] = useState<string | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -89,6 +93,7 @@ export default function ConversationPage() {
   const selectedContact = useContact(selectedContactShare?.canonicalContactId);
   const createContact = useCreateContact();
   const updateContact = useUpdateContact(selectedContactShare?.canonicalContactId || "");
+  const updateProfileContact = useUpdateContact(profileEditContact?.id || "");
   const createConversation = useCreateConversation();
   const { data: departments = [] } = useListDepartments();
 
@@ -230,8 +235,18 @@ export default function ConversationPage() {
     });
   };
 
-  const handleClose = async (reason: "NORMAL" | "INACTIVITY" = "NORMAL") => {
+  const handleClose = async (reason: "NORMAL" | "INACTIVITY" | "SILENT" = "NORMAL") => {
     setCloseConfirmOpen(false);
+    if (reason === "SILENT") {
+      try {
+        await close.mutateAsync({ reason: "SILENT" });
+        setMessage("");
+        setSelectedShortcutId(null);
+      } catch {
+        // A mensagem de erro da mutation permanece disponível no composer.
+      }
+      return;
+    }
     let closingShortcut: any = null;
     if (reason === "INACTIVITY") {
       closingShortcut = availableShortcuts.find(
@@ -255,7 +270,7 @@ export default function ConversationPage() {
     try {
       await sendMessage.mutateAsync({ content: closingMessage });
       if (closingShortcut) await registerShortcutUse.mutateAsync({ id: closingShortcut.id, conversationId: id });
-      await close.mutateAsync();
+      await close.mutateAsync({ reason });
       setMessage("");
       setSelectedShortcutId(null);
     } catch {
@@ -295,6 +310,24 @@ export default function ConversationPage() {
     createContact.mutate(data, { onSuccess: () => { setContactDialogOpen(false); queryClient.invalidateQueries({ queryKey: ["conversation", id] }); } });
   };
 
+  const openProfileEdit = (contact: ContactDetail) => {
+    setContactProfileOpen(false);
+    setProfileEditContact(contact);
+    setProfileEditOpen(true);
+  };
+
+  const submitProfileContact = (data: any) => {
+    if (!profileEditContact?.id) return;
+    updateProfileContact.mutate(data, {
+      onSuccess: () => {
+        setProfileEditOpen(false);
+        setProfileEditContact(null);
+        queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+        queryClient.invalidateQueries({ queryKey: ["contact", profileEditContact.id] });
+      },
+    });
+  };
+
   const openNewConversation = (share: ContactShare, phone: string) => {
     setSelectedContactShare(share);
     setNewConversationPhone(phone);
@@ -322,13 +355,21 @@ export default function ConversationPage() {
             >
               <ArrowLeft size={16} />
             </Button>
-            <div className="avatar coral">{conversation.contact.initials}</div>
-            <div>
-              <h1>{conversation.contact.name}</h1>
-              <p>
-                {conversation.contact.phone} · iniciou {dateLabel(conversation.startedAt)}
-              </p>
-            </div>
+            <button
+              type="button"
+              className="group flex min-w-0 items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => setContactProfileOpen(true)}
+              aria-label="Abrir perfil do contato"
+            >
+              <div className="avatar coral">{conversation.contact.initials}</div>
+              <span className="min-w-0">
+                <span className="block truncate text-[19px] font-semibold leading-tight group-hover:text-primary">{conversation.contact.name}</span>
+                <span className="mt-1 block truncate font-mono text-[10px] text-muted-foreground">
+                  {conversation.contact.phone} · iniciou {dateLabel(conversation.startedAt)}
+                </span>
+              </span>
+            </button>
+
           </div>
 
           <div className="thread-actions">
@@ -510,6 +551,34 @@ export default function ConversationPage() {
         contactId={selectedContactShare?.canonicalContactId}
         contactName={selectedContactShare?.displayName || "Contato"}
       />
+      <ContactProfileDialog
+        open={contactProfileOpen}
+        onOpenChange={setContactProfileOpen}
+        contactId={conversation.contact.id}
+        fallbackContact={conversation.contact}
+        canUpdate={canUpdateContacts}
+        onEdit={openProfileEdit}
+        onViewConversations={() => {
+          setContactProfileOpen(false);
+          if (conversation.contact.id) {
+            setSelectedContactShare({
+              id: `profile-${conversation.contact.id}`,
+              displayName: conversation.contact.name,
+              phones: [conversation.contact.phone],
+              canonicalContactId: conversation.contact.id,
+            });
+            setContactConversationsOpen(true);
+          }
+        }}
+      />
+      <ContactFormDialog
+        open={profileEditOpen}
+        onOpenChange={(value) => { if (!updateProfileContact.isPending) { setProfileEditOpen(value); if (!value) setProfileEditContact(null); } }}
+        contact={profileEditContact}
+        isPending={updateProfileContact.isPending}
+        error={updateProfileContact.error?.message}
+        onSubmit={submitProfileContact}
+      />
       <NewConversationDialog
         open={newConversationOpen}
         onOpenChange={setNewConversationOpen}
@@ -597,6 +666,25 @@ export default function ConversationPage() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Encerra o chamado informando ao cliente que não houve resposta ou interação recente.
                 </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              disabled={close.isPending || sendMessage.isPending}
+              onClick={() => handleClose("SILENT")}
+              className="group flex items-start gap-3 rounded-lg border border-border bg-background p-3.5 text-left transition-all hover:border-slate-400/60 hover:bg-muted cursor-pointer"
+              data-testid="button-close-silent"
+            >
+              <div className="shrink-0 rounded-md bg-slate-500/10 p-2 text-slate-600 group-hover:bg-slate-500/20 dark:text-slate-300">
+                <MessageCircleOff size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="mb-0.5 flex items-center justify-between gap-2">
+                  <strong className="text-sm font-medium text-foreground group-hover:text-primary">Encerramento silencioso</strong>
+                  <span className="rounded border border-slate-400/20 bg-slate-500/10 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300">Sem mensagem</span>
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">Encerra o atendimento apenas no sistema, sem enviar mensagem ao cliente.</p>
               </div>
             </button>
           </div>

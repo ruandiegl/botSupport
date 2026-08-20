@@ -39,11 +39,11 @@ export function useContacts(filters: { q?: string; page?: number; limit?: number
   });
 }
 
-export function useContact(id?: string | null) {
+export function useContact(id?: string | null, enabled = true) {
   return useQuery<ContactDetail>({
     queryKey: ["contact", id],
     queryFn: () => apiFetch<ContactDetail>(`/contacts/${id}`),
-    enabled: Boolean(id),
+    enabled: Boolean(id) && enabled,
   });
 }
 
@@ -91,7 +91,7 @@ export function useContactConversations(id?: string | null, enabled = true) {
 
 export function useCreateConversation() {
   const queryClient = useQueryClient();
-  return useMutation<any, Error, { contactId: string; phone: string; departmentId?: string }>({
+  return useMutation<any, Error, { contactId?: string; phone: string; departmentId?: string }>({
     mutationFn: (data) => apiFetch<any>("/conversations", { method: "POST", body: JSON.stringify(data) }),
     onSuccess: (conversation) => {
       queryClient.setQueryData(["conversation", conversation.id], conversation);

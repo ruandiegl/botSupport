@@ -12,9 +12,10 @@ import { useListDepartments } from "@/pages/queue/hooks/use-queue";
 import { useAuth } from "@/lib/auth-context";
 import { ContactFormDialog } from "@/pages/conversation/components/ContactFormDialog";
 import { NewConversationDialog } from "@/pages/conversation/components/NewConversationDialog";
+import { PhoneOnlyConversationDialog } from "./PhoneOnlyConversationDialog";
 import { useContacts, useCreateContact, useCreateConversation, type ContactDetail, type ContactFormData } from "@/pages/conversation/hooks/use-contacts";
 
-type Mode = "contacts" | "create-contact" | "conversation";
+type Mode = "contacts" | "create-contact" | "conversation" | "phone";
 
 type Props = {
   open: boolean;
@@ -83,6 +84,16 @@ export function StartConversationDialog({ open, onOpenChange }: Props) {
     }
   };
 
+  const startPhoneConversation = async (data: { phone: string; departmentId?: string }) => {
+    try {
+      const conversation = await createConversation.mutateAsync(data);
+      close();
+      setLocation(`/conversation/${conversation.id}`);
+    } catch {
+      // O erro é apresentado no modal para permitir corrigir o número.
+    }
+  };
+
   return (
     <>
       <Dialog open={open && mode === "contacts"} onOpenChange={(value) => !value && close()}>
@@ -122,9 +133,14 @@ export function StartConversationDialog({ open, onOpenChange }: Props) {
             )}
           </div>
 
-          <div className="flex items-center justify-between gap-3 border-t pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
             <span className="text-xs text-muted-foreground">{contacts.data?.total ?? 0} contatos encontrados</span>
-            <Button type="button" onClick={() => { createContact.reset(); setMode("create-contact"); }}><Plus data-icon="inline-start" />Novo contato</Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button type="button" variant="outline" onClick={() => { createConversation.reset(); setMode("phone"); }}>
+                Iniciar só com telefone
+              </Button>
+              <Button type="button" onClick={() => { createContact.reset(); setMode("create-contact"); }}><Plus data-icon="inline-start" />Novo contato</Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -147,6 +163,15 @@ export function StartConversationDialog({ open, onOpenChange }: Props) {
         isPending={createConversation.isPending}
         error={createConversation.error?.message}
         onSubmit={startConversation}
+      />
+
+      <PhoneOnlyConversationDialog
+        open={open && mode === "phone"}
+        onOpenChange={(value) => { if (!value) setMode("contacts"); }}
+        departments={availableDepartments}
+        isPending={createConversation.isPending}
+        error={createConversation.error?.message}
+        onSubmit={startPhoneConversation}
       />
     </>
   );

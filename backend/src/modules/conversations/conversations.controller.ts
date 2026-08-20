@@ -7,6 +7,7 @@ import {
   DelegateConversationBodySchema,
   DelegationResponseBodySchema,
   SendMessageBodySchema,
+  CloseConversationBodySchema,
   ListMessagesQuerySchema,
   CreateConversationBodySchema,
 } from "./conversations.schemas.js";
@@ -22,7 +23,7 @@ export class ConversationsController {
     if (!body.success) { res.status(400).json({ error: body.error.message }); return; }
     const result = await conversationsService.createManual(body.data, req.user);
     switch (result.kind) {
-      case "NOT_FOUND": res.status(404).json({ error: "Contato não encontrado." }); return;
+      case "NOT_FOUND": res.status(404).json({ error: "Não foi possível localizar ou preparar o contato para este telefone." }); return;
       case "FORBIDDEN": res.status(403).json({ error: "Você não pode usar este departamento." }); return;
       case "CONFLICT": res.status(409).json({ error: "Já existe uma conversa ativa para este telefone.", existingConversationId: result.conversationId }); return;
       case "OK": res.status(201).json(result.conversation); return;
@@ -175,7 +176,12 @@ export class ConversationsController {
 
   async close(req: Request, res: Response): Promise<void> {
     const id = getParam(req, "id");
-    const conversation = await conversationsService.close(id, (req as AuthenticatedRequest).user);
+    const body = CloseConversationBodySchema.safeParse(req.body ?? {});
+    if (!body.success) {
+      res.status(400).json({ error: body.error.message });
+      return;
+    }
+    const conversation = await conversationsService.close(id, (req as AuthenticatedRequest).user, body.data.reason);
     if (!conversation) {
       res.status(404).json({ error: "Conversa não encontrada" });
       return;

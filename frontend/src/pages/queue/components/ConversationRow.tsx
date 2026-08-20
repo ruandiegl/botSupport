@@ -53,7 +53,7 @@ export function ConversationRow({
       </div>
       <div className="conversation-main">
         <div className="conversation-meta">
-          <span className="conversation-name">{conversation.contact.name}</span>
+          <span className="conversation-name">{conversation.contact.isRegistered === false ? "Contato não cadastrado" : conversation.contact.name}</span>
           <span className="conversation-phone">{conversation.contact.phone}</span>
         </div>
         <div className="last-message">{conversation.lastMessage || "Sem mensagens recentes"}</div>

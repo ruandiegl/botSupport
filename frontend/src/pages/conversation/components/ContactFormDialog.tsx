@@ -66,7 +66,7 @@ export function ContactFormDialog({ open, onOpenChange, contact, share, isPendin
     <Dialog open={open} onOpenChange={(value) => { if (!isPending) onOpenChange(value); }}>
       <DialogContent className="bg-card text-card-foreground sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{contact ? "Editar contato" : "Adicionar contato"}</DialogTitle>
+          <DialogTitle>{contact ? (contact.isRegistered === false ? "Cadastrar contato" : "Editar contato") : "Adicionar contato"}</DialogTitle>
           <DialogDescription>Organize os dados compartilhados no WhatsApp para reutilizar em novos atendimentos.</DialogDescription>
         </DialogHeader>
         <FieldGroup>
