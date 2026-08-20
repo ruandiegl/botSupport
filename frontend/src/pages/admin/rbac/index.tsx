@@ -34,6 +34,7 @@ const resourceLabels: Record<string, string> = {
   zapi: "Conexão Z-API",
   rbac: "Permissões RBAC",
   bot_exclusions: "Contatos ignorados pelo bot",
+  contacts: "Contatos compartilhados",
 };
 
 const permissionActions = ["view", "create", "update", "delete", "delegate", "publish", "use"] as const;

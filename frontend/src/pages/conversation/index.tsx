@@ -29,6 +29,13 @@ import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageMedia } from "./components/MessageMedia";
 import { DelegationDialog } from "./components/DelegationDialog";
+import { SharedContactCard } from "./components/SharedContactCard";
+import { ContactFormDialog } from "./components/ContactFormDialog";
+import { ContactConversationsDialog } from "./components/ContactConversationsDialog";
+import { NewConversationDialog } from "./components/NewConversationDialog";
+import { useContact, useCreateContact, useCreateConversation, useUpdateContact } from "./hooks/use-contacts";
+import { useListDepartments } from "../admin/departments/hooks/use-departments";
+import type { ContactShare } from "@/types";
 
 const timeLabel = (date?: string) =>
   date
@@ -50,6 +57,11 @@ export default function ConversationPage() {
   const [delegationOpen, setDelegationOpen] = useState(false);
   const [delegationConfirmOpen, setDelegationConfirmOpen] = useState(false);
   const [delegationDraft, setDelegationDraft] = useState<{ agentId: string; reason?: string } | null>(null);
+  const [selectedContactShare, setSelectedContactShare] = useState<ContactShare | null>(null);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactConversationsOpen, setContactConversationsOpen] = useState(false);
+  const [newConversationOpen, setNewConversationOpen] = useState(false);
+  const [newConversationPhone, setNewConversationPhone] = useState<string | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const previousMessagesHeightRef = useRef<number | null>(null);
   const lastReadAttemptRef = useRef<string | null>(null);
@@ -72,6 +84,13 @@ export default function ConversationPage() {
   const delegate = useDelegateConversation(id);
   const loadPrevious = useLoadPreviousMessages(id);
   const registerShortcutUse = useRegisterShortcutUse();
+  const canCreateContacts = can("contacts", "create");
+  const canUpdateContacts = can("contacts", "update");
+  const selectedContact = useContact(selectedContactShare?.canonicalContactId);
+  const createContact = useCreateContact();
+  const updateContact = useUpdateContact(selectedContactShare?.canonicalContactId || "");
+  const createConversation = useCreateConversation();
+  const { data: departments = [] } = useListDepartments();
 
   // Socket.IO: Entrar na sala da conversa para receber mensagens e atualizações em tempo real
   useEffect(() => {
@@ -258,6 +277,37 @@ export default function ConversationPage() {
     setDelegationConfirmOpen(false);
   };
 
+  const openContactAdd = (share: ContactShare) => {
+    setSelectedContactShare(share);
+    setContactDialogOpen(true);
+  };
+
+  const openContactEdit = (share: ContactShare) => {
+    setSelectedContactShare(share);
+    setContactDialogOpen(true);
+  };
+
+  const submitContact = (data: any) => {
+    if (selectedContactShare?.canonicalContactId) {
+      updateContact.mutate(data, { onSuccess: () => { setContactDialogOpen(false); queryClient.invalidateQueries({ queryKey: ["conversation", id] }); } });
+      return;
+    }
+    createContact.mutate(data, { onSuccess: () => { setContactDialogOpen(false); queryClient.invalidateQueries({ queryKey: ["conversation", id] }); } });
+  };
+
+  const openNewConversation = (share: ContactShare, phone: string) => {
+    setSelectedContactShare(share);
+    setNewConversationPhone(phone);
+    setNewConversationOpen(true);
+  };
+
+  const submitNewConversation = (data: { phone: string; departmentId?: string }) => {
+    if (!selectedContactShare?.canonicalContactId) return;
+    createConversation.mutate({ contactId: selectedContactShare.canonicalContactId, ...data }, {
+      onSuccess: (created) => { setNewConversationOpen(false); setLocation(`/conversation/${created.id}`); },
+    });
+  };
+
   return (
     <div className="content conversation-page">
       <section className="panel thread">
@@ -346,7 +396,17 @@ export default function ConversationPage() {
                   variant={item.direction === "OUT" ? "default" : "secondary"}
                 >
                   <BubbleContent className="space-y-2">
-                    {item.content && <p className="whitespace-pre-wrap">{item.content}</p>}
+                    {item.contactShare ? (
+                      <SharedContactCard
+                        share={item.contactShare}
+                        canCreate={canCreateContacts}
+                        canUpdate={canUpdateContacts}
+                        onAdd={() => openContactAdd(item.contactShare!)}
+                        onEdit={() => openContactEdit(item.contactShare!)}
+                        onNewConversation={(phone) => openNewConversation(item.contactShare!, phone)}
+                        onViewConversations={() => { setSelectedContactShare(item.contactShare!); setContactConversationsOpen(true); }}
+                      />
+                    ) : item.content ? <p className="whitespace-pre-wrap">{item.content}</p> : null}
                     {item.media && (
                       <MessageMedia conversationId={id} messageId={item.id} media={item.media} />
                     )}
@@ -434,6 +494,32 @@ export default function ConversationPage() {
         details={<strong>{assigneeData?.items.find((agent) => agent.id === delegationDraft?.agentId)?.name || "Atendente selecionado"}</strong>}
         onConfirm={handleDelegationConfirm}
         testId="button-confirm-delegate-conversation"
+      />
+      <ContactFormDialog
+        open={contactDialogOpen}
+        onOpenChange={setContactDialogOpen}
+        contact={selectedContact.data || null}
+        share={selectedContactShare}
+        isPending={createContact.isPending || updateContact.isPending}
+        error={createContact.error?.message || updateContact.error?.message}
+        onSubmit={submitContact}
+      />
+      <ContactConversationsDialog
+        open={contactConversationsOpen}
+        onOpenChange={setContactConversationsOpen}
+        contactId={selectedContactShare?.canonicalContactId}
+        contactName={selectedContactShare?.displayName || "Contato"}
+      />
+      <NewConversationDialog
+        open={newConversationOpen}
+        onOpenChange={setNewConversationOpen}
+        contactName={selectedContactShare?.displayName || "Contato"}
+        phones={selectedContactShare?.phones || []}
+        defaultPhone={newConversationPhone}
+        departments={departments}
+        isPending={createConversation.isPending}
+        error={createConversation.error?.message}
+        onSubmit={submitNewConversation}
       />
       <ConfirmationDialog
         open={assumeConfirmOpen}

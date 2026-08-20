@@ -1,6 +1,6 @@
 import { rbacRepository } from "./rbac.repository.js";
 
-export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports", "bot_exclusions"] as const;
+export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports", "bot_exclusions", "contacts"] as const;
 export const RBAC_ACTIONS = ["view", "assume", "delegate", "close", "send_message", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
 
 type PermissionMap = Record<string, string[]>;
@@ -8,13 +8,13 @@ type PermissionMap = Record<string, string[]>;
 const defaults: Record<string, PermissionMap> = {
   ADMIN: {
     conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
-    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"], bot_exclusions: ["view", "create", "update", "delete"],
+    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"], bot_exclusions: ["view", "create", "update", "delete"], contacts: ["view", "create", "update", "delete"],
   },
   SUPERVISOR: {
-    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [],
+    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [], contacts: ["view", "create", "update"],
   },
   AGENT: {
-    conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [],
+    conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [], contacts: ["view", "create", "update"],
   },
 };
 

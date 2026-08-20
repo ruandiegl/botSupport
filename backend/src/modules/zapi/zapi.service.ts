@@ -52,12 +52,68 @@ export type ParsedIncomingMessage = {
   phone: string;
   senderName: string;
   content: string;
+  messageType?: "CONTACT";
+  contactShare?: ParsedSharedContact;
   selectedOptionId?: string;
   referenceMessageId?: string;
   externalEventId?: string;
   media?: ParsedIncomingMedia;
   group?: { jid: string; name: string; participant: string };
 };
+
+export type ParsedSharedContact = {
+  displayName: string;
+  phones: string[];
+  primaryPhone: string | null;
+  canonicalContactId?: string | null;
+  email: string | null;
+  organization: string | null;
+  note: string | null;
+};
+
+function normalizeSharedPhone(value: unknown): string | null {
+  const raw = String(value ?? "").trim();
+  if (!raw) return null;
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) return null;
+  if (digits.length === 10 || digits.length === 11) return `55${digits}`;
+  if (digits.length < 8 || digits.length > 15) return null;
+  return digits;
+}
+
+function vCardField(vCard: string, field: string): string | null {
+  const line = vCard
+    .split(String.fromCharCode(10))
+    .map((item) => item.replace(String.fromCharCode(13), ""))
+    .find((item) => {
+      const separator = item.indexOf(":");
+      if (separator < 0) return false;
+      const key = item.slice(0, separator).split(";")[0].trim().toUpperCase();
+      return key === field.toUpperCase();
+    });
+  const value = line ? line.slice(line.indexOf(":") + 1).trim() : "";
+  return value ? value.replaceAll(String.fromCharCode(92) + "n", " ").replaceAll(String.fromCharCode(92) + ",", ",").trim() : null;
+}
+
+export function parseSharedContact(value: any): ParsedSharedContact | null {
+  if (!value || typeof value !== "object") return null;
+  const vCard = String(value.vCard || value.vcard || "");
+  const listedPhones = Array.isArray(value.phones)
+    ? value.phones.map((item: any) => (item && typeof item === "object" ? item.phone ?? item.waid ?? item.number : item))
+    : [];
+  const vCardPhones = vCard
+    .split(String.fromCharCode(10))
+    .map((item) => item.replace(String.fromCharCode(13), ""))
+    .filter((item) => item.toUpperCase().startsWith("TEL") && item.includes(":"))
+    .map((item) => item.slice(item.indexOf(":") + 1));
+  const phones = [...new Set([...listedPhones, ...vCardPhones].map(normalizeSharedPhone).filter((phone): phone is string => Boolean(phone)))].slice(0, 20);
+  const displayName = String(value.displayName || vCardField(vCard, "FN") || vCardField(vCard, "N") || "Contato sem nome").trim().slice(0, 300) || "Contato sem nome";
+  const email = String(value.email || vCardField(vCard, "EMAIL") || "").trim().slice(0, 320) || null;
+  const organization = String(value.organization || vCardField(vCard, "ORG") || "").trim().slice(0, 300) || null;
+  const note = String(value.note || vCardField(vCard, "NOTE") || "").trim().slice(0, 1000) || null;
+  if (!phones.length && displayName === "Contato sem nome" && !email && !organization) return null;
+  return { displayName, phones, primaryPhone: phones[0] ?? null, canonicalContactId: null, email, organization, note };
+}
 
 export type ParsedIncomingMedia = {
   type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
@@ -159,6 +215,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   ).trim() || undefined;
 
   const media = parseIncomingMedia(payload);
+  const contactShare = parseSharedContact(payload.contact);
   const content = String(
     buttonResponse?.message ||
       listResponse?.title ||
@@ -168,6 +225,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
       payload.body ||
       payload.caption ||
       (typeof payload.message === "string" ? payload.message : "") ||
+      (contactShare ? `Contato compartilhado: ${contactShare.displayName}` : "") ||
       (media ? mediaFallback(media) : "") ||
       "Mensagem recebida"
   ).trim();
@@ -178,6 +236,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     phone,
     senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
     content,
+    ...(contactShare ? { messageType: "CONTACT" as const, contactShare } : {}),
     selectedOptionId,
     ...(referenceMessageId ? { referenceMessageId } : {}),
     ...(externalEventId ? { externalEventId } : {}),
@@ -955,6 +1014,11 @@ export class ZApiService {
     let contact = await zApiRepository.findContactByPhone(phone);
     if (!contact) contact = await zApiRepository.createContact(phone, incoming.senderName);
 
+    if (incoming.contactShare?.phones.length) {
+      const sharedOwner = await zApiRepository.findContactByAnyPhone(incoming.contactShare.phones);
+      if (sharedOwner) incoming.contactShare.canonicalContactId = sharedOwner.id;
+    }
+
     let activeConversation = await zApiRepository.findActiveConversationByContact(contact.id);
     const isNewConversation = !activeConversation;
     if (!activeConversation) {
@@ -1020,8 +1084,10 @@ export class ZApiService {
       conversationId,
       externalMessageId: payload.messageId,
       content: incoming.content,
+      messageType: incoming.messageType ?? "TEXT",
       senderContactId: contact.id,
       senderNameSnapshot: incoming.senderName,
+      contactShare: incoming.contactShare,
       media: mediaData,
     });
     if (persisted.duplicate) return { status: "duplicate_event" };
@@ -1037,6 +1103,19 @@ export class ZApiService {
         senderName: savedMsg.senderNameSnapshot || incoming.senderName,
         senderContactId: savedMsg.senderContactId,
         content: savedMsg.content,
+        messageType: savedMsg.messageType,
+        contactShare: savedMsg.contactShare
+          ? {
+              id: savedMsg.contactShare.id,
+              displayName: savedMsg.contactShare.displayName,
+              phones: savedMsg.contactShare.phones,
+              primaryPhone: savedMsg.contactShare.primaryPhone,
+              email: savedMsg.contactShare.email,
+              organization: savedMsg.contactShare.organization,
+              note: savedMsg.contactShare.note,
+              canonicalContactId: savedMsg.contactShare.canonicalContactId,
+            }
+          : null,
         createdAt: savedMsg.createdAt.toISOString(),
         media: savedMsg.media ? mediaService.toPublic(savedMsg.media) : null,
       },

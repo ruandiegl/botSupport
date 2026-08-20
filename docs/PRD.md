@@ -99,3 +99,16 @@ Administradores podem cadastrar números que não devem receber respostas do bot
 - O atendente continua podendo assumir o chamado e enviar mensagens manuais.
 - A tela `/admin/bot-exclusions` é protegida por RBAC (`bot_exclusions:view/create/update/delete`) e usa componentes shadcn.
 - Desativar uma regra não dispara mensagem retroativa; a próxima mensagem volta a seguir o fluxo normal.
+
+## Contatos compartilhados no WhatsApp
+
+Quando um cliente envia um contato pelo WhatsApp, o chamado deve apresentar um cartão estruturado em vez do texto genérico “Mensagem recebida”. O cartão mostra o nome, telefones, e-mail, organização e observação disponíveis no payload da Z-API, preservando o remetente e o horário da mensagem.
+
+O atendente pode:
+
+- adicionar o contato à agenda, informando nome, um ou mais telefones e dados opcionais;
+- editar um contato já salvo, com validação e máscara de telefone;
+- consultar conversas relacionadas ao contato;
+- iniciar uma nova conversa manual para um telefone do contato.
+
+Os dados são normalizados no backend, o vCard bruto não é exposto no frontend e a operação respeita o RBAC `contacts:view/create/update`. A mensagem original permanece idempotente pelo `messageId` da Z-API e o cartão pode ser associado ao contato canônico sem alterar o histórico.

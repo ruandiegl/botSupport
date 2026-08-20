@@ -161,6 +161,14 @@ export class ZApiRepository {
     return message;
   }
 
+  async findContactByAnyPhone(phones: string[]) {
+    if (!phones.length) return null;
+    return prisma.contact.findFirst({
+      where: { OR: [{ phone: { in: phones } }, { phoneNumbers: { some: { phone: { in: phones } } } }] },
+      select: { id: true, phone: true },
+    });
+  }
+
   async findLastBotMessageAt(conversationId: string) {
     const message = await prisma.message.findFirst({
       where: { conversationId, senderType: "BOT", direction: "OUT" },
@@ -204,8 +212,18 @@ export class ZApiRepository {
     conversationId: string;
     externalMessageId: string;
     content: string;
+    messageType?: string;
     senderContactId?: string | null;
     senderNameSnapshot?: string | null;
+    contactShare?: {
+      displayName: string;
+      phones: string[];
+      primaryPhone?: string | null;
+      canonicalContactId?: string | null;
+      email?: string | null;
+      organization?: string | null;
+      note?: string | null;
+    };
     media?: {
       type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
       status: "AVAILABLE" | "UNAVAILABLE" | "EXPIRED";
@@ -231,7 +249,7 @@ export class ZApiRepository {
       return await prisma.$transaction(async (transaction) => {
         const existing = await transaction.message.findUnique({
           where: { externalMessageId: data.externalMessageId },
-          include: { media: true },
+          include: { media: true, contactShare: true },
         });
         if (existing) return { duplicate: true, message: existing };
 
@@ -243,7 +261,23 @@ export class ZApiRepository {
             senderType: "CLIENT",
             senderContactId: data.senderContactId ?? null,
             senderNameSnapshot: data.senderNameSnapshot ?? null,
+            messageType: data.messageType ?? "TEXT",
             content: data.content,
+            ...(data.contactShare
+              ? {
+                  contactShare: {
+                    create: {
+                      displayName: data.contactShare.displayName,
+                      phones: data.contactShare.phones,
+                      primaryPhone: data.contactShare.primaryPhone ?? null,
+                      canonicalContactId: data.contactShare.canonicalContactId ?? null,
+                      email: data.contactShare.email ?? null,
+                      organization: data.contactShare.organization ?? null,
+                      note: data.contactShare.note ?? null,
+                    },
+                  },
+                }
+              : {}),
             ...(data.media
               ? {
                   media: {
@@ -257,7 +291,7 @@ export class ZApiRepository {
                 }
               : {}),
           },
-          include: { media: true },
+          include: { media: true, contactShare: true },
         });
         await transaction.conversation.update({
           where: { id: data.conversationId },
@@ -269,7 +303,7 @@ export class ZApiRepository {
       if (error?.code !== "P2002") throw error;
       const existing = await prisma.message.findUnique({
         where: { externalMessageId: data.externalMessageId },
-        include: { media: true },
+        include: { media: true, contactShare: true },
       });
       if (!existing) throw error;
       return { duplicate: true, message: existing };

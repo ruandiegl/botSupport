@@ -95,6 +95,23 @@ const DocumentMediaSchema = z
 const MentionItemSchema = z.union([z.string().max(200), z.record(z.unknown())]);
 const MentionFieldSchema = z.union([MentionItemSchema, z.array(MentionItemSchema).max(100)]);
 
+const SharedContactSchema = z.object({
+  displayName: z.string().trim().max(300).optional(),
+  vCard: z.string().max(16_000).optional(),
+  // Z-API currently sends `vCard` and `phones`; the lowercase alias is kept
+  // only for callbacks produced by older integrations.
+  vcard: z.string().max(16_000).optional(),
+  phones: z.array(z.union([
+    z.string(),
+    z.number(),
+    z.object({ phone: z.union([z.string(), z.number()]).optional(), waid: z.union([z.string(), z.number()]).optional(), type: z.string().max(50).optional() }).passthrough(),
+  ])).max(20).optional(),
+}).passthrough().superRefine((value, context) => {
+  if (!value.displayName && !value.vCard && !value.vcard && !value.phones?.length) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "Contato sem dados utilizáveis" });
+  }
+});
+
 export const ZApiReceivedWebhookSchema = z
   .object({
     messageId: z.string().min(1).max(300),
@@ -137,6 +154,7 @@ export const ZApiReceivedWebhookSchema = z
     audio: AudioMediaSchema.optional(),
     video: VideoMediaSchema.optional(),
     document: DocumentMediaSchema.optional(),
+    contact: SharedContactSchema.optional(),
   })
   .passthrough()
   .superRefine((value, context) => {

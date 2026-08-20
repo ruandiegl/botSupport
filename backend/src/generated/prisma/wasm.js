@@ -161,7 +161,21 @@ exports.Prisma.ContactScalarFieldEnum = {
   id: 'id',
   phone: 'phone',
   name: 'name',
-  createdAt: 'createdAt'
+  email: 'email',
+  organization: 'organization',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContactPhoneScalarFieldEnum = {
+  id: 'id',
+  contactId: 'contactId',
+  phone: 'phone',
+  label: 'label',
+  isPrimary: 'isPrimary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.BotExclusionScalarFieldEnum = {
@@ -208,9 +222,23 @@ exports.Prisma.MessageScalarFieldEnum = {
   senderContactId: 'senderContactId',
   senderNameSnapshot: 'senderNameSnapshot',
   senderDepartmentSnapshot: 'senderDepartmentSnapshot',
+  messageType: 'messageType',
   content: 'content',
   createdAt: 'createdAt',
   readAt: 'readAt'
+};
+
+exports.Prisma.ContactShareScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  canonicalContactId: 'canonicalContactId',
+  displayName: 'displayName',
+  phones: 'phones',
+  primaryPhone: 'primaryPhone',
+  email: 'email',
+  organization: 'organization',
+  note: 'note',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ConversationAssignmentScalarFieldEnum = {
@@ -487,9 +515,11 @@ exports.Prisma.ModelName = {
   Agent: 'Agent',
   RolePermission: 'RolePermission',
   Contact: 'Contact',
+  ContactPhone: 'ContactPhone',
   BotExclusion: 'BotExclusion',
   Conversation: 'Conversation',
   Message: 'Message',
+  ContactShare: 'ContactShare',
   ConversationAssignment: 'ConversationAssignment',
   ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',

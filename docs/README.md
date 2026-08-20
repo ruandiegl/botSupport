@@ -40,6 +40,9 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Guia de Configuração e Execução (Setup)**](SETUP.md): Instruções passo a passo para ambiente de desenvolvimento local e Docker Compose.
 - [**Runbook de mídia Z-API**](RUNBOOK_MIDIA_ZAPI.md): homologação, secrets, retenção, canary e rollback de mídia.
 - [**Matriz QA de mídia Z-API**](QA_MIDIA_ZAPI.md): contratos, segurança, expiração e regressão.
+- [**Matriz QA de contatos compartilhados**](QA_CONTATOS_RECEBIDOS_ZAPI.md): parser, idempotência, RBAC e CRUD no chat.
+- [**Runbook de contatos compartilhados**](RUNBOOK_CONTATOS_RECEBIDOS_ZAPI.md): migration, homologação e rollback.
+- [**Plano 022: contatos recebidos via Z-API**](../plans/plan-022-contatos-recebidos-crud-conversas-zapi.md): ingestão, cartão no chat, CRUD e novas conversas.
 - [**Plano 017: delay anti-spam e zoom de imagens**](../plans/plan-017-delay-anti-spam-midia-zoom.md): cooldown server-side para bot e prévia ampliada de mídia.
 - [**Plano 018: exclusão de contatos das respostas do bot**](../plans/plan-018-exclusao-contatos-respostas-bot.md): bloqueio administrável de respostas automáticas com preservação do histórico.
 - [**Runbook de exclusões do bot**](RUNBOOK_EXCLUSOES_BOT.md): migração, validação, observabilidade e rollback.

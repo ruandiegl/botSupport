@@ -102,3 +102,11 @@ O adaptador escolhe `send-button-list` ou `send-option-list` por `ZAPI_INTERACTI
 Mensagens mantêm autoria independente da atribuição da conversa. `Message.senderAgentId` e os snapshots `senderNameSnapshot`/`senderDepartmentSnapshot` representam respostas do painel; `senderContactId`/`senderNameSnapshot` representam mensagens externas, inclusive participantes de grupos. O formatter nunca usa `Conversation.assignedAgent` para reescrever o histórico.
 
 Delegação segue Route → Controller → Service → Repository. O Service resolve o ator pelo JWT, valida RBAC/escopo e o Repository executa atualização otimista e criação de `ConversationAssignment` na mesma transação. O evento `conversation_updated` alimenta a fila e o módulo de notificações cria `CONVERSATION_DELEGATED` direcionada ao novo responsável; Socket.IO é complementar ao REST.
+
+## 7. Contatos compartilhados
+
+O parser do módulo Z-API identifica o objeto único `contact` do `ReceivedCallback`, combina `contact.phones` com o campo `TEL` do vCard e normaliza os telefones. A mensagem recebe `messageType=CONTACT` e um registro `ContactShare` sanitizado, mantendo a chave externa `messageId` para idempotência.
+
+O fluxo de leitura é Webhook → Z-API Service → Message/ContactShare Repository → evento `message:new` → cartão shadcn no chat. O vCard e URLs de origem não atravessam o DTO público. Ao salvar, `ContactShare.canonicalContactId` vincula o cartão ao `Contact`; a atualização dos telefones ocorre em transação para manter o telefone principal e os números alternativos consistentes.
+
+As rotas de contatos usam o mesmo middleware de autenticação e RBAC da aplicação. Para agentes, a consulta é limitada no Repository a conversas do departamento ou atribuídas ao próprio agente; filtros enviados pelo navegador não ampliam esse escopo. A criação de uma conversa manual valida o contato, o telefone selecionado e o departamento antes de persistir `OPEN`.

@@ -14,9 +14,32 @@ export interface ConversationLabel {
 }
 
 export interface Contact {
+  id?: string;
   name: string;
   phone: string;
   initials: string;
+  email?: string | null;
+  organization?: string | null;
+  notes?: string | null;
+  phones?: ContactPhone[];
+}
+
+export interface ContactPhone {
+  id?: string;
+  phone: string;
+  label?: string | null;
+  isPrimary: boolean;
+}
+
+export interface ContactShare {
+  id: string;
+  displayName: string;
+  phones: string[];
+  primaryPhone?: string | null;
+  email?: string | null;
+  organization?: string | null;
+  note?: string | null;
+  canonicalContactId?: string | null;
 }
 
 export interface Message {
@@ -27,6 +50,8 @@ export interface Message {
   senderDepartmentName?: string | null;
   senderContactId?: string | null;
   content: string;
+  messageType?: "TEXT" | "CONTACT" | string;
+  contactShare?: ContactShare | null;
   createdAt: string;
   media?: ConversationMedia | null;
 }

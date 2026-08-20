@@ -444,3 +444,33 @@ Em Railway, `ZAPI_GROUPS_ENABLED=true` pode ser usado como ativação operaciona
 `ZAPI_REGISTER_WEBHOOK_ON_STARTUP=true` registra idempotentemente `ZAPI_WEBHOOK_URL` na Z-API após o servidor iniciar, útil quando o banco ainda guarda uma URL antiga.
 
 No webhook `ReceivedCallback`, grupos usam `phone` como chat de origem e, no formato atual da Z-API, `participantPhone` (com fallback legado para `participant`) como remetente individual. A confirmação da menção aceita listas explícitas (`mentionedJids`, `mentionedJid`, `mentions` ou `mentioned`) e, quando a versão da Z-API não envia essa lista, o token `@` preservado no texto. Com o recurso desabilitado, sem menção, broadcast ou cooldown ativo, a mensagem é ignorada sem abrir conversa. Uma menção válida cria/reutiliza a conversa privada do participante, persiste a etiqueta `GROUP` e envia confirmação por DM. A confirmação pública é opt-in. O endpoint canônico é `/api/webhooks/z-api`; os aliases `/api/webhooks/zapi/message` e `/api/webhooks/z-api/message` permanecem aceitos para instalações antigas.
+
+## Contatos compartilhados e conversas manuais
+
+Mensagens de contato recebidas no callback `ReceivedCallback` são persistidas como `messageType: "CONTACT"` e incluem um `contactShare` normalizado. O DTO público contém apenas nome, telefones, e-mail, organização e observação; o vCard bruto nunca é devolvido ao navegador.
+
+### `GET /contacts`
+
+Lista contatos visíveis ao usuário autenticado. Aceita `q`, `page` e `limit` (5–100) e retorna `{ items, total, page, limit, totalPages }`. Para agentes, o servidor restringe o resultado a contatos de conversas do seu departamento ou atribuídas a ele.
+
+### `GET /contacts/:id`
+
+Retorna os dados editáveis do contato e seus telefones normalizados. O escopo de departamento é aplicado no servidor.
+
+### `POST /contacts` / `PATCH /contacts/:id`
+
+Criam ou atualizam contatos com `name`, `phones[]`, `email`, `organization` e `notes`. Telefones são normalizados para dígitos e não podem ser duplicados. `POST` pode receber `contactShareId` para vincular o cartão exibido na conversa ao contato salvo; o cartão precisa pertencer a uma conversa acessível ao agente.
+
+### `GET /contacts/:id/conversations`
+
+Retorna conversas relacionadas ao contato, com `openOnly`, `page` e `limit`. A resposta inclui status, departamento, responsável, não lidas e última atividade, sem mensagens ou dados sensíveis desnecessários.
+
+### `POST /conversations`
+
+Cria uma conversa manual para um contato existente:
+
+```json
+{ "contactId": "uuid", "phone": "5511999999999", "departmentId": "uuid-opcional" }
+```
+
+O endpoint exige `contacts:create`, evita duplicar conversas abertas e respeita o departamento do atendente. A conversa criada inicia em `OPEN` e aparece na fila para o próximo atendimento.

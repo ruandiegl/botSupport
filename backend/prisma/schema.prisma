@@ -80,11 +80,31 @@ model Contact {
   id             String         @id @default(uuid())
   phone          String         @unique
   name           String
+  email          String?
+  organization   String?
+  notes          String?
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
   conversations  Conversation[]
   messageSenders Message[]      @relation("MessageSenderContact")
+  phoneNumbers   ContactPhone[] @relation("ContactPhoneOwner")
+  sharedCards    ContactShare[] @relation("ContactShareCanonicalContact")
 
   @@map("gtf_contacts")
+}
+
+model ContactPhone {
+  id          String   @id @default(uuid())
+  contactId   String   @map("contact_id")
+  phone       String   @unique
+  label       String?
+  isPrimary   Boolean  @default(false) @map("is_primary")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  contact     Contact  @relation("ContactPhoneOwner", fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId, isPrimary])
+  @@map("gtf_contact_phones")
 }
 
 /// Contacts that must never receive automated bot replies. Messages and
@@ -159,6 +179,7 @@ model Message {
   senderContactId          String?            @map("sender_contact_id")
   senderNameSnapshot       String?            @map("sender_name_snapshot")
   senderDepartmentSnapshot String?            @map("sender_department_snapshot")
+  messageType              String             @default("TEXT") @map("message_type")
   content                  String
   createdAt                DateTime           @default(now()) @map("created_at") @db.Timestamptz
   readAt                   DateTime?          @map("read_at") @db.Timestamptz
@@ -166,11 +187,30 @@ model Message {
   senderAgent              Agent?             @relation(fields: [senderAgentId], references: [id])
   senderContact            Contact?           @relation("MessageSenderContact", fields: [senderContactId], references: [id], onDelete: SetNull)
   media                    ConversationMedia?
+  contactShare             ContactShare?
 
   @@index([conversationId, direction, readAt])
   @@index([conversationId, createdAt])
   @@index([senderContactId])
   @@map("gtf_messages")
+}
+
+model ContactShare {
+  id                  String   @id @default(uuid())
+  messageId           String   @unique @map("message_id")
+  canonicalContactId  String?  @map("canonical_contact_id")
+  displayName         String
+  phones              Json
+  primaryPhone        String?  @map("primary_phone")
+  email               String?
+  organization        String?
+  note                String?
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  message             Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  canonicalContact    Contact? @relation("ContactShareCanonicalContact", fields: [canonicalContactId], references: [id], onDelete: SetNull)
+
+  @@index([canonicalContactId])
+  @@map("gtf_contact_shares")
 }
 
 model ConversationAssignment {

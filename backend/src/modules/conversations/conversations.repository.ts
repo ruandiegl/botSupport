@@ -4,6 +4,21 @@ import { prisma } from "../../shared/prisma.js";
 import { Prisma } from "../../../src/generated/prisma/index.js";
 
 export class ConversationsRepository {
+  createManualConversation(contactId: string, departmentId?: string) {
+    const now = new Date();
+    return prisma.conversation.create({
+      data: {
+        contactId,
+        status: "OPEN",
+        currentStep: "MANUAL",
+        departmentId: departmentId ?? null,
+        queuedAt: now,
+        lastActivityAt: now,
+      },
+      select: { id: true, status: true },
+    });
+  }
+
   async findMany(filters: {
     status?: string;
     departmentId?: string;
@@ -237,7 +252,7 @@ export class ConversationsRepository {
           ...(messageWhere ? { where: messageWhere } : {}),
           orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           ...(messageLimit ? { take: messageLimit + 1 } : {}),
-          include: { media: true, senderAgent: { include: { department: true } }, senderContact: true },
+          include: { media: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
         },
         assignments: {
           orderBy: { createdAt: "desc" },
@@ -293,7 +308,7 @@ export class ConversationsRepository {
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: options.limit + 1,
-      include: { media: true, senderAgent: { include: { department: true } }, senderContact: true },
+      include: { media: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
     });
     const hasPrevious = rows.length > options.limit;
     const items = rows.slice(0, options.limit).reverse();

@@ -8,6 +8,7 @@ import {
   DelegationResponseBodySchema,
   SendMessageBodySchema,
   ListMessagesQuerySchema,
+  CreateConversationBodySchema,
 } from "./conversations.schemas.js";
 
 function getParam(req: Request, key: string): string {
@@ -16,6 +17,17 @@ function getParam(req: Request, key: string): string {
 }
 
 export class ConversationsController {
+  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const body = CreateConversationBodySchema.safeParse(req.body);
+    if (!body.success) { res.status(400).json({ error: body.error.message }); return; }
+    const result = await conversationsService.createManual(body.data, req.user);
+    switch (result.kind) {
+      case "NOT_FOUND": res.status(404).json({ error: "Contato não encontrado." }); return;
+      case "FORBIDDEN": res.status(403).json({ error: "Você não pode usar este departamento." }); return;
+      case "CONFLICT": res.status(409).json({ error: "Já existe uma conversa ativa para este telefone.", existingConversationId: result.conversationId }); return;
+      case "OK": res.status(201).json(result.conversation); return;
+    }
+  }
   async list(req: AuthenticatedRequest, res: Response): Promise<void> {
     const parsed = ListConversationsQuerySchema.safeParse(req.query);
     if (!parsed.success) {

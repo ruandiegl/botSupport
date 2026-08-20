@@ -5,6 +5,7 @@ import { socketEmitter } from "../../shared/socket.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { mediaService } from "../media/media.service.js";
 import { notificationsService } from "../notifications/notifications.service.js";
+import { contactsRepository } from "../contacts/contacts.repository.js";
 
 const DEFAULT_MESSAGE_LIMIT = 50;
 
@@ -60,9 +61,22 @@ export class ConversationsService {
         ? message.senderDepartmentSnapshot ?? message.senderAgent?.department?.name ?? null
         : null,
       senderContactId: message.senderContactId ?? null,
+      messageType: message.messageType ?? "TEXT",
       content: message.content,
       createdAt: message.createdAt.toISOString(),
       media: message.media ? mediaService.toPublic(message.media) : null,
+      contactShare: message.contactShare
+        ? {
+            id: message.contactShare.id,
+            displayName: message.contactShare.displayName,
+            phones: Array.isArray(message.contactShare.phones) ? message.contactShare.phones : [],
+            primaryPhone: message.contactShare.primaryPhone ?? null,
+            email: message.contactShare.email ?? null,
+            organization: message.contactShare.organization ?? null,
+            note: message.contactShare.note ?? null,
+            canonicalContactId: message.contactShare.canonicalContactId ?? null,
+          }
+        : null,
     };
   }
 
@@ -200,6 +214,24 @@ export class ConversationsService {
         sort: filters.sort ?? "operational",
       },
     };
+  }
+
+  async createManual(data: { contactId: string; phone: string; departmentId?: string }, user?: AuthenticatedRequest["user"]) {
+    const contact = await contactsRepository.findById(data.contactId);
+    if (!contact || !contact.phoneNumbers.some((item) => item.phone === data.phone) && contact.phone !== data.phone) return { kind: "NOT_FOUND" as const };
+    if (user?.role === "AGENT" && data.departmentId && data.departmentId !== user.departmentId) return { kind: "FORBIDDEN" as const };
+    const existing = await contactsRepository.findActiveConversation(data.contactId, data.phone);
+    if (existing) return { kind: "CONFLICT" as const, conversationId: existing.id };
+    try {
+      const conversation = await conversationsRepository.createManualConversation(data.contactId, data.departmentId);
+      const formatted = await this.formatConversationRecord(await conversationsRepository.findById(conversation.id, { messageLimit: DEFAULT_MESSAGE_LIMIT }));
+      conversationEvents.emit("conversation_updated", { conversationId: conversation.id, status: conversation.status, eventType: "CONVERSATION_CREATED", departmentId: data.departmentId ?? null, assignedAgentId: null });
+      socketEmitter.emitToConversation(conversation.id, "conversation:updated", { conversationId: conversation.id, status: conversation.status });
+      return { kind: "OK" as const, conversation: formatted };
+    } catch (error: any) {
+      if (error?.code === "P2002") return { kind: "CONFLICT" as const, conversationId: undefined };
+      throw error;
+    }
   }
 
   async getById(id: string, user?: AuthenticatedRequest["user"]) {

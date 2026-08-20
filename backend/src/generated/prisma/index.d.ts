@@ -39,6 +39,11 @@ export type RolePermission = $Result.DefaultSelection<Prisma.$RolePermissionPayl
  */
 export type Contact = $Result.DefaultSelection<Prisma.$ContactPayload>
 /**
+ * Model ContactPhone
+ * 
+ */
+export type ContactPhone = $Result.DefaultSelection<Prisma.$ContactPhonePayload>
+/**
  * Model BotExclusion
  * Contacts that must never receive automated bot replies. Messages and
  * conversations are still persisted; this is an outbound bot guard only.
@@ -54,6 +59,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  * 
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
+ * Model ContactShare
+ * 
+ */
+export type ContactShare = $Result.DefaultSelection<Prisma.$ContactSharePayload>
 /**
  * Model ConversationAssignment
  * 
@@ -405,6 +415,16 @@ export class PrismaClient<
   get contact(): Prisma.ContactDelegate<ExtArgs>;
 
   /**
+   * `prisma.contactPhone`: Exposes CRUD operations for the **ContactPhone** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ContactPhones
+    * const contactPhones = await prisma.contactPhone.findMany()
+    * ```
+    */
+  get contactPhone(): Prisma.ContactPhoneDelegate<ExtArgs>;
+
+  /**
    * `prisma.botExclusion`: Exposes CRUD operations for the **BotExclusion** model.
     * Example usage:
     * ```ts
@@ -433,6 +453,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs>;
+
+  /**
+   * `prisma.contactShare`: Exposes CRUD operations for the **ContactShare** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ContactShares
+    * const contactShares = await prisma.contactShare.findMany()
+    * ```
+    */
+  get contactShare(): Prisma.ContactShareDelegate<ExtArgs>;
 
   /**
    * `prisma.conversationAssignment`: Exposes CRUD operations for the **ConversationAssignment** model.
@@ -1029,9 +1059,11 @@ export namespace Prisma {
     Agent: 'Agent',
     RolePermission: 'RolePermission',
     Contact: 'Contact',
+    ContactPhone: 'ContactPhone',
     BotExclusion: 'BotExclusion',
     Conversation: 'Conversation',
     Message: 'Message',
+    ContactShare: 'ContactShare',
     ConversationAssignment: 'ConversationAssignment',
     ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
@@ -1062,7 +1094,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "botExclusion" | "conversation" | "message" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1416,6 +1448,76 @@ export namespace Prisma {
           }
         }
       }
+      ContactPhone: {
+        payload: Prisma.$ContactPhonePayload<ExtArgs>
+        fields: Prisma.ContactPhoneFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ContactPhoneFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ContactPhoneFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          findFirst: {
+            args: Prisma.ContactPhoneFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ContactPhoneFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          findMany: {
+            args: Prisma.ContactPhoneFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>[]
+          }
+          create: {
+            args: Prisma.ContactPhoneCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          createMany: {
+            args: Prisma.ContactPhoneCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContactPhoneCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>[]
+          }
+          delete: {
+            args: Prisma.ContactPhoneDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          update: {
+            args: Prisma.ContactPhoneUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          deleteMany: {
+            args: Prisma.ContactPhoneDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ContactPhoneUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ContactPhoneUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPhonePayload>
+          }
+          aggregate: {
+            args: Prisma.ContactPhoneAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContactPhone>
+          }
+          groupBy: {
+            args: Prisma.ContactPhoneGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContactPhoneGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ContactPhoneCountArgs<ExtArgs>
+            result: $Utils.Optional<ContactPhoneCountAggregateOutputType> | number
+          }
+        }
+      }
       BotExclusion: {
         payload: Prisma.$BotExclusionPayload<ExtArgs>
         fields: Prisma.BotExclusionFieldRefs
@@ -1623,6 +1725,76 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      ContactShare: {
+        payload: Prisma.$ContactSharePayload<ExtArgs>
+        fields: Prisma.ContactShareFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ContactShareFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ContactShareFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          findFirst: {
+            args: Prisma.ContactShareFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ContactShareFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          findMany: {
+            args: Prisma.ContactShareFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>[]
+          }
+          create: {
+            args: Prisma.ContactShareCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          createMany: {
+            args: Prisma.ContactShareCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContactShareCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>[]
+          }
+          delete: {
+            args: Prisma.ContactShareDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          update: {
+            args: Prisma.ContactShareUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          deleteMany: {
+            args: Prisma.ContactShareDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ContactShareUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ContactShareUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactSharePayload>
+          }
+          aggregate: {
+            args: Prisma.ContactShareAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContactShare>
+          }
+          groupBy: {
+            args: Prisma.ContactShareGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContactShareGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ContactShareCountArgs<ExtArgs>
+            result: $Utils.Optional<ContactShareCountAggregateOutputType> | number
           }
         }
       }
@@ -3063,11 +3235,15 @@ export namespace Prisma {
   export type ContactCountOutputType = {
     conversations: number
     messageSenders: number
+    phoneNumbers: number
+    sharedCards: number
   }
 
   export type ContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | ContactCountOutputTypeCountConversationsArgs
     messageSenders?: boolean | ContactCountOutputTypeCountMessageSendersArgs
+    phoneNumbers?: boolean | ContactCountOutputTypeCountPhoneNumbersArgs
+    sharedCards?: boolean | ContactCountOutputTypeCountSharedCardsArgs
   }
 
   // Custom InputTypes
@@ -3093,6 +3269,20 @@ export namespace Prisma {
    */
   export type ContactCountOutputTypeCountMessageSendersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * ContactCountOutputType without action
+   */
+  export type ContactCountOutputTypeCountPhoneNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactPhoneWhereInput
+  }
+
+  /**
+   * ContactCountOutputType without action
+   */
+  export type ContactCountOutputTypeCountSharedCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactShareWhereInput
   }
 
 
@@ -7649,21 +7839,33 @@ export namespace Prisma {
     id: string | null
     phone: string | null
     name: string | null
+    email: string | null
+    organization: string | null
+    notes: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ContactMaxAggregateOutputType = {
     id: string | null
     phone: string | null
     name: string | null
+    email: string | null
+    organization: string | null
+    notes: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ContactCountAggregateOutputType = {
     id: number
     phone: number
     name: number
+    email: number
+    organization: number
+    notes: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -7672,21 +7874,33 @@ export namespace Prisma {
     id?: true
     phone?: true
     name?: true
+    email?: true
+    organization?: true
+    notes?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ContactMaxAggregateInputType = {
     id?: true
     phone?: true
     name?: true
+    email?: true
+    organization?: true
+    notes?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ContactCountAggregateInputType = {
     id?: true
     phone?: true
     name?: true
+    email?: true
+    organization?: true
+    notes?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -7766,7 +7980,11 @@ export namespace Prisma {
     id: string
     phone: string
     name: string
+    email: string | null
+    organization: string | null
+    notes: string | null
     createdAt: Date
+    updatedAt: Date
     _count: ContactCountAggregateOutputType | null
     _min: ContactMinAggregateOutputType | null
     _max: ContactMaxAggregateOutputType | null
@@ -7790,9 +8008,15 @@ export namespace Prisma {
     id?: boolean
     phone?: boolean
     name?: boolean
+    email?: boolean
+    organization?: boolean
+    notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
     messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
+    phoneNumbers?: boolean | Contact$phoneNumbersArgs<ExtArgs>
+    sharedCards?: boolean | Contact$sharedCardsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contact"]>
 
@@ -7800,19 +8024,29 @@ export namespace Prisma {
     id?: boolean
     phone?: boolean
     name?: boolean
+    email?: boolean
+    organization?: boolean
+    notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["contact"]>
 
   export type ContactSelectScalar = {
     id?: boolean
     phone?: boolean
     name?: boolean
+    email?: boolean
+    organization?: boolean
+    notes?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
   export type ContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
     messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
+    phoneNumbers?: boolean | Contact$phoneNumbersArgs<ExtArgs>
+    sharedCards?: boolean | Contact$sharedCardsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7822,12 +8056,18 @@ export namespace Prisma {
     objects: {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       messageSenders: Prisma.$MessagePayload<ExtArgs>[]
+      phoneNumbers: Prisma.$ContactPhonePayload<ExtArgs>[]
+      sharedCards: Prisma.$ContactSharePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       phone: string
       name: string
+      email: string | null
+      organization: string | null
+      notes: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["contact"]>
     composites: {}
   }
@@ -8194,6 +8434,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     conversations<T extends Contact$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     messageSenders<T extends Contact$messageSendersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$messageSendersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    phoneNumbers<T extends Contact$phoneNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$phoneNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findMany"> | Null>
+    sharedCards<T extends Contact$sharedCardsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$sharedCardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8226,7 +8468,11 @@ export namespace Prisma {
     readonly id: FieldRef<"Contact", 'String'>
     readonly phone: FieldRef<"Contact", 'String'>
     readonly name: FieldRef<"Contact", 'String'>
+    readonly email: FieldRef<"Contact", 'String'>
+    readonly organization: FieldRef<"Contact", 'String'>
+    readonly notes: FieldRef<"Contact", 'String'>
     readonly createdAt: FieldRef<"Contact", 'DateTime'>
+    readonly updatedAt: FieldRef<"Contact", 'DateTime'>
   }
     
 
@@ -8581,6 +8827,46 @@ export namespace Prisma {
   }
 
   /**
+   * Contact.phoneNumbers
+   */
+  export type Contact$phoneNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    where?: ContactPhoneWhereInput
+    orderBy?: ContactPhoneOrderByWithRelationInput | ContactPhoneOrderByWithRelationInput[]
+    cursor?: ContactPhoneWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactPhoneScalarFieldEnum | ContactPhoneScalarFieldEnum[]
+  }
+
+  /**
+   * Contact.sharedCards
+   */
+  export type Contact$sharedCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    where?: ContactShareWhereInput
+    orderBy?: ContactShareOrderByWithRelationInput | ContactShareOrderByWithRelationInput[]
+    cursor?: ContactShareWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactShareScalarFieldEnum | ContactShareScalarFieldEnum[]
+  }
+
+  /**
    * Contact without action
    */
   export type ContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8592,6 +8878,963 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ContactInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ContactPhone
+   */
+
+  export type AggregateContactPhone = {
+    _count: ContactPhoneCountAggregateOutputType | null
+    _min: ContactPhoneMinAggregateOutputType | null
+    _max: ContactPhoneMaxAggregateOutputType | null
+  }
+
+  export type ContactPhoneMinAggregateOutputType = {
+    id: string | null
+    contactId: string | null
+    phone: string | null
+    label: string | null
+    isPrimary: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContactPhoneMaxAggregateOutputType = {
+    id: string | null
+    contactId: string | null
+    phone: string | null
+    label: string | null
+    isPrimary: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContactPhoneCountAggregateOutputType = {
+    id: number
+    contactId: number
+    phone: number
+    label: number
+    isPrimary: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ContactPhoneMinAggregateInputType = {
+    id?: true
+    contactId?: true
+    phone?: true
+    label?: true
+    isPrimary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContactPhoneMaxAggregateInputType = {
+    id?: true
+    contactId?: true
+    phone?: true
+    label?: true
+    isPrimary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContactPhoneCountAggregateInputType = {
+    id?: true
+    contactId?: true
+    phone?: true
+    label?: true
+    isPrimary?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ContactPhoneAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactPhone to aggregate.
+     */
+    where?: ContactPhoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactPhones to fetch.
+     */
+    orderBy?: ContactPhoneOrderByWithRelationInput | ContactPhoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContactPhoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactPhones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactPhones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ContactPhones
+    **/
+    _count?: true | ContactPhoneCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContactPhoneMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContactPhoneMaxAggregateInputType
+  }
+
+  export type GetContactPhoneAggregateType<T extends ContactPhoneAggregateArgs> = {
+        [P in keyof T & keyof AggregateContactPhone]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContactPhone[P]>
+      : GetScalarType<T[P], AggregateContactPhone[P]>
+  }
+
+
+
+
+  export type ContactPhoneGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactPhoneWhereInput
+    orderBy?: ContactPhoneOrderByWithAggregationInput | ContactPhoneOrderByWithAggregationInput[]
+    by: ContactPhoneScalarFieldEnum[] | ContactPhoneScalarFieldEnum
+    having?: ContactPhoneScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContactPhoneCountAggregateInputType | true
+    _min?: ContactPhoneMinAggregateInputType
+    _max?: ContactPhoneMaxAggregateInputType
+  }
+
+  export type ContactPhoneGroupByOutputType = {
+    id: string
+    contactId: string
+    phone: string
+    label: string | null
+    isPrimary: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ContactPhoneCountAggregateOutputType | null
+    _min: ContactPhoneMinAggregateOutputType | null
+    _max: ContactPhoneMaxAggregateOutputType | null
+  }
+
+  type GetContactPhoneGroupByPayload<T extends ContactPhoneGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContactPhoneGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContactPhoneGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContactPhoneGroupByOutputType[P]>
+            : GetScalarType<T[P], ContactPhoneGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContactPhoneSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contactId?: boolean
+    phone?: boolean
+    label?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contactPhone"]>
+
+  export type ContactPhoneSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contactId?: boolean
+    phone?: boolean
+    label?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contactPhone"]>
+
+  export type ContactPhoneSelectScalar = {
+    id?: boolean
+    contactId?: boolean
+    phone?: boolean
+    label?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ContactPhoneInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }
+  export type ContactPhoneIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }
+
+  export type $ContactPhonePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ContactPhone"
+    objects: {
+      contact: Prisma.$ContactPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contactId: string
+      phone: string
+      label: string | null
+      isPrimary: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["contactPhone"]>
+    composites: {}
+  }
+
+  type ContactPhoneGetPayload<S extends boolean | null | undefined | ContactPhoneDefaultArgs> = $Result.GetResult<Prisma.$ContactPhonePayload, S>
+
+  type ContactPhoneCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ContactPhoneFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ContactPhoneCountAggregateInputType | true
+    }
+
+  export interface ContactPhoneDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ContactPhone'], meta: { name: 'ContactPhone' } }
+    /**
+     * Find zero or one ContactPhone that matches the filter.
+     * @param {ContactPhoneFindUniqueArgs} args - Arguments to find a ContactPhone
+     * @example
+     * // Get one ContactPhone
+     * const contactPhone = await prisma.contactPhone.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContactPhoneFindUniqueArgs>(args: SelectSubset<T, ContactPhoneFindUniqueArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ContactPhone that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ContactPhoneFindUniqueOrThrowArgs} args - Arguments to find a ContactPhone
+     * @example
+     * // Get one ContactPhone
+     * const contactPhone = await prisma.contactPhone.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContactPhoneFindUniqueOrThrowArgs>(args: SelectSubset<T, ContactPhoneFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ContactPhone that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneFindFirstArgs} args - Arguments to find a ContactPhone
+     * @example
+     * // Get one ContactPhone
+     * const contactPhone = await prisma.contactPhone.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContactPhoneFindFirstArgs>(args?: SelectSubset<T, ContactPhoneFindFirstArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ContactPhone that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneFindFirstOrThrowArgs} args - Arguments to find a ContactPhone
+     * @example
+     * // Get one ContactPhone
+     * const contactPhone = await prisma.contactPhone.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContactPhoneFindFirstOrThrowArgs>(args?: SelectSubset<T, ContactPhoneFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ContactPhones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ContactPhones
+     * const contactPhones = await prisma.contactPhone.findMany()
+     * 
+     * // Get first 10 ContactPhones
+     * const contactPhones = await prisma.contactPhone.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contactPhoneWithIdOnly = await prisma.contactPhone.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContactPhoneFindManyArgs>(args?: SelectSubset<T, ContactPhoneFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ContactPhone.
+     * @param {ContactPhoneCreateArgs} args - Arguments to create a ContactPhone.
+     * @example
+     * // Create one ContactPhone
+     * const ContactPhone = await prisma.contactPhone.create({
+     *   data: {
+     *     // ... data to create a ContactPhone
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContactPhoneCreateArgs>(args: SelectSubset<T, ContactPhoneCreateArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ContactPhones.
+     * @param {ContactPhoneCreateManyArgs} args - Arguments to create many ContactPhones.
+     * @example
+     * // Create many ContactPhones
+     * const contactPhone = await prisma.contactPhone.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContactPhoneCreateManyArgs>(args?: SelectSubset<T, ContactPhoneCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ContactPhones and returns the data saved in the database.
+     * @param {ContactPhoneCreateManyAndReturnArgs} args - Arguments to create many ContactPhones.
+     * @example
+     * // Create many ContactPhones
+     * const contactPhone = await prisma.contactPhone.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ContactPhones and only return the `id`
+     * const contactPhoneWithIdOnly = await prisma.contactPhone.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContactPhoneCreateManyAndReturnArgs>(args?: SelectSubset<T, ContactPhoneCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ContactPhone.
+     * @param {ContactPhoneDeleteArgs} args - Arguments to delete one ContactPhone.
+     * @example
+     * // Delete one ContactPhone
+     * const ContactPhone = await prisma.contactPhone.delete({
+     *   where: {
+     *     // ... filter to delete one ContactPhone
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContactPhoneDeleteArgs>(args: SelectSubset<T, ContactPhoneDeleteArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ContactPhone.
+     * @param {ContactPhoneUpdateArgs} args - Arguments to update one ContactPhone.
+     * @example
+     * // Update one ContactPhone
+     * const contactPhone = await prisma.contactPhone.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContactPhoneUpdateArgs>(args: SelectSubset<T, ContactPhoneUpdateArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ContactPhones.
+     * @param {ContactPhoneDeleteManyArgs} args - Arguments to filter ContactPhones to delete.
+     * @example
+     * // Delete a few ContactPhones
+     * const { count } = await prisma.contactPhone.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContactPhoneDeleteManyArgs>(args?: SelectSubset<T, ContactPhoneDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ContactPhones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ContactPhones
+     * const contactPhone = await prisma.contactPhone.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContactPhoneUpdateManyArgs>(args: SelectSubset<T, ContactPhoneUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ContactPhone.
+     * @param {ContactPhoneUpsertArgs} args - Arguments to update or create a ContactPhone.
+     * @example
+     * // Update or create a ContactPhone
+     * const contactPhone = await prisma.contactPhone.upsert({
+     *   create: {
+     *     // ... data to create a ContactPhone
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ContactPhone we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContactPhoneUpsertArgs>(args: SelectSubset<T, ContactPhoneUpsertArgs<ExtArgs>>): Prisma__ContactPhoneClient<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ContactPhones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneCountArgs} args - Arguments to filter ContactPhones to count.
+     * @example
+     * // Count the number of ContactPhones
+     * const count = await prisma.contactPhone.count({
+     *   where: {
+     *     // ... the filter for the ContactPhones we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContactPhoneCountArgs>(
+      args?: Subset<T, ContactPhoneCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContactPhoneCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ContactPhone.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContactPhoneAggregateArgs>(args: Subset<T, ContactPhoneAggregateArgs>): Prisma.PrismaPromise<GetContactPhoneAggregateType<T>>
+
+    /**
+     * Group by ContactPhone.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactPhoneGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContactPhoneGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContactPhoneGroupByArgs['orderBy'] }
+        : { orderBy?: ContactPhoneGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContactPhoneGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContactPhoneGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ContactPhone model
+   */
+  readonly fields: ContactPhoneFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ContactPhone.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContactPhoneClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contact<T extends ContactDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContactDefaultArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ContactPhone model
+   */ 
+  interface ContactPhoneFieldRefs {
+    readonly id: FieldRef<"ContactPhone", 'String'>
+    readonly contactId: FieldRef<"ContactPhone", 'String'>
+    readonly phone: FieldRef<"ContactPhone", 'String'>
+    readonly label: FieldRef<"ContactPhone", 'String'>
+    readonly isPrimary: FieldRef<"ContactPhone", 'Boolean'>
+    readonly createdAt: FieldRef<"ContactPhone", 'DateTime'>
+    readonly updatedAt: FieldRef<"ContactPhone", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ContactPhone findUnique
+   */
+  export type ContactPhoneFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactPhone to fetch.
+     */
+    where: ContactPhoneWhereUniqueInput
+  }
+
+  /**
+   * ContactPhone findUniqueOrThrow
+   */
+  export type ContactPhoneFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactPhone to fetch.
+     */
+    where: ContactPhoneWhereUniqueInput
+  }
+
+  /**
+   * ContactPhone findFirst
+   */
+  export type ContactPhoneFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactPhone to fetch.
+     */
+    where?: ContactPhoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactPhones to fetch.
+     */
+    orderBy?: ContactPhoneOrderByWithRelationInput | ContactPhoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactPhones.
+     */
+    cursor?: ContactPhoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactPhones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactPhones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactPhones.
+     */
+    distinct?: ContactPhoneScalarFieldEnum | ContactPhoneScalarFieldEnum[]
+  }
+
+  /**
+   * ContactPhone findFirstOrThrow
+   */
+  export type ContactPhoneFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactPhone to fetch.
+     */
+    where?: ContactPhoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactPhones to fetch.
+     */
+    orderBy?: ContactPhoneOrderByWithRelationInput | ContactPhoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactPhones.
+     */
+    cursor?: ContactPhoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactPhones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactPhones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactPhones.
+     */
+    distinct?: ContactPhoneScalarFieldEnum | ContactPhoneScalarFieldEnum[]
+  }
+
+  /**
+   * ContactPhone findMany
+   */
+  export type ContactPhoneFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactPhones to fetch.
+     */
+    where?: ContactPhoneWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactPhones to fetch.
+     */
+    orderBy?: ContactPhoneOrderByWithRelationInput | ContactPhoneOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ContactPhones.
+     */
+    cursor?: ContactPhoneWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactPhones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactPhones.
+     */
+    skip?: number
+    distinct?: ContactPhoneScalarFieldEnum | ContactPhoneScalarFieldEnum[]
+  }
+
+  /**
+   * ContactPhone create
+   */
+  export type ContactPhoneCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ContactPhone.
+     */
+    data: XOR<ContactPhoneCreateInput, ContactPhoneUncheckedCreateInput>
+  }
+
+  /**
+   * ContactPhone createMany
+   */
+  export type ContactPhoneCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ContactPhones.
+     */
+    data: ContactPhoneCreateManyInput | ContactPhoneCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ContactPhone createManyAndReturn
+   */
+  export type ContactPhoneCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ContactPhones.
+     */
+    data: ContactPhoneCreateManyInput | ContactPhoneCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ContactPhone update
+   */
+  export type ContactPhoneUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ContactPhone.
+     */
+    data: XOR<ContactPhoneUpdateInput, ContactPhoneUncheckedUpdateInput>
+    /**
+     * Choose, which ContactPhone to update.
+     */
+    where: ContactPhoneWhereUniqueInput
+  }
+
+  /**
+   * ContactPhone updateMany
+   */
+  export type ContactPhoneUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ContactPhones.
+     */
+    data: XOR<ContactPhoneUpdateManyMutationInput, ContactPhoneUncheckedUpdateManyInput>
+    /**
+     * Filter which ContactPhones to update
+     */
+    where?: ContactPhoneWhereInput
+  }
+
+  /**
+   * ContactPhone upsert
+   */
+  export type ContactPhoneUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ContactPhone to update in case it exists.
+     */
+    where: ContactPhoneWhereUniqueInput
+    /**
+     * In case the ContactPhone found by the `where` argument doesn't exist, create a new ContactPhone with this data.
+     */
+    create: XOR<ContactPhoneCreateInput, ContactPhoneUncheckedCreateInput>
+    /**
+     * In case the ContactPhone was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContactPhoneUpdateInput, ContactPhoneUncheckedUpdateInput>
+  }
+
+  /**
+   * ContactPhone delete
+   */
+  export type ContactPhoneDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
+    /**
+     * Filter which ContactPhone to delete.
+     */
+    where: ContactPhoneWhereUniqueInput
+  }
+
+  /**
+   * ContactPhone deleteMany
+   */
+  export type ContactPhoneDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactPhones to delete
+     */
+    where?: ContactPhoneWhereInput
+  }
+
+  /**
+   * ContactPhone without action
+   */
+  export type ContactPhoneDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactPhone
+     */
+    select?: ContactPhoneSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactPhoneInclude<ExtArgs> | null
   }
 
 
@@ -10980,6 +12223,7 @@ export namespace Prisma {
     senderContactId: string | null
     senderNameSnapshot: string | null
     senderDepartmentSnapshot: string | null
+    messageType: string | null
     content: string | null
     createdAt: Date | null
     readAt: Date | null
@@ -10995,6 +12239,7 @@ export namespace Prisma {
     senderContactId: string | null
     senderNameSnapshot: string | null
     senderDepartmentSnapshot: string | null
+    messageType: string | null
     content: string | null
     createdAt: Date | null
     readAt: Date | null
@@ -11010,6 +12255,7 @@ export namespace Prisma {
     senderContactId: number
     senderNameSnapshot: number
     senderDepartmentSnapshot: number
+    messageType: number
     content: number
     createdAt: number
     readAt: number
@@ -11027,6 +12273,7 @@ export namespace Prisma {
     senderContactId?: true
     senderNameSnapshot?: true
     senderDepartmentSnapshot?: true
+    messageType?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -11042,6 +12289,7 @@ export namespace Prisma {
     senderContactId?: true
     senderNameSnapshot?: true
     senderDepartmentSnapshot?: true
+    messageType?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -11057,6 +12305,7 @@ export namespace Prisma {
     senderContactId?: true
     senderNameSnapshot?: true
     senderDepartmentSnapshot?: true
+    messageType?: true
     content?: true
     createdAt?: true
     readAt?: true
@@ -11145,6 +12394,7 @@ export namespace Prisma {
     senderContactId: string | null
     senderNameSnapshot: string | null
     senderDepartmentSnapshot: string | null
+    messageType: string
     content: string
     createdAt: Date
     readAt: Date | null
@@ -11177,6 +12427,7 @@ export namespace Prisma {
     senderContactId?: boolean
     senderNameSnapshot?: boolean
     senderDepartmentSnapshot?: boolean
+    messageType?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
@@ -11184,6 +12435,7 @@ export namespace Prisma {
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
     senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
+    contactShare?: boolean | Message$contactShareArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11196,6 +12448,7 @@ export namespace Prisma {
     senderContactId?: boolean
     senderNameSnapshot?: boolean
     senderDepartmentSnapshot?: boolean
+    messageType?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
@@ -11214,6 +12467,7 @@ export namespace Prisma {
     senderContactId?: boolean
     senderNameSnapshot?: boolean
     senderDepartmentSnapshot?: boolean
+    messageType?: boolean
     content?: boolean
     createdAt?: boolean
     readAt?: boolean
@@ -11224,6 +12478,7 @@ export namespace Prisma {
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
     senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
+    contactShare?: boolean | Message$contactShareArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
@@ -11238,6 +12493,7 @@ export namespace Prisma {
       senderAgent: Prisma.$AgentPayload<ExtArgs> | null
       senderContact: Prisma.$ContactPayload<ExtArgs> | null
       media: Prisma.$ConversationMediaPayload<ExtArgs> | null
+      contactShare: Prisma.$ContactSharePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11249,6 +12505,7 @@ export namespace Prisma {
       senderContactId: string | null
       senderNameSnapshot: string | null
       senderDepartmentSnapshot: string | null
+      messageType: string
       content: string
       createdAt: Date
       readAt: Date | null
@@ -11620,6 +12877,7 @@ export namespace Prisma {
     senderAgent<T extends Message$senderAgentArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     senderContact<T extends Message$senderContactArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderContactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     media<T extends Message$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Message$mediaArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    contactShare<T extends Message$contactShareArgs<ExtArgs> = {}>(args?: Subset<T, Message$contactShareArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11658,6 +12916,7 @@ export namespace Prisma {
     readonly senderContactId: FieldRef<"Message", 'String'>
     readonly senderNameSnapshot: FieldRef<"Message", 'String'>
     readonly senderDepartmentSnapshot: FieldRef<"Message", 'String'>
+    readonly messageType: FieldRef<"Message", 'String'>
     readonly content: FieldRef<"Message", 'String'>
     readonly createdAt: FieldRef<"Message", 'DateTime'>
     readonly readAt: FieldRef<"Message", 'DateTime'>
@@ -12024,6 +13283,21 @@ export namespace Prisma {
   }
 
   /**
+   * Message.contactShare
+   */
+  export type Message$contactShareArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    where?: ContactShareWhereInput
+  }
+
+  /**
    * Message without action
    */
   export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12035,6 +13309,1016 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ContactShare
+   */
+
+  export type AggregateContactShare = {
+    _count: ContactShareCountAggregateOutputType | null
+    _min: ContactShareMinAggregateOutputType | null
+    _max: ContactShareMaxAggregateOutputType | null
+  }
+
+  export type ContactShareMinAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    canonicalContactId: string | null
+    displayName: string | null
+    primaryPhone: string | null
+    email: string | null
+    organization: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type ContactShareMaxAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    canonicalContactId: string | null
+    displayName: string | null
+    primaryPhone: string | null
+    email: string | null
+    organization: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type ContactShareCountAggregateOutputType = {
+    id: number
+    messageId: number
+    canonicalContactId: number
+    displayName: number
+    phones: number
+    primaryPhone: number
+    email: number
+    organization: number
+    note: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ContactShareMinAggregateInputType = {
+    id?: true
+    messageId?: true
+    canonicalContactId?: true
+    displayName?: true
+    primaryPhone?: true
+    email?: true
+    organization?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type ContactShareMaxAggregateInputType = {
+    id?: true
+    messageId?: true
+    canonicalContactId?: true
+    displayName?: true
+    primaryPhone?: true
+    email?: true
+    organization?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type ContactShareCountAggregateInputType = {
+    id?: true
+    messageId?: true
+    canonicalContactId?: true
+    displayName?: true
+    phones?: true
+    primaryPhone?: true
+    email?: true
+    organization?: true
+    note?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ContactShareAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactShare to aggregate.
+     */
+    where?: ContactShareWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactShares to fetch.
+     */
+    orderBy?: ContactShareOrderByWithRelationInput | ContactShareOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContactShareWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactShares from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactShares.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ContactShares
+    **/
+    _count?: true | ContactShareCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContactShareMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContactShareMaxAggregateInputType
+  }
+
+  export type GetContactShareAggregateType<T extends ContactShareAggregateArgs> = {
+        [P in keyof T & keyof AggregateContactShare]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContactShare[P]>
+      : GetScalarType<T[P], AggregateContactShare[P]>
+  }
+
+
+
+
+  export type ContactShareGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactShareWhereInput
+    orderBy?: ContactShareOrderByWithAggregationInput | ContactShareOrderByWithAggregationInput[]
+    by: ContactShareScalarFieldEnum[] | ContactShareScalarFieldEnum
+    having?: ContactShareScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContactShareCountAggregateInputType | true
+    _min?: ContactShareMinAggregateInputType
+    _max?: ContactShareMaxAggregateInputType
+  }
+
+  export type ContactShareGroupByOutputType = {
+    id: string
+    messageId: string
+    canonicalContactId: string | null
+    displayName: string
+    phones: JsonValue
+    primaryPhone: string | null
+    email: string | null
+    organization: string | null
+    note: string | null
+    createdAt: Date
+    _count: ContactShareCountAggregateOutputType | null
+    _min: ContactShareMinAggregateOutputType | null
+    _max: ContactShareMaxAggregateOutputType | null
+  }
+
+  type GetContactShareGroupByPayload<T extends ContactShareGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContactShareGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContactShareGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContactShareGroupByOutputType[P]>
+            : GetScalarType<T[P], ContactShareGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContactShareSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    canonicalContactId?: boolean
+    displayName?: boolean
+    phones?: boolean
+    primaryPhone?: boolean
+    email?: boolean
+    organization?: boolean
+    note?: boolean
+    createdAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    canonicalContact?: boolean | ContactShare$canonicalContactArgs<ExtArgs>
+  }, ExtArgs["result"]["contactShare"]>
+
+  export type ContactShareSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    canonicalContactId?: boolean
+    displayName?: boolean
+    phones?: boolean
+    primaryPhone?: boolean
+    email?: boolean
+    organization?: boolean
+    note?: boolean
+    createdAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    canonicalContact?: boolean | ContactShare$canonicalContactArgs<ExtArgs>
+  }, ExtArgs["result"]["contactShare"]>
+
+  export type ContactShareSelectScalar = {
+    id?: boolean
+    messageId?: boolean
+    canonicalContactId?: boolean
+    displayName?: boolean
+    phones?: boolean
+    primaryPhone?: boolean
+    email?: boolean
+    organization?: boolean
+    note?: boolean
+    createdAt?: boolean
+  }
+
+  export type ContactShareInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    canonicalContact?: boolean | ContactShare$canonicalContactArgs<ExtArgs>
+  }
+  export type ContactShareIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    canonicalContact?: boolean | ContactShare$canonicalContactArgs<ExtArgs>
+  }
+
+  export type $ContactSharePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ContactShare"
+    objects: {
+      message: Prisma.$MessagePayload<ExtArgs>
+      canonicalContact: Prisma.$ContactPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      messageId: string
+      canonicalContactId: string | null
+      displayName: string
+      phones: Prisma.JsonValue
+      primaryPhone: string | null
+      email: string | null
+      organization: string | null
+      note: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["contactShare"]>
+    composites: {}
+  }
+
+  type ContactShareGetPayload<S extends boolean | null | undefined | ContactShareDefaultArgs> = $Result.GetResult<Prisma.$ContactSharePayload, S>
+
+  type ContactShareCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ContactShareFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ContactShareCountAggregateInputType | true
+    }
+
+  export interface ContactShareDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ContactShare'], meta: { name: 'ContactShare' } }
+    /**
+     * Find zero or one ContactShare that matches the filter.
+     * @param {ContactShareFindUniqueArgs} args - Arguments to find a ContactShare
+     * @example
+     * // Get one ContactShare
+     * const contactShare = await prisma.contactShare.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContactShareFindUniqueArgs>(args: SelectSubset<T, ContactShareFindUniqueArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ContactShare that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ContactShareFindUniqueOrThrowArgs} args - Arguments to find a ContactShare
+     * @example
+     * // Get one ContactShare
+     * const contactShare = await prisma.contactShare.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContactShareFindUniqueOrThrowArgs>(args: SelectSubset<T, ContactShareFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ContactShare that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareFindFirstArgs} args - Arguments to find a ContactShare
+     * @example
+     * // Get one ContactShare
+     * const contactShare = await prisma.contactShare.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContactShareFindFirstArgs>(args?: SelectSubset<T, ContactShareFindFirstArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ContactShare that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareFindFirstOrThrowArgs} args - Arguments to find a ContactShare
+     * @example
+     * // Get one ContactShare
+     * const contactShare = await prisma.contactShare.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContactShareFindFirstOrThrowArgs>(args?: SelectSubset<T, ContactShareFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ContactShares that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ContactShares
+     * const contactShares = await prisma.contactShare.findMany()
+     * 
+     * // Get first 10 ContactShares
+     * const contactShares = await prisma.contactShare.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contactShareWithIdOnly = await prisma.contactShare.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContactShareFindManyArgs>(args?: SelectSubset<T, ContactShareFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ContactShare.
+     * @param {ContactShareCreateArgs} args - Arguments to create a ContactShare.
+     * @example
+     * // Create one ContactShare
+     * const ContactShare = await prisma.contactShare.create({
+     *   data: {
+     *     // ... data to create a ContactShare
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContactShareCreateArgs>(args: SelectSubset<T, ContactShareCreateArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ContactShares.
+     * @param {ContactShareCreateManyArgs} args - Arguments to create many ContactShares.
+     * @example
+     * // Create many ContactShares
+     * const contactShare = await prisma.contactShare.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContactShareCreateManyArgs>(args?: SelectSubset<T, ContactShareCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ContactShares and returns the data saved in the database.
+     * @param {ContactShareCreateManyAndReturnArgs} args - Arguments to create many ContactShares.
+     * @example
+     * // Create many ContactShares
+     * const contactShare = await prisma.contactShare.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ContactShares and only return the `id`
+     * const contactShareWithIdOnly = await prisma.contactShare.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContactShareCreateManyAndReturnArgs>(args?: SelectSubset<T, ContactShareCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ContactShare.
+     * @param {ContactShareDeleteArgs} args - Arguments to delete one ContactShare.
+     * @example
+     * // Delete one ContactShare
+     * const ContactShare = await prisma.contactShare.delete({
+     *   where: {
+     *     // ... filter to delete one ContactShare
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContactShareDeleteArgs>(args: SelectSubset<T, ContactShareDeleteArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ContactShare.
+     * @param {ContactShareUpdateArgs} args - Arguments to update one ContactShare.
+     * @example
+     * // Update one ContactShare
+     * const contactShare = await prisma.contactShare.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContactShareUpdateArgs>(args: SelectSubset<T, ContactShareUpdateArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ContactShares.
+     * @param {ContactShareDeleteManyArgs} args - Arguments to filter ContactShares to delete.
+     * @example
+     * // Delete a few ContactShares
+     * const { count } = await prisma.contactShare.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContactShareDeleteManyArgs>(args?: SelectSubset<T, ContactShareDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ContactShares.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ContactShares
+     * const contactShare = await prisma.contactShare.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContactShareUpdateManyArgs>(args: SelectSubset<T, ContactShareUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ContactShare.
+     * @param {ContactShareUpsertArgs} args - Arguments to update or create a ContactShare.
+     * @example
+     * // Update or create a ContactShare
+     * const contactShare = await prisma.contactShare.upsert({
+     *   create: {
+     *     // ... data to create a ContactShare
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ContactShare we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContactShareUpsertArgs>(args: SelectSubset<T, ContactShareUpsertArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ContactShares.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareCountArgs} args - Arguments to filter ContactShares to count.
+     * @example
+     * // Count the number of ContactShares
+     * const count = await prisma.contactShare.count({
+     *   where: {
+     *     // ... the filter for the ContactShares we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContactShareCountArgs>(
+      args?: Subset<T, ContactShareCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContactShareCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ContactShare.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContactShareAggregateArgs>(args: Subset<T, ContactShareAggregateArgs>): Prisma.PrismaPromise<GetContactShareAggregateType<T>>
+
+    /**
+     * Group by ContactShare.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactShareGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContactShareGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContactShareGroupByArgs['orderBy'] }
+        : { orderBy?: ContactShareGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContactShareGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContactShareGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ContactShare model
+   */
+  readonly fields: ContactShareFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ContactShare.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContactShareClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    message<T extends MessageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MessageDefaultArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    canonicalContact<T extends ContactShare$canonicalContactArgs<ExtArgs> = {}>(args?: Subset<T, ContactShare$canonicalContactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ContactShare model
+   */ 
+  interface ContactShareFieldRefs {
+    readonly id: FieldRef<"ContactShare", 'String'>
+    readonly messageId: FieldRef<"ContactShare", 'String'>
+    readonly canonicalContactId: FieldRef<"ContactShare", 'String'>
+    readonly displayName: FieldRef<"ContactShare", 'String'>
+    readonly phones: FieldRef<"ContactShare", 'Json'>
+    readonly primaryPhone: FieldRef<"ContactShare", 'String'>
+    readonly email: FieldRef<"ContactShare", 'String'>
+    readonly organization: FieldRef<"ContactShare", 'String'>
+    readonly note: FieldRef<"ContactShare", 'String'>
+    readonly createdAt: FieldRef<"ContactShare", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ContactShare findUnique
+   */
+  export type ContactShareFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactShare to fetch.
+     */
+    where: ContactShareWhereUniqueInput
+  }
+
+  /**
+   * ContactShare findUniqueOrThrow
+   */
+  export type ContactShareFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactShare to fetch.
+     */
+    where: ContactShareWhereUniqueInput
+  }
+
+  /**
+   * ContactShare findFirst
+   */
+  export type ContactShareFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactShare to fetch.
+     */
+    where?: ContactShareWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactShares to fetch.
+     */
+    orderBy?: ContactShareOrderByWithRelationInput | ContactShareOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactShares.
+     */
+    cursor?: ContactShareWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactShares from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactShares.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactShares.
+     */
+    distinct?: ContactShareScalarFieldEnum | ContactShareScalarFieldEnum[]
+  }
+
+  /**
+   * ContactShare findFirstOrThrow
+   */
+  export type ContactShareFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactShare to fetch.
+     */
+    where?: ContactShareWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactShares to fetch.
+     */
+    orderBy?: ContactShareOrderByWithRelationInput | ContactShareOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactShares.
+     */
+    cursor?: ContactShareWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactShares from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactShares.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactShares.
+     */
+    distinct?: ContactShareScalarFieldEnum | ContactShareScalarFieldEnum[]
+  }
+
+  /**
+   * ContactShare findMany
+   */
+  export type ContactShareFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactShares to fetch.
+     */
+    where?: ContactShareWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactShares to fetch.
+     */
+    orderBy?: ContactShareOrderByWithRelationInput | ContactShareOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ContactShares.
+     */
+    cursor?: ContactShareWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactShares from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactShares.
+     */
+    skip?: number
+    distinct?: ContactShareScalarFieldEnum | ContactShareScalarFieldEnum[]
+  }
+
+  /**
+   * ContactShare create
+   */
+  export type ContactShareCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ContactShare.
+     */
+    data: XOR<ContactShareCreateInput, ContactShareUncheckedCreateInput>
+  }
+
+  /**
+   * ContactShare createMany
+   */
+  export type ContactShareCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ContactShares.
+     */
+    data: ContactShareCreateManyInput | ContactShareCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ContactShare createManyAndReturn
+   */
+  export type ContactShareCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ContactShares.
+     */
+    data: ContactShareCreateManyInput | ContactShareCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ContactShare update
+   */
+  export type ContactShareUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ContactShare.
+     */
+    data: XOR<ContactShareUpdateInput, ContactShareUncheckedUpdateInput>
+    /**
+     * Choose, which ContactShare to update.
+     */
+    where: ContactShareWhereUniqueInput
+  }
+
+  /**
+   * ContactShare updateMany
+   */
+  export type ContactShareUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ContactShares.
+     */
+    data: XOR<ContactShareUpdateManyMutationInput, ContactShareUncheckedUpdateManyInput>
+    /**
+     * Filter which ContactShares to update
+     */
+    where?: ContactShareWhereInput
+  }
+
+  /**
+   * ContactShare upsert
+   */
+  export type ContactShareUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ContactShare to update in case it exists.
+     */
+    where: ContactShareWhereUniqueInput
+    /**
+     * In case the ContactShare found by the `where` argument doesn't exist, create a new ContactShare with this data.
+     */
+    create: XOR<ContactShareCreateInput, ContactShareUncheckedCreateInput>
+    /**
+     * In case the ContactShare was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContactShareUpdateInput, ContactShareUncheckedUpdateInput>
+  }
+
+  /**
+   * ContactShare delete
+   */
+  export type ContactShareDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
+    /**
+     * Filter which ContactShare to delete.
+     */
+    where: ContactShareWhereUniqueInput
+  }
+
+  /**
+   * ContactShare deleteMany
+   */
+  export type ContactShareDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactShares to delete
+     */
+    where?: ContactShareWhereInput
+  }
+
+  /**
+   * ContactShare.canonicalContact
+   */
+  export type ContactShare$canonicalContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+  }
+
+  /**
+   * ContactShare without action
+   */
+  export type ContactShareDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactShare
+     */
+    select?: ContactShareSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactShareInclude<ExtArgs> | null
   }
 
 
@@ -27602,10 +29886,27 @@ export namespace Prisma {
     id: 'id',
     phone: 'phone',
     name: 'name',
-    createdAt: 'createdAt'
+    email: 'email',
+    organization: 'organization',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+
+  export const ContactPhoneScalarFieldEnum: {
+    id: 'id',
+    contactId: 'contactId',
+    phone: 'phone',
+    label: 'label',
+    isPrimary: 'isPrimary',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ContactPhoneScalarFieldEnum = (typeof ContactPhoneScalarFieldEnum)[keyof typeof ContactPhoneScalarFieldEnum]
 
 
   export const BotExclusionScalarFieldEnum: {
@@ -27658,12 +29959,29 @@ export namespace Prisma {
     senderContactId: 'senderContactId',
     senderNameSnapshot: 'senderNameSnapshot',
     senderDepartmentSnapshot: 'senderDepartmentSnapshot',
+    messageType: 'messageType',
     content: 'content',
     createdAt: 'createdAt',
     readAt: 'readAt'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+  export const ContactShareScalarFieldEnum: {
+    id: 'id',
+    messageId: 'messageId',
+    canonicalContactId: 'canonicalContactId',
+    displayName: 'displayName',
+    phones: 'phones',
+    primaryPhone: 'primaryPhone',
+    email: 'email',
+    organization: 'organization',
+    note: 'note',
+    createdAt: 'createdAt'
+  };
+
+  export type ContactShareScalarFieldEnum = (typeof ContactShareScalarFieldEnum)[keyof typeof ContactShareScalarFieldEnum]
 
 
   export const ConversationAssignmentScalarFieldEnum: {
@@ -28429,18 +30747,30 @@ export namespace Prisma {
     id?: StringFilter<"Contact"> | string
     phone?: StringFilter<"Contact"> | string
     name?: StringFilter<"Contact"> | string
+    email?: StringNullableFilter<"Contact"> | string | null
+    organization?: StringNullableFilter<"Contact"> | string | null
+    notes?: StringNullableFilter<"Contact"> | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
     messageSenders?: MessageListRelationFilter
+    phoneNumbers?: ContactPhoneListRelationFilter
+    sharedCards?: ContactShareListRelationFilter
   }
 
   export type ContactOrderByWithRelationInput = {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     conversations?: ConversationOrderByRelationAggregateInput
     messageSenders?: MessageOrderByRelationAggregateInput
+    phoneNumbers?: ContactPhoneOrderByRelationAggregateInput
+    sharedCards?: ContactShareOrderByRelationAggregateInput
   }
 
   export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -28450,16 +30780,26 @@ export namespace Prisma {
     OR?: ContactWhereInput[]
     NOT?: ContactWhereInput | ContactWhereInput[]
     name?: StringFilter<"Contact"> | string
+    email?: StringNullableFilter<"Contact"> | string | null
+    organization?: StringNullableFilter<"Contact"> | string | null
+    notes?: StringNullableFilter<"Contact"> | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
     messageSenders?: MessageListRelationFilter
+    phoneNumbers?: ContactPhoneListRelationFilter
+    sharedCards?: ContactShareListRelationFilter
   }, "id" | "phone">
 
   export type ContactOrderByWithAggregationInput = {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ContactCountOrderByAggregateInput
     _max?: ContactMaxOrderByAggregateInput
     _min?: ContactMinOrderByAggregateInput
@@ -28472,7 +30812,76 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Contact"> | string
     phone?: StringWithAggregatesFilter<"Contact"> | string
     name?: StringWithAggregatesFilter<"Contact"> | string
+    email?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    organization?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"Contact"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
+  }
+
+  export type ContactPhoneWhereInput = {
+    AND?: ContactPhoneWhereInput | ContactPhoneWhereInput[]
+    OR?: ContactPhoneWhereInput[]
+    NOT?: ContactPhoneWhereInput | ContactPhoneWhereInput[]
+    id?: StringFilter<"ContactPhone"> | string
+    contactId?: StringFilter<"ContactPhone"> | string
+    phone?: StringFilter<"ContactPhone"> | string
+    label?: StringNullableFilter<"ContactPhone"> | string | null
+    isPrimary?: BoolFilter<"ContactPhone"> | boolean
+    createdAt?: DateTimeFilter<"ContactPhone"> | Date | string
+    updatedAt?: DateTimeFilter<"ContactPhone"> | Date | string
+    contact?: XOR<ContactRelationFilter, ContactWhereInput>
+  }
+
+  export type ContactPhoneOrderByWithRelationInput = {
+    id?: SortOrder
+    contactId?: SortOrder
+    phone?: SortOrder
+    label?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    contact?: ContactOrderByWithRelationInput
+  }
+
+  export type ContactPhoneWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    phone?: string
+    AND?: ContactPhoneWhereInput | ContactPhoneWhereInput[]
+    OR?: ContactPhoneWhereInput[]
+    NOT?: ContactPhoneWhereInput | ContactPhoneWhereInput[]
+    contactId?: StringFilter<"ContactPhone"> | string
+    label?: StringNullableFilter<"ContactPhone"> | string | null
+    isPrimary?: BoolFilter<"ContactPhone"> | boolean
+    createdAt?: DateTimeFilter<"ContactPhone"> | Date | string
+    updatedAt?: DateTimeFilter<"ContactPhone"> | Date | string
+    contact?: XOR<ContactRelationFilter, ContactWhereInput>
+  }, "id" | "phone">
+
+  export type ContactPhoneOrderByWithAggregationInput = {
+    id?: SortOrder
+    contactId?: SortOrder
+    phone?: SortOrder
+    label?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ContactPhoneCountOrderByAggregateInput
+    _max?: ContactPhoneMaxOrderByAggregateInput
+    _min?: ContactPhoneMinOrderByAggregateInput
+  }
+
+  export type ContactPhoneScalarWhereWithAggregatesInput = {
+    AND?: ContactPhoneScalarWhereWithAggregatesInput | ContactPhoneScalarWhereWithAggregatesInput[]
+    OR?: ContactPhoneScalarWhereWithAggregatesInput[]
+    NOT?: ContactPhoneScalarWhereWithAggregatesInput | ContactPhoneScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ContactPhone"> | string
+    contactId?: StringWithAggregatesFilter<"ContactPhone"> | string
+    phone?: StringWithAggregatesFilter<"ContactPhone"> | string
+    label?: StringNullableWithAggregatesFilter<"ContactPhone"> | string | null
+    isPrimary?: BoolWithAggregatesFilter<"ContactPhone"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ContactPhone"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ContactPhone"> | Date | string
   }
 
   export type BotExclusionWhereInput = {
@@ -28724,6 +31133,7 @@ export namespace Prisma {
     senderContactId?: StringNullableFilter<"Message"> | string | null
     senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
     senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
+    messageType?: StringFilter<"Message"> | string
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
@@ -28731,6 +31141,7 @@ export namespace Prisma {
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
+    contactShare?: XOR<ContactShareNullableRelationFilter, ContactShareWhereInput> | null
   }
 
   export type MessageOrderByWithRelationInput = {
@@ -28743,6 +31154,7 @@ export namespace Prisma {
     senderContactId?: SortOrderInput | SortOrder
     senderNameSnapshot?: SortOrderInput | SortOrder
     senderDepartmentSnapshot?: SortOrderInput | SortOrder
+    messageType?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrderInput | SortOrder
@@ -28750,6 +31162,7 @@ export namespace Prisma {
     senderAgent?: AgentOrderByWithRelationInput
     senderContact?: ContactOrderByWithRelationInput
     media?: ConversationMediaOrderByWithRelationInput
+    contactShare?: ContactShareOrderByWithRelationInput
   }
 
   export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -28765,6 +31178,7 @@ export namespace Prisma {
     senderContactId?: StringNullableFilter<"Message"> | string | null
     senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
     senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
+    messageType?: StringFilter<"Message"> | string
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
@@ -28772,6 +31186,7 @@ export namespace Prisma {
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
+    contactShare?: XOR<ContactShareNullableRelationFilter, ContactShareWhereInput> | null
   }, "id" | "externalMessageId">
 
   export type MessageOrderByWithAggregationInput = {
@@ -28784,6 +31199,7 @@ export namespace Prisma {
     senderContactId?: SortOrderInput | SortOrder
     senderNameSnapshot?: SortOrderInput | SortOrder
     senderDepartmentSnapshot?: SortOrderInput | SortOrder
+    messageType?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrderInput | SortOrder
@@ -28805,9 +31221,93 @@ export namespace Prisma {
     senderContactId?: StringNullableWithAggregatesFilter<"Message"> | string | null
     senderNameSnapshot?: StringNullableWithAggregatesFilter<"Message"> | string | null
     senderDepartmentSnapshot?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    messageType?: StringWithAggregatesFilter<"Message"> | string
     content?: StringWithAggregatesFilter<"Message"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     readAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
+  }
+
+  export type ContactShareWhereInput = {
+    AND?: ContactShareWhereInput | ContactShareWhereInput[]
+    OR?: ContactShareWhereInput[]
+    NOT?: ContactShareWhereInput | ContactShareWhereInput[]
+    id?: StringFilter<"ContactShare"> | string
+    messageId?: StringFilter<"ContactShare"> | string
+    canonicalContactId?: StringNullableFilter<"ContactShare"> | string | null
+    displayName?: StringFilter<"ContactShare"> | string
+    phones?: JsonFilter<"ContactShare">
+    primaryPhone?: StringNullableFilter<"ContactShare"> | string | null
+    email?: StringNullableFilter<"ContactShare"> | string | null
+    organization?: StringNullableFilter<"ContactShare"> | string | null
+    note?: StringNullableFilter<"ContactShare"> | string | null
+    createdAt?: DateTimeFilter<"ContactShare"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    canonicalContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+  }
+
+  export type ContactShareOrderByWithRelationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    canonicalContactId?: SortOrderInput | SortOrder
+    displayName?: SortOrder
+    phones?: SortOrder
+    primaryPhone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    message?: MessageOrderByWithRelationInput
+    canonicalContact?: ContactOrderByWithRelationInput
+  }
+
+  export type ContactShareWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    messageId?: string
+    AND?: ContactShareWhereInput | ContactShareWhereInput[]
+    OR?: ContactShareWhereInput[]
+    NOT?: ContactShareWhereInput | ContactShareWhereInput[]
+    canonicalContactId?: StringNullableFilter<"ContactShare"> | string | null
+    displayName?: StringFilter<"ContactShare"> | string
+    phones?: JsonFilter<"ContactShare">
+    primaryPhone?: StringNullableFilter<"ContactShare"> | string | null
+    email?: StringNullableFilter<"ContactShare"> | string | null
+    organization?: StringNullableFilter<"ContactShare"> | string | null
+    note?: StringNullableFilter<"ContactShare"> | string | null
+    createdAt?: DateTimeFilter<"ContactShare"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    canonicalContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+  }, "id" | "messageId">
+
+  export type ContactShareOrderByWithAggregationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    canonicalContactId?: SortOrderInput | SortOrder
+    displayName?: SortOrder
+    phones?: SortOrder
+    primaryPhone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ContactShareCountOrderByAggregateInput
+    _max?: ContactShareMaxOrderByAggregateInput
+    _min?: ContactShareMinOrderByAggregateInput
+  }
+
+  export type ContactShareScalarWhereWithAggregatesInput = {
+    AND?: ContactShareScalarWhereWithAggregatesInput | ContactShareScalarWhereWithAggregatesInput[]
+    OR?: ContactShareScalarWhereWithAggregatesInput[]
+    NOT?: ContactShareScalarWhereWithAggregatesInput | ContactShareScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ContactShare"> | string
+    messageId?: StringWithAggregatesFilter<"ContactShare"> | string
+    canonicalContactId?: StringNullableWithAggregatesFilter<"ContactShare"> | string | null
+    displayName?: StringWithAggregatesFilter<"ContactShare"> | string
+    phones?: JsonWithAggregatesFilter<"ContactShare">
+    primaryPhone?: StringNullableWithAggregatesFilter<"ContactShare"> | string | null
+    email?: StringNullableWithAggregatesFilter<"ContactShare"> | string | null
+    organization?: StringNullableWithAggregatesFilter<"ContactShare"> | string | null
+    note?: StringNullableWithAggregatesFilter<"ContactShare"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ContactShare"> | Date | string
   }
 
   export type ConversationAssignmentWhereInput = {
@@ -30418,57 +32918,162 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactUncheckedCreateInput = {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type ContactUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type ContactCreateManyInput = {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ContactUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ContactUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactPhoneCreateInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contact: ContactCreateNestedOneWithoutPhoneNumbersInput
+  }
+
+  export type ContactPhoneUncheckedCreateInput = {
+    id?: string
+    contactId: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactPhoneUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contact?: ContactUpdateOneRequiredWithoutPhoneNumbersNestedInput
+  }
+
+  export type ContactPhoneUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactPhoneCreateManyInput = {
+    id?: string
+    contactId: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactPhoneUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactPhoneUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BotExclusionCreateInput = {
@@ -30732,6 +33337,7 @@ export namespace Prisma {
     senderType: string
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -30739,6 +33345,7 @@ export namespace Prisma {
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateInput = {
@@ -30751,10 +33358,12 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUpdateInput = {
@@ -30764,6 +33373,7 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30771,6 +33381,7 @@ export namespace Prisma {
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateInput = {
@@ -30783,10 +33394,12 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageCreateManyInput = {
@@ -30799,6 +33412,7 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -30811,6 +33425,7 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30826,9 +33441,99 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ContactShareCreateInput = {
+    id?: string
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    message: MessageCreateNestedOneWithoutContactShareInput
+    canonicalContact?: ContactCreateNestedOneWithoutSharedCardsInput
+  }
+
+  export type ContactShareUncheckedCreateInput = {
+    id?: string
+    messageId: string
+    canonicalContactId?: string | null
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ContactShareUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutContactShareNestedInput
+    canonicalContact?: ContactUpdateOneWithoutSharedCardsNestedInput
+  }
+
+  export type ContactShareUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    canonicalContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactShareCreateManyInput = {
+    id?: string
+    messageId: string
+    canonicalContactId?: string | null
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ContactShareUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactShareUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    canonicalContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationAssignmentCreateInput = {
@@ -32586,25 +35291,92 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type ContactPhoneListRelationFilter = {
+    every?: ContactPhoneWhereInput
+    some?: ContactPhoneWhereInput
+    none?: ContactPhoneWhereInput
+  }
+
+  export type ContactShareListRelationFilter = {
+    every?: ContactShareWhereInput
+    some?: ContactShareWhereInput
+    none?: ContactShareWhereInput
+  }
+
+  export type ContactPhoneOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContactShareOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ContactCountOrderByAggregateInput = {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ContactMaxOrderByAggregateInput = {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ContactMinOrderByAggregateInput = {
     id?: SortOrder
     phone?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContactRelationFilter = {
+    is?: ContactWhereInput
+    isNot?: ContactWhereInput
+  }
+
+  export type ContactPhoneCountOrderByAggregateInput = {
+    id?: SortOrder
+    contactId?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContactPhoneMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contactId?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContactPhoneMinOrderByAggregateInput = {
+    id?: SortOrder
+    contactId?: SortOrder
+    phone?: SortOrder
+    label?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -32699,11 +35471,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type ContactRelationFilter = {
-    is?: ContactWhereInput
-    isNot?: ContactWhereInput
   }
 
   export type FlowRevisionNullableRelationFilter = {
@@ -32834,6 +35601,11 @@ export namespace Prisma {
     isNot?: ConversationMediaWhereInput | null
   }
 
+  export type ContactShareNullableRelationFilter = {
+    is?: ContactShareWhereInput | null
+    isNot?: ContactShareWhereInput | null
+  }
+
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     conversationId?: SortOrder
@@ -32844,6 +35616,7 @@ export namespace Prisma {
     senderContactId?: SortOrder
     senderNameSnapshot?: SortOrder
     senderDepartmentSnapshot?: SortOrder
+    messageType?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
@@ -32859,6 +35632,7 @@ export namespace Prisma {
     senderContactId?: SortOrder
     senderNameSnapshot?: SortOrder
     senderDepartmentSnapshot?: SortOrder
+    messageType?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
@@ -32874,9 +35648,99 @@ export namespace Prisma {
     senderContactId?: SortOrder
     senderNameSnapshot?: SortOrder
     senderDepartmentSnapshot?: SortOrder
+    messageType?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     readAt?: SortOrder
+  }
+  export type JsonFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type MessageRelationFilter = {
+    is?: MessageWhereInput
+    isNot?: MessageWhereInput
+  }
+
+  export type ContactShareCountOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    canonicalContactId?: SortOrder
+    displayName?: SortOrder
+    phones?: SortOrder
+    primaryPhone?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ContactShareMaxOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    canonicalContactId?: SortOrder
+    displayName?: SortOrder
+    primaryPhone?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ContactShareMinOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    canonicalContactId?: SortOrder
+    displayName?: SortOrder
+    primaryPhone?: SortOrder
+    email?: SortOrder
+    organization?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type AgentRelationFilter = {
@@ -32958,11 +35822,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type MessageRelationFilter = {
-    is?: MessageWhereInput
-    isNot?: MessageWhereInput
   }
 
   export type ConversationMediaCountOrderByAggregateInput = {
@@ -33124,28 +35983,6 @@ export namespace Prisma {
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
-  export type JsonFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type FlowDefinitionCountOrderByAggregateInput = {
     id?: SortOrder
@@ -33170,31 +36007,6 @@ export namespace Prisma {
     greeting?: SortOrder
     menuMessage?: SortOrder
     updatedAt?: SortOrder
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type ZApiConfigCountOrderByAggregateInput = {
@@ -34750,6 +37562,20 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type ContactPhoneCreateNestedManyWithoutContactInput = {
+    create?: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput> | ContactPhoneCreateWithoutContactInput[] | ContactPhoneUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactPhoneCreateOrConnectWithoutContactInput | ContactPhoneCreateOrConnectWithoutContactInput[]
+    createMany?: ContactPhoneCreateManyContactInputEnvelope
+    connect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+  }
+
+  export type ContactShareCreateNestedManyWithoutCanonicalContactInput = {
+    create?: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput> | ContactShareCreateWithoutCanonicalContactInput[] | ContactShareUncheckedCreateWithoutCanonicalContactInput[]
+    connectOrCreate?: ContactShareCreateOrConnectWithoutCanonicalContactInput | ContactShareCreateOrConnectWithoutCanonicalContactInput[]
+    createMany?: ContactShareCreateManyCanonicalContactInputEnvelope
+    connect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedManyWithoutContactInput = {
     create?: XOR<ConversationCreateWithoutContactInput, ConversationUncheckedCreateWithoutContactInput> | ConversationCreateWithoutContactInput[] | ConversationUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutContactInput | ConversationCreateOrConnectWithoutContactInput[]
@@ -34762,6 +37588,20 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
     createMany?: MessageCreateManySenderContactInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type ContactPhoneUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput> | ContactPhoneCreateWithoutContactInput[] | ContactPhoneUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactPhoneCreateOrConnectWithoutContactInput | ContactPhoneCreateOrConnectWithoutContactInput[]
+    createMany?: ContactPhoneCreateManyContactInputEnvelope
+    connect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+  }
+
+  export type ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput = {
+    create?: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput> | ContactShareCreateWithoutCanonicalContactInput[] | ContactShareUncheckedCreateWithoutCanonicalContactInput[]
+    connectOrCreate?: ContactShareCreateOrConnectWithoutCanonicalContactInput | ContactShareCreateOrConnectWithoutCanonicalContactInput[]
+    createMany?: ContactShareCreateManyCanonicalContactInputEnvelope
+    connect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
   }
 
   export type ConversationUpdateManyWithoutContactNestedInput = {
@@ -34792,6 +37632,34 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type ContactPhoneUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput> | ContactPhoneCreateWithoutContactInput[] | ContactPhoneUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactPhoneCreateOrConnectWithoutContactInput | ContactPhoneCreateOrConnectWithoutContactInput[]
+    upsert?: ContactPhoneUpsertWithWhereUniqueWithoutContactInput | ContactPhoneUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ContactPhoneCreateManyContactInputEnvelope
+    set?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    disconnect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    delete?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    connect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    update?: ContactPhoneUpdateWithWhereUniqueWithoutContactInput | ContactPhoneUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ContactPhoneUpdateManyWithWhereWithoutContactInput | ContactPhoneUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ContactPhoneScalarWhereInput | ContactPhoneScalarWhereInput[]
+  }
+
+  export type ContactShareUpdateManyWithoutCanonicalContactNestedInput = {
+    create?: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput> | ContactShareCreateWithoutCanonicalContactInput[] | ContactShareUncheckedCreateWithoutCanonicalContactInput[]
+    connectOrCreate?: ContactShareCreateOrConnectWithoutCanonicalContactInput | ContactShareCreateOrConnectWithoutCanonicalContactInput[]
+    upsert?: ContactShareUpsertWithWhereUniqueWithoutCanonicalContactInput | ContactShareUpsertWithWhereUniqueWithoutCanonicalContactInput[]
+    createMany?: ContactShareCreateManyCanonicalContactInputEnvelope
+    set?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    disconnect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    delete?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    connect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    update?: ContactShareUpdateWithWhereUniqueWithoutCanonicalContactInput | ContactShareUpdateWithWhereUniqueWithoutCanonicalContactInput[]
+    updateMany?: ContactShareUpdateManyWithWhereWithoutCanonicalContactInput | ContactShareUpdateManyWithWhereWithoutCanonicalContactInput[]
+    deleteMany?: ContactShareScalarWhereInput | ContactShareScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateManyWithoutContactNestedInput = {
     create?: XOR<ConversationCreateWithoutContactInput, ConversationUncheckedCreateWithoutContactInput> | ConversationCreateWithoutContactInput[] | ConversationUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutContactInput | ConversationCreateOrConnectWithoutContactInput[]
@@ -34818,6 +37686,48 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type ContactPhoneUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput> | ContactPhoneCreateWithoutContactInput[] | ContactPhoneUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactPhoneCreateOrConnectWithoutContactInput | ContactPhoneCreateOrConnectWithoutContactInput[]
+    upsert?: ContactPhoneUpsertWithWhereUniqueWithoutContactInput | ContactPhoneUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ContactPhoneCreateManyContactInputEnvelope
+    set?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    disconnect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    delete?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    connect?: ContactPhoneWhereUniqueInput | ContactPhoneWhereUniqueInput[]
+    update?: ContactPhoneUpdateWithWhereUniqueWithoutContactInput | ContactPhoneUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ContactPhoneUpdateManyWithWhereWithoutContactInput | ContactPhoneUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ContactPhoneScalarWhereInput | ContactPhoneScalarWhereInput[]
+  }
+
+  export type ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput = {
+    create?: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput> | ContactShareCreateWithoutCanonicalContactInput[] | ContactShareUncheckedCreateWithoutCanonicalContactInput[]
+    connectOrCreate?: ContactShareCreateOrConnectWithoutCanonicalContactInput | ContactShareCreateOrConnectWithoutCanonicalContactInput[]
+    upsert?: ContactShareUpsertWithWhereUniqueWithoutCanonicalContactInput | ContactShareUpsertWithWhereUniqueWithoutCanonicalContactInput[]
+    createMany?: ContactShareCreateManyCanonicalContactInputEnvelope
+    set?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    disconnect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    delete?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    connect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
+    update?: ContactShareUpdateWithWhereUniqueWithoutCanonicalContactInput | ContactShareUpdateWithWhereUniqueWithoutCanonicalContactInput[]
+    updateMany?: ContactShareUpdateManyWithWhereWithoutCanonicalContactInput | ContactShareUpdateManyWithWhereWithoutCanonicalContactInput[]
+    deleteMany?: ContactShareScalarWhereInput | ContactShareScalarWhereInput[]
+  }
+
+  export type ContactCreateNestedOneWithoutPhoneNumbersInput = {
+    create?: XOR<ContactCreateWithoutPhoneNumbersInput, ContactUncheckedCreateWithoutPhoneNumbersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutPhoneNumbersInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type ContactUpdateOneRequiredWithoutPhoneNumbersNestedInput = {
+    create?: XOR<ContactCreateWithoutPhoneNumbersInput, ContactUncheckedCreateWithoutPhoneNumbersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutPhoneNumbersInput
+    upsert?: ContactUpsertWithoutPhoneNumbersInput
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutPhoneNumbersInput, ContactUpdateWithoutPhoneNumbersInput>, ContactUncheckedUpdateWithoutPhoneNumbersInput>
   }
 
   export type AgentCreateNestedOneWithoutBotExclusionsCreatedInput = {
@@ -35226,10 +38136,22 @@ export namespace Prisma {
     connect?: ConversationMediaWhereUniqueInput
   }
 
+  export type ContactShareCreateNestedOneWithoutMessageInput = {
+    create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
+    connect?: ContactShareWhereUniqueInput
+  }
+
   export type ConversationMediaUncheckedCreateNestedOneWithoutMessageInput = {
     create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
     connect?: ConversationMediaWhereUniqueInput
+  }
+
+  export type ContactShareUncheckedCreateNestedOneWithoutMessageInput = {
+    create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
+    connect?: ContactShareWhereUniqueInput
   }
 
   export type ConversationUpdateOneRequiredWithoutMessagesNestedInput = {
@@ -35270,6 +38192,16 @@ export namespace Prisma {
     update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
   }
 
+  export type ContactShareUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
+    upsert?: ContactShareUpsertWithoutMessageInput
+    disconnect?: ContactShareWhereInput | boolean
+    delete?: ContactShareWhereInput | boolean
+    connect?: ContactShareWhereUniqueInput
+    update?: XOR<XOR<ContactShareUpdateToOneWithWhereWithoutMessageInput, ContactShareUpdateWithoutMessageInput>, ContactShareUncheckedUpdateWithoutMessageInput>
+  }
+
   export type ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput = {
     create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
@@ -35278,6 +38210,46 @@ export namespace Prisma {
     delete?: ConversationMediaWhereInput | boolean
     connect?: ConversationMediaWhereUniqueInput
     update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ContactShareUncheckedUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
+    upsert?: ContactShareUpsertWithoutMessageInput
+    disconnect?: ContactShareWhereInput | boolean
+    delete?: ContactShareWhereInput | boolean
+    connect?: ContactShareWhereUniqueInput
+    update?: XOR<XOR<ContactShareUpdateToOneWithWhereWithoutMessageInput, ContactShareUpdateWithoutMessageInput>, ContactShareUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type MessageCreateNestedOneWithoutContactShareInput = {
+    create?: XOR<MessageCreateWithoutContactShareInput, MessageUncheckedCreateWithoutContactShareInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutContactShareInput
+    connect?: MessageWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutSharedCardsInput = {
+    create?: XOR<ContactCreateWithoutSharedCardsInput, ContactUncheckedCreateWithoutSharedCardsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutSharedCardsInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type MessageUpdateOneRequiredWithoutContactShareNestedInput = {
+    create?: XOR<MessageCreateWithoutContactShareInput, MessageUncheckedCreateWithoutContactShareInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutContactShareInput
+    upsert?: MessageUpsertWithoutContactShareInput
+    connect?: MessageWhereUniqueInput
+    update?: XOR<XOR<MessageUpdateToOneWithWhereWithoutContactShareInput, MessageUpdateWithoutContactShareInput>, MessageUncheckedUpdateWithoutContactShareInput>
+  }
+
+  export type ContactUpdateOneWithoutSharedCardsNestedInput = {
+    create?: XOR<ContactCreateWithoutSharedCardsInput, ContactUncheckedCreateWithoutSharedCardsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutSharedCardsInput
+    upsert?: ContactUpsertWithoutSharedCardsInput
+    disconnect?: ContactWhereInput | boolean
+    delete?: ContactWhereInput | boolean
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutSharedCardsInput, ContactUpdateWithoutSharedCardsInput>, ContactUncheckedUpdateWithoutSharedCardsInput>
   }
 
   export type ConversationCreateNestedOneWithoutAssignmentsInput = {
@@ -36389,6 +39361,28 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+  export type NestedJsonFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumMediaProviderFilter<$PrismaModel = never> = {
     equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
@@ -36479,28 +39473,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-  export type NestedJsonFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumFlowRevisionStatusFilter<$PrismaModel = never> = {
@@ -37121,12 +40093,14 @@ export namespace Prisma {
     senderType: string
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutSenderAgentInput = {
@@ -37138,10 +40112,12 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutSenderAgentInput = {
@@ -37729,6 +40705,7 @@ export namespace Prisma {
     senderContactId?: StringNullableFilter<"Message"> | string | null
     senderNameSnapshot?: StringNullableFilter<"Message"> | string | null
     senderDepartmentSnapshot?: StringNullableFilter<"Message"> | string | null
+    messageType?: StringFilter<"Message"> | string
     content?: StringFilter<"Message"> | string
     createdAt?: DateTimeFilter<"Message"> | Date | string
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
@@ -38130,12 +41107,14 @@ export namespace Prisma {
     senderType: string
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutSenderContactInput = {
@@ -38147,10 +41126,12 @@ export namespace Prisma {
     senderAgentId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutSenderContactInput = {
@@ -38160,6 +41141,68 @@ export namespace Prisma {
 
   export type MessageCreateManySenderContactInputEnvelope = {
     data: MessageCreateManySenderContactInput | MessageCreateManySenderContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContactPhoneCreateWithoutContactInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactPhoneUncheckedCreateWithoutContactInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactPhoneCreateOrConnectWithoutContactInput = {
+    where: ContactPhoneWhereUniqueInput
+    create: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput>
+  }
+
+  export type ContactPhoneCreateManyContactInputEnvelope = {
+    data: ContactPhoneCreateManyContactInput | ContactPhoneCreateManyContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContactShareCreateWithoutCanonicalContactInput = {
+    id?: string
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    message: MessageCreateNestedOneWithoutContactShareInput
+  }
+
+  export type ContactShareUncheckedCreateWithoutCanonicalContactInput = {
+    id?: string
+    messageId: string
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ContactShareCreateOrConnectWithoutCanonicalContactInput = {
+    where: ContactShareWhereUniqueInput
+    create: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput>
+  }
+
+  export type ContactShareCreateManyCanonicalContactInputEnvelope = {
+    data: ContactShareCreateManyCanonicalContactInput | ContactShareCreateManyCanonicalContactInput[]
     skipDuplicates?: boolean
   }
 
@@ -38193,6 +41236,139 @@ export namespace Prisma {
   export type MessageUpdateManyWithWhereWithoutSenderContactInput = {
     where: MessageScalarWhereInput
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderContactInput>
+  }
+
+  export type ContactPhoneUpsertWithWhereUniqueWithoutContactInput = {
+    where: ContactPhoneWhereUniqueInput
+    update: XOR<ContactPhoneUpdateWithoutContactInput, ContactPhoneUncheckedUpdateWithoutContactInput>
+    create: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput>
+  }
+
+  export type ContactPhoneUpdateWithWhereUniqueWithoutContactInput = {
+    where: ContactPhoneWhereUniqueInput
+    data: XOR<ContactPhoneUpdateWithoutContactInput, ContactPhoneUncheckedUpdateWithoutContactInput>
+  }
+
+  export type ContactPhoneUpdateManyWithWhereWithoutContactInput = {
+    where: ContactPhoneScalarWhereInput
+    data: XOR<ContactPhoneUpdateManyMutationInput, ContactPhoneUncheckedUpdateManyWithoutContactInput>
+  }
+
+  export type ContactPhoneScalarWhereInput = {
+    AND?: ContactPhoneScalarWhereInput | ContactPhoneScalarWhereInput[]
+    OR?: ContactPhoneScalarWhereInput[]
+    NOT?: ContactPhoneScalarWhereInput | ContactPhoneScalarWhereInput[]
+    id?: StringFilter<"ContactPhone"> | string
+    contactId?: StringFilter<"ContactPhone"> | string
+    phone?: StringFilter<"ContactPhone"> | string
+    label?: StringNullableFilter<"ContactPhone"> | string | null
+    isPrimary?: BoolFilter<"ContactPhone"> | boolean
+    createdAt?: DateTimeFilter<"ContactPhone"> | Date | string
+    updatedAt?: DateTimeFilter<"ContactPhone"> | Date | string
+  }
+
+  export type ContactShareUpsertWithWhereUniqueWithoutCanonicalContactInput = {
+    where: ContactShareWhereUniqueInput
+    update: XOR<ContactShareUpdateWithoutCanonicalContactInput, ContactShareUncheckedUpdateWithoutCanonicalContactInput>
+    create: XOR<ContactShareCreateWithoutCanonicalContactInput, ContactShareUncheckedCreateWithoutCanonicalContactInput>
+  }
+
+  export type ContactShareUpdateWithWhereUniqueWithoutCanonicalContactInput = {
+    where: ContactShareWhereUniqueInput
+    data: XOR<ContactShareUpdateWithoutCanonicalContactInput, ContactShareUncheckedUpdateWithoutCanonicalContactInput>
+  }
+
+  export type ContactShareUpdateManyWithWhereWithoutCanonicalContactInput = {
+    where: ContactShareScalarWhereInput
+    data: XOR<ContactShareUpdateManyMutationInput, ContactShareUncheckedUpdateManyWithoutCanonicalContactInput>
+  }
+
+  export type ContactShareScalarWhereInput = {
+    AND?: ContactShareScalarWhereInput | ContactShareScalarWhereInput[]
+    OR?: ContactShareScalarWhereInput[]
+    NOT?: ContactShareScalarWhereInput | ContactShareScalarWhereInput[]
+    id?: StringFilter<"ContactShare"> | string
+    messageId?: StringFilter<"ContactShare"> | string
+    canonicalContactId?: StringNullableFilter<"ContactShare"> | string | null
+    displayName?: StringFilter<"ContactShare"> | string
+    phones?: JsonFilter<"ContactShare">
+    primaryPhone?: StringNullableFilter<"ContactShare"> | string | null
+    email?: StringNullableFilter<"ContactShare"> | string | null
+    organization?: StringNullableFilter<"ContactShare"> | string | null
+    note?: StringNullableFilter<"ContactShare"> | string | null
+    createdAt?: DateTimeFilter<"ContactShare"> | Date | string
+  }
+
+  export type ContactCreateWithoutPhoneNumbersInput = {
+    id?: string
+    phone: string
+    name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutContactInput
+    messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutPhoneNumbersInput = {
+    id?: string
+    phone: string
+    name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutPhoneNumbersInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutPhoneNumbersInput, ContactUncheckedCreateWithoutPhoneNumbersInput>
+  }
+
+  export type ContactUpsertWithoutPhoneNumbersInput = {
+    update: XOR<ContactUpdateWithoutPhoneNumbersInput, ContactUncheckedUpdateWithoutPhoneNumbersInput>
+    create: XOR<ContactCreateWithoutPhoneNumbersInput, ContactUncheckedCreateWithoutPhoneNumbersInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutPhoneNumbersInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutPhoneNumbersInput, ContactUncheckedUpdateWithoutPhoneNumbersInput>
+  }
+
+  export type ContactUpdateWithoutPhoneNumbersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutPhoneNumbersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type AgentCreateWithoutBotExclusionsCreatedInput = {
@@ -38571,16 +41747,28 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactUncheckedCreateWithoutConversationsInput = {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactCreateOrConnectWithoutConversationsInput = {
@@ -38681,12 +41869,14 @@ export namespace Prisma {
     senderType: string
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutConversationInput = {
@@ -38698,10 +41888,12 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutConversationInput = {
@@ -38995,16 +42187,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutConversationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type DepartmentUpsertWithoutConversationsInput = {
@@ -39450,16 +42654,28 @@ export namespace Prisma {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
+    phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactUncheckedCreateWithoutMessageSendersInput = {
     id?: string
     phone: string
     name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
 
   export type ContactCreateOrConnectWithoutMessageSendersInput = {
@@ -39528,6 +42744,35 @@ export namespace Prisma {
   export type ConversationMediaCreateOrConnectWithoutMessageInput = {
     where: ConversationMediaWhereUniqueInput
     create: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
+  }
+
+  export type ContactShareCreateWithoutMessageInput = {
+    id?: string
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    canonicalContact?: ContactCreateNestedOneWithoutSharedCardsInput
+  }
+
+  export type ContactShareUncheckedCreateWithoutMessageInput = {
+    id?: string
+    canonicalContactId?: string | null
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ContactShareCreateOrConnectWithoutMessageInput = {
+    where: ContactShareWhereUniqueInput
+    create: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
   }
 
   export type ConversationUpsertWithoutMessagesInput = {
@@ -39671,16 +42916,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
+    phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutMessageSendersInput = {
     id?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
 
   export type ConversationMediaUpsertWithoutMessageInput = {
@@ -39750,6 +43007,197 @@ export namespace Prisma {
     lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactShareUpsertWithoutMessageInput = {
+    update: XOR<ContactShareUpdateWithoutMessageInput, ContactShareUncheckedUpdateWithoutMessageInput>
+    create: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
+    where?: ContactShareWhereInput
+  }
+
+  export type ContactShareUpdateToOneWithWhereWithoutMessageInput = {
+    where?: ContactShareWhereInput
+    data: XOR<ContactShareUpdateWithoutMessageInput, ContactShareUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ContactShareUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canonicalContact?: ContactUpdateOneWithoutSharedCardsNestedInput
+  }
+
+  export type ContactShareUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    canonicalContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCreateWithoutContactShareInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    messageType?: string
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+    senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateWithoutContactShareInput = {
+    id?: string
+    conversationId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    messageType?: string
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageCreateOrConnectWithoutContactShareInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutContactShareInput, MessageUncheckedCreateWithoutContactShareInput>
+  }
+
+  export type ContactCreateWithoutSharedCardsInput = {
+    id?: string
+    phone: string
+    name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutContactInput
+    messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutSharedCardsInput = {
+    id?: string
+    phone: string
+    name: string
+    email?: string | null
+    organization?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutSharedCardsInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutSharedCardsInput, ContactUncheckedCreateWithoutSharedCardsInput>
+  }
+
+  export type MessageUpsertWithoutContactShareInput = {
+    update: XOR<MessageUpdateWithoutContactShareInput, MessageUncheckedUpdateWithoutContactShareInput>
+    create: XOR<MessageCreateWithoutContactShareInput, MessageUncheckedCreateWithoutContactShareInput>
+    where?: MessageWhereInput
+  }
+
+  export type MessageUpdateToOneWithWhereWithoutContactShareInput = {
+    where?: MessageWhereInput
+    data: XOR<MessageUpdateWithoutContactShareInput, MessageUncheckedUpdateWithoutContactShareInput>
+  }
+
+  export type MessageUpdateWithoutContactShareInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutContactShareInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+  }
+
+  export type ContactUpsertWithoutSharedCardsInput = {
+    update: XOR<ContactUpdateWithoutSharedCardsInput, ContactUncheckedUpdateWithoutSharedCardsInput>
+    create: XOR<ContactCreateWithoutSharedCardsInput, ContactUncheckedCreateWithoutSharedCardsInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutSharedCardsInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutSharedCardsInput, ContactUncheckedUpdateWithoutSharedCardsInput>
+  }
+
+  export type ContactUpdateWithoutSharedCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutSharedCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ConversationCreateWithoutAssignmentsInput = {
@@ -40247,12 +43695,14 @@ export namespace Prisma {
     senderType: string
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutMediaInput = {
@@ -40265,9 +43715,11 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutMediaInput = {
@@ -40348,12 +43800,14 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutMediaInput = {
@@ -40366,9 +43820,11 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type ConversationUpsertWithoutMediaInput = {
@@ -43475,6 +46931,7 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -43720,12 +47177,14 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutSenderAgentInput = {
@@ -43737,10 +47196,12 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateManyWithoutSenderAgentInput = {
@@ -43752,6 +47213,7 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44291,9 +47753,31 @@ export namespace Prisma {
     senderAgentId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+  }
+
+  export type ContactPhoneCreateManyContactInput = {
+    id?: string
+    phone: string
+    label?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactShareCreateManyCanonicalContactInput = {
+    id?: string
+    messageId: string
+    displayName: string
+    phones: JsonNullValueInput | InputJsonValue
+    primaryPhone?: string | null
+    email?: string | null
+    organization?: string | null
+    note?: string | null
+    createdAt?: Date | string
   }
 
   export type ConversationUpdateWithoutContactInput = {
@@ -44372,12 +47856,14 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutSenderContactInput = {
@@ -44389,10 +47875,12 @@ export namespace Prisma {
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateManyWithoutSenderContactInput = {
@@ -44404,9 +47892,73 @@ export namespace Prisma {
     senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ContactPhoneUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactPhoneUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactPhoneUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactShareUpdateWithoutCanonicalContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutContactShareNestedInput
+  }
+
+  export type ContactShareUncheckedUpdateWithoutCanonicalContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactShareUncheckedUpdateManyWithoutCanonicalContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phones?: JsonNullValueInput | InputJsonValue
+    primaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyConversationInput = {
@@ -44418,6 +47970,7 @@ export namespace Prisma {
     senderContactId?: string | null
     senderNameSnapshot?: string | null
     senderDepartmentSnapshot?: string | null
+    messageType?: string
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
@@ -44502,12 +48055,14 @@ export namespace Prisma {
     senderType?: StringFieldUpdateOperationsInput | string
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutConversationInput = {
@@ -44519,10 +48074,12 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateManyWithoutConversationInput = {
@@ -44534,6 +48091,7 @@ export namespace Prisma {
     senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
     senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45349,6 +48907,10 @@ export namespace Prisma {
      */
     export type ContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ContactDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use ContactPhoneDefaultArgs instead
+     */
+    export type ContactPhoneArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ContactPhoneDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use BotExclusionDefaultArgs instead
      */
     export type BotExclusionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BotExclusionDefaultArgs<ExtArgs>
@@ -45360,6 +48922,10 @@ export namespace Prisma {
      * @deprecated Use MessageDefaultArgs instead
      */
     export type MessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = MessageDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ContactShareDefaultArgs instead
+     */
+    export type ContactShareArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ContactShareDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ConversationAssignmentDefaultArgs instead
      */

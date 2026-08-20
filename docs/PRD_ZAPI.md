@@ -131,3 +131,11 @@ A aplicação utiliza o storage temporário da Z-API, documentado com retenção
 ## 10.1 Identidade do remetente
 
 O webhook persiste `senderNameSnapshot` e `senderContactId` na mensagem recebida. Para grupos, o snapshot usa o participante (`participantPhone`/`participantLid` conforme o parser), nunca o nome do grupo como remetente. A assinatura de mensagens humanas enviadas pelo painel é resolvida pelo agente autenticado e seu departamento; nenhum `agentId` informado pelo navegador pode alterar a autoria.
+
+## 11. Contato compartilhado
+
+O exemplo oficial de `ReceivedCallback` da Z-API pode conter um objeto `contact` com `displayName`, `vCard` e `phones[]`. O webhook aceita também `vcard` como compatibilidade para versões que alterem apenas a capitalização do campo. O parser coleta `FN`, `N`, `TEL`, `EMAIL`, `ORG` e `NOTE`, remove duplicatas e normaliza os telefones para dígitos.
+
+O callback é confirmado rapidamente e a persistência usa `messageId` como `externalMessageId`. O conteúdo textual salvo é um resumo (`Contato compartilhado: <nome>`), enquanto os campos úteis ficam em `ContactShare`. O vCard bruto não é retornado ao frontend nem incluído em eventos Socket.IO. Se não houver nome nem telefone utilizável, o payload segue o comportamento legado sem criar cartão.
+
+No chat, o atendente autorizado vê o cartão e pode adicionar/editar o contato, abrir suas conversas ou criar uma conversa manual. O servidor verifica RBAC e escopo de departamento em todas as operações; a interface nunca escolhe o `agentId` nem usa o JID do grupo como telefone do contato.
