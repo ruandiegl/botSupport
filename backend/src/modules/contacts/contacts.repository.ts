@@ -141,7 +141,7 @@ export class ContactsRepository {
   }
 
   async listConversations(contactId: string, filters: { openOnly: boolean; page: number; limit: number }, scope?: ContactAccessScope) {
-    const where = { contactId, ...(filters.openOnly ? { status: { not: "CLOSED" } } : {}), ...conversationWhere(scope) };
+    const where = { contactId, ...(filters.openOnly ? { status: { notIn: ["CLOSED", "DRAFT"] } } : {}), ...conversationWhere(scope) };
     const [items, total] = await Promise.all([
       prisma.conversation.findMany({
         where,
@@ -162,7 +162,7 @@ export class ContactsRepository {
   findActiveConversation(contactId: string, phone?: string) {
     return prisma.conversation.findFirst({
       where: {
-        status: { not: "CLOSED" },
+        status: { notIn: ["CLOSED", "DRAFT"] },
         OR: [
           { contactId },
           ...(phone ? [{ contact: { OR: [{ phone }, { phoneNumbers: { some: { phone } } }] } }] : []),

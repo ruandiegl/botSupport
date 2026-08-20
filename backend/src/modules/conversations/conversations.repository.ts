@@ -9,10 +9,13 @@ export class ConversationsRepository {
     return prisma.conversation.create({
       data: {
         contactId,
-        status: "OPEN",
+        // A manually started conversation is only a draft until the first
+        // outbound message is successfully sent.  This keeps it out of the
+        // operational queue and prevents any bot/queue notification from
+        // reaching the customer before the attendant actually sends text.
+        status: "DRAFT",
         currentStep: "MANUAL",
         departmentId: departmentId ?? null,
-        queuedAt: now,
         lastActivityAt: now,
       },
       select: { id: true, status: true },
@@ -49,7 +52,10 @@ export class ConversationsRepository {
     }
 
     if (filters.openOnly && !where.status) {
-      where.status = { not: "CLOSED" };
+      where.status = { notIn: ["CLOSED", "DRAFT"] };
+    } else if (!where.status) {
+      // DRAFT conversations are private composer sessions, not tickets.
+      where.status = { not: "DRAFT" };
     }
     if (filters.unreadOnly) {
       where.messages = { some: { direction: "IN", readAt: null } };
@@ -82,7 +88,8 @@ export class ConversationsRepository {
     // large queue is ranked correctly before LIMIT/OFFSET (Prisma's lexical
     // status ordering would put BOT before QUEUED).
     if (isPaged) {
-      const conditions: Prisma.Sql[] = [Prisma.sql`TRUE`];
+      // Never expose a composer draft through operational list endpoints.
+      const conditions: Prisma.Sql[] = [Prisma.sql`c."status" <> 'DRAFT'`];
       if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
       if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
       if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
@@ -209,12 +216,14 @@ export class ConversationsRepository {
           },
         }
       : {};
-    const scopedWhere = { ...baseWhere, ...dateWhere };
+    // Drafts are intentionally excluded from every operational counter. They
+    // become OPEN only after the first outbound message is sent.
+    const scopedWhere = { ...baseWhere, ...dateWhere, status: { not: "DRAFT" } };
     const [byStatus, all, mine, unread] = await Promise.all([
       prisma.conversation.groupBy({ where: scopedWhere, by: ["status"], _count: { _all: true } }),
       prisma.conversation.count({ where: scopedWhere }),
       scope.agentId
-        ? prisma.conversation.count({ where: { ...scopedWhere, assignedAgentId: scope.agentId, status: { not: "CLOSED" } } })
+        ? prisma.conversation.count({ where: { ...scopedWhere, assignedAgentId: scope.agentId, status: { notIn: ["CLOSED", "DRAFT"] } } })
         : Promise.resolve(0),
       prisma.message.count({ where: { direction: "IN", readAt: null, conversation: scopedWhere } }),
     ]);
@@ -366,6 +375,21 @@ export class ConversationsRepository {
     });
     await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
     return message;
+  }
+
+  /** Promote a manual draft only after the outbound transport accepted the message. */
+  async activateDraft(id: string) {
+    const now = new Date();
+    const result = await prisma.conversation.updateMany({
+      where: { id, status: "DRAFT" },
+      data: {
+        status: "OPEN",
+        queuedAt: now,
+        lastActivityAt: now,
+        currentStep: "MANUAL",
+      },
+    });
+    return result.count > 0;
   }
 
   async markIncomingMessagesAsRead(conversationId: string) {

@@ -23,7 +23,7 @@ export function ContactConversationsDialog({ open, onOpenChange, contactId, cont
             {query.data.items.map((item) => (
               <div className="flex items-center justify-between gap-3 rounded-lg border bg-background p-3" key={item.id}>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2"><Badge variant="secondary">{item.status === "CLOSED" ? "Encerrada" : "Em aberto"}</Badge>{item.departmentName ? <span className="truncate text-xs text-muted-foreground">{item.departmentName}</span> : null}</div>
+                  <div className="flex items-center gap-2"><Badge variant="secondary">{item.status === "DRAFT" ? "Rascunho" : item.status === "CLOSED" ? "Encerrada" : item.status === "IN_PROGRESS" ? "Em atendimento" : "Em aberto"}</Badge>{item.departmentName ? <span className="truncate text-xs text-muted-foreground">{item.departmentName}</span> : null}</div>
                   <p className="mt-1 text-xs text-muted-foreground">Última atividade {new Date(item.lastActivityAt).toLocaleString("pt-BR")}</p>
                 </div>
                 <Button type="button" size="sm" variant="outline" onClick={() => { onOpenChange(false); setLocation(`/conversation/${item.id}`); }}><MessageCircle data-icon="inline-start" />Abrir</Button>

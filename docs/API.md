@@ -473,4 +473,4 @@ Cria uma conversa manual. `contactId` é opcional: quando omitido, o backend pro
 { "contactId": "uuid-opcional", "phone": "5511999999999", "departmentId": "uuid-opcional" }
 ```
 
-O endpoint exige `contacts:create`, evita duplicar conversas abertas e respeita o departamento do atendente. A conversa criada inicia em `OPEN` e aparece na fila para o próximo atendimento.
+O endpoint exige `contacts:create`, evita duplicar conversas abertas e respeita o departamento do atendente. A conversa criada inicia em `DRAFT` (rascunho privado): não aparece na fila, não altera os contadores e não gera notificações. Ela só é promovida para `OPEN` depois que a primeira mensagem do atendente é enviada com sucesso ao WhatsApp.

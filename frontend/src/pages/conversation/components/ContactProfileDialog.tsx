@@ -23,7 +23,7 @@ function displayPhone(phone: string) {
   return phone || "Telefone não informado";
 }
 
-const statusLabel: Record<string, string> = { OPEN: "Em aberto", IN_PROGRESS: "Em atendimento", CLOSED: "Encerrada" };
+const statusLabel: Record<string, string> = { DRAFT: "Rascunho", OPEN: "Em aberto", IN_PROGRESS: "Em atendimento", CLOSED: "Encerrada" };
 
 export function ContactProfileDialog({ open, onOpenChange, contactId, fallbackContact, canUpdate = false, onEdit, onViewConversations }: Props) {
   const [, setLocation] = useLocation();

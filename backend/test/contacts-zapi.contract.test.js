@@ -9,7 +9,9 @@ const prismaSchema = readFileSync(join(process.cwd(), "prisma", "schema.prisma")
 const migration = readFileSync(join(process.cwd(), "prisma", "migrations", "20260820100000_add_contact_messages_and_contact_book", "migration.sql"), "utf8");
 const conversationSchema = readFileSync(join(process.cwd(), "src", "modules", "conversations", "conversations.schemas.ts"), "utf8");
 const conversationService = readFileSync(join(process.cwd(), "src", "modules", "conversations", "conversations.service.ts"), "utf8");
+const conversationRepository = readFileSync(join(process.cwd(), "src", "modules", "conversations", "conversations.repository.ts"), "utf8");
 const zapiRepository = readFileSync(join(process.cwd(), "src", "modules", "zapi", "zapi.repository.ts"), "utf8");
+const contactsRepository = readFileSync(join(process.cwd(), "src", "modules", "contacts", "contacts.repository.ts"), "utf8");
 
 const common = {
   messageId: "zapi-contact-message-1",
@@ -74,4 +76,13 @@ test("nova conversa aceita somente telefone e prepara um contato mínimo", () =>
 test("contatos automáticos ficam distinguíveis dos contatos confirmados na agenda", () => {
   assert.match(prismaSchema, /isRegistered\s+Boolean\s+@default\(false\)\s+@map\("is_registered"\)/);
   assert.match(zapiRepository, /isRegistered:\s*false/);
+});
+
+test("iniciar conversa não abre chamado até o primeiro envio", () => {
+  assert.match(conversationRepository, /status:\s*"DRAFT"/);
+  assert.match(conversationRepository, /where:\s*\{\s*id,\s*status:\s*"DRAFT"\s*\}/);
+  assert.match(conversationService, /const wasDraft = conversation\.status === "DRAFT"/);
+  assert.match(conversationService, /eventType:\s*"NEW_QUEUE"/);
+  assert.match(contactsRepository, /status:\s*\{\s*notIn:\s*\["CLOSED",\s*"DRAFT"\]/);
+  assert.match(zapiRepository, /status:\s*\{\s*notIn:\s*\["CLOSED",\s*"DRAFT"\]/);
 });

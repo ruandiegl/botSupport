@@ -242,8 +242,8 @@ export class ConversationsService {
     try {
       const conversation = await conversationsRepository.createManualConversation(contact.id, data.departmentId);
       const formatted = await this.formatConversationRecord(await conversationsRepository.findById(conversation.id, { messageLimit: DEFAULT_MESSAGE_LIMIT }));
-      conversationEvents.emit("conversation_updated", { conversationId: conversation.id, status: conversation.status, eventType: "CONVERSATION_CREATED", departmentId: data.departmentId ?? null, assignedAgentId: null });
-      socketEmitter.emitToConversation(conversation.id, "conversation:updated", { conversationId: conversation.id, status: conversation.status });
+      // Do not emit a queue/notification event for a draft. The conversation
+      // is promoted when the first outbound message is actually delivered.
       return { kind: "OK" as const, conversation: formatted };
     } catch (error: any) {
       if (error?.code === "P2002") return { kind: "CONFLICT" as const, conversationId: undefined };
@@ -474,6 +474,7 @@ export class ConversationsService {
     const unsignedContent = cleanContent.replace(/^\*[^*\n]{1,200}:\*\s*/u, "").trim();
     if (!unsignedContent) return { kind: "EMPTY" as const };
     const content = `*${agentName} - ${deptName}:*\n\n${unsignedContent}`;
+    const wasDraft = conversation.status === "DRAFT";
 
     const message = await conversationsRepository.addMessage({
       conversationId: id,
@@ -488,6 +489,21 @@ export class ConversationsService {
     // Disparar via Z-API no WhatsApp real
     if (conversation.contact?.phone) {
       await zApiService.sendText(conversation.contact.phone, content);
+    }
+
+    if (wasDraft) {
+      const activated = await conversationsRepository.activateDraft(id);
+      if (activated) {
+        const current = await conversationsRepository.findAccessById(id);
+        conversationEvents.emit("conversation_updated", {
+          conversationId: id,
+          status: "OPEN",
+          eventType: "NEW_QUEUE",
+          departmentId: current?.departmentId ?? conversation.departmentId,
+          assignedAgentId: current?.assignedAgentId ?? conversation.assignedAgentId,
+          queuedAt: new Date(),
+        });
+      }
     }
 
     const formattedMsg = {

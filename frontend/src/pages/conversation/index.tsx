@@ -384,7 +384,7 @@ export default function ConversationPage() {
                 <Check size={14} /> Assumir
               </Button>
             )}
-            {conversation.status !== "CLOSED" && (
+            {conversation.status !== "CLOSED" && conversation.status !== "DRAFT" && (
               <Button
                 variant="outline"
                 size="sm"
@@ -395,7 +395,7 @@ export default function ConversationPage() {
                 <Archive size={14} /> Encerrar
               </Button>
             )}
-            {canDelegate && conversation.status !== "CLOSED" && (
+            {canDelegate && conversation.status !== "CLOSED" && conversation.status !== "DRAFT" && (
               <Button
                 variant="outline"
                 size="sm"

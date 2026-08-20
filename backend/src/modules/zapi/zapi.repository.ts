@@ -85,7 +85,7 @@ export class ZApiRepository {
     return prisma.conversation.findFirst({
       where: {
         contactId,
-        status: { not: "CLOSED" },
+        status: { notIn: ["CLOSED", "DRAFT"] },
       },
       include: {
         contact: true,

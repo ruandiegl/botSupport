@@ -17,7 +17,7 @@ export class DepartmentsRepository {
         },
         conversations: {
           where: {
-            status: { not: "CLOSED" },
+            status: { notIn: ["CLOSED", "DRAFT"] },
           },
           select: { id: true },
         },
