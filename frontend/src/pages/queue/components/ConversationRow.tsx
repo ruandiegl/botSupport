@@ -54,12 +54,7 @@ export function ConversationRow({
       </div>
       <div className="conversation-main">
         <div className="conversation-meta">
-          <div className="flex min-w-0 flex-col items-start gap-0.5">
-            <span className="conversation-name">{conversation.contact.name}</span>
-            <span className={`text-[10px] leading-none ${conversation.contact.isRegistered === false ? "text-amber-700" : "text-emerald-600"}`}>
-              {conversation.contact.isRegistered === false ? "Contato não cadastrado" : "Contato cadastrado"}
-            </span>
-          </div>
+          <span className="conversation-name">{conversation.contact.name}</span>
           <span className="conversation-phone">{conversation.contact.phone}</span>
         </div>
         <div className="last-message">{conversation.lastMessage || "Sem mensagens recentes"}</div>

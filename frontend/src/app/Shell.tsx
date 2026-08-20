@@ -119,22 +119,49 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   const queueCount = conversationSummary?.counts?.open ?? conversationSummary?.items?.filter((item) => item.status === "OPEN").length ?? 0;
 
-  const nav = [
-    { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
-    { href: "/my-conversations", label: "Meus atendimentos", icon: Headphones },
-    { href: "/contacts", label: "Contatos", icon: UserRound },
-  ].filter((item) => canViewScreen(item.href));
-
-  const admin = [
-    { href: "/admin/departments", label: "Departamentos", icon: LayoutDashboard },
-    { href: "/admin/agents", label: "Atendentes", icon: Users },
-    { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
-    { href: "/admin/labels", label: "Etiquetas", icon: Tags },
-    { href: "/admin/bot-exclusions", label: "Contatos ignorados pelo bot", icon: ShieldOff },
-    { href: "/admin/flow", label: "Fluxo do bot", icon: Bot },
-    { href: "/admin/zapi", label: "Conexão Z-API", icon: Radio },
-    { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
-  ].filter((item) => canViewScreen(item.href));
+  const navSections = [
+    {
+      label: "Mensagens",
+      items: [
+        { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
+        { href: "/my-conversations", label: "Meus atendimentos", icon: Headphones },
+        { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
+      ],
+    },
+    {
+      label: "Atendimento",
+      items: [
+        { href: "/contacts", label: "Contatos", icon: UserRound },
+        { href: "/admin/labels", label: "Etiquetas", icon: Tags },
+      ],
+    },
+    {
+      label: "Administração",
+      items: [
+        { href: "/admin/departments", label: "Departamentos", icon: LayoutDashboard },
+        { href: "/admin/agents", label: "Atendentes", icon: Users },
+        { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
+      ],
+    },
+    {
+      label: "Automação",
+      items: [
+        { href: "/admin/flow", label: "Fluxo do bot", icon: Bot },
+        { href: "/admin/bot-exclusions", label: "Contatos ignorados pelo bot", icon: ShieldOff },
+      ],
+    },
+    {
+      label: "Integrações",
+      items: [
+        { href: "/admin/zapi", label: "Conexão Z-API", icon: Radio },
+      ],
+    },
+  ]
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => canViewScreen(item.href)),
+    }))
+    .filter((section) => section.items.length > 0);
 
   const getPageTitle = () => {
     if (location === "/") return "Fila de atendimento";
@@ -177,24 +204,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <div className="app-shell">
         <aside className="sidebar" style={{ display: mobileOpen ? "flex" : undefined }}>
           <Brand />
-          <div className="nav-label">Atendimento</div>
-          {nav.map(({ href, label, icon: Icon, badge }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMobileOpen(false)}
-              className={`nav-item ${location === href ? "active" : ""}`}
-              data-testid={`link-${label.toLowerCase().replace(/ /g, "-")}`}
-            >
-              <Icon /> <span>{label}</span>
-              {badge ? <span className="nav-badge">{badge}</span> : null}
-            </Link>
-          ))}
-
-          {admin.length > 0 && (
-            <>
-              <div className="nav-label">Administração</div>
-              {admin.map(({ href, label, icon: Icon }) => (
+          {navSections.map(({ label: sectionLabel, items }) => (
+            <section className="nav-section" key={sectionLabel} aria-label={sectionLabel}>
+              <div className="nav-label">{sectionLabel}</div>
+              {items.map(({ href, label, icon: Icon, badge }) => (
                 <Link
                   key={href}
                   href={href}
@@ -203,10 +216,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   data-testid={`link-${label.toLowerCase().replace(/ /g, "-")}`}
                 >
                   <Icon /> <span>{label}</span>
+                  {badge ? <span className="nav-badge">{badge}</span> : null}
                 </Link>
               ))}
-            </>
-          )}
+            </section>
+          ))}
 
           <div className="sidebar-spacer" />
           <div className="nav-item">
