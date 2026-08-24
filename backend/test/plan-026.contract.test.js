@@ -78,6 +78,10 @@ test("menu agrupado mantém a categoria no transporte e no fallback textual", ()
   assert.equal(payload.optionList.options[0].description, "InfoAudio · Player do AR");
   const fallback = formatInteractiveFallback("Escolha uma opção", options);
   assert.match(fallback, /InfoAudio\n1\. Player — Player do AR[\s\S]*InfoRadio\n3\. Manager — Opec e financeiro/);
+  // A Z-API may acknowledge the experimental `sections` field without
+  // rendering its rows. Delivery therefore stays on the documented flat
+  // optionList contract even when the editor has categories.
+  assert.match(zapiSource, /const preferSections = false/);
 });
 
 test("menu agrupado envia cabeçalhos de categoria e linhas aninhadas", () => {
@@ -91,4 +95,5 @@ test("menu agrupado envia cabeçalhos de categoria e linhas aninhadas", () => {
   assert.deepEqual(payload.optionList.sections[0].rows.map((row) => row.title), ["Player", "Central de Aplicativos"]);
   assert.equal(payload.optionList.sections[0].rows[0].description, "Player do AR");
   assert.equal(payload.optionList.sections[1].rows[0].description, "Opec e financeiro");
+  assert.deepEqual(payload.optionList.options.map((row) => row.id), ["player", "terminal", "manager"]);
 });

@@ -524,6 +524,14 @@ type OptionListSection = {
  */
 export function buildGroupedOptionListPayload(phone: string, message: string, options: BotOption[]) {
   const sectionMap = new Map<string, OptionListSection>();
+  const flatOptions = options.map((option, index) => {
+    const description = displayOptionDescription(option);
+    return {
+      id: option.optionKey || String(index + 1),
+      title: option.label,
+      ...(description ? { description } : {}),
+    };
+  });
 
   for (const [index, option] of options.entries()) {
     const sectionTitle = option.categoryLabel?.trim() || "Geral";
@@ -548,6 +556,10 @@ export function buildGroupedOptionListPayload(phone: string, message: string, op
       title: "Opções disponíveis",
       buttonLabel: "Ver opções",
       sections: Array.from(sectionMap.values()),
+      // Z-API's documented contract is still `options[]`. Keeping it beside
+      // sections means instances that silently ignore the experimental field
+      // still render a selectable list instead of an empty message.
+      options: flatOptions,
     },
   };
 }
@@ -932,8 +944,20 @@ export class ZApiService {
     const configured = String(process.env.ZAPI_INTERACTIVE_MODE ?? "auto").trim().toLowerCase();
     const hasCategoryContext = options.some((option) => Boolean(option.categoryLabel));
     const useOptionList = configured === "option" || hasCategoryContext || (configured === "auto" && options.length > 3);
-    const groupedTransport = String(process.env.ZAPI_GROUPED_MENU_TRANSPORT ?? "sections").trim().toLowerCase();
-    const preferSections = hasCategoryContext && groupedTransport !== "flat";
+    // The public Z-API contract documents `optionList.options[]`, but does
+    // not document the experimental `sections[]` field. Some instances
+    // accept an unknown field with HTTP 200 and then render only the prompt,
+    // which is the failure mode of a category's second menu. Always keep the
+    // documented flat list on the delivery path so a configured category
+    // cannot silently lose its options.
+    const groupedTransport = String(process.env.ZAPI_GROUPED_MENU_TRANSPORT ?? "flat").trim().toLowerCase();
+    const preferSections = false;
+    if (hasCategoryContext && groupedTransport === "sections") {
+      logger.warn(
+        { optionCount: options.length },
+        "Transporte sections ignorado: a Z-API documenta apenas optionList.options; usando lista plana compatível",
+      );
+    }
     return useOptionList
       ? this.sendOptionList(phone, message, options, preferSections)
       : this.sendButtonList(phone, message, options);
@@ -1480,15 +1504,19 @@ export class ZApiService {
         ),
       });
       const data = (await response.json().catch(() => ({}))) as any;
-      if (!response.ok || data?.error || data?.success === false) {
+      const hasProviderMessageId = Boolean(data?.messageId || data?.zaapId || data?.id);
+      if (!response.ok || data?.error || data?.success === false || !hasProviderMessageId) {
         if (preferSections) {
           logger.warn(
-            { status: response.status, optionCount: options.length },
+            { status: response.status, optionCount: options.length, hasProviderMessageId },
             "Seções do menu Z-API indisponíveis; tentando lista plana compatível",
           );
           return this.sendOptionList(phone, message, options, false);
         }
-        logger.warn({ status: response.status, optionCount: options.length }, "Lista de opções Z-API indisponível; usando fallback textual");
+        logger.warn(
+          { status: response.status, optionCount: options.length, hasProviderMessageId },
+          "Lista de opções Z-API indisponível ou sem confirmação de entrega; usando fallback textual",
+        );
         return this.sendText(phone, formatInteractiveFallback(message, options));
       }
       logger.info(
