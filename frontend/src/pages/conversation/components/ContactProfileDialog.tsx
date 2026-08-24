@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { Clock3, Contact as ContactIcon, MessageCircle, Pencil, Phone } from "lucide-react";
+import { Clock3, Contact as ContactIcon, MapPin, MessageCircle, Pencil, Phone, Radio } from "lucide-react";
 import type { Contact } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -50,8 +50,16 @@ export function ContactProfileDialog({ open, onOpenChange, contactId, fallbackCo
             <p className="truncate text-base font-semibold">{name}</p>
             <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground"><Phone data-icon="inline-start" />{displayPhone(phone)}</p>
             <Badge className="mt-3" variant={isRegistered ? "secondary" : "outline"}>{isRegistered ? "Contato cadastrado" : "Contato não cadastrado"}</Badge>
+            {contact?.profileConfirmedAt ? <Badge className="ml-2 mt-3" variant="outline">Dados confirmados</Badge> : null}
           </div>
         </div>
+
+        {contact && (contact.station || contact.organization || contact.city || contact.state) ? (
+          <div className="grid gap-2 rounded-xl border bg-background p-3 text-sm sm:grid-cols-2">
+            <p className="flex items-center gap-2"><Radio className="text-muted-foreground" data-icon="inline-start" /><span><span className="block text-xs text-muted-foreground">Emissora</span>{contact.station || contact.organization || "Não informada"}</span></p>
+            <p className="flex items-center gap-2"><MapPin className="text-muted-foreground" data-icon="inline-start" /><span><span className="block text-xs text-muted-foreground">Cidade/UF</span>{[contact.city, contact.state].filter(Boolean).join("/") || "Não informada"}</span></p>
+          </div>
+        ) : null}
 
         <section className="space-y-2">
           <div className="flex items-center justify-between gap-3">

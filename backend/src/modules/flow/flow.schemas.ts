@@ -20,13 +20,30 @@ export const FlowDecisionOptionSchema = z.object({
   label: z.string().trim().min(1, "Rótulo é obrigatório").max(80),
   description: z.string().trim().max(120).optional(),
 });
+export const FlowDecisionGroupSchema = z.object({
+  categoryKey: z.string().min(1).max(100).regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/, "Identificador de categoria inválido"),
+  label: z.string().trim().min(1, "Nome da categoria é obrigatório").max(80),
+  description: z.string().trim().max(120).optional(),
+  items: z.array(FlowDecisionOptionSchema).min(1, "Adicione ao menos um item à categoria.").max(20),
+});
+export const KnownContactSummarySchema = z.object({
+  enabled: z.boolean().default(false),
+  template: z.string().trim().min(1).max(4000),
+  confirmLabel: z.string().trim().min(1).max(80).default("Sim, estão certos"),
+  updateLabel: z.string().trim().min(1).max(80).default("Atualizar meus dados"),
+  updateIntro: z.string().trim().min(1).max(4000).default("Vamos atualizar seu cadastro. Informe seu nome completo."),
+});
 export const FlowNodeConfigSchema = z.object({
   parentRouteId: z.string().uuid().optional(),
+  parentDecisionId: z.string().uuid().optional(),
   responseKey: z.string().min(1).max(100).optional(),
   optionKey: z.string().min(1).max(100).optional(),
   legacyOptionIndex: z.number().int().min(0).optional(),
-  decisionScope: z.enum(["ROOT", "ROUTE"]).optional(),
+  decisionScope: z.enum(["ROOT", "ROUTE", "CATEGORY", "ITEM", "CONTACT_CONFIRMATION"]).optional(),
+  decisionMode: z.enum(["FLAT", "CATEGORIES"]).optional(),
   decisionOptions: z.array(FlowDecisionOptionSchema).min(1).max(20).optional(),
+  decisionGroups: z.array(FlowDecisionGroupSchema).min(1).max(20).optional(),
+  knownContactSummary: KnownContactSummarySchema.optional(),
   buttonMessage: z.string().max(4000).optional(),
 }).passthrough();
 export const FlowNodeInputSchema = z.object({

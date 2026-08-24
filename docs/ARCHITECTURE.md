@@ -98,6 +98,12 @@ O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BO
 
 O adaptador escolhe `send-button-list` ou `send-option-list` por `ZAPI_INTERACTIVE_MODE=auto|button|option`. Em `auto`, listas maiores que três opções usam `send-option-list`; erros retornam para texto numerado. Listas interativas são restritas à conversa privada e nunca são enviadas ao JID do grupo.
 
+### Categorias, itens e resumo de contato conhecido
+
+Decisões secundárias podem usar `config.decisionMode=CATEGORIES` e armazenar `decisionGroups[]`. O transporte continua plano: primeiro envia as categorias e, após a seleção, envia somente os itens do grupo escolhido. O executor mantém o mesmo nó enquanto aguarda o item, persiste `selectedCategoryKey`/`selectedItemKey` em `flowContext` e só então segue a transição da categoria. Revisões antigas com `decisionOptions` permanecem inalteradas.
+
+O nó `ENTRY` pode habilitar `knownContactSummary`. Em uma conversa privada nova de um `Contact.isRegistered=true`, o executor renderiza somente nome, emissora/organização e cidade/UF, oferecendo confirmação ou atualização guiada. O resumo não é executado em grupos e pode ser desligado por `CONTACT_SUMMARY_ENABLED=false`. Os campos `station`, `city`, `state` e `profileConfirmedAt` são aditivos; `organization` continua disponível para compatibilidade.
+
 ## 6. Colaboração, identidade e delegação
 
 Mensagens mantêm autoria independente da atribuição da conversa. `Message.senderAgentId` e os snapshots `senderNameSnapshot`/`senderDepartmentSnapshot` representam respostas do painel; `senderContactId`/`senderNameSnapshot` representam mensagens externas, inclusive participantes de grupos. O formatter nunca usa `Conversation.assignedAgent` para reescrever o histórico.

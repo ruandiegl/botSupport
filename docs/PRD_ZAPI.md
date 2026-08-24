@@ -101,6 +101,14 @@ O método de envio manual do painel permanece separado e não consulta essa list
 
 Uma rota pode conter um nó `DECISION` secundário antes da triagem ou do encaminhamento. As opções ficam na revisão publicada, usam IDs estáveis e registram `selectedIssueKey`/`selectedIssueLabel` sem substituir `teamName`. Uma seleção válida avança imediatamente; uma resposta inválida repete apenas o submenu atual sob o cooldown. Revisões sem submenu continuam compatíveis.
 
+### 8.4 Categorias e itens
+
+O submenu pode operar como lista simples ou em duas etapas. No modo hierárquico, a primeira lista contém categorias (por exemplo, `InfoAudio` e `InfoRadio`) e a segunda contém apenas os itens da categoria escolhida (por exemplo, `Player` e `Logger`). Categorias e itens usam IDs estáveis; descrições vazias são omitidas do payload. O backend resolve respostas por ID, índice ou rótulo normalizado e mantém `referenceMessageId` para impedir avanço por uma resposta antiga.
+
+### 8.5 Resumo de contato conhecido
+
+Em conversa privada nova, contatos cadastrados podem receber um resumo configurável com nome, emissora e cidade/UF antes da saudação normal. As escolhas “confirmar” e “atualizar” são tratadas como opções do fluxo e a atualização é coletada em etapas. O recurso não usa a agenda da Z-API como fonte de emissora/localidade, não expõe notas internas e não é enviado em grupos. `CONTACT_SUMMARY_ENABLED=false` desliga o comportamento sem remover os dados cadastrados.
+
 ---
 
 ## 9. Modelo de Dados (`schema.prisma`)

@@ -121,9 +121,10 @@ export default function ContactsPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col gap-2">
-                    {contact.organization ? <p className="flex items-center gap-2 truncate text-sm"><Building2 className="text-muted-foreground" />{contact.organization}</p> : null}
+                    {contact.station || contact.organization ? <p className="flex items-center gap-2 truncate text-sm"><Building2 className="text-muted-foreground" />{contact.station || contact.organization}</p> : null}
                     {contact.email ? <p className="flex items-center gap-2 truncate text-sm"><Mail className="text-muted-foreground" />{contact.email}</p> : null}
-                    {!contact.organization && !contact.email ? <p className="text-sm text-muted-foreground">Sem informações complementares.</p> : null}
+                    {contact.city || contact.state ? <p className="text-sm text-muted-foreground">{[contact.city, contact.state].filter(Boolean).join("/")}</p> : null}
+                    {!contact.station && !contact.organization && !contact.email && !contact.city ? <p className="text-sm text-muted-foreground">Sem informações complementares.</p> : null}
                   </CardContent>
                   <CardFooter className="flex flex-wrap justify-end gap-1">
                     <Button variant="ghost" size="sm" onClick={() => setViewing(contact)}><Eye data-icon="inline-start" />Visualizar</Button>

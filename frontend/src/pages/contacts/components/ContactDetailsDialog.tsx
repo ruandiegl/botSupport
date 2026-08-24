@@ -1,4 +1,4 @@
-import { Building2, Mail, MessageCircle, Pencil, Phone, UserRound } from "lucide-react";
+import { Building2, Mail, MapPin, MessageCircle, Pencil, Phone, Radio, UserRound } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export function ContactDetailsDialog({ contact, open, onOpenChange, canEdit, can
             <Avatar className="size-12"><AvatarFallback>{contact?.initials ?? "CT"}</AvatarFallback></Avatar>
             <div className="min-w-0">
               <DialogTitle className="truncate">{contact?.name ?? "Contato"}</DialogTitle>
-              <DialogDescription>Dados cadastrados na agenda de atendimento.</DialogDescription>
+              <DialogDescription className="flex flex-wrap items-center gap-2">Dados cadastrados na agenda de atendimento.{contact?.profileConfirmedAt ? <Badge variant="secondary">Confirmado pelo contato</Badge> : null}</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -48,6 +48,8 @@ export function ContactDetailsDialog({ contact, open, onOpenChange, canEdit, can
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex items-start gap-2"><Mail className="mt-0.5 text-muted-foreground" /><div><p className="text-xs text-muted-foreground">E-mail</p><p className="break-all text-sm">{contact.email || "Não informado"}</p></div></div>
             <div className="flex items-start gap-2"><Building2 className="mt-0.5 text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Organização</p><p className="text-sm">{contact.organization || "Não informada"}</p></div></div>
+            <div className="flex items-start gap-2"><Radio className="mt-0.5 text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Emissora</p><p className="text-sm">{contact.station || "Não informada"}</p></div></div>
+            <div className="flex items-start gap-2"><MapPin className="mt-0.5 text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Cidade/UF</p><p className="text-sm">{[contact.city, contact.state].filter(Boolean).join("/") || "Não informada"}</p></div></div>
           </div>
           <Separator />
           <div className="flex items-start gap-2"><UserRound className="mt-0.5 text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Observações</p><p className="whitespace-pre-wrap text-sm">{contact.notes || "Nenhuma observação cadastrada."}</p></div></div>

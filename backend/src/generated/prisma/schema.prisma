@@ -57,7 +57,6 @@ model Agent {
   publishedFlowRevisions  FlowRevision[]           @relation("FlowRevisionPublisher")
   notifications           Notification[]
   notificationPreference  NotificationPreference?
-  businessHoursPolicies   BusinessHoursPolicy[]
   addedConversationLabels ConversationLabel[]
   botExclusionsCreated    BotExclusion[]           @relation("BotExclusionCreatedBy")
   botExclusionsUpdated    BotExclusion[]           @relation("BotExclusionUpdatedBy")
@@ -79,19 +78,23 @@ model RolePermission {
 }
 
 model Contact {
-  id             String         @id @default(uuid())
-  phone          String         @unique
-  name           String
-  isRegistered   Boolean        @default(false) @map("is_registered")
-  email          String?
-  organization   String?
-  notes          String?
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-  conversations  Conversation[]
-  messageSenders Message[]      @relation("MessageSenderContact")
-  phoneNumbers   ContactPhone[] @relation("ContactPhoneOwner")
-  sharedCards    ContactShare[] @relation("ContactShareCanonicalContact")
+  id                 String         @id @default(uuid())
+  phone              String         @unique
+  name               String
+  isRegistered       Boolean        @default(false) @map("is_registered")
+  email              String?
+  organization       String?
+  station            String?
+  city               String?
+  state              String?        @db.VarChar(2)
+  profileConfirmedAt DateTime?      @map("profile_confirmed_at") @db.Timestamptz
+  notes              String?
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  conversations      Conversation[]
+  messageSenders     Message[]      @relation("MessageSenderContact")
+  phoneNumbers       ContactPhone[] @relation("ContactPhoneOwner")
+  sharedCards        ContactShare[] @relation("ContactShareCanonicalContact")
 
   @@map("gtf_contacts")
 }
@@ -365,8 +368,6 @@ model BusinessHoursPolicy {
   intervals              BusinessHoursInterval[]
   exceptions             BusinessHoursException[]
   notices                BusinessHoursNotice[]
-  Agent                  Agent?                   @relation(fields: [agentId], references: [id])
-  agentId                String?
 
   @@unique([zApiConfigId, departmentId])
   @@index([zApiConfigId, enabled])

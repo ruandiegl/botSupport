@@ -24,6 +24,8 @@ export class ContactsRepository {
           { phoneNumbers: { some: { phone: { contains: filters.q } } } },
           { email: { contains: filters.q, mode: "insensitive" as const } },
           { organization: { contains: filters.q, mode: "insensitive" as const } },
+          { station: { contains: filters.q, mode: "insensitive" as const } },
+          { city: { contains: filters.q, mode: "insensitive" as const } },
         ] }
       : {};
     const where = { ...query, ...contactWhere(scope) };
@@ -61,7 +63,7 @@ export class ContactsRepository {
     });
   }
 
-  create(data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null; isRegistered?: boolean }) {
+  create(data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; station?: string | null; city?: string | null; state?: string | null; notes?: string | null; isRegistered?: boolean }) {
     const primary = data.phones.find((item) => item.isPrimary) ?? data.phones[0];
     return prisma.contact.create({
       data: {
@@ -70,6 +72,9 @@ export class ContactsRepository {
         isRegistered: data.isRegistered ?? true,
         email: data.email ?? null,
         organization: data.organization ?? null,
+        station: data.station ?? data.organization ?? null,
+        city: data.city ?? null,
+        state: data.state ?? null,
         notes: data.notes ?? null,
         phoneNumbers: { create: data.phones.map((item) => ({ phone: item.phone, label: item.label ?? null, isPrimary: item.phone === primary.phone })) },
       },
@@ -78,7 +83,7 @@ export class ContactsRepository {
   }
 
   async createWithShare(
-    data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null; isRegistered?: boolean },
+    data: { name: string; phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; station?: string | null; city?: string | null; state?: string | null; notes?: string | null; isRegistered?: boolean },
     shareId: string,
     primaryPhone: string,
   ) {
@@ -101,6 +106,9 @@ export class ContactsRepository {
           isRegistered: data.isRegistered ?? true,
           email: data.email ?? null,
           organization: data.organization ?? null,
+          station: data.station ?? data.organization ?? null,
+          city: data.city ?? null,
+          state: data.state ?? null,
           notes: data.notes ?? null,
           phoneNumbers: { create: data.phones.map((item) => ({ phone: item.phone, label: item.label ?? null, isPrimary: item.phone === primary.phone })) },
         },
@@ -113,7 +121,7 @@ export class ContactsRepository {
     });
   }
 
-  async update(id: string, data: { name?: string; phones?: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; notes?: string | null }) {
+  async update(id: string, data: { name?: string; phones?: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>; email?: string | null; organization?: string | null; station?: string | null; city?: string | null; state?: string | null; notes?: string | null }) {
     return prisma.$transaction(async (tx) => {
       const phoneData = data.phones;
       const primary = phoneData ? (phoneData.find((item) => item.isPrimary) ?? phoneData[0]) : null;
@@ -124,6 +132,9 @@ export class ContactsRepository {
           ...(data.name !== undefined ? { name: data.name } : {}),
           ...(data.email !== undefined ? { email: data.email } : {}),
           ...(data.organization !== undefined ? { organization: data.organization } : {}),
+          ...(data.station !== undefined ? { station: data.station } : {}),
+          ...(data.city !== undefined ? { city: data.city } : {}),
+          ...(data.state !== undefined ? { state: data.state } : {}),
           ...(data.notes !== undefined ? { notes: data.notes } : {}),
           ...(primary ? { phone: primary.phone } : {}),
         },

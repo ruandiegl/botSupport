@@ -33,6 +33,9 @@ export function ContactFormDialog({ open, onOpenChange, contact, share, isPendin
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [organization, setOrganization] = useState("");
+  const [station, setStation] = useState("");
+  const [city, setCity] = useState("");
+  const [stateCode, setStateCode] = useState("");
   const [notes, setNotes] = useState("");
   const [phones, setPhones] = useState<Array<{ phone: string; label: string; isPrimary: boolean }>>([]);
   const [formError, setFormError] = useState<string | null>(null);
@@ -45,6 +48,9 @@ export function ContactFormDialog({ open, onOpenChange, contact, share, isPendin
     setName(contact?.name ?? share?.displayName ?? "");
     setEmail(contact?.email ?? share?.email ?? "");
     setOrganization(contact?.organization ?? share?.organization ?? "");
+    setStation(contact?.station ?? contact?.organization ?? share?.organization ?? "");
+    setCity(contact?.city ?? "");
+    setStateCode(contact?.state ?? "");
     setNotes(contact?.notes ?? share?.note ?? "");
     setPhones(initialPhones.length ? initialPhones : [{ phone: "", label: "WhatsApp", isPrimary: true }]);
     setFormError(null);
@@ -59,7 +65,8 @@ export function ContactFormDialog({ open, onOpenChange, contact, share, isPendin
     if (!name.trim()) { setFormError("Informe o nome do contato."); return; }
     if (!cleanPhones.length || cleanPhones.some((item) => item.phone.length < 8)) { setFormError("Informe ao menos um telefone válido."); return; }
     if (new Set(cleanPhones.map((item) => item.phone)).size !== cleanPhones.length) { setFormError("Não repita o mesmo telefone."); return; }
-    onSubmit({ name: name.trim(), phones: cleanPhones, email: email.trim() || null, organization: organization.trim() || null, notes: notes.trim() || null, ...(share && !contact ? { contactShareId: share.id } : {}) });
+    if (stateCode.trim() && stateCode.trim().length !== 2) { setFormError("Informe a UF com duas letras."); return; }
+    onSubmit({ name: name.trim(), phones: cleanPhones, email: email.trim() || null, organization: organization.trim() || null, station: station.trim() || null, city: city.trim() || null, state: stateCode.trim().toUpperCase() || null, notes: notes.trim() || null, ...(share && !contact ? { contactShareId: share.id } : {}) });
   };
 
   return (
@@ -96,6 +103,20 @@ export function ContactFormDialog({ open, onOpenChange, contact, share, isPendin
             <FieldLabel htmlFor="contact-organization">Organização</FieldLabel>
             <Input id="contact-organization" value={organization} onChange={(event) => setOrganization(event.target.value)} placeholder="Empresa ou emissora" />
           </Field>
+          <Field>
+            <FieldLabel htmlFor="contact-station">Emissora</FieldLabel>
+            <Input id="contact-station" value={station} onChange={(event) => setStation(event.target.value)} placeholder="Ex.: FM 88 MHz" />
+          </Field>
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_88px]">
+            <Field>
+              <FieldLabel htmlFor="contact-city">Cidade</FieldLabel>
+              <Input id="contact-city" value={city} onChange={(event) => setCity(event.target.value)} placeholder="Ex.: Volta Redonda" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="contact-state">UF</FieldLabel>
+              <Input id="contact-state" value={stateCode} onChange={(event) => setStateCode(event.target.value.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase())} placeholder="RJ" maxLength={2} />
+            </Field>
+          </div>
           <Field>
             <FieldLabel htmlFor="contact-notes">Observações</FieldLabel>
             <Textarea id="contact-notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Observações internas" rows={3} />

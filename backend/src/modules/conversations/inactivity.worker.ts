@@ -12,6 +12,7 @@
 
 import { conversationsRepository } from "./conversations.repository.js";
 import { zApiService } from "../zapi/zapi.service.js";
+import { zApiRepository } from "../zapi/zapi.repository.js";
 import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import { logger } from "../../shared/logger.js";
@@ -41,6 +42,33 @@ function buildCloseMessage(conversationId: string): string {
     `Quando precisar de ajuda novamente, basta nos enviar uma mensagem! ` +
     `Estamos sempre aqui para ajudar. 🤝`
   );
+}
+
+function deliverySucceeded(delivery: any): boolean {
+  return Boolean(delivery && !delivery.error && !delivery.blocked);
+}
+
+/**
+ * Persist an automatic message before it is delivered and publish the same
+ * shape used by the regular webhook/message flow.  The worker used to send
+ * these texts only through Z-API, so they were visible to the customer but
+ * missing from the conversation history in the operator UI.
+ */
+function publishStoredBotMessage(conversationId: string, stored: { id: string; content: string; messageType: string; createdAt: Date }) {
+  conversationEvents.emit("message_received", {
+    conversationId,
+    messageId: stored.id,
+    message: {
+      id: stored.id,
+      direction: "OUT",
+      senderType: "BOT",
+      senderName: "GTF-Bot",
+      content: stored.content,
+      messageType: stored.messageType,
+      createdAt: stored.createdAt.toISOString(),
+      media: null,
+    },
+  });
 }
 
 // ─── Worker Logic ─────────────────────────────────────────────────────────────
@@ -73,13 +101,30 @@ export class InactivityWorker {
       if (!phone) continue;
 
       const message = buildWarningMessage(conv.id);
+      let storedMessage: Awaited<ReturnType<typeof zApiRepository.addMessage>> | null = null;
       try {
+        // Keep the message in the ticket history as soon as the delivery
+        // attempt starts.  Failed/blocked deliveries are removed below.
+        storedMessage = await zApiRepository.addMessage({
+          conversationId: conv.id,
+          direction: "OUT",
+          senderType: "BOT",
+          messageType: "TEXT",
+          content: message,
+        });
         const delivery = await zApiService.sendBotText(phone, message);
         if (delivery && "blocked" in delivery && delivery.blocked) {
+          await zApiRepository.deleteMessage(storedMessage.id);
           logger.info({ conversationId: conv.id }, "inactivity-worker: warning suppressed by bot exclusion");
           continue;
         }
+        if (!deliverySucceeded(delivery)) {
+          await zApiRepository.deleteMessage(storedMessage.id);
+          logger.error({ conversationId: conv.id, error: delivery?.error || "integration_inactive" }, "inactivity-worker: warning delivery failed");
+          continue;
+        }
         await conversationsRepository.markWarningSent(conv.id);
+        publishStoredBotMessage(conv.id, storedMessage);
         logger.info({ conversationId: conv.id }, "inactivity-worker: warning sent");
 
         // Notify frontend in real-time
@@ -108,9 +153,22 @@ export class InactivityWorker {
         await conversationsRepository.close(conv.id, "AUTO_TIMEOUT");
 
         const message = buildCloseMessage(conv.id);
+        const storedMessage = await zApiRepository.addMessage({
+          conversationId: conv.id,
+          direction: "OUT",
+          senderType: "BOT",
+          messageType: "TEXT",
+          content: message,
+        });
         const delivery = await zApiService.sendBotText(phone, message);
         if (delivery && "blocked" in delivery && delivery.blocked) {
+          await zApiRepository.deleteMessage(storedMessage.id);
           logger.info({ conversationId: conv.id }, "inactivity-worker: close message suppressed by bot exclusion");
+        } else if (!deliverySucceeded(delivery)) {
+          await zApiRepository.deleteMessage(storedMessage.id);
+          logger.error({ conversationId: conv.id, error: delivery?.error || "integration_inactive" }, "inactivity-worker: close delivery failed");
+        } else {
+          publishStoredBotMessage(conv.id, storedMessage);
         }
 
         logger.info({ conversationId: conv.id }, "inactivity-worker: conversation auto-closed");

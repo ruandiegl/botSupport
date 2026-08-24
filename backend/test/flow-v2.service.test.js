@@ -75,6 +75,40 @@ test("aceita submenu de botões com ids estáveis dentro da rota", () => {
   assert.equal(SaveDraftBodySchema.safeParse(document).success, true);
 });
 
+test("aceita submenu hierárquico com categorias e itens estáveis", () => {
+  const document = validDocument();
+  document.nodes.push({
+    id: ids.submenu,
+    stableKey: "support-categories",
+    type: "DECISION",
+    name: "Aplicativo e problema",
+    content: "Escolha uma categoria",
+    sortOrder: 0,
+    config: {
+      parentRouteId: ids.route,
+      decisionScope: "CATEGORY",
+      decisionMode: "CATEGORIES",
+      decisionGroups: [
+        {
+          categoryKey: "infoaudio",
+          label: "InfoAudio",
+          items: [
+            { optionKey: "infoaudio-player", label: "Player", description: "Player do AR" },
+            { optionKey: "infoaudio-logger", label: "Logger", description: "Censura" },
+          ],
+        },
+      ],
+    },
+  });
+  document.transitions = document.transitions.filter((transition) => transition.id !== ids.t3);
+  document.transitions.push(
+    { id: ids.t3, fromNodeId: ids.route, toNodeId: ids.submenu, sortOrder: 0 },
+    { id: ids.t5, fromNodeId: ids.submenu, toNodeId: ids.triage, optionKey: "infoaudio", label: "InfoAudio", sortOrder: 0 },
+  );
+
+  assert.equal(SaveDraftBodySchema.safeParse(document).success, true);
+});
+
 test("rejeita UUID, texto e quantidade fora dos limites", () => {
   assert.equal(FlowNodeInputSchema.safeParse({
     id: "não-é-uuid",

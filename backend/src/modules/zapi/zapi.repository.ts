@@ -70,8 +70,13 @@ export class ZApiRepository {
   }
 
   async findContactByPhone(phone: string) {
-    return prisma.contact.findUnique({
-      where: { phone },
+    return prisma.contact.findFirst({
+      where: {
+        OR: [
+          { phone },
+          { phoneNumbers: { some: { phone } } },
+        ],
+      },
     });
   }
 

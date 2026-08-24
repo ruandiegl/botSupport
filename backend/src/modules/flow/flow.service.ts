@@ -24,6 +24,10 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
       if (routeDecisionParents.has(node.config.parentRouteId)) issues.push({ code: "ROUTE_DECISION_LIMIT", message: "Cada rota pode possuir somente um submenu nesta versão.", nodeId: node.id });
       routeDecisionParents.add(node.config.parentRouteId);
     }
+    if (node.config?.parentDecisionId) {
+      const parentDecision = nodes.find((item) => item.id === node.config?.parentDecisionId);
+      if (!parentDecision || parentDecision.type !== "DECISION") issues.push({ code: "INVALID_NESTED_DECISION_PARENT", message: "A decisão filha precisa pertencer a uma decisão válida.", nodeId: node.id });
+    }
   }
   for (const transition of transitions) {
     if (!nodeIds.has(transition.fromNodeId) || !nodeIds.has(transition.toNodeId)) issues.push({ code: "UNKNOWN_NODE", message: "Transição aponta para nó inexistente.", transitionId: transition.id });
@@ -37,10 +41,28 @@ export function validateFlowDocument(nodes: FlowNodeInput[], transitions: FlowTr
     if (!outgoing.some((item) => item.optionKey)) issues.push({ code: "DECISION_WITHOUT_OPTIONS", message: "Decisão exige uma opção de saída.", nodeId: decision.id });
     if (outgoing.some((item) => !item.optionKey)) issues.push({ code: "DECISION_WITHOUT_OPTION_KEY", message: "Toda saída de uma decisão precisa de identificação estável.", nodeId: decision.id });
     if (outgoing.length > 20) issues.push({ code: "DECISION_OPTION_LIMIT", message: "Decisão excede o limite de 20 opções.", nodeId: decision.id });
-    if (decision.config?.parentRouteId && Array.isArray(decision.config.decisionOptions)) {
-      const configured = new Set(decision.config.decisionOptions.map((item) => item.optionKey));
+    const hierarchical = decision.config?.decisionMode === "CATEGORIES";
+    const groups = hierarchical && Array.isArray(decision.config?.decisionGroups) ? decision.config.decisionGroups : [];
+    if (hierarchical && !groups.length) issues.push({ code: "DECISION_WITHOUT_CATEGORIES", message: "Adicione ao menos uma categoria e seus itens.", nodeId: decision.id });
+    if (hierarchical && groups.length > 20) issues.push({ code: "DECISION_CATEGORY_LIMIT", message: "A decisão excede o limite de 20 categorias.", nodeId: decision.id });
+    if (hierarchical) {
+      const categoryKeys = new Set<string>();
+      for (const group of groups) {
+        if (categoryKeys.has(group.categoryKey)) issues.push({ code: "DUPLICATE_CATEGORY_KEY", message: "Há categorias com identificação duplicada.", nodeId: decision.id });
+        categoryKeys.add(group.categoryKey);
+        if (!group.items.length) issues.push({ code: "CATEGORY_WITHOUT_ITEMS", message: `A categoria ${group.label} precisa de ao menos um item.`, nodeId: decision.id });
+        for (const item of group.items) {
+          if (optionKeys.has(item.optionKey)) issues.push({ code: "DUPLICATE_ITEM_KEY", message: "Há itens com identificação duplicada no fluxo.", nodeId: decision.id });
+          optionKeys.add(item.optionKey);
+        }
+      }
+    }
+    if (decision.config?.parentRouteId && (Array.isArray(decision.config.decisionOptions) || hierarchical)) {
+      const configured = new Set(hierarchical
+        ? groups.map((item) => item.categoryKey)
+        : decision.config.decisionOptions!.map((item) => item.optionKey));
       const persisted = new Set(outgoing.flatMap((item) => item.optionKey ? [item.optionKey] : []));
-      if (configured.size !== persisted.size || [...configured].some((key) => !persisted.has(key))) issues.push({ code: "DECISION_OPTIONS_MISMATCH", message: "Os botões configurados não correspondem às transições do submenu.", nodeId: decision.id });
+      if (configured.size !== persisted.size || [...configured].some((key) => !persisted.has(key))) issues.push({ code: "DECISION_OPTIONS_MISMATCH", message: hierarchical ? "As categorias configuradas não correspondem às transições do submenu." : "Os botões configurados não correspondem às transições do submenu.", nodeId: decision.id });
     }
   }
   for (const triage of nodes.filter((node) => node.type === "TRIAGE")) if (transitions.filter((item) => item.fromNodeId === triage.id).length !== 1) issues.push({ code: "TRIAGE_NEXT", message: "Triagem exige exatamente uma próxima etapa.", nodeId: triage.id });

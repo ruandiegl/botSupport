@@ -1,5 +1,6 @@
 import type {
   FlowDecisionOption,
+  FlowDecisionGroup,
   FlowDefinition,
   FlowNode,
   FlowNodeType,
@@ -25,12 +26,50 @@ const uuid = () => {
 
 const stableKey = (prefix: string) => `${prefix}-${uuid()}`;
 export const MAX_ROUTE_DECISION_OPTIONS = 20;
+export const MAX_DECISION_GROUPS = 20;
+export const DEFAULT_CONTACT_SUMMARY_TEMPLATE = `Olá, {contactName}. Seja bem-vindo(a)! 👋
+
+Encontramos o seu cadastro:
+👤 Nome: {contactName}
+{stationLine}
+{locationLine}
+
+Seus dados estão certos?`;
 
 export function createDecisionOption(label = "Nova opção"): FlowDecisionOption {
   return { optionKey: stableKey("choice"), label };
 }
 
+export function createDecisionGroup(label = "Nova categoria"): FlowDecisionGroup {
+  return {
+    categoryKey: stableKey("category"),
+    label,
+    items: [createDecisionOption("Novo item")],
+  };
+}
+
+export function getDecisionGroups(node: FlowNode): FlowDecisionGroup[] {
+  if (node.config.decisionMode !== "CATEGORIES" || !Array.isArray(node.config.decisionGroups)) return [];
+  return node.config.decisionGroups.flatMap((value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+    const group = value as Partial<FlowDecisionGroup>;
+    if (typeof group.categoryKey !== "string" || typeof group.label !== "string" || !Array.isArray(group.items)) return [];
+    const items = group.items.flatMap((item) => {
+      if (!item || typeof item !== "object" || typeof item.optionKey !== "string" || typeof item.label !== "string") return [];
+      return [{ optionKey: item.optionKey, label: item.label, ...(typeof item.description === "string" && item.description.trim() ? { description: item.description } : {}) }];
+    });
+    return [{
+      categoryKey: group.categoryKey,
+      label: group.label,
+      ...(typeof group.description === "string" && group.description.trim() ? { description: group.description } : {}),
+      items,
+    }];
+  });
+}
+
 export function getDecisionOptions(node: FlowNode): FlowDecisionOption[] {
+  const groups = getDecisionGroups(node);
+  if (groups.length) return groups.map((group) => ({ optionKey: group.categoryKey, label: group.label, ...(group.description ? { description: group.description } : {}) }));
   if (!Array.isArray(node.config.decisionOptions)) return [];
   return node.config.decisionOptions.flatMap((value) => {
     if (!value || typeof value !== "object" || Array.isArray(value)) return [];
@@ -215,7 +254,7 @@ export function normalizeRevision(input: FlowRevision): FlowRevision {
           ...(parentRouteId ? { parentRouteId } : {}),
           ...(node.type === "TRIAGE" && !String(node.config.responseKey ?? "").trim() ? { responseKey: `${node.stableKey}Response` } : {}),
           ...(optionByRoute.has(node.id) ? { optionKey: optionByRoute.get(node.id) } : {}),
-          ...(optionsByDecision.has(node.id) ? {
+          ...(optionsByDecision.has(node.id) && node.config.decisionMode !== "CATEGORIES" ? {
             decisionScope: "ROUTE",
             decisionOptions: optionsByDecision.get(node.id),
           } : {}),
@@ -455,6 +494,12 @@ export function validateFlow(revision: FlowRevision): FlowValidationResult {
   if (!routes.length) issues.push({ message: "Adicione pelo menos uma rota." });
   revision.nodes.forEach((node) => {
     if (!node.name.trim()) issues.push({ nodeId: node.id, field: "name", message: "Informe um nome para a etapa." });
+    if (node.type === "ENTRY" && node.config.knownContactSummary?.enabled) {
+      const summary = node.config.knownContactSummary;
+      if (!summary.template.trim()) issues.push({ nodeId: node.id, field: "knownContactSummary", message: "Informe a mensagem do resumo cadastral." });
+      if (!summary.confirmLabel.trim() || !summary.updateLabel.trim()) issues.push({ nodeId: node.id, field: "knownContactSummary", message: "Informe os textos dos botões de confirmação e atualização." });
+      if (!summary.updateIntro.trim()) issues.push({ nodeId: node.id, field: "knownContactSummary", message: "Informe a mensagem que inicia a atualização cadastral." });
+    }
     if (["MESSAGE", "DECISION", "TRIAGE"].includes(node.type) && !node.content.trim()) {
       issues.push({ nodeId: node.id, field: "content", message: "Informe a mensagem desta etapa." });
     }
@@ -471,7 +516,8 @@ export function validateFlow(revision: FlowRevision): FlowValidationResult {
     }
     if (node.type === "DECISION" && node.config.parentRouteId) {
       const options = getDecisionOptions(node);
-      if (!options.length) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Adicione pelo menos uma opção ao submenu." });
+      const groups = getDecisionGroups(node);
+      if (!options.length) issues.push({ nodeId: node.id, field: "decisionOptions", message: node.config.decisionMode === "CATEGORIES" ? "Adicione pelo menos uma categoria." : "Adicione pelo menos uma opção ao submenu." });
       if (options.length > MAX_ROUTE_DECISION_OPTIONS) issues.push({ nodeId: node.id, field: "decisionOptions", message: `Use no máximo ${MAX_ROUTE_DECISION_OPTIONS} opções neste submenu.` });
       options.forEach((option) => {
         if (!option.label.trim()) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Todas as opções precisam de um rótulo." });
@@ -479,6 +525,19 @@ export function validateFlow(revision: FlowRevision): FlowValidationResult {
         if (optionKeys.has(option.optionKey)) issues.push({ nodeId: node.id, field: "decisionOptions", message: "Há opções com identificação duplicada." });
         optionKeys.add(option.optionKey);
       });
+      if (node.config.decisionMode === "CATEGORIES") {
+        if (!groups.length) issues.push({ nodeId: node.id, field: "decisionGroups", message: "Adicione ao menos uma categoria com itens." });
+        if (groups.length > MAX_DECISION_GROUPS) issues.push({ nodeId: node.id, field: "decisionGroups", message: `Use no máximo ${MAX_DECISION_GROUPS} categorias.` });
+        groups.forEach((group) => {
+          if (!group.label.trim()) issues.push({ nodeId: node.id, field: "decisionGroups", message: "Todas as categorias precisam de um nome." });
+          if (!group.items.length) issues.push({ nodeId: node.id, field: "decisionGroups", message: `Adicione ao menos um item em ${group.label || "cada categoria"}.` });
+          group.items.forEach((item) => {
+            if (!item.label.trim()) issues.push({ nodeId: node.id, field: "decisionGroups", message: "Todos os itens precisam de um nome." });
+            if (optionKeys.has(item.optionKey)) issues.push({ nodeId: node.id, field: "decisionGroups", message: "Há itens com identificação duplicada." });
+            optionKeys.add(item.optionKey);
+          });
+        });
+      }
     }
   });
   routes.forEach((route) => {

@@ -84,6 +84,10 @@ model Contact {
   isRegistered   Boolean        @default(false) @map("is_registered")
   email          String?
   organization   String?
+  station        String?
+  city           String?
+  state          String?        @db.VarChar(2)
+  profileConfirmedAt DateTime?  @map("profile_confirmed_at") @db.Timestamptz
   notes          String?
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz

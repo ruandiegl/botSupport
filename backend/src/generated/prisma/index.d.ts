@@ -8358,6 +8358,10 @@ export namespace Prisma {
     isRegistered: boolean | null
     email: string | null
     organization: string | null
+    station: string | null
+    city: string | null
+    state: string | null
+    profileConfirmedAt: Date | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8370,6 +8374,10 @@ export namespace Prisma {
     isRegistered: boolean | null
     email: string | null
     organization: string | null
+    station: string | null
+    city: string | null
+    state: string | null
+    profileConfirmedAt: Date | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8382,6 +8390,10 @@ export namespace Prisma {
     isRegistered: number
     email: number
     organization: number
+    station: number
+    city: number
+    state: number
+    profileConfirmedAt: number
     notes: number
     createdAt: number
     updatedAt: number
@@ -8396,6 +8408,10 @@ export namespace Prisma {
     isRegistered?: true
     email?: true
     organization?: true
+    station?: true
+    city?: true
+    state?: true
+    profileConfirmedAt?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -8408,6 +8424,10 @@ export namespace Prisma {
     isRegistered?: true
     email?: true
     organization?: true
+    station?: true
+    city?: true
+    state?: true
+    profileConfirmedAt?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -8420,6 +8440,10 @@ export namespace Prisma {
     isRegistered?: true
     email?: true
     organization?: true
+    station?: true
+    city?: true
+    state?: true
+    profileConfirmedAt?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -8505,6 +8529,10 @@ export namespace Prisma {
     isRegistered: boolean
     email: string | null
     organization: string | null
+    station: string | null
+    city: string | null
+    state: string | null
+    profileConfirmedAt: Date | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -8534,6 +8562,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: boolean
     organization?: boolean
+    station?: boolean
+    city?: boolean
+    state?: boolean
+    profileConfirmedAt?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8551,6 +8583,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: boolean
     organization?: boolean
+    station?: boolean
+    city?: boolean
+    state?: boolean
+    profileConfirmedAt?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8563,6 +8599,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: boolean
     organization?: boolean
+    station?: boolean
+    city?: boolean
+    state?: boolean
+    profileConfirmedAt?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8592,6 +8632,10 @@ export namespace Prisma {
       isRegistered: boolean
       email: string | null
       organization: string | null
+      station: string | null
+      city: string | null
+      state: string | null
+      profileConfirmedAt: Date | null
       notes: string | null
       createdAt: Date
       updatedAt: Date
@@ -8998,6 +9042,10 @@ export namespace Prisma {
     readonly isRegistered: FieldRef<"Contact", 'Boolean'>
     readonly email: FieldRef<"Contact", 'String'>
     readonly organization: FieldRef<"Contact", 'String'>
+    readonly station: FieldRef<"Contact", 'String'>
+    readonly city: FieldRef<"Contact", 'String'>
+    readonly state: FieldRef<"Contact", 'String'>
+    readonly profileConfirmedAt: FieldRef<"Contact", 'DateTime'>
     readonly notes: FieldRef<"Contact", 'String'>
     readonly createdAt: FieldRef<"Contact", 'DateTime'>
     readonly updatedAt: FieldRef<"Contact", 'DateTime'>
@@ -34652,6 +34700,10 @@ export namespace Prisma {
     isRegistered: 'isRegistered',
     email: 'email',
     organization: 'organization',
+    station: 'station',
+    city: 'city',
+    state: 'state',
+    profileConfirmedAt: 'profileConfirmedAt',
     notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -35636,6 +35688,10 @@ export namespace Prisma {
     isRegistered?: BoolFilter<"Contact"> | boolean
     email?: StringNullableFilter<"Contact"> | string | null
     organization?: StringNullableFilter<"Contact"> | string | null
+    station?: StringNullableFilter<"Contact"> | string | null
+    city?: StringNullableFilter<"Contact"> | string | null
+    state?: StringNullableFilter<"Contact"> | string | null
+    profileConfirmedAt?: DateTimeNullableFilter<"Contact"> | Date | string | null
     notes?: StringNullableFilter<"Contact"> | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
@@ -35652,6 +35708,10 @@ export namespace Prisma {
     isRegistered?: SortOrder
     email?: SortOrderInput | SortOrder
     organization?: SortOrderInput | SortOrder
+    station?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    profileConfirmedAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35671,6 +35731,10 @@ export namespace Prisma {
     isRegistered?: BoolFilter<"Contact"> | boolean
     email?: StringNullableFilter<"Contact"> | string | null
     organization?: StringNullableFilter<"Contact"> | string | null
+    station?: StringNullableFilter<"Contact"> | string | null
+    city?: StringNullableFilter<"Contact"> | string | null
+    state?: StringNullableFilter<"Contact"> | string | null
+    profileConfirmedAt?: DateTimeNullableFilter<"Contact"> | Date | string | null
     notes?: StringNullableFilter<"Contact"> | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
@@ -35687,6 +35751,10 @@ export namespace Prisma {
     isRegistered?: SortOrder
     email?: SortOrderInput | SortOrder
     organization?: SortOrderInput | SortOrder
+    station?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    profileConfirmedAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35705,6 +35773,10 @@ export namespace Prisma {
     isRegistered?: BoolWithAggregatesFilter<"Contact"> | boolean
     email?: StringNullableWithAggregatesFilter<"Contact"> | string | null
     organization?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    station?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    city?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    state?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    profileConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Contact"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"Contact"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
@@ -38159,6 +38231,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38175,6 +38251,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38191,6 +38271,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38207,6 +38291,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38223,6 +38311,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38235,6 +38327,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38247,6 +38343,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40917,6 +41017,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type ContactPhoneListRelationFilter = {
     every?: ContactPhoneWhereInput
     some?: ContactPhoneWhereInput
@@ -40944,6 +41055,10 @@ export namespace Prisma {
     isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
+    station?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    profileConfirmedAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -40956,6 +41071,10 @@ export namespace Prisma {
     isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
+    station?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    profileConfirmedAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -40968,9 +41087,27 @@ export namespace Prisma {
     isRegistered?: SortOrder
     email?: SortOrder
     organization?: SortOrder
+    station?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    profileConfirmedAt?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type ContactRelationFilter = {
@@ -41006,17 +41143,6 @@ export namespace Prisma {
     isPrimary?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type AgentNullableRelationFilter = {
@@ -41064,20 +41190,6 @@ export namespace Prisma {
     disabledByAgentId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -43575,6 +43687,10 @@ export namespace Prisma {
     connect?: ContactShareWhereUniqueInput | ContactShareWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type ConversationUpdateManyWithoutContactNestedInput = {
     create?: XOR<ConversationCreateWithoutContactInput, ConversationUncheckedCreateWithoutContactInput> | ConversationCreateWithoutContactInput[] | ConversationUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutContactInput | ConversationCreateOrConnectWithoutContactInput[]
@@ -43717,10 +43833,6 @@ export namespace Prisma {
     create?: XOR<AgentCreateWithoutBotExclusionsDisabledInput, AgentUncheckedCreateWithoutBotExclusionsDisabledInput>
     connectOrCreate?: AgentCreateOrConnectWithoutBotExclusionsDisabledInput
     connect?: AgentWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type AgentUpdateOneWithoutBotExclusionsCreatedNestedInput = {
@@ -47755,6 +47867,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -47770,6 +47886,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -47801,6 +47921,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47816,6 +47940,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48203,6 +48331,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48218,6 +48350,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48683,6 +48819,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48698,6 +48838,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49189,6 +49333,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49204,6 +49352,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49455,6 +49607,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49470,6 +49626,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49628,6 +49788,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49643,6 +49807,10 @@ export namespace Prisma {
     isRegistered?: boolean
     email?: string | null
     organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49719,6 +49887,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49734,6 +49906,10 @@ export namespace Prisma {
     isRegistered?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

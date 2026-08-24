@@ -7,6 +7,7 @@ export const ExecuteFlowInputSchema = z.object({
   referenceMessageId: z.string().max(200).optional(),
   externalEventId: z.string().max(200).optional(),
   isNewConversation: z.boolean(),
+  isGroup: z.boolean().optional().default(false),
 });
 export type ExecuteFlowInput = z.infer<typeof ExecuteFlowInputSchema>;
 export type FlowExecutionAction =

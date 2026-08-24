@@ -22,6 +22,10 @@ export interface Contact {
   initials: string;
   email?: string | null;
   organization?: string | null;
+  station?: string | null;
+  city?: string | null;
+  state?: string | null;
+  profileConfirmedAt?: string | null;
   notes?: string | null;
   phones?: ContactPhone[];
 }
@@ -301,13 +305,32 @@ export interface FlowDecisionOption {
   description?: string;
 }
 
+export interface FlowDecisionGroup {
+  categoryKey: string;
+  label: string;
+  description?: string;
+  items: FlowDecisionOption[];
+}
+
+export interface KnownContactSummaryConfig {
+  enabled: boolean;
+  template: string;
+  confirmLabel: string;
+  updateLabel: string;
+  updateIntro: string;
+}
+
 export interface FlowNodeConfig {
   parentRouteId?: string;
+  parentDecisionId?: string;
   responseKey?: string;
   optionKey?: string;
   legacyOptionIndex?: number;
-  decisionScope?: "ROOT" | "ROUTE";
+  decisionScope?: "ROOT" | "ROUTE" | "CATEGORY" | "ITEM" | "CONTACT_CONFIRMATION";
+  decisionMode?: "FLAT" | "CATEGORIES";
   decisionOptions?: FlowDecisionOption[];
+  decisionGroups?: FlowDecisionGroup[];
+  knownContactSummary?: KnownContactSummaryConfig;
   buttonMessage?: string;
   [key: string]: unknown;
 }

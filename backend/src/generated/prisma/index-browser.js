@@ -164,6 +164,10 @@ exports.Prisma.ContactScalarFieldEnum = {
   isRegistered: 'isRegistered',
   email: 'email',
   organization: 'organization',
+  station: 'station',
+  city: 'city',
+  state: 'state',
+  profileConfirmedAt: 'profileConfirmedAt',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

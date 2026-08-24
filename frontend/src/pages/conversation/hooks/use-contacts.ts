@@ -14,6 +14,9 @@ export interface ContactFormData {
   phones: Array<{ phone: string; label?: string | null; isPrimary?: boolean }>;
   email?: string | null;
   organization?: string | null;
+  station?: string | null;
+  city?: string | null;
+  state?: string | null;
   notes?: string | null;
   contactShareId?: string;
 }

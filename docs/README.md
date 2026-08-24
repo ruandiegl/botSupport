@@ -47,6 +47,7 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Plano 018: exclusão de contatos das respostas do bot**](../plans/plan-018-exclusao-contatos-respostas-bot.md): bloqueio administrável de respostas automáticas com preservação do histórico.
 - [**Runbook de exclusões do bot**](RUNBOOK_EXCLUSOES_BOT.md): migração, validação, observabilidade e rollback.
 - [**Runbook de horários de funcionamento**](RUNBOOK_HORARIO_FUNCIONAMENTO.md): configuração, deduplicação, diagnóstico e rollback da mensagem de expediente.
+- [**Plano 026: categorias, itens e resumo de contato**](../plans/plan-026-categorias-itens-resumo-contato.md): menus hierárquicos em duas etapas e confirmação do perfil cadastrado.
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```

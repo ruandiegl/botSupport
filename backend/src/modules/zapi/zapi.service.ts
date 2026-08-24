@@ -1254,6 +1254,7 @@ export class ZApiService {
       referenceMessageId: incoming.referenceMessageId,
       externalEventId: incoming.externalEventId,
       isNewConversation,
+      isGroup: Boolean(incoming.group),
     });
     if (execution.status !== "no_flow_configured") {
       for (const action of execution.actions) {

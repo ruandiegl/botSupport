@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const phoneValue = z.string().trim().min(7).max(32).transform((value) => value.replace(/\D/g, "")).refine((value) => value.length >= 8 && value.length <= 15, "Informe um telefone válido.");
+const stateValue = z.string().trim().length(2, "Informe a UF com duas letras.").transform((value) => value.toUpperCase()).nullable().optional();
 
 export const ContactIdParamsSchema = z.object({ id: z.string().uuid() }).strict();
 
@@ -27,6 +28,9 @@ export const CreateContactBodySchema = z.object({
   phones: phonesSchema,
   email: z.string().trim().email().max(320).nullable().optional(),
   organization: z.string().trim().max(300).nullable().optional(),
+  station: z.string().trim().max(300).nullable().optional(),
+  city: z.string().trim().max(160).nullable().optional(),
+  state: stateValue,
   notes: z.string().trim().max(1000).nullable().optional(),
   contactShareId: z.string().uuid().optional(),
 }).strict();
@@ -36,6 +40,9 @@ export const UpdateContactBodySchema = z.object({
   phones: phonesSchema.optional(),
   email: z.string().trim().email().max(320).nullable().optional(),
   organization: z.string().trim().max(300).nullable().optional(),
+  station: z.string().trim().max(300).nullable().optional(),
+  city: z.string().trim().max(160).nullable().optional(),
+  state: stateValue,
   notes: z.string().trim().max(1000).nullable().optional(),
 }).strict().refine((value) => Object.keys(value).length > 0, "Informe ao menos um campo para alteração.");
 
