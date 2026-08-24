@@ -2,6 +2,7 @@ export type ConversationStatus = "DRAFT" | "OPEN" | "IN_PROGRESS" | "CLOSED";
 export type MessageDirection = "IN" | "OUT";
 export type SenderType = "CLIENT" | "AGENT" | "BOT";
 export type AgentRole = "ADMIN" | "SUPERVISOR" | "AGENT";
+export type ConversationSearchMatchSource = "name" | "email" | "phone" | "group" | "message";
 
 export interface ConversationLabel {
   id: string;
@@ -89,6 +90,27 @@ export interface Conversation {
   assignedAgentName: string | null;
   unreadCount: number;
   lastMessage: string;
+  searchMatch?: {
+    source: ConversationSearchMatchSource;
+    messageId: string | null;
+    snippet: string;
+    createdAt: string;
+    senderDisplayName: string | null;
+  } | null;
+  searchConversationMatch?: {
+    source: Exclude<ConversationSearchMatchSource, "message">;
+    messageId: null;
+    snippet: string;
+    createdAt: string;
+    senderDisplayName: null;
+  } | null;
+  searchMatches?: Array<{
+    source: "message";
+    messageId: string;
+    snippet: string;
+    createdAt: string;
+    senderDisplayName: string | null;
+  }>;
   messages: Message[];
   messagesPagination?: {
     limit: number;

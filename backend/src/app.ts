@@ -19,6 +19,7 @@ import { inactivityWorker } from "./modules/conversations/inactivity.worker.js";
 import labelsRoutes from "./modules/labels/labels.routes.js";
 import botExclusionsRoutes from "./modules/bot-exclusions/bot-exclusions.routes.js";
 import contactsRoutes from "./modules/contacts/contacts.routes.js";
+import businessHoursRoutes from "./modules/business-hours/business-hours.routes.js";
 
 export const app = express();
 
@@ -88,6 +89,7 @@ app.use("/api", mediaRoutes);
 app.use("/api", labelsRoutes);
 app.use("/api", botExclusionsRoutes);
 app.use("/api", contactsRoutes);
+app.use("/api", businessHoursRoutes);
 
 // Persists notification events and runs the idempotent unresolved-call reminder
 // worker. The worker is unref'd and therefore never prevents graceful shutdown.

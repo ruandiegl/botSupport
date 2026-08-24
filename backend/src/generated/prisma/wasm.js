@@ -311,6 +311,57 @@ exports.Prisma.ZApiConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BusinessHoursPolicyScalarFieldEnum = {
+  id: 'id',
+  zApiConfigId: 'zApiConfigId',
+  departmentId: 'departmentId',
+  enabled: 'enabled',
+  mode: 'mode',
+  timezone: 'timezone',
+  outsideMessage: 'outsideMessage',
+  noAgentMessage: 'noAgentMessage',
+  noticeFrequency: 'noticeFrequency',
+  messageCooldownMinutes: 'messageCooldownMinutes',
+  revision: 'revision',
+  updatedByAgentId: 'updatedByAgentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BusinessHoursIntervalScalarFieldEnum = {
+  id: 'id',
+  policyId: 'policyId',
+  weekday: 'weekday',
+  startMinute: 'startMinute',
+  endMinute: 'endMinute',
+  sortOrder: 'sortOrder'
+};
+
+exports.Prisma.BusinessHoursExceptionScalarFieldEnum = {
+  id: 'id',
+  policyId: 'policyId',
+  localDate: 'localDate',
+  kind: 'kind',
+  intervalsJson: 'intervalsJson',
+  reason: 'reason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BusinessHoursNoticeScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  policyId: 'policyId',
+  reason: 'reason',
+  windowKey: 'windowKey',
+  status: 'status',
+  messageId: 'messageId',
+  sentAt: 'sentAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.LabelScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -480,6 +531,28 @@ exports.MediaStatus = exports.$Enums.MediaStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.BusinessHoursMode = exports.$Enums.BusinessHoursMode = {
+  SCHEDULE_ONLY: 'SCHEDULE_ONLY',
+  SCHEDULE_AND_ONLINE: 'SCHEDULE_AND_ONLINE',
+  ONLINE_ONLY: 'ONLINE_ONLY'
+};
+
+exports.BusinessHoursExceptionKind = exports.$Enums.BusinessHoursExceptionKind = {
+  CLOSED: 'CLOSED',
+  SPECIAL_HOURS: 'SPECIAL_HOURS'
+};
+
+exports.BusinessHoursNoticeReason = exports.$Enums.BusinessHoursNoticeReason = {
+  OUTSIDE_HOURS: 'OUTSIDE_HOURS',
+  NO_AGENT_ONLINE: 'NO_AGENT_ONLINE'
+};
+
+exports.BusinessHoursNoticeStatus = exports.$Enums.BusinessHoursNoticeStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
 exports.FlowRevisionStatus = exports.$Enums.FlowRevisionStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
@@ -525,6 +598,10 @@ exports.Prisma.ModelName = {
   ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',
+  BusinessHoursPolicy: 'BusinessHoursPolicy',
+  BusinessHoursInterval: 'BusinessHoursInterval',
+  BusinessHoursException: 'BusinessHoursException',
+  BusinessHoursNotice: 'BusinessHoursNotice',
   Label: 'Label',
   ConversationLabel: 'ConversationLabel',
   GroupMentionCooldown: 'GroupMentionCooldown',

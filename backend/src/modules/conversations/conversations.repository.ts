@@ -3,6 +3,10 @@ import { prisma } from "../../shared/prisma.js";
 // compiled server as well as the TypeScript test runner.
 import { Prisma } from "../../../src/generated/prisma/index.js";
 
+function escapeLike(value: string): string {
+  return value.replace(/[\\%_]/g, "\\$&");
+}
+
 export class ConversationsRepository {
   createManualConversation(contactId: string, departmentId?: string) {
     const now = new Date();
@@ -64,11 +68,16 @@ export class ConversationsRepository {
       where.labels = { some: { labelId: { in: filters.labelIds } } };
     }
 
-    if (filters.q) {
+    if (filters.q?.trim()) {
+      const query = filters.q.trim();
+      const phoneQuery = query.replace(/\D/g, "") || query;
       where.OR = [
-        { contact: { name: { contains: filters.q, mode: "insensitive" } } },
-        { contact: { phone: { contains: filters.q } } },
-        { messages: { some: { content: { contains: filters.q, mode: "insensitive" } } } },
+        { contact: { name: { contains: query, mode: "insensitive" } } },
+        { contact: { email: { contains: query, mode: "insensitive" } } },
+        { contact: { phone: { contains: phoneQuery } } },
+        { contact: { phoneNumbers: { some: { phone: { contains: phoneQuery } } } } },
+        { groupChatName: { contains: query, mode: "insensitive" } },
+        { messages: { some: { content: { contains: query, mode: "insensitive" } } } },
       ];
     }
 
@@ -99,9 +108,19 @@ export class ConversationsRepository {
       const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
       if (filters.from) conditions.push(Prisma.sql`${dateColumn} >= ${new Date(filters.from)}`);
       if (filters.to) conditions.push(Prisma.sql`${dateColumn} < ${new Date(filters.to)}`);
-      if (filters.q) {
-        const like = `%${filters.q}%`;
-        conditions.push(Prisma.sql`(ct."name" ILIKE ${like} OR ct."phone" LIKE ${like} OR EXISTS (SELECT 1 FROM "gtf_messages" m WHERE m."conversation_id" = c."id" AND m."content" ILIKE ${like}))`);
+      if (filters.q?.trim()) {
+        const query = filters.q.trim();
+        const escapedQuery = escapeLike(query);
+        const like = `%${escapedQuery}%`;
+        const digits = query.replace(/\D/g, "");
+        const phoneLike = `%${escapeLike(digits || query)}%`;
+        conditions.push(Prisma.sql`(
+          ct."name" ILIKE ${like} ESCAPE '\\'
+          OR ct."email" ILIKE ${like} ESCAPE '\\'
+          OR c."group_chat_name" ILIKE ${like} ESCAPE '\\'
+          OR ${digits || /\d/.test(query) ? Prisma.sql`ct."phone" LIKE ${phoneLike} OR EXISTS (SELECT 1 FROM "gtf_contact_phones" search_cp WHERE search_cp."contact_id" = ct."id" AND search_cp."phone" LIKE ${phoneLike})` : Prisma.sql`FALSE`}
+          OR EXISTS (SELECT 1 FROM "gtf_messages" m WHERE m."conversation_id" = c."id" AND m."content" ILIKE ${like} ESCAPE '\\')
+        )`);
       }
       const whereSql = Prisma.join(conditions, " AND ");
       const orderSql = sort === "oldest"
@@ -140,7 +159,7 @@ export class ConversationsRepository {
               startedAt: true,
               closedAt: true,
               groupChatName: true,
-              contact: { select: { name: true, phone: true, isRegistered: true } },
+              contact: { select: { name: true, phone: true, email: true, isRegistered: true, phoneNumbers: { select: { phone: true } } } },
               department: { select: { name: true } },
               assignedAgent: { select: { name: true } },
               labels: {
@@ -159,7 +178,38 @@ export class ConversationsRepository {
           })
         : [];
       const byId = new Map(rows.map((row) => [row.id, row]));
-      return { items: ids.map((id) => byId.get(id)).filter(Boolean) as typeof rows, total: Number(countRows[0]?.count ?? 0), page, limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / limit), isPaged: true, isSummary: true };
+      const searchMatches = filters.q?.trim() && ids.length
+        ? await prisma.$queryRaw<Array<{ conversationId: string; id: string; content: string; createdAt: Date; senderNameSnapshot: string | null; rank: number }>>(Prisma.sql`
+            SELECT ranked."conversationId", ranked."id", ranked."content", ranked."createdAt", ranked."senderNameSnapshot", ranked."rank"
+            FROM (
+              SELECT
+                m."conversation_id" AS "conversationId",
+                m."id",
+                m."content",
+                m."created_at" AS "createdAt",
+                m."sender_name_snapshot" AS "senderNameSnapshot",
+                ROW_NUMBER() OVER (PARTITION BY m."conversation_id" ORDER BY m."created_at" DESC, m."id" DESC) AS "rank"
+              FROM "gtf_messages" m
+              WHERE m."conversation_id" IN (${Prisma.join(ids)})
+                AND m."content" ILIKE ${`%${escapeLike(filters.q.trim())}%`} ESCAPE '\\'
+            ) ranked
+            WHERE ranked."rank" <= 3
+            ORDER BY ranked."conversationId", ranked."rank"
+          `)
+        : [];
+      const matchesByConversation = new Map<string, typeof searchMatches>();
+      for (const match of searchMatches) {
+        const current = matchesByConversation.get(match.conversationId) ?? [];
+        current.push(match);
+        matchesByConversation.set(match.conversationId, current);
+      }
+      const items = ids.map((id) => {
+        const row = byId.get(id) as (typeof rows)[number] | undefined;
+        if (!row) return undefined;
+        const matches = matchesByConversation.get(id) ?? [];
+        return matches.length ? { ...row, __searchMatch: matches[0], __searchMatches: matches } : row;
+      }).filter(Boolean) as typeof rows;
+      return { items, total: Number(countRows[0]?.count ?? 0), page, limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / limit), isPaged: true, isSummary: true };
     }
 
     const orderBy = sort === "oldest"
@@ -192,6 +242,115 @@ export class ConversationsRepository {
 
     const items = isPaged ? sorted.slice((page - 1) * limit, page * limit) : sorted;
     return { items, total, page, limit, totalPages: Math.ceil(total / limit), isPaged, isSummary: false };
+  }
+
+  async search(filters: {
+    q: string;
+    scope: "all" | "unread" | "mine" | "groups";
+    status: string;
+    departmentId?: string;
+    assignedAgentId?: string;
+    labelIds?: string[];
+    dateField: "lastActivityAt" | "createdAt";
+    from?: string;
+    to?: string;
+    sort: "relevance" | "recent" | "oldest";
+    page: number;
+    limit: number;
+  }) {
+    const query = filters.q.trim();
+    const like = `%${query}%`;
+    const digits = query.replace(/\D/g, "");
+    const conditions: Prisma.Sql[] = [Prisma.sql`c."status" <> 'DRAFT'`];
+
+    if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
+    if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
+    if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
+    if (filters.scope === "unread") conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" unread_m WHERE unread_m."conversation_id" = c."id" AND unread_m."direction" = 'IN' AND unread_m."read_at" IS NULL)`);
+    if (filters.scope === "groups") conditions.push(Prisma.sql`c."group_chat_name" IS NOT NULL`);
+    if (filters.labelIds?.length) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_conversation_labels" search_label WHERE search_label."conversation_id" = c."id" AND search_label."label_id" IN (${Prisma.join(filters.labelIds)})`);
+    const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
+    if (filters.from) conditions.push(Prisma.sql`${dateColumn} >= ${new Date(filters.from)}`);
+    if (filters.to) conditions.push(Prisma.sql`${dateColumn} < ${new Date(filters.to)}`);
+
+    const messageMatch = Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" search_m WHERE search_m."conversation_id" = c."id" AND search_m."content" ILIKE ${like})`;
+    const phoneMatch = digits.length >= 3 ? Prisma.sql`ct."phone" LIKE ${`%${digits}%`}` : Prisma.sql`FALSE`;
+    conditions.push(Prisma.sql`(ct."name" ILIKE ${like} OR ${phoneMatch} OR ${messageMatch})`);
+
+    const whereSql = Prisma.join(conditions, " AND ");
+    const relevanceSql = Prisma.sql`CASE
+      WHEN ${digits.length >= 3 ? Prisma.sql`ct."phone" = ${digits}` : Prisma.sql`FALSE`} THEN 0
+      WHEN lower(ct."name") = lower(${query}) THEN 1
+      WHEN ct."name" ILIKE ${`${query}%`} THEN 2
+      WHEN ${messageMatch} THEN 3
+      ELSE 4
+    END`;
+    const orderSql = filters.sort === "oldest"
+      ? Prisma.sql`c."last_activity_at" ASC, c."id" ASC`
+      : filters.sort === "recent"
+      ? Prisma.sql`c."last_activity_at" DESC, c."id" ASC`
+      : Prisma.sql`${relevanceSql} ASC, c."last_activity_at" DESC, c."id" ASC`;
+    const offset = (filters.page - 1) * filters.limit;
+    const idRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT c."id" FROM "gtf_conversations" c
+      LEFT JOIN "gtf_contacts" ct ON ct."id" = c."contact_id"
+      WHERE ${whereSql}
+      ORDER BY ${orderSql}
+      LIMIT ${filters.limit} OFFSET ${offset}
+    `);
+    const countRows = await prisma.$queryRaw<Array<{ count: bigint }>>(Prisma.sql`
+      SELECT COUNT(*)::bigint AS count FROM "gtf_conversations" c
+      LEFT JOIN "gtf_contacts" ct ON ct."id" = c."contact_id"
+      WHERE ${whereSql}
+    `);
+    const ids = idRows.map((row) => row.id);
+    if (!ids.length) {
+      return { rows: [], matches: new Map<string, { id: string; content: string; createdAt: Date; senderNameSnapshot: string | null }>(), total: Number(countRows[0]?.count ?? 0), page: filters.page, limit: filters.limit, totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / filters.limit) };
+    }
+
+    const rows = await prisma.conversation.findMany({
+      where: { id: { in: ids } },
+      select: {
+        id: true,
+        status: true,
+        departmentId: true,
+        assignedAgentId: true,
+        queuedAt: true,
+        lastActivityAt: true,
+        startedAt: true,
+        closedAt: true,
+        groupChatName: true,
+        contact: { select: { id: true, name: true, phone: true, isRegistered: true } },
+        department: { select: { id: true, name: true } },
+        assignedAgent: { select: { id: true, name: true } },
+        labels: {
+          select: { label: { select: { id: true, name: true, slug: true, color: true, icon: true, isSystem: true } } },
+          orderBy: { createdAt: "asc" },
+        },
+        messages: {
+          take: 1,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          select: { id: true, content: true, createdAt: true, senderNameSnapshot: true },
+        },
+        _count: { select: { messages: { where: { direction: "IN", readAt: null } } } },
+      },
+    });
+    const matchedRows = await prisma.$queryRaw<Array<{ conversationId: string; id: string; content: string; createdAt: Date; senderNameSnapshot: string | null }>>(Prisma.sql`
+      SELECT DISTINCT ON (m."conversation_id") m."conversation_id" AS "conversationId", m."id", m."content", m."created_at" AS "createdAt", m."sender_name_snapshot" AS "senderNameSnapshot"
+      FROM "gtf_messages" m
+      WHERE m."conversation_id" IN (${Prisma.join(ids)}) AND m."content" ILIKE ${like}
+      ORDER BY m."conversation_id", m."created_at" DESC, m."id" DESC
+    `);
+    const matches = new Map(matchedRows.map((row) => [row.conversationId, row]));
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    return {
+      rows: ids.map((id) => byId.get(id)).filter(Boolean),
+      matches,
+      total: Number(countRows[0]?.count ?? 0),
+      page: filters.page,
+      limit: filters.limit,
+      totalPages: Math.ceil(Number(countRows[0]?.count ?? 0) / filters.limit),
+    };
   }
 
   async countOperational(scope: {

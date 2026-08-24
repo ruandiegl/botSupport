@@ -46,6 +46,7 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Plano 017: delay anti-spam e zoom de imagens**](../plans/plan-017-delay-anti-spam-midia-zoom.md): cooldown server-side para bot e prévia ampliada de mídia.
 - [**Plano 018: exclusão de contatos das respostas do bot**](../plans/plan-018-exclusao-contatos-respostas-bot.md): bloqueio administrável de respostas automáticas com preservação do histórico.
 - [**Runbook de exclusões do bot**](RUNBOOK_EXCLUSOES_BOT.md): migração, validação, observabilidade e rollback.
+- [**Runbook de horários de funcionamento**](RUNBOOK_HORARIO_FUNCIONAMENTO.md): configuração, deduplicação, diagnóstico e rollback da mensagem de expediente.
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import type { Agent, Conversation, Department } from "@/types";
@@ -39,6 +40,15 @@ export interface ConversationMetricCounts {
   closed: number;
   mine: number;
   unread: number;
+}
+
+function useDebouncedValue(value: string, delay = 220) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebounced(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [delay, value]);
+  return debounced;
 }
 
 type ConversationEnvelope =
@@ -107,35 +117,37 @@ function buildQuery(filters: ConversationFilters) {
 }
 
 export function useListConversations(filters: ConversationFilters) {
-  const queryString = buildQuery(filters);
+  const debouncedSearch = useDebouncedValue(filters.search.trim());
+  const effectiveFilters: ConversationFilters = { ...filters, search: debouncedSearch };
+  const queryString = buildQuery(effectiveFilters);
   return useQuery<ConversationQueryResult>({
-    queryKey: ["conversations", filters],
-    queryFn: async () => {
+    queryKey: ["conversations", effectiveFilters],
+    queryFn: async ({ signal }) => {
       try {
-        const payload = await apiFetch<ConversationEnvelope>(`/conversations?${queryString}`);
-        return normalizeResponse(payload, filters);
+        const payload = await apiFetch<ConversationEnvelope>(`/conversations?${queryString}`, { signal });
+        return normalizeResponse(payload, effectiveFilters);
       } catch (error) {
         // Keep development and older deployments usable while the paginated API rolls out.
         // The fallback still asks for the operational status and applies the remainder locally.
         const legacyParams = new URLSearchParams();
-        if (filters.status && filters.status !== "ALL") legacyParams.set("status", filters.status);
-        if (filters.departmentId && filters.departmentId !== "ALL") legacyParams.set("departmentId", filters.departmentId);
-        const payload = await apiFetch<Conversation[]>(`/conversations${legacyParams.toString() ? `?${legacyParams}` : ""}`);
+        if (effectiveFilters.status && effectiveFilters.status !== "ALL") legacyParams.set("status", effectiveFilters.status);
+        if (effectiveFilters.departmentId && effectiveFilters.departmentId !== "ALL") legacyParams.set("departmentId", effectiveFilters.departmentId);
+        const payload = await apiFetch<Conversation[]>(`/conversations${legacyParams.toString() ? `?${legacyParams}` : ""}`, { signal });
         if (!Array.isArray(payload)) throw error;
 
         const filtered = payload
-          .filter((item) => !filters.search.trim() || `${item.contact.name} ${item.contact.phone} ${item.lastMessage}`.toLowerCase().includes(filters.search.trim().toLowerCase()))
-          .filter((item) => !filters.assignedAgentId || !filters.fallbackAssignedAgentId || item.assignedAgentId === filters.fallbackAssignedAgentId)
-          .filter((item) => !filters.openOnly || item.status !== "CLOSED")
-          .filter((item) => !filters.unreadOnly || item.unreadCount > 0)
-          .filter((item) => !filters.labelIds?.length || item.labels?.some((label) => filters.labelIds?.includes(label.id)))
+          .filter((item) => !effectiveFilters.search.trim() || `${item.contact.name} ${item.contact.phone} ${item.contact.email ?? ""} ${item.groupChatName ?? ""} ${item.lastMessage} ${item.searchMatch?.snippet ?? ""}`.toLowerCase().includes(effectiveFilters.search.trim().toLowerCase()))
+          .filter((item) => !effectiveFilters.assignedAgentId || !effectiveFilters.fallbackAssignedAgentId || item.assignedAgentId === effectiveFilters.fallbackAssignedAgentId)
+          .filter((item) => !effectiveFilters.openOnly || item.status !== "CLOSED")
+          .filter((item) => !effectiveFilters.unreadOnly || item.unreadCount > 0)
+          .filter((item) => !effectiveFilters.labelIds?.length || item.labels?.some((label) => effectiveFilters.labelIds?.includes(label.id)))
           .filter((item) => {
-            const timestamp = filters.dateField === "createdAt" ? item.startedAt : item.lastActivityAt ?? item.startedAt;
-            return (!filters.from || timestamp >= filters.from) && (!filters.to || timestamp < filters.to);
+            const timestamp = effectiveFilters.dateField === "createdAt" ? item.startedAt : item.lastActivityAt ?? item.startedAt;
+            return (!effectiveFilters.from || timestamp >= effectiveFilters.from) && (!effectiveFilters.to || timestamp < effectiveFilters.to);
           })
           .sort((left, right) => {
-            if (filters.sort === "oldest") return left.startedAt.localeCompare(right.startedAt) || left.id.localeCompare(right.id);
-            if (filters.sort === "recent") return (right.lastActivityAt ?? right.startedAt).localeCompare(left.lastActivityAt ?? left.startedAt) || left.id.localeCompare(right.id);
+            if (effectiveFilters.sort === "oldest") return left.startedAt.localeCompare(right.startedAt) || left.id.localeCompare(right.id);
+            if (effectiveFilters.sort === "recent") return (right.lastActivityAt ?? right.startedAt).localeCompare(left.lastActivityAt ?? left.startedAt) || left.id.localeCompare(right.id);
             const rank: Record<string, number> = { OPEN: 0, IN_PROGRESS: 1, CLOSED: 2 };
             const rankDiff = (rank[left.status] ?? 9) - (rank[right.status] ?? 9);
             if (rankDiff !== 0) return rankDiff;
@@ -146,15 +158,15 @@ export function useListConversations(filters: ConversationFilters) {
             return (right.lastActivityAt ?? right.startedAt).localeCompare(left.lastActivityAt ?? left.startedAt) || left.id.localeCompare(right.id);
           });
 
-        const start = (filters.page - 1) * filters.limit;
-        const items = filtered.slice(start, start + filters.limit);
+        const start = (effectiveFilters.page - 1) * effectiveFilters.limit;
+        const items = filtered.slice(start, start + effectiveFilters.limit);
         return {
           items,
-          page: filters.page,
-          limit: filters.limit,
+          page: effectiveFilters.page,
+          limit: effectiveFilters.limit,
           total: filtered.length,
-          totalPages: Math.max(1, Math.ceil(filtered.length / filters.limit)),
-          appliedFilters: { ...filters },
+          totalPages: Math.max(1, Math.ceil(filtered.length / effectiveFilters.limit)),
+          appliedFilters: { ...effectiveFilters },
           legacy: true,
         };
       }

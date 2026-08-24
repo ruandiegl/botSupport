@@ -17,6 +17,7 @@ O **GTF-Bot** é uma plataforma centralizada de atendimento ao vivo e triagem au
 
 ### Fila de Atendimento e Conversas
 - **Listagem ao vivo**: Exibição da lista de conversas com contadores e busca por texto/telefone/mensagem.
+- **Busca global estilo WhatsApp**: o campo da fila pesquisa todas as conversas acessíveis enquanto o usuário digita, independentemente do status operacional selecionado, pesquisando por substring em nome, e-mail, telefone, grupo e mensagens. O resultado permanece no mesmo painel, separado em “Conversas” e “Mensagens”; mensagens exibem o trecho encontrado marcado com segurança e cada card mantém a navegação normal para o atendimento.
 - **Filtros avançados**: Filtro por status (`QUEUED`, `IN_PROGRESS`, `BOT`, `CLOSED`) e por departamento.
 - **Assumir Conversa**: Atendente altera o status de `QUEUED` para `IN_PROGRESS` e assume a responsabilidade.
 - **Encerrar Conversa**: Finalização da conversa com carimbo de data/hora (`closedAt`).
@@ -101,6 +102,10 @@ Administradores podem cadastrar números que não devem receber respostas do bot
 - Desativar uma regra não dispara mensagem retroativa; a próxima mensagem volta a seguir o fluxo normal.
 
 ## Contatos compartilhados no WhatsApp
+
+## Horários de funcionamento
+
+Administradores podem configurar uma mensagem de expediente global ou por departamento, com timezone, múltiplos intervalos por dia, exceções de calendário e texto separado quando não há atendentes online. A regra informa o cliente sem encerrar o chamado e limita repetições por janela. A tela /admin/business-hours expõe a configuração via RBAC; a avaliação é server-side no webhook e não altera o fluxo publicado.
 
 Quando um cliente envia um contato pelo WhatsApp, o chamado deve apresentar um cartão estruturado em vez do texto genérico “Mensagem recebida”. O cartão mostra o nome, telefones, e-mail, organização e observação disponíveis no payload da Z-API, preservando o remetente e o horário da mensagem.
 

@@ -75,10 +75,22 @@ test("gera o payload oficial de lista de opções com ids estáveis", () => {
       buttonLabel: "Ver opções",
       options: [
         { id: "support-password", title: "Acesso e senha", description: "Redefinição ou bloqueio" },
-        { id: "support-network", title: "Rede e Internet", description: "Rede e Internet" },
+        { id: "support-network", title: "Rede e Internet" },
       ],
     },
   });
+});
+
+test("não duplica o título quando a descrição opcional está vazia", () => {
+  const payload = buildOptionListPayload("5511999999999", "Qual é o assunto?", [
+    { optionKey: "support", label: "Suporte", description: "   ", departmentId: "support" },
+    { optionKey: "network", label: "Rede", description: "Conectividade", departmentId: "support" },
+  ]);
+
+  assert.deepEqual(payload.optionList.options, [
+    { id: "support", title: "Suporte" },
+    { id: "network", title: "Rede", description: "Conectividade" },
+  ]);
 });
 
 test("ignora callbacks que não são mensagens de clientes", () => {

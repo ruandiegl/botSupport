@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, MessageSquarePlus, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
+import { MessageCircle, MessageSquarePlus, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useListConversations, useListDepartments, type ConversationFilters } from "./hooks/use-queue";
@@ -15,6 +14,7 @@ import { DateRangeFilter, type DateRangeValue } from "./components/DateRangeFilt
 import { LabelFilter } from "./components/LabelFilter";
 import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
 import { StartConversationDialog } from "@/pages/contacts/components/StartConversationDialog";
+import { GlobalConversationSearch } from "./components/GlobalConversationSearch";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -56,6 +56,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const [currentPage, setCurrentPage] = useState(1);
   const [labelIds, setLabelIds] = useState<string[]>([]);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
+  const isGlobalSearch = search.trim().length > 0;
 
   const queryStatus = metricFilter === "ALL"
     ? "ALL"
@@ -68,33 +69,36 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     : status;
   const queryMine = onlyMine;
   const filters: ConversationFilters = {
-    status: queryStatus,
-    departmentId: department,
+    // A search is intentionally independent from the operational card and
+    // toolbar filters: it always searches every conversation the server
+    // permits the current user to see, including closed conversations.
+    status: isGlobalSearch ? "ALL" : queryStatus,
+    departmentId: isGlobalSearch ? "ALL" : department,
     search,
     dateField: dateRange.dateField,
-    from: dateRange.from,
-    to: dateRange.to,
+    from: isGlobalSearch ? "" : dateRange.from,
+    to: isGlobalSearch ? "" : dateRange.to,
     page: currentPage,
     limit: CONVERSATIONS_PER_PAGE,
-    assignedAgentId: queryMine ? "me" : undefined,
+    assignedAgentId: isGlobalSearch ? undefined : queryMine ? "me" : undefined,
     fallbackAssignedAgentId: currentAgentId,
-    openOnly: metricFilter === "ALL",
+    openOnly: isGlobalSearch ? false : metricFilter === "ALL",
     sort: "operational",
-    labelIds,
+    labelIds: isGlobalSearch ? [] : labelIds,
   };
   const { data: result, isLoading, isError, refetch } = useListConversations(filters);
   const { data: departments } = useListDepartments();
 
   const all = result?.items ?? [];
   const locallyFiltered = useMemo(() => all.filter((item) => {
-    const matchesMine = !queryMine || item.assignedAgentId === currentAgentId;
-    const matchesDepartment = department === "ALL" || item.departmentId === department;
-    const searchText = `${item.contact.name} ${item.contact.phone} ${item.lastMessage}`.toLowerCase();
+    const matchesMine = isGlobalSearch || !queryMine || item.assignedAgentId === currentAgentId;
+    const matchesDepartment = isGlobalSearch || department === "ALL" || item.departmentId === department;
+    const searchText = `${item.contact.name} ${item.contact.phone} ${item.contact.email ?? ""} ${item.groupChatName ?? ""} ${item.lastMessage} ${item.searchMatch?.snippet ?? ""}`.toLowerCase();
     const matchesSearch = !search.trim() || searchText.includes(search.trim().toLowerCase());
     const timestamp = dateRange.dateField === "createdAt" ? item.startedAt : item.lastActivityAt ?? item.startedAt;
-    const matchesDate = (!dateRange.from || timestamp >= dateRange.from) && (!dateRange.to || timestamp < dateRange.to);
-    const matchesOpen = metricFilter !== "ALL" || item.status !== "CLOSED";
-    const matchesStatus = metricFilter !== "CLOSED" || item.status === "CLOSED";
+    const matchesDate = isGlobalSearch || ((!dateRange.from || timestamp >= dateRange.from) && (!dateRange.to || timestamp < dateRange.to));
+    const matchesOpen = isGlobalSearch || metricFilter !== "ALL" || item.status !== "CLOSED";
+    const matchesStatus = isGlobalSearch || metricFilter !== "CLOSED" || item.status === "CLOSED";
     return matchesMine && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
   }), [all, currentAgentId, dateRange, department, metricFilter, onlyMine, queryMine, search]);
 
@@ -120,7 +124,21 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
   const allConversationCount = metricCounts.open + metricCounts.inProgress;
-  const departmentLabel = department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
+  const departmentLabel = isGlobalSearch ? "Busca global" : department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
+  const conversationMatches = isGlobalSearch
+    ? visibleConversations
+      .filter((item) => item.searchConversationMatch || (!item.searchMatches?.length && item.searchMatch?.source !== "message"))
+      .map((item) => item.searchConversationMatch ? { ...item, searchMatch: item.searchConversationMatch } : item)
+    : visibleConversations;
+  const messageMatches = isGlobalSearch
+    ? visibleConversations.flatMap((item) => {
+      const matches = item.searchMatches?.length
+        ? item.searchMatches
+        : item.searchMatch?.source === "message" ? [item.searchMatch] : [];
+      return matches.map((match) => ({ ...item, searchMatch: match }));
+    })
+    : [];
+  const renderRows = (items: typeof visibleConversations) => items.map((item, index) => <ConversationRow key={`${item.id}-${item.searchMatch?.messageId ?? item.searchMatch?.source ?? index}`} conversation={item} searchQuery={isGlobalSearch ? search : undefined} />);
 
   return (
     <div className="content queue-page">
@@ -139,12 +157,15 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       </div>
 
       <div className="toolbar queue-toolbar">
-        <div className="search"><Search size={15} /><Input className="search-input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por nome, telefone ou mensagem" data-testid="input-search-conversations" /></div>
-        <Select value={queryStatus} onValueChange={(value) => { setMetricFilter(null); setStatus(value ?? "ALL"); }}>
-          <SelectTrigger className="select" data-testid="select-status-filter"><SelectValue>{statusLabels[queryStatus] || "Todos os status"}</SelectValue></SelectTrigger>
+        <GlobalConversationSearch
+          value={search}
+          onChange={setSearch}
+        />
+        <Select value={isGlobalSearch ? "ALL" : queryStatus} onValueChange={(value) => { setMetricFilter(null); setStatus(value ?? "ALL"); }} disabled={isGlobalSearch}>
+          <SelectTrigger className="select" data-testid="select-status-filter"><SelectValue>{isGlobalSearch ? "Todos os status" : statusLabels[queryStatus] || "Todos os status"}</SelectValue></SelectTrigger>
           <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup>{Object.entries(statusLabels).map(([key, label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
-        <Select value={department} onValueChange={(value) => setDepartment(value ?? "ALL")}>
+        <Select value={isGlobalSearch ? "ALL" : department} onValueChange={(value) => setDepartment(value ?? "ALL")} disabled={isGlobalSearch}>
           <SelectTrigger className="select" data-testid="select-department-filter"><SelectValue>{departmentLabel}</SelectValue></SelectTrigger>
           <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup><SelectItem value="ALL">Todos os departamentos</SelectItem>{(departments || []).map((item) => <SelectItem value={item.id} key={item.id}>{item.name}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
@@ -155,9 +176,18 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
       <div className="split-layout">
         <div className="panel conversation-list">
-          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{onlyMine ? "Conversas assumidas" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
+          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
-            {visibleConversations.map((item) => <ConversationRow key={item.id} conversation={item} />)}
+            {isGlobalSearch ? <div className="search-results-stack">
+              <section className="search-results-section" aria-labelledby="search-conversations-heading">
+                <div className="search-results-heading"><h3 id="search-conversations-heading">Conversas</h3><span>{conversationMatches.length}</span></div>
+                {conversationMatches.length ? renderRows(conversationMatches) : <p className="search-results-empty">Nenhuma conversa corresponde ao termo.</p>}
+              </section>
+              <section className="search-results-section" aria-labelledby="search-messages-heading">
+                <div className="search-results-heading"><h3 id="search-messages-heading">Mensagens</h3><span>{messageMatches.length}</span></div>
+                {messageMatches.length ? renderRows(messageMatches) : <p className="search-results-empty">Nenhuma mensagem corresponde ao termo.</p>}
+              </section>
+            </div> : renderRows(visibleConversations)}
             {total > 0 ? <div className="conversation-pagination"><span className="subtle">Exibindo {firstVisible}–{lastVisible} de {total}</span><Pagination className="sm:w-auto sm:justify-end"><PaginationContent><PaginationItem><PaginationPrevious href="#" aria-disabled={currentPage === 1} tabIndex={currentPage === 1 ? -1 : 0} className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.max(1, page - 1)); }} /></PaginationItem>{Array.from({ length: Math.min(totalPages, 7) }, (_, index) => index + 1).map((page) => <PaginationItem key={page}><PaginationLink href="#" isActive={page === currentPage} aria-label={`Ir para a página ${page}`} onClick={(event) => { event.preventDefault(); setCurrentPage(page); }}>{page}</PaginationLink></PaginationItem>)}<PaginationItem><PaginationNext href="#" aria-disabled={currentPage === totalPages} tabIndex={currentPage === totalPages ? -1 : 0} className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setCurrentPage((page) => Math.min(totalPages, page + 1)); }} /></PaginationItem></PaginationContent></Pagination></div> : null}
           </QueryState>
         </div>

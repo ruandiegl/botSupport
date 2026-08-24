@@ -39,6 +39,7 @@ src/pages/<pagina>/
 
 ### Estado Global e Servidor
 Fila e detalhe usam projeÃ§Ãµes diferentes: a fila recebe `ConversationSummary`, sem histÃ³rico integral ou binÃ¡rios de mÃ­dia; o detalhe carrega mensagens recentes e usa cursor para mensagens anteriores. `message:new` atualiza o cache por `messageId`, enquanto `conversation:updated` cuida de fila/status. Refetch completo fica reservado para reconciliaÃ§Ã£o apÃ³s reconexÃ£o ou payload incompleto.
+- **Busca global**: a fila usa `GET /conversations` com o parâmetro `q` como filtro server-side da mesma listagem paginada. O repositório aplica o escopo do JWT, combina filtros no banco e devolve somente um snippet seguro da mensagem/campo correspondente em `searchMatch`. `GET /conversations/search` permanece compatível para clientes legados, mas não cria uma superfície de resultados no frontend. React Query aplica debounce e cancela consultas obsoletas.
 - **React Query (`@tanstack/react-query`)**: Cache inteligente, revalidação e polling automático.
 - **Wouter**: Roteador leve e intuitivo para SPA.
 - **Tailwind CSS v4**: Design system moderno baseado em tokens CSS nativos.
@@ -104,6 +105,10 @@ Mensagens mantêm autoria independente da atribuição da conversa. `Message.sen
 Delegação segue Route → Controller → Service → Repository. O Service resolve o ator pelo JWT, valida RBAC/escopo e o Repository executa atualização otimista e criação de `ConversationAssignment` na mesma transação. O evento `conversation_updated` alimenta a fila e o módulo de notificações cria `CONVERSATION_DELEGATED` direcionada ao novo responsável; Socket.IO é complementar ao REST.
 
 ## 7. Contatos compartilhados
+
+## 8. Horários de funcionamento
+
+modules/business-hours segue Route → Controller → Service → Repository. O Repository persiste políticas, intervalos, exceções e avisos enviados; o clock puro converte o instante UTC para o timezone IANA e decide OPEN, OUTSIDE_HOURS ou NO_AGENT_ONLINE. O zapi.service chama o guard depois de persistir a mensagem recebida e antes do fluxo automático, preservando idempotência, exclusões de bot e envio manual.
 
 O parser do módulo Z-API identifica o objeto único `contact` do `ReceivedCallback`, combina `contact.phones` com o campo `TEL` do vCard e normaliza os telefones. A mensagem recebe `messageType=CONTACT` e um registro `ContactShare` sanitizado, mantendo a chave externa `messageId` para idempotência.
 

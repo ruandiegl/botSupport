@@ -9,6 +9,7 @@ import { mediaService } from "../media/media.service.js";
 import { createHash } from "node:crypto";
 import { labelsService } from "../labels/labels.service.js";
 import { botExclusionsService } from "../bot-exclusions/bot-exclusions.service.js";
+import { businessHoursService } from "../business-hours/business-hours.service.js";
 
 const DEFAULT_BOT_REPLY_COOLDOWN_MINUTES = 15;
 const MAX_BOT_REPLY_COOLDOWN_MINUTES = 24 * 60;
@@ -502,11 +503,14 @@ export function buildOptionListPayload(phone: string, message: string, options: 
     optionList: {
       title: "Opções disponíveis",
       buttonLabel: "Ver opções",
-      options: options.map((option, index) => ({
-        id: option.optionKey || String(index + 1),
-        title: option.label,
-        description: option.description || option.label,
-      })),
+      options: options.map((option, index) => {
+        const description = option.description?.trim();
+        return {
+          id: option.optionKey || String(index + 1),
+          title: option.label,
+          ...(description ? { description } : {}),
+        };
+      }),
     },
   };
 }
@@ -1142,6 +1146,54 @@ export class ZApiService {
       return { status: "bot_excluded" };
     }
 
+    if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
+    if (activeConversation.status !== "OPEN") return { status: "message_logged" };
+
+    const businessHours = await businessHoursService.decide({
+      zApiConfigId: config.id,
+      conversationId,
+      departmentId: activeConversation.departmentId,
+      contactName: incoming.senderName,
+      departmentName: activeConversation.department?.name,
+    });
+    if (businessHours.shouldReply) {
+      const storedNotice = await zApiRepository.addMessage({
+        conversationId,
+        direction: "OUT",
+        senderType: "BOT",
+        messageType: "BUSINESS_HOURS",
+        content: businessHours.message,
+      });
+      const delivery = await this.sendBotText(phone, businessHours.message);
+      if (delivery && "blocked" in delivery && delivery.blocked) {
+        await zApiRepository.deleteMessage(storedNotice.id);
+        await businessHoursService.markFailed(businessHours.notice.id, "Contato bloqueado para respostas automáticas.");
+        return { status: "bot_excluded" };
+      }
+      if (!delivery || delivery.error) {
+        await zApiRepository.deleteMessage(storedNotice.id);
+        await businessHoursService.markFailed(businessHours.notice.id, delivery?.error || "Integração Z-API indisponível.");
+        return { status: "business_hours_delivery_failed" };
+      }
+      const messageId = String(delivery.messageId || delivery.zaapId || delivery.id || storedNotice.id);
+      await businessHoursService.markSent(businessHours.notice.id, messageId);
+      socketEmitter.emitToConversation(conversationId, "message:new", {
+        conversationId,
+        message: {
+          id: storedNotice.id,
+          direction: "OUT",
+          senderType: "BOT",
+          senderName: "GTF-Bot",
+          content: businessHours.message,
+          messageType: "BUSINESS_HOURS",
+          createdAt: storedNotice.createdAt.toISOString(),
+          media: null,
+        },
+      });
+      conversationEvents.emit("conversation_updated", { conversationId, status: activeConversation.status, eventType: "BUSINESS_HOURS_REPLY", departmentId: activeConversation.departmentId, assignedAgentId: activeConversation.assignedAgentId });
+      return { status: businessHours.reason === "OUTSIDE_HOURS" ? "outside_hours_reply" : "no_agent_online_reply" };
+    }
+
     if (incoming.group) {
       const confirmation = renderGroupTemplate(config.groupConfirmMessage, incoming.senderName, incoming.group.name);
       const storedConfirmation = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: confirmation });
@@ -1159,9 +1211,6 @@ export class ZApiService {
         if (groupResult && "error" in groupResult) logger.warn({ conversationId, error: groupResult.error }, "Falha na confirmação opcional no grupo");
       }
     }
-    if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
-    if (activeConversation.status !== "OPEN") return { status: "message_logged" };
-
     // Once a route has been handed to the queue (or the legacy triage is
     // awaiting an attendant), incoming messages must not restart the greeting
     // flow. They remain in the transcript for the human attendant.

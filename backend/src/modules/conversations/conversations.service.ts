@@ -35,6 +35,19 @@ function getInitials(name: string): string {
     .join("");
 }
 
+function createSearchSnippet(content: string, query: string, maxLength = 160): string {
+  const text = content.trim();
+  if (!text) return "";
+  const index = text.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
+  if (index < 0) return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
+  const half = Math.max(20, Math.floor((maxLength - query.length) / 2));
+  const start = Math.max(0, index - half);
+  const end = Math.min(text.length, index + query.length + half);
+  return `${start > 0 ? "…" : ""}${text.slice(start, end)}${end < text.length ? "…" : ""}`;
+}
+
+type SearchMatchSource = "name" | "email" | "phone" | "group" | "message";
+
 export class ConversationsService {
   private canAccess(conversation: any, user?: AuthenticatedRequest["user"]): boolean {
     if (!user || user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
@@ -80,16 +93,65 @@ export class ConversationsService {
     };
   }
 
-  private formatSummary(summary: any) {
+  private formatSummary(summary: any, query = "") {
     const latest = summary.messages?.[0];
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const contactName = summary.contact?.name ?? "Contato sem nome";
+    const contactEmail = summary.contact?.email ?? "";
+    const contactPhone = summary.contact?.phone ?? "";
+    const groupName = summary.groupChatName ?? "";
+    const digits = query.replace(/\D/g, "");
+    const alternatePhones = (summary.contact?.phoneNumbers ?? []).map((item: { phone: string }) => item.phone);
+    const matchedMessages = (summary.__searchMatches ?? (summary.__searchMatch ? [summary.__searchMatch] : [])) as Array<{ id: string; content: string; createdAt: Date; senderNameSnapshot: string | null }>;
+    const matchedMessage = matchedMessages[0];
+    let searchMatch: { source: SearchMatchSource; messageId: string | null; snippet: string; createdAt: string; senderDisplayName: string | null } | null = null;
+    let searchConversationMatch: { source: Exclude<SearchMatchSource, "message">; messageId: null; snippet: string; createdAt: string; senderDisplayName: null } | null = null;
+
+    if (normalizedQuery) {
+      const normalizedName = contactName.toLocaleLowerCase();
+      const normalizedEmail = contactEmail.toLocaleLowerCase();
+      const normalizedGroup = groupName.toLocaleLowerCase();
+      const phoneMatches = [contactPhone, ...alternatePhones].some((phone) => digits.length > 0 && phone.includes(digits));
+      const conversationSource = normalizedEmail.includes(normalizedQuery)
+        ? { source: "email" as const, value: contactEmail }
+        : phoneMatches
+        ? { source: "phone" as const, value: contactPhone || alternatePhones[0] || "" }
+        : normalizedName.includes(normalizedQuery)
+        ? { source: "name" as const, value: contactName }
+        : normalizedGroup.includes(normalizedQuery)
+        ? { source: "group" as const, value: groupName }
+        : null;
+      if (conversationSource) {
+        searchConversationMatch = {
+          source: conversationSource.source,
+          messageId: null,
+          snippet: createSearchSnippet(conversationSource.value, query),
+          createdAt: (latest?.createdAt ?? summary.lastActivityAt).toISOString(),
+          senderDisplayName: null,
+        };
+      }
+      if (matchedMessage) {
+        const source: SearchMatchSource = "message";
+        const createdAt = matchedMessage?.createdAt ?? latest?.createdAt ?? summary.lastActivityAt;
+        searchMatch = {
+          source,
+          messageId: matchedMessage?.id ?? null,
+          snippet: createSearchSnippet(matchedMessage.content, query),
+          createdAt: createdAt.toISOString(),
+          senderDisplayName: matchedMessage?.senderNameSnapshot ?? null,
+        };
+      }
+    }
+
     return {
       id: summary.id,
       contact: {
         id: summary.contact?.id,
-        name: summary.contact?.name ?? "Contato sem nome",
-        phone: summary.contact?.phone ?? "",
+        name: contactName,
+        phone: contactPhone,
+        email: contactEmail || null,
         isRegistered: summary.contact?.isRegistered ?? false,
-        initials: getInitials(summary.contact?.name ?? "CS"),
+        initials: getInitials(contactName),
       },
       status: summary.status,
       departmentId: summary.departmentId,
@@ -100,6 +162,15 @@ export class ConversationsService {
       groupChatName: summary.groupChatName ?? null,
       unreadCount: summary._count?.messages ?? 0,
       lastMessage: latest?.content ?? "Nenhuma mensagem ainda",
+      searchMatch,
+      searchConversationMatch,
+      searchMatches: matchedMessages.map((match) => ({
+        source: "message" as const,
+        messageId: match.id,
+        snippet: createSearchSnippet(match.content, query),
+        createdAt: match.createdAt.toISOString(),
+        senderDisplayName: match.senderNameSnapshot ?? null,
+      })),
       // The queue never needs the full history. Keep the property for
       // compatibility with older clients that expect Conversation.messages.
       messages: [],
@@ -194,7 +265,7 @@ export class ConversationsService {
       to: filters.to,
     });
     const items = result.isSummary
-      ? result.items.map((item) => this.formatSummary(item))
+      ? result.items.map((item) => this.formatSummary(item, filters.q ?? ""))
       : (await Promise.all(result.items.map((c) => this.formatConversation(c.id)))).filter(Boolean);
     if (!result.isPaged) return items;
     return {
@@ -216,6 +287,83 @@ export class ConversationsService {
         from: filters.from ?? null,
         to: filters.to ?? null,
         sort: filters.sort ?? "operational",
+      },
+    };
+  }
+
+  async search(filters: {
+    q: string;
+    scope: "all" | "unread" | "mine" | "groups";
+    status: string;
+    departmentId?: string;
+    assignedAgentId?: string;
+    labelIds?: string[];
+    dateField: "lastActivityAt" | "createdAt";
+    from?: string;
+    to?: string;
+    sort: "relevance" | "recent" | "oldest";
+    page: number;
+    limit: number;
+  }) {
+    const result = await conversationsRepository.search(filters);
+    const query = filters.q.trim();
+    const digits = query.replace(/\D/g, "");
+    const items = result.rows.map((row: any) => {
+      const matched = result.matches.get(row.id);
+      const contactName = row.contact?.name ?? "Contato sem nome";
+      const phone = row.contact?.phone ?? "";
+      const normalizedName = contactName.toLocaleLowerCase();
+      const normalizedQuery = query.toLocaleLowerCase();
+      const source = matched
+        ? "message"
+        : digits.length >= 3 && phone.includes(digits)
+        ? "phone"
+        : normalizedName.includes(normalizedQuery)
+        ? "contact"
+        : "message";
+      const latest = row.messages?.[0];
+      const content = matched?.content ?? latest?.content ?? "";
+      return {
+        conversationId: row.id,
+        contact: {
+          id: row.contact?.id ?? null,
+          displayName: contactName,
+          phone,
+        },
+        status: row.status,
+        department: row.department ? { id: row.department.id, name: row.department.name } : null,
+        assignedAgent: row.assignedAgent ? { id: row.assignedAgent.id, name: row.assignedAgent.name } : null,
+        isGroup: Boolean(row.groupChatName),
+        groupChatName: row.groupChatName ?? null,
+        unreadCount: row._count?.messages ?? 0,
+        lastActivityAt: row.lastActivityAt.toISOString(),
+        match: {
+          source,
+          messageId: matched?.id ?? null,
+          snippet: createSearchSnippet(content, query),
+          createdAt: (matched?.createdAt ?? latest?.createdAt ?? row.lastActivityAt).toISOString(),
+          senderDisplayName: matched?.senderNameSnapshot ?? latest?.senderNameSnapshot ?? null,
+        },
+      };
+    });
+    return {
+      items,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+        hasNext: result.page < result.totalPages,
+      },
+      appliedFilters: {
+        q: query,
+        scope: filters.scope,
+        status: filters.status,
+        departmentId: filters.departmentId ?? "ALL",
+        dateField: filters.dateField,
+        from: filters.from ?? null,
+        to: filters.to ?? null,
+        sort: filters.sort,
       },
     };
   }

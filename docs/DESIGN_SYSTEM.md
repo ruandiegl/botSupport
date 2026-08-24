@@ -117,3 +117,12 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 - Popovers, selects, dialogs, alert dialogs e outros elementos renderizados por portal precisam ser testados nos dois temas.
 - O foco deve permanecer visível, com contraste mínimo de 3:1. Texto normal deve alcançar WCAG AA de 4,5:1; azul e violeta de status não devem ser usados sozinhos como texto pequeno sobre superfície escura.
 - Logos, QR codes, fotos, vídeos e mídias recebidas nunca recebem filtro de cor ou inversão.
+
+## 9. Busca global de conversas
+
+- A busca global reutiliza o `Input`, `Button`, `Skeleton` e `Empty` do shadcn/Base UI dentro da barra de filtros; não criar um dropdown, modal ou lista paralela para os resultados.
+- O campo permanece junto aos filtros da fila, com largura responsiva e foco visível. Cada alteração de texto atualiza a lista existente após um debounce curto, sem deslocar o layout ou abrir uma superfície sobreposta.
+- Os mesmos cards da fila exibem nome, trecho destacado, status, horário e indicador de não lidas. O destaque é texto segmentado, nunca HTML injetado.
+- Em modo de busca, o painel usa cabeçalhos discretos “Conversas” e “Mensagens”; filtros operacionais ficam inativos porque a pesquisa atravessa todos os status e mantém somente o escopo de acesso do servidor.
+- O destaque do termo é renderizado como texto segmentado; nunca inserir o snippet como HTML. Skeleton, erro, vazio, paginação e retry devem manter a query digitada.
+- `Escape` fecha, `Enter` abre o resultado ativo, `↑/↓` mudam a seleção e `/` ou `Ctrl/Cmd+K` focam o campo quando o usuário não está digitando em outro controle.

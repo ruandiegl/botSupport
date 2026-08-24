@@ -29,7 +29,7 @@ Retorna a lista de conversas com informações de contato, departamento, atenden
   - `assignedAgentId` (opcional): `me` ou UUID; para `AGENT`, o servidor restringe ao atendente autenticado
   - `openOnly` (opcional): `true` retorna somente conversas ainda nÃ£o encerradas
   - `unreadOnly` (opcional): `true` retorna somente conversas com mensagens recebidas nÃ£o lidas
-  - `q` (opcional): busca por nome, telefone ou mensagem (mÃ¡ximo 120 caracteres)
+  - `q` (opcional): filtro incremental por substring em nome, e-mail, telefone principal/alternativo, grupo ou mensagem (mÃ¡ximo 120 caracteres)
   - `dateField` (opcional): `lastActivityAt` (padrÃ£o) ou `createdAt`
   - `from`/`to` (opcional): ISO-8601 com offset; `from` inclusivo e `to` exclusivo
   - `sort` (opcional): `operational` (padrÃ£o), `recent` ou `oldest`
@@ -59,6 +59,50 @@ Quando `page` ou `limit` Ã© enviado, a resposta Ã© paginada:
 ```
 `counts` representa o pulso operacional do escopo do usuário autenticado. Os indicadores de status permanecem globais; `counts.all` acompanha o intervalo de data enviado (`from`, `to`, `dateField`), permitindo que o card de todas as conversas reflita o período selecionado.
 Sem parÃ¢metros de paginaÃ§Ã£o, o formato legado (array) Ã© mantido temporariamente para clientes antigos.
+
+Quando `q` é informado pela busca global, a consulta ignora status, período, etiquetas e departamento escolhidos na barra operacional e retorna todas as conversas acessíveis ao usuário, incluindo encerradas. Cada item pode incluir `searchMatch` com `source` (`name`, `email`, `phone`, `group` ou `message`), `snippet`, `messageId` e remetente, além de até três `searchMatches` de mensagens específicas da mesma conversa; a interface separa esses itens nas seções **Conversas** e **Mensagens** e destaca o trecho textual sem interpretar HTML.
+
+### `GET /conversations/search` (compatibilidade legada)
+Mantido para clientes antigos que ainda usam uma resposta textual independente. A fila atual não abre essa superfície: usa `GET /conversations?q=...` e exibe os matches na própria lista paginada. A consulta é sempre executada no servidor e respeita o escopo RBAC do usuário autenticado.
+- **Query Params**:
+  - `q` (obrigatÃ³rio): 1â€“120 caracteres; procura em nome, e-mail, telefone, grupo e mensagens textuais
+  - `scope` (opcional): `all`, `unread`, `mine` ou `groups` (padrÃ£o `all`)
+  - `status` (opcional): `ALL`, `OPEN`, `IN_PROGRESS` ou `CLOSED`
+  - `departmentId` (opcional): UUID ou `ALL`; agentes nÃ£o podem ampliar o prÃ³prio escopo
+  - `dateField`, `from`, `to` (opcionais): mesmo contrato de datas de `GET /conversations`
+  - `sort` (opcional): `relevance`, `recent` ou `oldest` (padrÃ£o `relevance`)
+  - `page` (opcional): inteiro a partir de 1
+  - `limit` (opcional): entre 5 e 50 (padrÃ£o 20)
+  - `labelIds` (opcional): lista de UUIDs separada por vÃ­rgula
+
+**Resposta (200 OK)**:
+```json
+{
+  "items": [
+    {
+      "conversationId": "uuid",
+      "contact": { "id": "uuid", "displayName": "JoÃ£o Marcos Valente", "phone": "5524999999999" },
+      "status": "IN_PROGRESS",
+      "department": { "id": "uuid", "name": "Suporte Geral" },
+      "assignedAgent": { "id": "uuid", "name": "Administrador Sistema" },
+      "isGroup": false,
+      "groupChatName": null,
+      "unreadCount": 2,
+      "lastActivityAt": "2026-08-20T14:31:00.000Z",
+      "match": {
+        "source": "message",
+        "messageId": "uuid",
+        "snippet": "...preciso de suporte no sistema...",
+        "createdAt": "2026-08-20T14:31:00.000Z",
+        "senderDisplayName": "JoÃ£o Marcos Valente"
+      }
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 1, "totalPages": 1, "hasNext": false },
+  "appliedFilters": { "q": "sistema", "scope": "all", "status": "ALL" }
+}
+```
+O endpoint retorna apenas um snippet limitado da mensagem correspondente; nÃ£o envia histÃ³rico integral, mÃ­dia, URLs temporÃ¡rias da Z-API ou tokens. Em caso de query invÃ¡lida, retorna `400`; autenticaÃ§Ã£o/RBAC seguem `401`/`403`.
 
 ### `GET /conversations/:id`
 Retorna metadados e uma janela inicial de atÃ© 50 mensagens. Quando houver mensagens anteriores, `messagesPagination.previousCursor` informa o cursor opaco para carregÃ¡-las sem baixar o histÃ³rico inteiro.
@@ -446,6 +490,10 @@ Em Railway, `ZAPI_GROUPS_ENABLED=true` pode ser usado como ativação operaciona
 No webhook `ReceivedCallback`, grupos usam `phone` como chat de origem e, no formato atual da Z-API, `participantPhone` (com fallback legado para `participant`) como remetente individual. A confirmação da menção aceita listas explícitas (`mentionedJids`, `mentionedJid`, `mentions` ou `mentioned`) e, quando a versão da Z-API não envia essa lista, o token `@` preservado no texto. Com o recurso desabilitado, sem menção, broadcast ou cooldown ativo, a mensagem é ignorada sem abrir conversa. Uma menção válida cria/reutiliza a conversa privada do participante, persiste a etiqueta `GROUP` e envia confirmação por DM. A confirmação pública é opt-in. O endpoint canônico é `/api/webhooks/z-api`; os aliases `/api/webhooks/zapi/message` e `/api/webhooks/z-api/message` permanecem aceitos para instalações antigas.
 
 ## Contatos compartilhados e conversas manuais
+
+## Horários de funcionamento
+
+As rotas /business-hours exigem autenticação e RBAC. O recurso business_hours usa view para leitura/preview e configure para criar, editar ou desativar políticas. O webhook avalia a política no servidor antes de executar saudação, menu ou triagem. A resposta fora do horário/sem agente é registrada como messageType=BUSINESS_HOURS e deduplicada por conversa, política, motivo e janela.
 
 Mensagens de contato recebidas no callback `ReceivedCallback` são persistidas como `messageType: "CONTACT"` e incluem um `contactShare` normalizado. O DTO público contém apenas nome, telefones, e-mail, organização e observação; o vCard bruto nunca é devolvido ao navegador.
 

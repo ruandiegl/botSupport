@@ -5,6 +5,7 @@ import { authMiddleware, requirePermission } from "../auth/auth.middleware.js";
 const router = Router();
 
 router.get("/conversations", authMiddleware, requirePermission("queue", "view_own"), (req, res) => conversationsController.list(req, res));
+router.get("/conversations/search", authMiddleware, requirePermission("queue", "view_own"), (req, res) => conversationsController.search(req, res));
 router.post("/conversations", authMiddleware, requirePermission("contacts", "create"), (req, res) => conversationsController.create(req, res));
 router.get("/conversations/stream", authMiddleware, requirePermission("queue", "view_own"), (req, res) => conversationsController.streamEvents(req, res));
 router.get("/conversations/:id/messages", authMiddleware, requirePermission("conversations", "view"), (req, res) => conversationsController.listMessages(req, res));

@@ -11,6 +11,25 @@ const statusLabel: Record<string, string> = {
   CLOSED: "Encerrada",
 };
 
+const searchSourceLabel: Record<string, string> = {
+  name: "Nome",
+  email: "E-mail",
+  phone: "Telefone",
+  group: "Grupo",
+  message: "Mensagem",
+};
+
+function HighlightedText({ text, query }: { text: string; query?: string }) {
+  const normalizedQuery = query?.trim();
+  if (!normalizedQuery) return <>{text}</>;
+  const escaped = normalizedQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+  const normalized = normalizedQuery.toLocaleLowerCase();
+  return <>{parts.map((part, index) => part.toLocaleLowerCase() === normalized
+    ? <mark className="search-highlight" key={`${part}-${index}`}>{part}</mark>
+    : <span key={`${part}-${index}`}>{part}</span>)}</>;
+}
+
 const timeLabel = (date?: string) =>
   date
     ? new Date(date).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
@@ -39,9 +58,11 @@ export function Status({ status }: { status: string }) {
 export function ConversationRow({
   conversation,
   selected,
+  searchQuery,
 }: {
   conversation: Conversation;
   selected?: boolean;
+  searchQuery?: string;
 }) {
   return (
     <Link
@@ -57,7 +78,10 @@ export function ConversationRow({
           <span className="conversation-name">{conversation.contact.name}</span>
           <span className="conversation-phone">{conversation.contact.phone}</span>
         </div>
-        <div className="last-message">{conversation.lastMessage || "Sem mensagens recentes"}</div>
+        <div className={`last-message ${conversation.searchMatch ? "search-match" : ""}`}>
+          {conversation.searchMatch ? <><span className="search-match-source">{searchSourceLabel[conversation.searchMatch.source] || "Busca"}:</span> <HighlightedText text={conversation.searchMatch.snippet} query={conversation.searchMatch.source === "message" ? searchQuery : undefined} /></> : (conversation.lastMessage || "Sem mensagens recentes")}
+        </div>
+        {conversation.searchMatch?.source === "message" && conversation.searchMatch.senderDisplayName ? <div className="search-match-sender">Mensagem de {conversation.searchMatch.senderDisplayName}</div> : null}
         <div style={{ marginTop: 7, display: "flex", gap: 7, alignItems: "center" }}>
           <Status status={conversation.status} />
           <span style={{ color: "hsl(var(--muted-foreground))", fontSize: 10 }}>
@@ -68,7 +92,7 @@ export function ConversationRow({
         {conversation.labels?.length ? <div className="mt-2 flex flex-wrap gap-1">{conversation.labels.slice(0, 3).map((label) => <ConversationLabelBadge key={label.id} label={label} />)}</div> : null}
       </div>
       <div className="row-side">
-        <span className="time">{timeLabel(conversation.startedAt)}</span>
+        <span className="time">{timeLabel(conversation.searchMatch?.source === "message" ? conversation.searchMatch.createdAt : conversation.startedAt)}</span>
         {conversation.unreadCount > 0 && <span className="count">{conversation.unreadCount}</span>}
       </div>
     </Link>

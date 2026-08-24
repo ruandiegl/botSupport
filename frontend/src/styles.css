@@ -1775,7 +1775,6 @@ body { letter-spacing: 0; }
 }
 
 [data-theme="dark"] ::selection { background: rgba(127, 158, 171, .28); }
-[data-theme="dark"] .brand-name span,
 [data-theme="dark"] .crumb-link:hover,
 [data-theme="dark"] .eyebrow,
 [data-theme="dark"] .panel-title svg,
@@ -1979,4 +1978,80 @@ body { letter-spacing: 0; }
 [data-theme="dark"] .thread-head .contact-block .text-muted-foreground,
 [data-theme="dark"] .thread-head .contact-block p {
   color: #94a3b8 !important;
+}
+
+/* Global conversation search: keeps the existing queue toolbar shape while
+   giving the WhatsApp-like result surface a stable, accessible anchor. */
+.global-search-field {
+  display: flex;
+  min-width: 280px;
+  flex: 1 1 320px;
+  height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 11px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  background: hsl(var(--background));
+  color: hsl(var(--muted-foreground));
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.global-search-field:focus-within,
+.global-search-field[aria-expanded="true"] {
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / .12);
+}
+.global-search-field > svg { width: 15px; flex: none; }
+.global-search-field input { min-width: 0; flex: 1; }
+.global-search-field button { color: hsl(var(--muted-foreground)); }
+.global-search-field button:hover { color: hsl(var(--foreground)); }
+@media (max-width: 760px) {
+  .global-search-field { min-width: 100%; flex-basis: 100%; }
+}
+.search-match-source {
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+.search-match-sender {
+  margin-top: 3px;
+  color: hsl(var(--muted-foreground));
+  font-size: 11px;
+}
+.search-results-stack {
+  display: grid;
+  gap: 18px;
+}
+.search-results-section + .search-results-section {
+  padding-top: 4px;
+  border-top: 1px solid hsl(var(--border));
+}
+.search-results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 9px;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.search-results-heading h3 {
+  margin: 0;
+  color: hsl(var(--foreground));
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.search-results-empty {
+  margin: 0 16px 14px;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+.search-highlight {
+  border-radius: 3px;
+  background: hsl(var(--primary) / .18);
+  color: hsl(var(--foreground));
+  font-weight: 700;
 }

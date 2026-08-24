@@ -19,6 +19,7 @@ import RbacAdmin from "@/pages/admin/rbac";
 import ShortcutsAdmin from "@/pages/admin/shortcuts";
 import LabelsAdmin from "@/pages/admin/labels";
 import BotExclusionsAdmin from "@/pages/admin/bot-exclusions";
+import BusinessHoursAdmin from "@/pages/admin/business-hours";
 import "@/styles.css";
 
 function NotFoundPage() {
@@ -127,6 +128,9 @@ function Router() {
               </Route>
               <Route path="/admin/bot-exclusions">
                 {() => <ProtectedRoute component={BotExclusionsAdmin} screen="/admin/bot-exclusions" />}
+              </Route>
+              <Route path="/admin/business-hours">
+                {() => <ProtectedRoute component={BusinessHoursAdmin} screen="/admin/business-hours" />}
               </Route>
               <Route path="/admin/zapi">
                 {() => <ProtectedRoute component={ZApiAdmin} screen="/admin/zapi" />}

@@ -143,6 +143,7 @@ export class ZApiRepository {
     senderContactId?: string | null;
     senderNameSnapshot?: string | null;
     senderDepartmentSnapshot?: string | null;
+    messageType?: string;
     content: string;
   }) {
     const message = await prisma.message.create({
@@ -154,6 +155,7 @@ export class ZApiRepository {
         senderContactId: data.senderContactId ?? null,
         senderNameSnapshot: data.senderNameSnapshot ?? null,
         senderDepartmentSnapshot: data.senderDepartmentSnapshot ?? null,
+        messageType: data.messageType ?? "TEXT",
         content: data.content,
       },
     });

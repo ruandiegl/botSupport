@@ -9,15 +9,16 @@ datasource db {
 }
 
 model Department {
-  id            String         @id @default(uuid())
-  name          String
-  description   String?
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  procedures    Procedure[]
-  agents        Agent[]
-  conversations Conversation[]
-  shortcuts     Shortcut[]
-  flowNodes     FlowNode[]
+  id                    String                @id @default(uuid())
+  name                  String
+  description           String?
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz
+  procedures            Procedure[]
+  agents                Agent[]
+  conversations         Conversation[]
+  shortcuts             Shortcut[]
+  flowNodes             FlowNode[]
+  businessHoursPolicies BusinessHoursPolicy[]
 
   @@map("gtf_departments")
 }
@@ -57,9 +58,9 @@ model Agent {
   notifications           Notification[]
   notificationPreference  NotificationPreference?
   addedConversationLabels ConversationLabel[]
-  botExclusionsCreated    BotExclusion[]          @relation("BotExclusionCreatedBy")
-  botExclusionsUpdated    BotExclusion[]          @relation("BotExclusionUpdatedBy")
-  botExclusionsDisabled   BotExclusion[]          @relation("BotExclusionDisabledBy")
+  botExclusionsCreated    BotExclusion[]           @relation("BotExclusionCreatedBy")
+  botExclusionsUpdated    BotExclusion[]           @relation("BotExclusionUpdatedBy")
+  botExclusionsDisabled   BotExclusion[]           @relation("BotExclusionDisabledBy")
 
   @@map("gtf_agents")
 }
@@ -95,14 +96,14 @@ model Contact {
 }
 
 model ContactPhone {
-  id          String   @id @default(uuid())
-  contactId   String   @map("contact_id")
-  phone       String   @unique
-  label       String?
-  isPrimary   Boolean  @default(false) @map("is_primary")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-  contact     Contact  @relation("ContactPhoneOwner", fields: [contactId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  contactId String   @map("contact_id")
+  phone     String   @unique
+  label     String?
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  contact   Contact  @relation("ContactPhoneOwner", fields: [contactId], references: [id], onDelete: Cascade)
 
   @@index([contactId, isPrimary])
   @@map("gtf_contact_phones")
@@ -131,34 +132,35 @@ model BotExclusion {
 }
 
 model Conversation {
-  id                String                   @id @default(uuid())
-  contactId         String                   @map("contact_id")
-  status            String                   @default("OPEN")
-  departmentId      String?                  @map("department_id")
-  assignedAgentId   String?                  @map("assigned_agent_id")
-  currentStep       String?                  @map("current_step")
-  flowRevisionId    String?                  @map("flow_revision_id")
-  currentFlowNodeId String?                  @map("current_flow_node_id")
-  flowContext       Json?                    @map("flow_context")
-  startedAt         DateTime                 @default(now()) @map("started_at") @db.Timestamptz
-  queuedAt          DateTime?                @map("queued_at") @db.Timestamptz
-  lastActivityAt    DateTime                 @default(now()) @map("last_activity_at") @db.Timestamptz
-  closedAt          DateTime?                @map("closed_at") @db.Timestamptz
-  warningSentAt     DateTime?                @map("warning_sent_at") @db.Timestamptz
-  closeReason       String?                  @map("close_reason")
-  contact           Contact                  @relation(fields: [contactId], references: [id])
-  department        Department?              @relation(fields: [departmentId], references: [id])
-  assignedAgent     Agent?                   @relation(fields: [assignedAgentId], references: [id])
-  messages          Message[]
-  flowRevision      FlowRevision?            @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
-  currentFlowNode   FlowNode?                @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
-  flowEvents        FlowExecutionEvent[]
-  notifications     Notification[]
-  assignments       ConversationAssignment[]
-  media             ConversationMedia[]
-  labels            ConversationLabel[]
-  groupChatName     String?                  @map("group_chat_name")
-  groupParticipant  String?                  @map("group_participant")
+  id                   String                   @id @default(uuid())
+  contactId            String                   @map("contact_id")
+  status               String                   @default("OPEN")
+  departmentId         String?                  @map("department_id")
+  assignedAgentId      String?                  @map("assigned_agent_id")
+  currentStep          String?                  @map("current_step")
+  flowRevisionId       String?                  @map("flow_revision_id")
+  currentFlowNodeId    String?                  @map("current_flow_node_id")
+  flowContext          Json?                    @map("flow_context")
+  startedAt            DateTime                 @default(now()) @map("started_at") @db.Timestamptz
+  queuedAt             DateTime?                @map("queued_at") @db.Timestamptz
+  lastActivityAt       DateTime                 @default(now()) @map("last_activity_at") @db.Timestamptz
+  closedAt             DateTime?                @map("closed_at") @db.Timestamptz
+  warningSentAt        DateTime?                @map("warning_sent_at") @db.Timestamptz
+  closeReason          String?                  @map("close_reason")
+  contact              Contact                  @relation(fields: [contactId], references: [id])
+  department           Department?              @relation(fields: [departmentId], references: [id])
+  assignedAgent        Agent?                   @relation(fields: [assignedAgentId], references: [id])
+  messages             Message[]
+  flowRevision         FlowRevision?            @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
+  currentFlowNode      FlowNode?                @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
+  flowEvents           FlowExecutionEvent[]
+  notifications        Notification[]
+  assignments          ConversationAssignment[]
+  media                ConversationMedia[]
+  labels               ConversationLabel[]
+  businessHoursNotices BusinessHoursNotice[]
+  groupChatName        String?                  @map("group_chat_name")
+  groupParticipant     String?                  @map("group_participant")
 
   @@index([flowRevisionId])
   @@index([currentFlowNodeId])
@@ -197,18 +199,18 @@ model Message {
 }
 
 model ContactShare {
-  id                  String   @id @default(uuid())
-  messageId           String   @unique @map("message_id")
-  canonicalContactId  String?  @map("canonical_contact_id")
-  displayName         String   @map("display_name")
-  phones              Json
-  primaryPhone        String?  @map("primary_phone")
-  email               String?
-  organization        String?
-  note                String?
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
-  message             Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  canonicalContact    Contact? @relation("ContactShareCanonicalContact", fields: [canonicalContactId], references: [id], onDelete: SetNull)
+  id                 String   @id @default(uuid())
+  messageId          String   @unique @map("message_id")
+  canonicalContactId String?  @map("canonical_contact_id")
+  displayName        String   @map("display_name")
+  phones             Json
+  primaryPhone       String?  @map("primary_phone")
+  email              String?
+  organization       String?
+  note               String?
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  message            Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  canonicalContact   Contact? @relation("ContactShareCanonicalContact", fields: [canonicalContactId], references: [id], onDelete: SetNull)
 
   @@index([canonicalContactId])
   @@map("gtf_contact_shares")
@@ -301,22 +303,122 @@ model FlowDefinition {
 }
 
 model ZApiConfig {
-  id                   String   @id @default(uuid())
-  instanceId           String   @map("instance_id")
-  token                String
-  clientToken          String?  @map("client_token")
-  webhookUrl           String?  @map("webhook_url")
-  isActive             Boolean  @default(true) @map("is_active")
-  autoReply            Boolean  @default(true) @map("auto_reply")
-  instancePhone        String?  @map("instance_phone")
-  instanceLid          String?  @map("instance_lid")
-  groupsEnabled        Boolean  @default(false) @map("groups_enabled")
-  groupCooldownSeconds Int      @default(60) @map("group_cooldown_seconds")
-  groupConfirmInGroup  Boolean  @default(false) @map("group_confirm_in_group")
-  groupConfirmMessage  String?  @map("group_confirm_message")
-  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                    String                @id @default(uuid())
+  instanceId            String                @map("instance_id")
+  token                 String
+  clientToken           String?               @map("client_token")
+  webhookUrl            String?               @map("webhook_url")
+  isActive              Boolean               @default(true) @map("is_active")
+  autoReply             Boolean               @default(true) @map("auto_reply")
+  instancePhone         String?               @map("instance_phone")
+  instanceLid           String?               @map("instance_lid")
+  groupsEnabled         Boolean               @default(false) @map("groups_enabled")
+  groupCooldownSeconds  Int                   @default(60) @map("group_cooldown_seconds")
+  groupConfirmInGroup   Boolean               @default(false) @map("group_confirm_in_group")
+  groupConfirmMessage   String?               @map("group_confirm_message")
+  businessHoursPolicies BusinessHoursPolicy[]
+  updatedAt             DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("gtf_zapi_config")
+}
+
+enum BusinessHoursMode {
+  SCHEDULE_ONLY
+  SCHEDULE_AND_ONLINE
+  ONLINE_ONLY
+}
+
+enum BusinessHoursExceptionKind {
+  CLOSED
+  SPECIAL_HOURS
+}
+
+enum BusinessHoursNoticeReason {
+  OUTSIDE_HOURS
+  NO_AGENT_ONLINE
+}
+
+enum BusinessHoursNoticeStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model BusinessHoursPolicy {
+  id                     String                   @id @default(uuid())
+  zApiConfigId           String                   @map("zapi_config_id")
+  departmentId           String?                  @map("department_id")
+  enabled                Boolean                  @default(false)
+  mode                   BusinessHoursMode        @default(SCHEDULE_AND_ONLINE)
+  timezone               String                   @default("America/Sao_Paulo")
+  outsideMessage         String                   @map("outside_message")
+  noAgentMessage         String?                  @map("no_agent_message")
+  noticeFrequency        String                   @default("ONCE_PER_WINDOW") @map("notice_frequency")
+  messageCooldownMinutes Int                      @default(60) @map("message_cooldown_minutes")
+  revision               Int                      @default(1)
+  updatedByAgentId       String?                  @map("updated_by_agent_id")
+  createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  zApiConfig             ZApiConfig               @relation(fields: [zApiConfigId], references: [id], onDelete: Cascade)
+  department             Department?              @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  intervals              BusinessHoursInterval[]
+  exceptions             BusinessHoursException[]
+  notices                BusinessHoursNotice[]
+
+  @@unique([zApiConfigId, departmentId])
+  @@index([zApiConfigId, enabled])
+  @@index([departmentId, enabled])
+  @@map("gtf_business_hours_policies")
+}
+
+model BusinessHoursInterval {
+  id          String              @id @default(uuid())
+  policyId    String              @map("policy_id")
+  weekday     Int
+  startMinute Int                 @map("start_minute")
+  endMinute   Int                 @map("end_minute")
+  sortOrder   Int                 @default(0) @map("sort_order")
+  policy      BusinessHoursPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId, weekday, sortOrder])
+  @@map("gtf_business_hours_intervals")
+}
+
+model BusinessHoursException {
+  id            String                     @id @default(uuid())
+  policyId      String                     @map("policy_id")
+  localDate     DateTime                   @map("local_date") @db.Date
+  kind          BusinessHoursExceptionKind
+  intervalsJson Json?                      @map("intervals_json")
+  reason        String?
+  createdAt     DateTime                   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  policy        BusinessHoursPolicy        @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, localDate])
+  @@index([localDate])
+  @@map("gtf_business_hours_exceptions")
+}
+
+model BusinessHoursNotice {
+  id             String                    @id @default(uuid())
+  conversationId String                    @map("conversation_id")
+  policyId       String                    @map("policy_id")
+  reason         BusinessHoursNoticeReason
+  windowKey      String                    @map("window_key")
+  status         BusinessHoursNoticeStatus @default(PENDING)
+  messageId      String?                   @map("message_id")
+  sentAt         DateTime?                 @map("sent_at") @db.Timestamptz
+  lastError      String?                   @map("last_error")
+  createdAt      DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime                  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  conversation   Conversation              @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  policy         BusinessHoursPolicy       @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, policyId, reason, windowKey])
+  @@index([status, updatedAt])
+  @@index([conversationId, createdAt])
+  @@map("gtf_business_hours_notices")
 }
 
 model Label {

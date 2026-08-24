@@ -18,6 +18,7 @@ import {
   UserRound,
   PanelLeftClose,
   PanelLeftOpen,
+  CalendarClock,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
@@ -149,6 +150,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       items: [
         { href: "/admin/departments", label: "Departamentos", icon: LayoutDashboard },
         { href: "/admin/agents", label: "Atendentes", icon: Users },
+        { href: "/admin/business-hours", label: "Horários de atendimento", icon: CalendarClock },
         { href: "/admin/rbac", label: "Controle de Acesso", icon: ShieldCheck },
       ],
     },
@@ -178,6 +180,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location.includes("conversation")) return "Conversa";
     if (location.includes("departments")) return "Departamentos";
     if (location.includes("agents")) return "Atendentes";
+    if (location.includes("business-hours")) return "Horários de atendimento";
     if (location.includes("shortcuts")) return "Atalhos e procedimentos";
     if (location.includes("labels")) return "Etiquetas";
     if (location.includes("bot-exclusions")) return "Contatos ignorados pelo bot";
@@ -194,6 +197,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location.includes("conversation")) return "/";
     if (location.includes("departments")) return "/admin/departments";
     if (location.includes("agents")) return "/admin/agents";
+    if (location.includes("business-hours")) return "/admin/business-hours";
     if (location.includes("shortcuts")) return "/admin/shortcuts";
     if (location.includes("labels")) return "/admin/labels";
     if (location.includes("bot-exclusions")) return "/admin/bot-exclusions";

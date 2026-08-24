@@ -10,6 +10,7 @@ import {
   CloseConversationBodySchema,
   ListMessagesQuerySchema,
   CreateConversationBodySchema,
+  SearchConversationsQuerySchema,
 } from "./conversations.schemas.js";
 
 function getParam(req: Request, key: string): string {
@@ -48,6 +49,28 @@ export class ConversationsController {
     };
     const conversations = await conversationsService.list(filters, req.user);
     res.json(conversations);
+  }
+
+  async search(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const parsed = SearchConversationsQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    if (req.user?.role === "AGENT" && parsed.data.departmentId !== "ALL" && parsed.data.departmentId !== req.user.departmentId) {
+      res.status(403).json({ error: "Você não pode consultar outro departamento." });
+      return;
+    }
+    const filters = {
+      ...parsed.data,
+      ...(parsed.data.departmentId !== "ALL" ? { departmentId: parsed.data.departmentId } : {}),
+      ...(parsed.data.scope === "mine" || (req.user?.role === "AGENT" && !req.user.departmentId)
+        ? { assignedAgentId: req.user?.id }
+        : {}),
+      ...(req.user?.role === "AGENT" && req.user.departmentId ? { departmentId: req.user.departmentId } : {}),
+    };
+    const result = await conversationsService.search(filters);
+    res.json(result);
   }
 
   async getById(req: Request, res: Response): Promise<void> {

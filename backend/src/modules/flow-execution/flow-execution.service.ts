@@ -100,8 +100,9 @@ export class FlowExecutionService {
     const descriptionByKey = new Map(configuredOptions.flatMap((value) => {
       if (!value || typeof value !== "object" || Array.isArray(value)) return [];
       const option = value as Record<string, unknown>;
-      return typeof option.optionKey === "string" && typeof option.description === "string"
-        ? [[option.optionKey, option.description] as const]
+      const description = typeof option.description === "string" ? option.description.trim() : "";
+      return typeof option.optionKey === "string" && description
+        ? [[option.optionKey, description] as const]
         : [];
     }));
     return {

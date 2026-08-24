@@ -39,6 +39,30 @@ export const ListConversationsQuerySchema = z.object({
   }
 });
 
+export const SearchConversationsQuerySchema = z.object({
+  q: z.string().trim().min(1, "Informe um termo para buscar").max(120, "A busca deve ter no máximo 120 caracteres"),
+  scope: z.enum(["all", "unread", "mine", "groups"]).default("all"),
+  status: z.enum(["ALL", "OPEN", "IN_PROGRESS", "CLOSED"]).default("ALL"),
+  departmentId: z.union([z.literal("ALL"), z.string().uuid()]).default("ALL"),
+  labelIds: labelIds.optional(),
+  dateField: z.enum(["lastActivityAt", "createdAt"]).default("lastActivityAt"),
+  from: z.string().datetime({ offset: true }).optional(),
+  to: z.string().datetime({ offset: true }).optional(),
+  sort: z.enum(["relevance", "recent", "oldest"]).default("relevance"),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(5).max(50).default(20),
+}).strict().superRefine((value, ctx) => {
+  if (value.from && value.to) {
+    const from = Date.parse(value.from);
+    const to = Date.parse(value.to);
+    if (to <= from) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["to"], message: "to deve ser posterior a from" });
+    if (to - from > 366 * 24 * 60 * 60 * 1000) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["from"], message: "O intervalo máximo é de 366 dias" });
+  }
+  if (value.to && Date.parse(value.to) > Date.now()) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["to"], message: "to não pode estar no futuro" });
+  }
+});
+
 export const IdParamSchema = z.object({
   id: z.string().uuid(),
 });
@@ -77,6 +101,7 @@ export const CreateConversationBodySchema = z.object({
 }).strict();
 
 export type ListConversationsQuery = z.infer<typeof ListConversationsQuerySchema>;
+export type SearchConversationsQuery = z.infer<typeof SearchConversationsQuerySchema>;
 export type AssumeConversationBody = z.infer<typeof AssumeConversationBodySchema>;
 export type DelegateConversationBody = z.infer<typeof DelegateConversationBodySchema>;
 export type DelegationResponseBody = z.infer<typeof DelegationResponseBodySchema>;

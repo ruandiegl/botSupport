@@ -85,6 +85,26 @@ export type FlowDefinition = $Result.DefaultSelection<Prisma.$FlowDefinitionPayl
  */
 export type ZApiConfig = $Result.DefaultSelection<Prisma.$ZApiConfigPayload>
 /**
+ * Model BusinessHoursPolicy
+ * 
+ */
+export type BusinessHoursPolicy = $Result.DefaultSelection<Prisma.$BusinessHoursPolicyPayload>
+/**
+ * Model BusinessHoursInterval
+ * 
+ */
+export type BusinessHoursInterval = $Result.DefaultSelection<Prisma.$BusinessHoursIntervalPayload>
+/**
+ * Model BusinessHoursException
+ * 
+ */
+export type BusinessHoursException = $Result.DefaultSelection<Prisma.$BusinessHoursExceptionPayload>
+/**
+ * Model BusinessHoursNotice
+ * 
+ */
+export type BusinessHoursNotice = $Result.DefaultSelection<Prisma.$BusinessHoursNoticePayload>
+/**
  * Model Label
  * 
  */
@@ -170,6 +190,40 @@ export const MediaStatus: {
 export type MediaStatus = (typeof MediaStatus)[keyof typeof MediaStatus]
 
 
+export const BusinessHoursMode: {
+  SCHEDULE_ONLY: 'SCHEDULE_ONLY',
+  SCHEDULE_AND_ONLINE: 'SCHEDULE_AND_ONLINE',
+  ONLINE_ONLY: 'ONLINE_ONLY'
+};
+
+export type BusinessHoursMode = (typeof BusinessHoursMode)[keyof typeof BusinessHoursMode]
+
+
+export const BusinessHoursExceptionKind: {
+  CLOSED: 'CLOSED',
+  SPECIAL_HOURS: 'SPECIAL_HOURS'
+};
+
+export type BusinessHoursExceptionKind = (typeof BusinessHoursExceptionKind)[keyof typeof BusinessHoursExceptionKind]
+
+
+export const BusinessHoursNoticeReason: {
+  OUTSIDE_HOURS: 'OUTSIDE_HOURS',
+  NO_AGENT_ONLINE: 'NO_AGENT_ONLINE'
+};
+
+export type BusinessHoursNoticeReason = (typeof BusinessHoursNoticeReason)[keyof typeof BusinessHoursNoticeReason]
+
+
+export const BusinessHoursNoticeStatus: {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
+export type BusinessHoursNoticeStatus = (typeof BusinessHoursNoticeStatus)[keyof typeof BusinessHoursNoticeStatus]
+
+
 export const FlowRevisionStatus: {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
@@ -224,6 +278,22 @@ export const MediaType: typeof $Enums.MediaType
 export type MediaStatus = $Enums.MediaStatus
 
 export const MediaStatus: typeof $Enums.MediaStatus
+
+export type BusinessHoursMode = $Enums.BusinessHoursMode
+
+export const BusinessHoursMode: typeof $Enums.BusinessHoursMode
+
+export type BusinessHoursExceptionKind = $Enums.BusinessHoursExceptionKind
+
+export const BusinessHoursExceptionKind: typeof $Enums.BusinessHoursExceptionKind
+
+export type BusinessHoursNoticeReason = $Enums.BusinessHoursNoticeReason
+
+export const BusinessHoursNoticeReason: typeof $Enums.BusinessHoursNoticeReason
+
+export type BusinessHoursNoticeStatus = $Enums.BusinessHoursNoticeStatus
+
+export const BusinessHoursNoticeStatus: typeof $Enums.BusinessHoursNoticeStatus
 
 export type FlowRevisionStatus = $Enums.FlowRevisionStatus
 
@@ -503,6 +573,46 @@ export class PrismaClient<
     * ```
     */
   get zApiConfig(): Prisma.ZApiConfigDelegate<ExtArgs>;
+
+  /**
+   * `prisma.businessHoursPolicy`: Exposes CRUD operations for the **BusinessHoursPolicy** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BusinessHoursPolicies
+    * const businessHoursPolicies = await prisma.businessHoursPolicy.findMany()
+    * ```
+    */
+  get businessHoursPolicy(): Prisma.BusinessHoursPolicyDelegate<ExtArgs>;
+
+  /**
+   * `prisma.businessHoursInterval`: Exposes CRUD operations for the **BusinessHoursInterval** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BusinessHoursIntervals
+    * const businessHoursIntervals = await prisma.businessHoursInterval.findMany()
+    * ```
+    */
+  get businessHoursInterval(): Prisma.BusinessHoursIntervalDelegate<ExtArgs>;
+
+  /**
+   * `prisma.businessHoursException`: Exposes CRUD operations for the **BusinessHoursException** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BusinessHoursExceptions
+    * const businessHoursExceptions = await prisma.businessHoursException.findMany()
+    * ```
+    */
+  get businessHoursException(): Prisma.BusinessHoursExceptionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.businessHoursNotice`: Exposes CRUD operations for the **BusinessHoursNotice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BusinessHoursNotices
+    * const businessHoursNotices = await prisma.businessHoursNotice.findMany()
+    * ```
+    */
+  get businessHoursNotice(): Prisma.BusinessHoursNoticeDelegate<ExtArgs>;
 
   /**
    * `prisma.label`: Exposes CRUD operations for the **Label** model.
@@ -1068,6 +1178,10 @@ export namespace Prisma {
     ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
+    BusinessHoursPolicy: 'BusinessHoursPolicy',
+    BusinessHoursInterval: 'BusinessHoursInterval',
+    BusinessHoursException: 'BusinessHoursException',
+    BusinessHoursNotice: 'BusinessHoursNotice',
     Label: 'Label',
     ConversationLabel: 'ConversationLabel',
     GroupMentionCooldown: 'GroupMentionCooldown',
@@ -1094,7 +1208,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "businessHoursPolicy" | "businessHoursInterval" | "businessHoursException" | "businessHoursNotice" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2078,6 +2192,286 @@ export namespace Prisma {
           }
         }
       }
+      BusinessHoursPolicy: {
+        payload: Prisma.$BusinessHoursPolicyPayload<ExtArgs>
+        fields: Prisma.BusinessHoursPolicyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BusinessHoursPolicyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BusinessHoursPolicyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          findFirst: {
+            args: Prisma.BusinessHoursPolicyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BusinessHoursPolicyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          findMany: {
+            args: Prisma.BusinessHoursPolicyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>[]
+          }
+          create: {
+            args: Prisma.BusinessHoursPolicyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          createMany: {
+            args: Prisma.BusinessHoursPolicyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BusinessHoursPolicyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>[]
+          }
+          delete: {
+            args: Prisma.BusinessHoursPolicyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          update: {
+            args: Prisma.BusinessHoursPolicyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          deleteMany: {
+            args: Prisma.BusinessHoursPolicyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BusinessHoursPolicyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BusinessHoursPolicyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursPolicyPayload>
+          }
+          aggregate: {
+            args: Prisma.BusinessHoursPolicyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBusinessHoursPolicy>
+          }
+          groupBy: {
+            args: Prisma.BusinessHoursPolicyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursPolicyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BusinessHoursPolicyCountArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursPolicyCountAggregateOutputType> | number
+          }
+        }
+      }
+      BusinessHoursInterval: {
+        payload: Prisma.$BusinessHoursIntervalPayload<ExtArgs>
+        fields: Prisma.BusinessHoursIntervalFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BusinessHoursIntervalFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BusinessHoursIntervalFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          findFirst: {
+            args: Prisma.BusinessHoursIntervalFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BusinessHoursIntervalFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          findMany: {
+            args: Prisma.BusinessHoursIntervalFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>[]
+          }
+          create: {
+            args: Prisma.BusinessHoursIntervalCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          createMany: {
+            args: Prisma.BusinessHoursIntervalCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BusinessHoursIntervalCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>[]
+          }
+          delete: {
+            args: Prisma.BusinessHoursIntervalDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          update: {
+            args: Prisma.BusinessHoursIntervalUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          deleteMany: {
+            args: Prisma.BusinessHoursIntervalDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BusinessHoursIntervalUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BusinessHoursIntervalUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursIntervalPayload>
+          }
+          aggregate: {
+            args: Prisma.BusinessHoursIntervalAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBusinessHoursInterval>
+          }
+          groupBy: {
+            args: Prisma.BusinessHoursIntervalGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursIntervalGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BusinessHoursIntervalCountArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursIntervalCountAggregateOutputType> | number
+          }
+        }
+      }
+      BusinessHoursException: {
+        payload: Prisma.$BusinessHoursExceptionPayload<ExtArgs>
+        fields: Prisma.BusinessHoursExceptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BusinessHoursExceptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BusinessHoursExceptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          findFirst: {
+            args: Prisma.BusinessHoursExceptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BusinessHoursExceptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          findMany: {
+            args: Prisma.BusinessHoursExceptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>[]
+          }
+          create: {
+            args: Prisma.BusinessHoursExceptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          createMany: {
+            args: Prisma.BusinessHoursExceptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BusinessHoursExceptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>[]
+          }
+          delete: {
+            args: Prisma.BusinessHoursExceptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          update: {
+            args: Prisma.BusinessHoursExceptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.BusinessHoursExceptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BusinessHoursExceptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BusinessHoursExceptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursExceptionPayload>
+          }
+          aggregate: {
+            args: Prisma.BusinessHoursExceptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBusinessHoursException>
+          }
+          groupBy: {
+            args: Prisma.BusinessHoursExceptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursExceptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BusinessHoursExceptionCountArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursExceptionCountAggregateOutputType> | number
+          }
+        }
+      }
+      BusinessHoursNotice: {
+        payload: Prisma.$BusinessHoursNoticePayload<ExtArgs>
+        fields: Prisma.BusinessHoursNoticeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BusinessHoursNoticeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BusinessHoursNoticeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          findFirst: {
+            args: Prisma.BusinessHoursNoticeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BusinessHoursNoticeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          findMany: {
+            args: Prisma.BusinessHoursNoticeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>[]
+          }
+          create: {
+            args: Prisma.BusinessHoursNoticeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          createMany: {
+            args: Prisma.BusinessHoursNoticeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BusinessHoursNoticeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>[]
+          }
+          delete: {
+            args: Prisma.BusinessHoursNoticeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          update: {
+            args: Prisma.BusinessHoursNoticeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          deleteMany: {
+            args: Prisma.BusinessHoursNoticeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BusinessHoursNoticeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BusinessHoursNoticeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BusinessHoursNoticePayload>
+          }
+          aggregate: {
+            args: Prisma.BusinessHoursNoticeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBusinessHoursNotice>
+          }
+          groupBy: {
+            args: Prisma.BusinessHoursNoticeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursNoticeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BusinessHoursNoticeCountArgs<ExtArgs>
+            result: $Utils.Optional<BusinessHoursNoticeCountAggregateOutputType> | number
+          }
+        }
+      }
       Label: {
         payload: Prisma.$LabelPayload<ExtArgs>
         fields: Prisma.LabelFieldRefs
@@ -3014,6 +3408,7 @@ export namespace Prisma {
     conversations: number
     shortcuts: number
     flowNodes: number
+    businessHoursPolicies: number
   }
 
   export type DepartmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3022,6 +3417,7 @@ export namespace Prisma {
     conversations?: boolean | DepartmentCountOutputTypeCountConversationsArgs
     shortcuts?: boolean | DepartmentCountOutputTypeCountShortcutsArgs
     flowNodes?: boolean | DepartmentCountOutputTypeCountFlowNodesArgs
+    businessHoursPolicies?: boolean | DepartmentCountOutputTypeCountBusinessHoursPoliciesArgs
   }
 
   // Custom InputTypes
@@ -3068,6 +3464,13 @@ export namespace Prisma {
    */
   export type DepartmentCountOutputTypeCountFlowNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FlowNodeWhereInput
+  }
+
+  /**
+   * DepartmentCountOutputType without action
+   */
+  export type DepartmentCountOutputTypeCountBusinessHoursPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursPolicyWhereInput
   }
 
 
@@ -3297,6 +3700,7 @@ export namespace Prisma {
     assignments: number
     media: number
     labels: number
+    businessHoursNotices: number
   }
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3306,6 +3710,7 @@ export namespace Prisma {
     assignments?: boolean | ConversationCountOutputTypeCountAssignmentsArgs
     media?: boolean | ConversationCountOutputTypeCountMediaArgs
     labels?: boolean | ConversationCountOutputTypeCountLabelsArgs
+    businessHoursNotices?: boolean | ConversationCountOutputTypeCountBusinessHoursNoticesArgs
   }
 
   // Custom InputTypes
@@ -3361,6 +3766,13 @@ export namespace Prisma {
     where?: ConversationLabelWhereInput
   }
 
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountBusinessHoursNoticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursNoticeWhereInput
+  }
+
 
   /**
    * Count Type FlowDefinitionCountOutputType
@@ -3390,6 +3802,86 @@ export namespace Prisma {
    */
   export type FlowDefinitionCountOutputTypeCountRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FlowRevisionWhereInput
+  }
+
+
+  /**
+   * Count Type ZApiConfigCountOutputType
+   */
+
+  export type ZApiConfigCountOutputType = {
+    businessHoursPolicies: number
+  }
+
+  export type ZApiConfigCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    businessHoursPolicies?: boolean | ZApiConfigCountOutputTypeCountBusinessHoursPoliciesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ZApiConfigCountOutputType without action
+   */
+  export type ZApiConfigCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ZApiConfigCountOutputType
+     */
+    select?: ZApiConfigCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ZApiConfigCountOutputType without action
+   */
+  export type ZApiConfigCountOutputTypeCountBusinessHoursPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+
+  /**
+   * Count Type BusinessHoursPolicyCountOutputType
+   */
+
+  export type BusinessHoursPolicyCountOutputType = {
+    intervals: number
+    exceptions: number
+    notices: number
+  }
+
+  export type BusinessHoursPolicyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    intervals?: boolean | BusinessHoursPolicyCountOutputTypeCountIntervalsArgs
+    exceptions?: boolean | BusinessHoursPolicyCountOutputTypeCountExceptionsArgs
+    notices?: boolean | BusinessHoursPolicyCountOutputTypeCountNoticesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BusinessHoursPolicyCountOutputType without action
+   */
+  export type BusinessHoursPolicyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicyCountOutputType
+     */
+    select?: BusinessHoursPolicyCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BusinessHoursPolicyCountOutputType without action
+   */
+  export type BusinessHoursPolicyCountOutputTypeCountIntervalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursIntervalWhereInput
+  }
+
+  /**
+   * BusinessHoursPolicyCountOutputType without action
+   */
+  export type BusinessHoursPolicyCountOutputTypeCountExceptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursExceptionWhereInput
+  }
+
+  /**
+   * BusinessHoursPolicyCountOutputType without action
+   */
+  export type BusinessHoursPolicyCountOutputTypeCountNoticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursNoticeWhereInput
   }
 
 
@@ -3736,6 +4228,7 @@ export namespace Prisma {
     conversations?: boolean | Department$conversationsArgs<ExtArgs>
     shortcuts?: boolean | Department$shortcutsArgs<ExtArgs>
     flowNodes?: boolean | Department$flowNodesArgs<ExtArgs>
+    businessHoursPolicies?: boolean | Department$businessHoursPoliciesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["department"]>
 
@@ -3759,6 +4252,7 @@ export namespace Prisma {
     conversations?: boolean | Department$conversationsArgs<ExtArgs>
     shortcuts?: boolean | Department$shortcutsArgs<ExtArgs>
     flowNodes?: boolean | Department$flowNodesArgs<ExtArgs>
+    businessHoursPolicies?: boolean | Department$businessHoursPoliciesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3771,6 +4265,7 @@ export namespace Prisma {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       shortcuts: Prisma.$ShortcutPayload<ExtArgs>[]
       flowNodes: Prisma.$FlowNodePayload<ExtArgs>[]
+      businessHoursPolicies: Prisma.$BusinessHoursPolicyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4146,6 +4641,7 @@ export namespace Prisma {
     conversations<T extends Department$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Department$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     shortcuts<T extends Department$shortcutsArgs<ExtArgs> = {}>(args?: Subset<T, Department$shortcutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortcutPayload<ExtArgs>, T, "findMany"> | Null>
     flowNodes<T extends Department$flowNodesArgs<ExtArgs> = {}>(args?: Subset<T, Department$flowNodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findMany"> | Null>
+    businessHoursPolicies<T extends Department$businessHoursPoliciesArgs<ExtArgs> = {}>(args?: Subset<T, Department$businessHoursPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4590,6 +5086,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FlowNodeScalarFieldEnum | FlowNodeScalarFieldEnum[]
+  }
+
+  /**
+   * Department.businessHoursPolicies
+   */
+  export type Department$businessHoursPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    where?: BusinessHoursPolicyWhereInput
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursPolicyScalarFieldEnum | BusinessHoursPolicyScalarFieldEnum[]
   }
 
   /**
@@ -11179,6 +11695,7 @@ export namespace Prisma {
     assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
+    businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -11239,6 +11756,7 @@ export namespace Prisma {
     assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
+    businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11263,6 +11781,7 @@ export namespace Prisma {
       assignments: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       media: Prisma.$ConversationMediaPayload<ExtArgs>[]
       labels: Prisma.$ConversationLabelPayload<ExtArgs>[]
+      businessHoursNotices: Prisma.$BusinessHoursNoticePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11657,6 +12176,7 @@ export namespace Prisma {
     assignments<T extends Conversation$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     media<T extends Conversation$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany"> | Null>
     labels<T extends Conversation$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
+    businessHoursNotices<T extends Conversation$businessHoursNoticesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$businessHoursNoticesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12198,6 +12718,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ConversationLabelScalarFieldEnum | ConversationLabelScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation.businessHoursNotices
+   */
+  export type Conversation$businessHoursNoticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    where?: BusinessHoursNoticeWhereInput
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursNoticeScalarFieldEnum | BusinessHoursNoticeScalarFieldEnum[]
   }
 
   /**
@@ -17839,6 +18379,8 @@ export namespace Prisma {
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: boolean
     updatedAt?: boolean
+    businessHoursPolicies?: boolean | ZApiConfig$businessHoursPoliciesArgs<ExtArgs>
+    _count?: boolean | ZApiConfigCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["zApiConfig"]>
 
   export type ZApiConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -17875,10 +18417,17 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
+  export type ZApiConfigInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    businessHoursPolicies?: boolean | ZApiConfig$businessHoursPoliciesArgs<ExtArgs>
+    _count?: boolean | ZApiConfigCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ZApiConfigIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ZApiConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ZApiConfig"
-    objects: {}
+    objects: {
+      businessHoursPolicies: Prisma.$BusinessHoursPolicyPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       instanceId: string
@@ -18258,6 +18807,7 @@ export namespace Prisma {
    */
   export interface Prisma__ZApiConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    businessHoursPolicies<T extends ZApiConfig$businessHoursPoliciesArgs<ExtArgs> = {}>(args?: Subset<T, ZApiConfig$businessHoursPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18314,6 +18864,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * Filter, which ZApiConfig to fetch.
      */
     where: ZApiConfigWhereUniqueInput
@@ -18328,6 +18882,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * Filter, which ZApiConfig to fetch.
      */
     where: ZApiConfigWhereUniqueInput
@@ -18341,6 +18899,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ZApiConfig
      */
     select?: ZApiConfigSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
     /**
      * Filter, which ZApiConfig to fetch.
      */
@@ -18386,6 +18948,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * Filter, which ZApiConfig to fetch.
      */
     where?: ZApiConfigWhereInput
@@ -18430,6 +18996,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * Filter, which ZApiConfigs to fetch.
      */
     where?: ZApiConfigWhereInput
@@ -18468,6 +19038,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ZApiConfig
      */
     select?: ZApiConfigSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
     /**
      * The data needed to create a ZApiConfig.
      */
@@ -18509,6 +19083,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * The data needed to update a ZApiConfig.
      */
     data: XOR<ZApiConfigUpdateInput, ZApiConfigUncheckedUpdateInput>
@@ -18541,6 +19119,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * The filter to search for the ZApiConfig to update in case it exists.
      */
     where: ZApiConfigWhereUniqueInput
@@ -18563,6 +19145,10 @@ export namespace Prisma {
      */
     select?: ZApiConfigSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+    /**
      * Filter which ZApiConfig to delete.
      */
     where: ZApiConfigWhereUniqueInput
@@ -18579,6 +19165,26 @@ export namespace Prisma {
   }
 
   /**
+   * ZApiConfig.businessHoursPolicies
+   */
+  export type ZApiConfig$businessHoursPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    where?: BusinessHoursPolicyWhereInput
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursPolicyScalarFieldEnum | BusinessHoursPolicyScalarFieldEnum[]
+  }
+
+  /**
    * ZApiConfig without action
    */
   export type ZApiConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18586,6 +19192,4151 @@ export namespace Prisma {
      * Select specific fields to fetch from the ZApiConfig
      */
     select?: ZApiConfigSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ZApiConfigInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BusinessHoursPolicy
+   */
+
+  export type AggregateBusinessHoursPolicy = {
+    _count: BusinessHoursPolicyCountAggregateOutputType | null
+    _avg: BusinessHoursPolicyAvgAggregateOutputType | null
+    _sum: BusinessHoursPolicySumAggregateOutputType | null
+    _min: BusinessHoursPolicyMinAggregateOutputType | null
+    _max: BusinessHoursPolicyMaxAggregateOutputType | null
+  }
+
+  export type BusinessHoursPolicyAvgAggregateOutputType = {
+    messageCooldownMinutes: number | null
+    revision: number | null
+  }
+
+  export type BusinessHoursPolicySumAggregateOutputType = {
+    messageCooldownMinutes: number | null
+    revision: number | null
+  }
+
+  export type BusinessHoursPolicyMinAggregateOutputType = {
+    id: string | null
+    zApiConfigId: string | null
+    departmentId: string | null
+    enabled: boolean | null
+    mode: $Enums.BusinessHoursMode | null
+    timezone: string | null
+    outsideMessage: string | null
+    noAgentMessage: string | null
+    noticeFrequency: string | null
+    messageCooldownMinutes: number | null
+    revision: number | null
+    updatedByAgentId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursPolicyMaxAggregateOutputType = {
+    id: string | null
+    zApiConfigId: string | null
+    departmentId: string | null
+    enabled: boolean | null
+    mode: $Enums.BusinessHoursMode | null
+    timezone: string | null
+    outsideMessage: string | null
+    noAgentMessage: string | null
+    noticeFrequency: string | null
+    messageCooldownMinutes: number | null
+    revision: number | null
+    updatedByAgentId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursPolicyCountAggregateOutputType = {
+    id: number
+    zApiConfigId: number
+    departmentId: number
+    enabled: number
+    mode: number
+    timezone: number
+    outsideMessage: number
+    noAgentMessage: number
+    noticeFrequency: number
+    messageCooldownMinutes: number
+    revision: number
+    updatedByAgentId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BusinessHoursPolicyAvgAggregateInputType = {
+    messageCooldownMinutes?: true
+    revision?: true
+  }
+
+  export type BusinessHoursPolicySumAggregateInputType = {
+    messageCooldownMinutes?: true
+    revision?: true
+  }
+
+  export type BusinessHoursPolicyMinAggregateInputType = {
+    id?: true
+    zApiConfigId?: true
+    departmentId?: true
+    enabled?: true
+    mode?: true
+    timezone?: true
+    outsideMessage?: true
+    noAgentMessage?: true
+    noticeFrequency?: true
+    messageCooldownMinutes?: true
+    revision?: true
+    updatedByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursPolicyMaxAggregateInputType = {
+    id?: true
+    zApiConfigId?: true
+    departmentId?: true
+    enabled?: true
+    mode?: true
+    timezone?: true
+    outsideMessage?: true
+    noAgentMessage?: true
+    noticeFrequency?: true
+    messageCooldownMinutes?: true
+    revision?: true
+    updatedByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursPolicyCountAggregateInputType = {
+    id?: true
+    zApiConfigId?: true
+    departmentId?: true
+    enabled?: true
+    mode?: true
+    timezone?: true
+    outsideMessage?: true
+    noAgentMessage?: true
+    noticeFrequency?: true
+    messageCooldownMinutes?: true
+    revision?: true
+    updatedByAgentId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BusinessHoursPolicyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursPolicy to aggregate.
+     */
+    where?: BusinessHoursPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursPolicies to fetch.
+     */
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BusinessHoursPolicies
+    **/
+    _count?: true | BusinessHoursPolicyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BusinessHoursPolicyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BusinessHoursPolicySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BusinessHoursPolicyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BusinessHoursPolicyMaxAggregateInputType
+  }
+
+  export type GetBusinessHoursPolicyAggregateType<T extends BusinessHoursPolicyAggregateArgs> = {
+        [P in keyof T & keyof AggregateBusinessHoursPolicy]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBusinessHoursPolicy[P]>
+      : GetScalarType<T[P], AggregateBusinessHoursPolicy[P]>
+  }
+
+
+
+
+  export type BusinessHoursPolicyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursPolicyWhereInput
+    orderBy?: BusinessHoursPolicyOrderByWithAggregationInput | BusinessHoursPolicyOrderByWithAggregationInput[]
+    by: BusinessHoursPolicyScalarFieldEnum[] | BusinessHoursPolicyScalarFieldEnum
+    having?: BusinessHoursPolicyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BusinessHoursPolicyCountAggregateInputType | true
+    _avg?: BusinessHoursPolicyAvgAggregateInputType
+    _sum?: BusinessHoursPolicySumAggregateInputType
+    _min?: BusinessHoursPolicyMinAggregateInputType
+    _max?: BusinessHoursPolicyMaxAggregateInputType
+  }
+
+  export type BusinessHoursPolicyGroupByOutputType = {
+    id: string
+    zApiConfigId: string
+    departmentId: string | null
+    enabled: boolean
+    mode: $Enums.BusinessHoursMode
+    timezone: string
+    outsideMessage: string
+    noAgentMessage: string | null
+    noticeFrequency: string
+    messageCooldownMinutes: number
+    revision: number
+    updatedByAgentId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BusinessHoursPolicyCountAggregateOutputType | null
+    _avg: BusinessHoursPolicyAvgAggregateOutputType | null
+    _sum: BusinessHoursPolicySumAggregateOutputType | null
+    _min: BusinessHoursPolicyMinAggregateOutputType | null
+    _max: BusinessHoursPolicyMaxAggregateOutputType | null
+  }
+
+  type GetBusinessHoursPolicyGroupByPayload<T extends BusinessHoursPolicyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BusinessHoursPolicyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BusinessHoursPolicyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BusinessHoursPolicyGroupByOutputType[P]>
+            : GetScalarType<T[P], BusinessHoursPolicyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BusinessHoursPolicySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    zApiConfigId?: boolean
+    departmentId?: boolean
+    enabled?: boolean
+    mode?: boolean
+    timezone?: boolean
+    outsideMessage?: boolean
+    noAgentMessage?: boolean
+    noticeFrequency?: boolean
+    messageCooldownMinutes?: boolean
+    revision?: boolean
+    updatedByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    zApiConfig?: boolean | ZApiConfigDefaultArgs<ExtArgs>
+    department?: boolean | BusinessHoursPolicy$departmentArgs<ExtArgs>
+    intervals?: boolean | BusinessHoursPolicy$intervalsArgs<ExtArgs>
+    exceptions?: boolean | BusinessHoursPolicy$exceptionsArgs<ExtArgs>
+    notices?: boolean | BusinessHoursPolicy$noticesArgs<ExtArgs>
+    _count?: boolean | BusinessHoursPolicyCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursPolicy"]>
+
+  export type BusinessHoursPolicySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    zApiConfigId?: boolean
+    departmentId?: boolean
+    enabled?: boolean
+    mode?: boolean
+    timezone?: boolean
+    outsideMessage?: boolean
+    noAgentMessage?: boolean
+    noticeFrequency?: boolean
+    messageCooldownMinutes?: boolean
+    revision?: boolean
+    updatedByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    zApiConfig?: boolean | ZApiConfigDefaultArgs<ExtArgs>
+    department?: boolean | BusinessHoursPolicy$departmentArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursPolicy"]>
+
+  export type BusinessHoursPolicySelectScalar = {
+    id?: boolean
+    zApiConfigId?: boolean
+    departmentId?: boolean
+    enabled?: boolean
+    mode?: boolean
+    timezone?: boolean
+    outsideMessage?: boolean
+    noAgentMessage?: boolean
+    noticeFrequency?: boolean
+    messageCooldownMinutes?: boolean
+    revision?: boolean
+    updatedByAgentId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BusinessHoursPolicyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    zApiConfig?: boolean | ZApiConfigDefaultArgs<ExtArgs>
+    department?: boolean | BusinessHoursPolicy$departmentArgs<ExtArgs>
+    intervals?: boolean | BusinessHoursPolicy$intervalsArgs<ExtArgs>
+    exceptions?: boolean | BusinessHoursPolicy$exceptionsArgs<ExtArgs>
+    notices?: boolean | BusinessHoursPolicy$noticesArgs<ExtArgs>
+    _count?: boolean | BusinessHoursPolicyCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BusinessHoursPolicyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    zApiConfig?: boolean | ZApiConfigDefaultArgs<ExtArgs>
+    department?: boolean | BusinessHoursPolicy$departmentArgs<ExtArgs>
+  }
+
+  export type $BusinessHoursPolicyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BusinessHoursPolicy"
+    objects: {
+      zApiConfig: Prisma.$ZApiConfigPayload<ExtArgs>
+      department: Prisma.$DepartmentPayload<ExtArgs> | null
+      intervals: Prisma.$BusinessHoursIntervalPayload<ExtArgs>[]
+      exceptions: Prisma.$BusinessHoursExceptionPayload<ExtArgs>[]
+      notices: Prisma.$BusinessHoursNoticePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      zApiConfigId: string
+      departmentId: string | null
+      enabled: boolean
+      mode: $Enums.BusinessHoursMode
+      timezone: string
+      outsideMessage: string
+      noAgentMessage: string | null
+      noticeFrequency: string
+      messageCooldownMinutes: number
+      revision: number
+      updatedByAgentId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["businessHoursPolicy"]>
+    composites: {}
+  }
+
+  type BusinessHoursPolicyGetPayload<S extends boolean | null | undefined | BusinessHoursPolicyDefaultArgs> = $Result.GetResult<Prisma.$BusinessHoursPolicyPayload, S>
+
+  type BusinessHoursPolicyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BusinessHoursPolicyFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BusinessHoursPolicyCountAggregateInputType | true
+    }
+
+  export interface BusinessHoursPolicyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BusinessHoursPolicy'], meta: { name: 'BusinessHoursPolicy' } }
+    /**
+     * Find zero or one BusinessHoursPolicy that matches the filter.
+     * @param {BusinessHoursPolicyFindUniqueArgs} args - Arguments to find a BusinessHoursPolicy
+     * @example
+     * // Get one BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BusinessHoursPolicyFindUniqueArgs>(args: SelectSubset<T, BusinessHoursPolicyFindUniqueArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BusinessHoursPolicy that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BusinessHoursPolicyFindUniqueOrThrowArgs} args - Arguments to find a BusinessHoursPolicy
+     * @example
+     * // Get one BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BusinessHoursPolicyFindUniqueOrThrowArgs>(args: SelectSubset<T, BusinessHoursPolicyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursPolicy that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyFindFirstArgs} args - Arguments to find a BusinessHoursPolicy
+     * @example
+     * // Get one BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BusinessHoursPolicyFindFirstArgs>(args?: SelectSubset<T, BusinessHoursPolicyFindFirstArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursPolicy that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyFindFirstOrThrowArgs} args - Arguments to find a BusinessHoursPolicy
+     * @example
+     * // Get one BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BusinessHoursPolicyFindFirstOrThrowArgs>(args?: SelectSubset<T, BusinessHoursPolicyFindFirstOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BusinessHoursPolicies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BusinessHoursPolicies
+     * const businessHoursPolicies = await prisma.businessHoursPolicy.findMany()
+     * 
+     * // Get first 10 BusinessHoursPolicies
+     * const businessHoursPolicies = await prisma.businessHoursPolicy.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const businessHoursPolicyWithIdOnly = await prisma.businessHoursPolicy.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BusinessHoursPolicyFindManyArgs>(args?: SelectSubset<T, BusinessHoursPolicyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BusinessHoursPolicy.
+     * @param {BusinessHoursPolicyCreateArgs} args - Arguments to create a BusinessHoursPolicy.
+     * @example
+     * // Create one BusinessHoursPolicy
+     * const BusinessHoursPolicy = await prisma.businessHoursPolicy.create({
+     *   data: {
+     *     // ... data to create a BusinessHoursPolicy
+     *   }
+     * })
+     * 
+     */
+    create<T extends BusinessHoursPolicyCreateArgs>(args: SelectSubset<T, BusinessHoursPolicyCreateArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BusinessHoursPolicies.
+     * @param {BusinessHoursPolicyCreateManyArgs} args - Arguments to create many BusinessHoursPolicies.
+     * @example
+     * // Create many BusinessHoursPolicies
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BusinessHoursPolicyCreateManyArgs>(args?: SelectSubset<T, BusinessHoursPolicyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BusinessHoursPolicies and returns the data saved in the database.
+     * @param {BusinessHoursPolicyCreateManyAndReturnArgs} args - Arguments to create many BusinessHoursPolicies.
+     * @example
+     * // Create many BusinessHoursPolicies
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BusinessHoursPolicies and only return the `id`
+     * const businessHoursPolicyWithIdOnly = await prisma.businessHoursPolicy.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BusinessHoursPolicyCreateManyAndReturnArgs>(args?: SelectSubset<T, BusinessHoursPolicyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BusinessHoursPolicy.
+     * @param {BusinessHoursPolicyDeleteArgs} args - Arguments to delete one BusinessHoursPolicy.
+     * @example
+     * // Delete one BusinessHoursPolicy
+     * const BusinessHoursPolicy = await prisma.businessHoursPolicy.delete({
+     *   where: {
+     *     // ... filter to delete one BusinessHoursPolicy
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BusinessHoursPolicyDeleteArgs>(args: SelectSubset<T, BusinessHoursPolicyDeleteArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BusinessHoursPolicy.
+     * @param {BusinessHoursPolicyUpdateArgs} args - Arguments to update one BusinessHoursPolicy.
+     * @example
+     * // Update one BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BusinessHoursPolicyUpdateArgs>(args: SelectSubset<T, BusinessHoursPolicyUpdateArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BusinessHoursPolicies.
+     * @param {BusinessHoursPolicyDeleteManyArgs} args - Arguments to filter BusinessHoursPolicies to delete.
+     * @example
+     * // Delete a few BusinessHoursPolicies
+     * const { count } = await prisma.businessHoursPolicy.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BusinessHoursPolicyDeleteManyArgs>(args?: SelectSubset<T, BusinessHoursPolicyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BusinessHoursPolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BusinessHoursPolicies
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BusinessHoursPolicyUpdateManyArgs>(args: SelectSubset<T, BusinessHoursPolicyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BusinessHoursPolicy.
+     * @param {BusinessHoursPolicyUpsertArgs} args - Arguments to update or create a BusinessHoursPolicy.
+     * @example
+     * // Update or create a BusinessHoursPolicy
+     * const businessHoursPolicy = await prisma.businessHoursPolicy.upsert({
+     *   create: {
+     *     // ... data to create a BusinessHoursPolicy
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BusinessHoursPolicy we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BusinessHoursPolicyUpsertArgs>(args: SelectSubset<T, BusinessHoursPolicyUpsertArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BusinessHoursPolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyCountArgs} args - Arguments to filter BusinessHoursPolicies to count.
+     * @example
+     * // Count the number of BusinessHoursPolicies
+     * const count = await prisma.businessHoursPolicy.count({
+     *   where: {
+     *     // ... the filter for the BusinessHoursPolicies we want to count
+     *   }
+     * })
+    **/
+    count<T extends BusinessHoursPolicyCountArgs>(
+      args?: Subset<T, BusinessHoursPolicyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BusinessHoursPolicyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BusinessHoursPolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BusinessHoursPolicyAggregateArgs>(args: Subset<T, BusinessHoursPolicyAggregateArgs>): Prisma.PrismaPromise<GetBusinessHoursPolicyAggregateType<T>>
+
+    /**
+     * Group by BusinessHoursPolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursPolicyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BusinessHoursPolicyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BusinessHoursPolicyGroupByArgs['orderBy'] }
+        : { orderBy?: BusinessHoursPolicyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BusinessHoursPolicyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBusinessHoursPolicyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BusinessHoursPolicy model
+   */
+  readonly fields: BusinessHoursPolicyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BusinessHoursPolicy.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BusinessHoursPolicyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    zApiConfig<T extends ZApiConfigDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ZApiConfigDefaultArgs<ExtArgs>>): Prisma__ZApiConfigClient<$Result.GetResult<Prisma.$ZApiConfigPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    department<T extends BusinessHoursPolicy$departmentArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicy$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    intervals<T extends BusinessHoursPolicy$intervalsArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicy$intervalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findMany"> | Null>
+    exceptions<T extends BusinessHoursPolicy$exceptionsArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicy$exceptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findMany"> | Null>
+    notices<T extends BusinessHoursPolicy$noticesArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicy$noticesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BusinessHoursPolicy model
+   */ 
+  interface BusinessHoursPolicyFieldRefs {
+    readonly id: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly zApiConfigId: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly departmentId: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly enabled: FieldRef<"BusinessHoursPolicy", 'Boolean'>
+    readonly mode: FieldRef<"BusinessHoursPolicy", 'BusinessHoursMode'>
+    readonly timezone: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly outsideMessage: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly noAgentMessage: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly noticeFrequency: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly messageCooldownMinutes: FieldRef<"BusinessHoursPolicy", 'Int'>
+    readonly revision: FieldRef<"BusinessHoursPolicy", 'Int'>
+    readonly updatedByAgentId: FieldRef<"BusinessHoursPolicy", 'String'>
+    readonly createdAt: FieldRef<"BusinessHoursPolicy", 'DateTime'>
+    readonly updatedAt: FieldRef<"BusinessHoursPolicy", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BusinessHoursPolicy findUnique
+   */
+  export type BusinessHoursPolicyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursPolicy to fetch.
+     */
+    where: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursPolicy findUniqueOrThrow
+   */
+  export type BusinessHoursPolicyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursPolicy to fetch.
+     */
+    where: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursPolicy findFirst
+   */
+  export type BusinessHoursPolicyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursPolicy to fetch.
+     */
+    where?: BusinessHoursPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursPolicies to fetch.
+     */
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursPolicies.
+     */
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursPolicies.
+     */
+    distinct?: BusinessHoursPolicyScalarFieldEnum | BusinessHoursPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy findFirstOrThrow
+   */
+  export type BusinessHoursPolicyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursPolicy to fetch.
+     */
+    where?: BusinessHoursPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursPolicies to fetch.
+     */
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursPolicies.
+     */
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursPolicies.
+     */
+    distinct?: BusinessHoursPolicyScalarFieldEnum | BusinessHoursPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy findMany
+   */
+  export type BusinessHoursPolicyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursPolicies to fetch.
+     */
+    where?: BusinessHoursPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursPolicies to fetch.
+     */
+    orderBy?: BusinessHoursPolicyOrderByWithRelationInput | BusinessHoursPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BusinessHoursPolicies.
+     */
+    cursor?: BusinessHoursPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursPolicies.
+     */
+    skip?: number
+    distinct?: BusinessHoursPolicyScalarFieldEnum | BusinessHoursPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy create
+   */
+  export type BusinessHoursPolicyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BusinessHoursPolicy.
+     */
+    data: XOR<BusinessHoursPolicyCreateInput, BusinessHoursPolicyUncheckedCreateInput>
+  }
+
+  /**
+   * BusinessHoursPolicy createMany
+   */
+  export type BusinessHoursPolicyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BusinessHoursPolicies.
+     */
+    data: BusinessHoursPolicyCreateManyInput | BusinessHoursPolicyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BusinessHoursPolicy createManyAndReturn
+   */
+  export type BusinessHoursPolicyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BusinessHoursPolicies.
+     */
+    data: BusinessHoursPolicyCreateManyInput | BusinessHoursPolicyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BusinessHoursPolicy update
+   */
+  export type BusinessHoursPolicyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BusinessHoursPolicy.
+     */
+    data: XOR<BusinessHoursPolicyUpdateInput, BusinessHoursPolicyUncheckedUpdateInput>
+    /**
+     * Choose, which BusinessHoursPolicy to update.
+     */
+    where: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursPolicy updateMany
+   */
+  export type BusinessHoursPolicyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BusinessHoursPolicies.
+     */
+    data: XOR<BusinessHoursPolicyUpdateManyMutationInput, BusinessHoursPolicyUncheckedUpdateManyInput>
+    /**
+     * Filter which BusinessHoursPolicies to update
+     */
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+  /**
+   * BusinessHoursPolicy upsert
+   */
+  export type BusinessHoursPolicyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BusinessHoursPolicy to update in case it exists.
+     */
+    where: BusinessHoursPolicyWhereUniqueInput
+    /**
+     * In case the BusinessHoursPolicy found by the `where` argument doesn't exist, create a new BusinessHoursPolicy with this data.
+     */
+    create: XOR<BusinessHoursPolicyCreateInput, BusinessHoursPolicyUncheckedCreateInput>
+    /**
+     * In case the BusinessHoursPolicy was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BusinessHoursPolicyUpdateInput, BusinessHoursPolicyUncheckedUpdateInput>
+  }
+
+  /**
+   * BusinessHoursPolicy delete
+   */
+  export type BusinessHoursPolicyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+    /**
+     * Filter which BusinessHoursPolicy to delete.
+     */
+    where: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursPolicy deleteMany
+   */
+  export type BusinessHoursPolicyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursPolicies to delete
+     */
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+  /**
+   * BusinessHoursPolicy.department
+   */
+  export type BusinessHoursPolicy$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    where?: DepartmentWhereInput
+  }
+
+  /**
+   * BusinessHoursPolicy.intervals
+   */
+  export type BusinessHoursPolicy$intervalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    where?: BusinessHoursIntervalWhereInput
+    orderBy?: BusinessHoursIntervalOrderByWithRelationInput | BusinessHoursIntervalOrderByWithRelationInput[]
+    cursor?: BusinessHoursIntervalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursIntervalScalarFieldEnum | BusinessHoursIntervalScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy.exceptions
+   */
+  export type BusinessHoursPolicy$exceptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    where?: BusinessHoursExceptionWhereInput
+    orderBy?: BusinessHoursExceptionOrderByWithRelationInput | BusinessHoursExceptionOrderByWithRelationInput[]
+    cursor?: BusinessHoursExceptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursExceptionScalarFieldEnum | BusinessHoursExceptionScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy.notices
+   */
+  export type BusinessHoursPolicy$noticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    where?: BusinessHoursNoticeWhereInput
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BusinessHoursNoticeScalarFieldEnum | BusinessHoursNoticeScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursPolicy without action
+   */
+  export type BusinessHoursPolicyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursPolicy
+     */
+    select?: BusinessHoursPolicySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursPolicyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BusinessHoursInterval
+   */
+
+  export type AggregateBusinessHoursInterval = {
+    _count: BusinessHoursIntervalCountAggregateOutputType | null
+    _avg: BusinessHoursIntervalAvgAggregateOutputType | null
+    _sum: BusinessHoursIntervalSumAggregateOutputType | null
+    _min: BusinessHoursIntervalMinAggregateOutputType | null
+    _max: BusinessHoursIntervalMaxAggregateOutputType | null
+  }
+
+  export type BusinessHoursIntervalAvgAggregateOutputType = {
+    weekday: number | null
+    startMinute: number | null
+    endMinute: number | null
+    sortOrder: number | null
+  }
+
+  export type BusinessHoursIntervalSumAggregateOutputType = {
+    weekday: number | null
+    startMinute: number | null
+    endMinute: number | null
+    sortOrder: number | null
+  }
+
+  export type BusinessHoursIntervalMinAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    weekday: number | null
+    startMinute: number | null
+    endMinute: number | null
+    sortOrder: number | null
+  }
+
+  export type BusinessHoursIntervalMaxAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    weekday: number | null
+    startMinute: number | null
+    endMinute: number | null
+    sortOrder: number | null
+  }
+
+  export type BusinessHoursIntervalCountAggregateOutputType = {
+    id: number
+    policyId: number
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder: number
+    _all: number
+  }
+
+
+  export type BusinessHoursIntervalAvgAggregateInputType = {
+    weekday?: true
+    startMinute?: true
+    endMinute?: true
+    sortOrder?: true
+  }
+
+  export type BusinessHoursIntervalSumAggregateInputType = {
+    weekday?: true
+    startMinute?: true
+    endMinute?: true
+    sortOrder?: true
+  }
+
+  export type BusinessHoursIntervalMinAggregateInputType = {
+    id?: true
+    policyId?: true
+    weekday?: true
+    startMinute?: true
+    endMinute?: true
+    sortOrder?: true
+  }
+
+  export type BusinessHoursIntervalMaxAggregateInputType = {
+    id?: true
+    policyId?: true
+    weekday?: true
+    startMinute?: true
+    endMinute?: true
+    sortOrder?: true
+  }
+
+  export type BusinessHoursIntervalCountAggregateInputType = {
+    id?: true
+    policyId?: true
+    weekday?: true
+    startMinute?: true
+    endMinute?: true
+    sortOrder?: true
+    _all?: true
+  }
+
+  export type BusinessHoursIntervalAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursInterval to aggregate.
+     */
+    where?: BusinessHoursIntervalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursIntervals to fetch.
+     */
+    orderBy?: BusinessHoursIntervalOrderByWithRelationInput | BusinessHoursIntervalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BusinessHoursIntervalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursIntervals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursIntervals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BusinessHoursIntervals
+    **/
+    _count?: true | BusinessHoursIntervalCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BusinessHoursIntervalAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BusinessHoursIntervalSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BusinessHoursIntervalMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BusinessHoursIntervalMaxAggregateInputType
+  }
+
+  export type GetBusinessHoursIntervalAggregateType<T extends BusinessHoursIntervalAggregateArgs> = {
+        [P in keyof T & keyof AggregateBusinessHoursInterval]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBusinessHoursInterval[P]>
+      : GetScalarType<T[P], AggregateBusinessHoursInterval[P]>
+  }
+
+
+
+
+  export type BusinessHoursIntervalGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursIntervalWhereInput
+    orderBy?: BusinessHoursIntervalOrderByWithAggregationInput | BusinessHoursIntervalOrderByWithAggregationInput[]
+    by: BusinessHoursIntervalScalarFieldEnum[] | BusinessHoursIntervalScalarFieldEnum
+    having?: BusinessHoursIntervalScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BusinessHoursIntervalCountAggregateInputType | true
+    _avg?: BusinessHoursIntervalAvgAggregateInputType
+    _sum?: BusinessHoursIntervalSumAggregateInputType
+    _min?: BusinessHoursIntervalMinAggregateInputType
+    _max?: BusinessHoursIntervalMaxAggregateInputType
+  }
+
+  export type BusinessHoursIntervalGroupByOutputType = {
+    id: string
+    policyId: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder: number
+    _count: BusinessHoursIntervalCountAggregateOutputType | null
+    _avg: BusinessHoursIntervalAvgAggregateOutputType | null
+    _sum: BusinessHoursIntervalSumAggregateOutputType | null
+    _min: BusinessHoursIntervalMinAggregateOutputType | null
+    _max: BusinessHoursIntervalMaxAggregateOutputType | null
+  }
+
+  type GetBusinessHoursIntervalGroupByPayload<T extends BusinessHoursIntervalGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BusinessHoursIntervalGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BusinessHoursIntervalGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BusinessHoursIntervalGroupByOutputType[P]>
+            : GetScalarType<T[P], BusinessHoursIntervalGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BusinessHoursIntervalSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    weekday?: boolean
+    startMinute?: boolean
+    endMinute?: boolean
+    sortOrder?: boolean
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursInterval"]>
+
+  export type BusinessHoursIntervalSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    weekday?: boolean
+    startMinute?: boolean
+    endMinute?: boolean
+    sortOrder?: boolean
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursInterval"]>
+
+  export type BusinessHoursIntervalSelectScalar = {
+    id?: boolean
+    policyId?: boolean
+    weekday?: boolean
+    startMinute?: boolean
+    endMinute?: boolean
+    sortOrder?: boolean
+  }
+
+  export type BusinessHoursIntervalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+  export type BusinessHoursIntervalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+
+  export type $BusinessHoursIntervalPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BusinessHoursInterval"
+    objects: {
+      policy: Prisma.$BusinessHoursPolicyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      policyId: string
+      weekday: number
+      startMinute: number
+      endMinute: number
+      sortOrder: number
+    }, ExtArgs["result"]["businessHoursInterval"]>
+    composites: {}
+  }
+
+  type BusinessHoursIntervalGetPayload<S extends boolean | null | undefined | BusinessHoursIntervalDefaultArgs> = $Result.GetResult<Prisma.$BusinessHoursIntervalPayload, S>
+
+  type BusinessHoursIntervalCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BusinessHoursIntervalFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BusinessHoursIntervalCountAggregateInputType | true
+    }
+
+  export interface BusinessHoursIntervalDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BusinessHoursInterval'], meta: { name: 'BusinessHoursInterval' } }
+    /**
+     * Find zero or one BusinessHoursInterval that matches the filter.
+     * @param {BusinessHoursIntervalFindUniqueArgs} args - Arguments to find a BusinessHoursInterval
+     * @example
+     * // Get one BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BusinessHoursIntervalFindUniqueArgs>(args: SelectSubset<T, BusinessHoursIntervalFindUniqueArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BusinessHoursInterval that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BusinessHoursIntervalFindUniqueOrThrowArgs} args - Arguments to find a BusinessHoursInterval
+     * @example
+     * // Get one BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BusinessHoursIntervalFindUniqueOrThrowArgs>(args: SelectSubset<T, BusinessHoursIntervalFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursInterval that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalFindFirstArgs} args - Arguments to find a BusinessHoursInterval
+     * @example
+     * // Get one BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BusinessHoursIntervalFindFirstArgs>(args?: SelectSubset<T, BusinessHoursIntervalFindFirstArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursInterval that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalFindFirstOrThrowArgs} args - Arguments to find a BusinessHoursInterval
+     * @example
+     * // Get one BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BusinessHoursIntervalFindFirstOrThrowArgs>(args?: SelectSubset<T, BusinessHoursIntervalFindFirstOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BusinessHoursIntervals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BusinessHoursIntervals
+     * const businessHoursIntervals = await prisma.businessHoursInterval.findMany()
+     * 
+     * // Get first 10 BusinessHoursIntervals
+     * const businessHoursIntervals = await prisma.businessHoursInterval.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const businessHoursIntervalWithIdOnly = await prisma.businessHoursInterval.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BusinessHoursIntervalFindManyArgs>(args?: SelectSubset<T, BusinessHoursIntervalFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BusinessHoursInterval.
+     * @param {BusinessHoursIntervalCreateArgs} args - Arguments to create a BusinessHoursInterval.
+     * @example
+     * // Create one BusinessHoursInterval
+     * const BusinessHoursInterval = await prisma.businessHoursInterval.create({
+     *   data: {
+     *     // ... data to create a BusinessHoursInterval
+     *   }
+     * })
+     * 
+     */
+    create<T extends BusinessHoursIntervalCreateArgs>(args: SelectSubset<T, BusinessHoursIntervalCreateArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BusinessHoursIntervals.
+     * @param {BusinessHoursIntervalCreateManyArgs} args - Arguments to create many BusinessHoursIntervals.
+     * @example
+     * // Create many BusinessHoursIntervals
+     * const businessHoursInterval = await prisma.businessHoursInterval.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BusinessHoursIntervalCreateManyArgs>(args?: SelectSubset<T, BusinessHoursIntervalCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BusinessHoursIntervals and returns the data saved in the database.
+     * @param {BusinessHoursIntervalCreateManyAndReturnArgs} args - Arguments to create many BusinessHoursIntervals.
+     * @example
+     * // Create many BusinessHoursIntervals
+     * const businessHoursInterval = await prisma.businessHoursInterval.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BusinessHoursIntervals and only return the `id`
+     * const businessHoursIntervalWithIdOnly = await prisma.businessHoursInterval.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BusinessHoursIntervalCreateManyAndReturnArgs>(args?: SelectSubset<T, BusinessHoursIntervalCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BusinessHoursInterval.
+     * @param {BusinessHoursIntervalDeleteArgs} args - Arguments to delete one BusinessHoursInterval.
+     * @example
+     * // Delete one BusinessHoursInterval
+     * const BusinessHoursInterval = await prisma.businessHoursInterval.delete({
+     *   where: {
+     *     // ... filter to delete one BusinessHoursInterval
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BusinessHoursIntervalDeleteArgs>(args: SelectSubset<T, BusinessHoursIntervalDeleteArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BusinessHoursInterval.
+     * @param {BusinessHoursIntervalUpdateArgs} args - Arguments to update one BusinessHoursInterval.
+     * @example
+     * // Update one BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BusinessHoursIntervalUpdateArgs>(args: SelectSubset<T, BusinessHoursIntervalUpdateArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BusinessHoursIntervals.
+     * @param {BusinessHoursIntervalDeleteManyArgs} args - Arguments to filter BusinessHoursIntervals to delete.
+     * @example
+     * // Delete a few BusinessHoursIntervals
+     * const { count } = await prisma.businessHoursInterval.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BusinessHoursIntervalDeleteManyArgs>(args?: SelectSubset<T, BusinessHoursIntervalDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BusinessHoursIntervals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BusinessHoursIntervals
+     * const businessHoursInterval = await prisma.businessHoursInterval.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BusinessHoursIntervalUpdateManyArgs>(args: SelectSubset<T, BusinessHoursIntervalUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BusinessHoursInterval.
+     * @param {BusinessHoursIntervalUpsertArgs} args - Arguments to update or create a BusinessHoursInterval.
+     * @example
+     * // Update or create a BusinessHoursInterval
+     * const businessHoursInterval = await prisma.businessHoursInterval.upsert({
+     *   create: {
+     *     // ... data to create a BusinessHoursInterval
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BusinessHoursInterval we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BusinessHoursIntervalUpsertArgs>(args: SelectSubset<T, BusinessHoursIntervalUpsertArgs<ExtArgs>>): Prisma__BusinessHoursIntervalClient<$Result.GetResult<Prisma.$BusinessHoursIntervalPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BusinessHoursIntervals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalCountArgs} args - Arguments to filter BusinessHoursIntervals to count.
+     * @example
+     * // Count the number of BusinessHoursIntervals
+     * const count = await prisma.businessHoursInterval.count({
+     *   where: {
+     *     // ... the filter for the BusinessHoursIntervals we want to count
+     *   }
+     * })
+    **/
+    count<T extends BusinessHoursIntervalCountArgs>(
+      args?: Subset<T, BusinessHoursIntervalCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BusinessHoursIntervalCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BusinessHoursInterval.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BusinessHoursIntervalAggregateArgs>(args: Subset<T, BusinessHoursIntervalAggregateArgs>): Prisma.PrismaPromise<GetBusinessHoursIntervalAggregateType<T>>
+
+    /**
+     * Group by BusinessHoursInterval.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursIntervalGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BusinessHoursIntervalGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BusinessHoursIntervalGroupByArgs['orderBy'] }
+        : { orderBy?: BusinessHoursIntervalGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BusinessHoursIntervalGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBusinessHoursIntervalGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BusinessHoursInterval model
+   */
+  readonly fields: BusinessHoursIntervalFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BusinessHoursInterval.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BusinessHoursIntervalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    policy<T extends BusinessHoursPolicyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicyDefaultArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BusinessHoursInterval model
+   */ 
+  interface BusinessHoursIntervalFieldRefs {
+    readonly id: FieldRef<"BusinessHoursInterval", 'String'>
+    readonly policyId: FieldRef<"BusinessHoursInterval", 'String'>
+    readonly weekday: FieldRef<"BusinessHoursInterval", 'Int'>
+    readonly startMinute: FieldRef<"BusinessHoursInterval", 'Int'>
+    readonly endMinute: FieldRef<"BusinessHoursInterval", 'Int'>
+    readonly sortOrder: FieldRef<"BusinessHoursInterval", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BusinessHoursInterval findUnique
+   */
+  export type BusinessHoursIntervalFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursInterval to fetch.
+     */
+    where: BusinessHoursIntervalWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursInterval findUniqueOrThrow
+   */
+  export type BusinessHoursIntervalFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursInterval to fetch.
+     */
+    where: BusinessHoursIntervalWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursInterval findFirst
+   */
+  export type BusinessHoursIntervalFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursInterval to fetch.
+     */
+    where?: BusinessHoursIntervalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursIntervals to fetch.
+     */
+    orderBy?: BusinessHoursIntervalOrderByWithRelationInput | BusinessHoursIntervalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursIntervals.
+     */
+    cursor?: BusinessHoursIntervalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursIntervals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursIntervals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursIntervals.
+     */
+    distinct?: BusinessHoursIntervalScalarFieldEnum | BusinessHoursIntervalScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursInterval findFirstOrThrow
+   */
+  export type BusinessHoursIntervalFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursInterval to fetch.
+     */
+    where?: BusinessHoursIntervalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursIntervals to fetch.
+     */
+    orderBy?: BusinessHoursIntervalOrderByWithRelationInput | BusinessHoursIntervalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursIntervals.
+     */
+    cursor?: BusinessHoursIntervalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursIntervals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursIntervals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursIntervals.
+     */
+    distinct?: BusinessHoursIntervalScalarFieldEnum | BusinessHoursIntervalScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursInterval findMany
+   */
+  export type BusinessHoursIntervalFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursIntervals to fetch.
+     */
+    where?: BusinessHoursIntervalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursIntervals to fetch.
+     */
+    orderBy?: BusinessHoursIntervalOrderByWithRelationInput | BusinessHoursIntervalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BusinessHoursIntervals.
+     */
+    cursor?: BusinessHoursIntervalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursIntervals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursIntervals.
+     */
+    skip?: number
+    distinct?: BusinessHoursIntervalScalarFieldEnum | BusinessHoursIntervalScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursInterval create
+   */
+  export type BusinessHoursIntervalCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BusinessHoursInterval.
+     */
+    data: XOR<BusinessHoursIntervalCreateInput, BusinessHoursIntervalUncheckedCreateInput>
+  }
+
+  /**
+   * BusinessHoursInterval createMany
+   */
+  export type BusinessHoursIntervalCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BusinessHoursIntervals.
+     */
+    data: BusinessHoursIntervalCreateManyInput | BusinessHoursIntervalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BusinessHoursInterval createManyAndReturn
+   */
+  export type BusinessHoursIntervalCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BusinessHoursIntervals.
+     */
+    data: BusinessHoursIntervalCreateManyInput | BusinessHoursIntervalCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BusinessHoursInterval update
+   */
+  export type BusinessHoursIntervalUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BusinessHoursInterval.
+     */
+    data: XOR<BusinessHoursIntervalUpdateInput, BusinessHoursIntervalUncheckedUpdateInput>
+    /**
+     * Choose, which BusinessHoursInterval to update.
+     */
+    where: BusinessHoursIntervalWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursInterval updateMany
+   */
+  export type BusinessHoursIntervalUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BusinessHoursIntervals.
+     */
+    data: XOR<BusinessHoursIntervalUpdateManyMutationInput, BusinessHoursIntervalUncheckedUpdateManyInput>
+    /**
+     * Filter which BusinessHoursIntervals to update
+     */
+    where?: BusinessHoursIntervalWhereInput
+  }
+
+  /**
+   * BusinessHoursInterval upsert
+   */
+  export type BusinessHoursIntervalUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BusinessHoursInterval to update in case it exists.
+     */
+    where: BusinessHoursIntervalWhereUniqueInput
+    /**
+     * In case the BusinessHoursInterval found by the `where` argument doesn't exist, create a new BusinessHoursInterval with this data.
+     */
+    create: XOR<BusinessHoursIntervalCreateInput, BusinessHoursIntervalUncheckedCreateInput>
+    /**
+     * In case the BusinessHoursInterval was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BusinessHoursIntervalUpdateInput, BusinessHoursIntervalUncheckedUpdateInput>
+  }
+
+  /**
+   * BusinessHoursInterval delete
+   */
+  export type BusinessHoursIntervalDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+    /**
+     * Filter which BusinessHoursInterval to delete.
+     */
+    where: BusinessHoursIntervalWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursInterval deleteMany
+   */
+  export type BusinessHoursIntervalDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursIntervals to delete
+     */
+    where?: BusinessHoursIntervalWhereInput
+  }
+
+  /**
+   * BusinessHoursInterval without action
+   */
+  export type BusinessHoursIntervalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursInterval
+     */
+    select?: BusinessHoursIntervalSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursIntervalInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BusinessHoursException
+   */
+
+  export type AggregateBusinessHoursException = {
+    _count: BusinessHoursExceptionCountAggregateOutputType | null
+    _min: BusinessHoursExceptionMinAggregateOutputType | null
+    _max: BusinessHoursExceptionMaxAggregateOutputType | null
+  }
+
+  export type BusinessHoursExceptionMinAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    localDate: Date | null
+    kind: $Enums.BusinessHoursExceptionKind | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursExceptionMaxAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    localDate: Date | null
+    kind: $Enums.BusinessHoursExceptionKind | null
+    reason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursExceptionCountAggregateOutputType = {
+    id: number
+    policyId: number
+    localDate: number
+    kind: number
+    intervalsJson: number
+    reason: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BusinessHoursExceptionMinAggregateInputType = {
+    id?: true
+    policyId?: true
+    localDate?: true
+    kind?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursExceptionMaxAggregateInputType = {
+    id?: true
+    policyId?: true
+    localDate?: true
+    kind?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursExceptionCountAggregateInputType = {
+    id?: true
+    policyId?: true
+    localDate?: true
+    kind?: true
+    intervalsJson?: true
+    reason?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BusinessHoursExceptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursException to aggregate.
+     */
+    where?: BusinessHoursExceptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursExceptions to fetch.
+     */
+    orderBy?: BusinessHoursExceptionOrderByWithRelationInput | BusinessHoursExceptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BusinessHoursExceptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursExceptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursExceptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BusinessHoursExceptions
+    **/
+    _count?: true | BusinessHoursExceptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BusinessHoursExceptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BusinessHoursExceptionMaxAggregateInputType
+  }
+
+  export type GetBusinessHoursExceptionAggregateType<T extends BusinessHoursExceptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateBusinessHoursException]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBusinessHoursException[P]>
+      : GetScalarType<T[P], AggregateBusinessHoursException[P]>
+  }
+
+
+
+
+  export type BusinessHoursExceptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursExceptionWhereInput
+    orderBy?: BusinessHoursExceptionOrderByWithAggregationInput | BusinessHoursExceptionOrderByWithAggregationInput[]
+    by: BusinessHoursExceptionScalarFieldEnum[] | BusinessHoursExceptionScalarFieldEnum
+    having?: BusinessHoursExceptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BusinessHoursExceptionCountAggregateInputType | true
+    _min?: BusinessHoursExceptionMinAggregateInputType
+    _max?: BusinessHoursExceptionMaxAggregateInputType
+  }
+
+  export type BusinessHoursExceptionGroupByOutputType = {
+    id: string
+    policyId: string
+    localDate: Date
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson: JsonValue | null
+    reason: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BusinessHoursExceptionCountAggregateOutputType | null
+    _min: BusinessHoursExceptionMinAggregateOutputType | null
+    _max: BusinessHoursExceptionMaxAggregateOutputType | null
+  }
+
+  type GetBusinessHoursExceptionGroupByPayload<T extends BusinessHoursExceptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BusinessHoursExceptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BusinessHoursExceptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BusinessHoursExceptionGroupByOutputType[P]>
+            : GetScalarType<T[P], BusinessHoursExceptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BusinessHoursExceptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    localDate?: boolean
+    kind?: boolean
+    intervalsJson?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursException"]>
+
+  export type BusinessHoursExceptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    localDate?: boolean
+    kind?: boolean
+    intervalsJson?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursException"]>
+
+  export type BusinessHoursExceptionSelectScalar = {
+    id?: boolean
+    policyId?: boolean
+    localDate?: boolean
+    kind?: boolean
+    intervalsJson?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BusinessHoursExceptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+  export type BusinessHoursExceptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+
+  export type $BusinessHoursExceptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BusinessHoursException"
+    objects: {
+      policy: Prisma.$BusinessHoursPolicyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      policyId: string
+      localDate: Date
+      kind: $Enums.BusinessHoursExceptionKind
+      intervalsJson: Prisma.JsonValue | null
+      reason: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["businessHoursException"]>
+    composites: {}
+  }
+
+  type BusinessHoursExceptionGetPayload<S extends boolean | null | undefined | BusinessHoursExceptionDefaultArgs> = $Result.GetResult<Prisma.$BusinessHoursExceptionPayload, S>
+
+  type BusinessHoursExceptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BusinessHoursExceptionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BusinessHoursExceptionCountAggregateInputType | true
+    }
+
+  export interface BusinessHoursExceptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BusinessHoursException'], meta: { name: 'BusinessHoursException' } }
+    /**
+     * Find zero or one BusinessHoursException that matches the filter.
+     * @param {BusinessHoursExceptionFindUniqueArgs} args - Arguments to find a BusinessHoursException
+     * @example
+     * // Get one BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BusinessHoursExceptionFindUniqueArgs>(args: SelectSubset<T, BusinessHoursExceptionFindUniqueArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BusinessHoursException that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BusinessHoursExceptionFindUniqueOrThrowArgs} args - Arguments to find a BusinessHoursException
+     * @example
+     * // Get one BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BusinessHoursExceptionFindUniqueOrThrowArgs>(args: SelectSubset<T, BusinessHoursExceptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursException that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionFindFirstArgs} args - Arguments to find a BusinessHoursException
+     * @example
+     * // Get one BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BusinessHoursExceptionFindFirstArgs>(args?: SelectSubset<T, BusinessHoursExceptionFindFirstArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursException that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionFindFirstOrThrowArgs} args - Arguments to find a BusinessHoursException
+     * @example
+     * // Get one BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BusinessHoursExceptionFindFirstOrThrowArgs>(args?: SelectSubset<T, BusinessHoursExceptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BusinessHoursExceptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BusinessHoursExceptions
+     * const businessHoursExceptions = await prisma.businessHoursException.findMany()
+     * 
+     * // Get first 10 BusinessHoursExceptions
+     * const businessHoursExceptions = await prisma.businessHoursException.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const businessHoursExceptionWithIdOnly = await prisma.businessHoursException.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BusinessHoursExceptionFindManyArgs>(args?: SelectSubset<T, BusinessHoursExceptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BusinessHoursException.
+     * @param {BusinessHoursExceptionCreateArgs} args - Arguments to create a BusinessHoursException.
+     * @example
+     * // Create one BusinessHoursException
+     * const BusinessHoursException = await prisma.businessHoursException.create({
+     *   data: {
+     *     // ... data to create a BusinessHoursException
+     *   }
+     * })
+     * 
+     */
+    create<T extends BusinessHoursExceptionCreateArgs>(args: SelectSubset<T, BusinessHoursExceptionCreateArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BusinessHoursExceptions.
+     * @param {BusinessHoursExceptionCreateManyArgs} args - Arguments to create many BusinessHoursExceptions.
+     * @example
+     * // Create many BusinessHoursExceptions
+     * const businessHoursException = await prisma.businessHoursException.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BusinessHoursExceptionCreateManyArgs>(args?: SelectSubset<T, BusinessHoursExceptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BusinessHoursExceptions and returns the data saved in the database.
+     * @param {BusinessHoursExceptionCreateManyAndReturnArgs} args - Arguments to create many BusinessHoursExceptions.
+     * @example
+     * // Create many BusinessHoursExceptions
+     * const businessHoursException = await prisma.businessHoursException.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BusinessHoursExceptions and only return the `id`
+     * const businessHoursExceptionWithIdOnly = await prisma.businessHoursException.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BusinessHoursExceptionCreateManyAndReturnArgs>(args?: SelectSubset<T, BusinessHoursExceptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BusinessHoursException.
+     * @param {BusinessHoursExceptionDeleteArgs} args - Arguments to delete one BusinessHoursException.
+     * @example
+     * // Delete one BusinessHoursException
+     * const BusinessHoursException = await prisma.businessHoursException.delete({
+     *   where: {
+     *     // ... filter to delete one BusinessHoursException
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BusinessHoursExceptionDeleteArgs>(args: SelectSubset<T, BusinessHoursExceptionDeleteArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BusinessHoursException.
+     * @param {BusinessHoursExceptionUpdateArgs} args - Arguments to update one BusinessHoursException.
+     * @example
+     * // Update one BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BusinessHoursExceptionUpdateArgs>(args: SelectSubset<T, BusinessHoursExceptionUpdateArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BusinessHoursExceptions.
+     * @param {BusinessHoursExceptionDeleteManyArgs} args - Arguments to filter BusinessHoursExceptions to delete.
+     * @example
+     * // Delete a few BusinessHoursExceptions
+     * const { count } = await prisma.businessHoursException.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BusinessHoursExceptionDeleteManyArgs>(args?: SelectSubset<T, BusinessHoursExceptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BusinessHoursExceptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BusinessHoursExceptions
+     * const businessHoursException = await prisma.businessHoursException.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BusinessHoursExceptionUpdateManyArgs>(args: SelectSubset<T, BusinessHoursExceptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BusinessHoursException.
+     * @param {BusinessHoursExceptionUpsertArgs} args - Arguments to update or create a BusinessHoursException.
+     * @example
+     * // Update or create a BusinessHoursException
+     * const businessHoursException = await prisma.businessHoursException.upsert({
+     *   create: {
+     *     // ... data to create a BusinessHoursException
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BusinessHoursException we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BusinessHoursExceptionUpsertArgs>(args: SelectSubset<T, BusinessHoursExceptionUpsertArgs<ExtArgs>>): Prisma__BusinessHoursExceptionClient<$Result.GetResult<Prisma.$BusinessHoursExceptionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BusinessHoursExceptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionCountArgs} args - Arguments to filter BusinessHoursExceptions to count.
+     * @example
+     * // Count the number of BusinessHoursExceptions
+     * const count = await prisma.businessHoursException.count({
+     *   where: {
+     *     // ... the filter for the BusinessHoursExceptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends BusinessHoursExceptionCountArgs>(
+      args?: Subset<T, BusinessHoursExceptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BusinessHoursExceptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BusinessHoursException.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BusinessHoursExceptionAggregateArgs>(args: Subset<T, BusinessHoursExceptionAggregateArgs>): Prisma.PrismaPromise<GetBusinessHoursExceptionAggregateType<T>>
+
+    /**
+     * Group by BusinessHoursException.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursExceptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BusinessHoursExceptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BusinessHoursExceptionGroupByArgs['orderBy'] }
+        : { orderBy?: BusinessHoursExceptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BusinessHoursExceptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBusinessHoursExceptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BusinessHoursException model
+   */
+  readonly fields: BusinessHoursExceptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BusinessHoursException.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BusinessHoursExceptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    policy<T extends BusinessHoursPolicyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicyDefaultArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BusinessHoursException model
+   */ 
+  interface BusinessHoursExceptionFieldRefs {
+    readonly id: FieldRef<"BusinessHoursException", 'String'>
+    readonly policyId: FieldRef<"BusinessHoursException", 'String'>
+    readonly localDate: FieldRef<"BusinessHoursException", 'DateTime'>
+    readonly kind: FieldRef<"BusinessHoursException", 'BusinessHoursExceptionKind'>
+    readonly intervalsJson: FieldRef<"BusinessHoursException", 'Json'>
+    readonly reason: FieldRef<"BusinessHoursException", 'String'>
+    readonly createdAt: FieldRef<"BusinessHoursException", 'DateTime'>
+    readonly updatedAt: FieldRef<"BusinessHoursException", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BusinessHoursException findUnique
+   */
+  export type BusinessHoursExceptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursException to fetch.
+     */
+    where: BusinessHoursExceptionWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursException findUniqueOrThrow
+   */
+  export type BusinessHoursExceptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursException to fetch.
+     */
+    where: BusinessHoursExceptionWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursException findFirst
+   */
+  export type BusinessHoursExceptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursException to fetch.
+     */
+    where?: BusinessHoursExceptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursExceptions to fetch.
+     */
+    orderBy?: BusinessHoursExceptionOrderByWithRelationInput | BusinessHoursExceptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursExceptions.
+     */
+    cursor?: BusinessHoursExceptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursExceptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursExceptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursExceptions.
+     */
+    distinct?: BusinessHoursExceptionScalarFieldEnum | BusinessHoursExceptionScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursException findFirstOrThrow
+   */
+  export type BusinessHoursExceptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursException to fetch.
+     */
+    where?: BusinessHoursExceptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursExceptions to fetch.
+     */
+    orderBy?: BusinessHoursExceptionOrderByWithRelationInput | BusinessHoursExceptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursExceptions.
+     */
+    cursor?: BusinessHoursExceptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursExceptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursExceptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursExceptions.
+     */
+    distinct?: BusinessHoursExceptionScalarFieldEnum | BusinessHoursExceptionScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursException findMany
+   */
+  export type BusinessHoursExceptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursExceptions to fetch.
+     */
+    where?: BusinessHoursExceptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursExceptions to fetch.
+     */
+    orderBy?: BusinessHoursExceptionOrderByWithRelationInput | BusinessHoursExceptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BusinessHoursExceptions.
+     */
+    cursor?: BusinessHoursExceptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursExceptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursExceptions.
+     */
+    skip?: number
+    distinct?: BusinessHoursExceptionScalarFieldEnum | BusinessHoursExceptionScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursException create
+   */
+  export type BusinessHoursExceptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BusinessHoursException.
+     */
+    data: XOR<BusinessHoursExceptionCreateInput, BusinessHoursExceptionUncheckedCreateInput>
+  }
+
+  /**
+   * BusinessHoursException createMany
+   */
+  export type BusinessHoursExceptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BusinessHoursExceptions.
+     */
+    data: BusinessHoursExceptionCreateManyInput | BusinessHoursExceptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BusinessHoursException createManyAndReturn
+   */
+  export type BusinessHoursExceptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BusinessHoursExceptions.
+     */
+    data: BusinessHoursExceptionCreateManyInput | BusinessHoursExceptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BusinessHoursException update
+   */
+  export type BusinessHoursExceptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BusinessHoursException.
+     */
+    data: XOR<BusinessHoursExceptionUpdateInput, BusinessHoursExceptionUncheckedUpdateInput>
+    /**
+     * Choose, which BusinessHoursException to update.
+     */
+    where: BusinessHoursExceptionWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursException updateMany
+   */
+  export type BusinessHoursExceptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BusinessHoursExceptions.
+     */
+    data: XOR<BusinessHoursExceptionUpdateManyMutationInput, BusinessHoursExceptionUncheckedUpdateManyInput>
+    /**
+     * Filter which BusinessHoursExceptions to update
+     */
+    where?: BusinessHoursExceptionWhereInput
+  }
+
+  /**
+   * BusinessHoursException upsert
+   */
+  export type BusinessHoursExceptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BusinessHoursException to update in case it exists.
+     */
+    where: BusinessHoursExceptionWhereUniqueInput
+    /**
+     * In case the BusinessHoursException found by the `where` argument doesn't exist, create a new BusinessHoursException with this data.
+     */
+    create: XOR<BusinessHoursExceptionCreateInput, BusinessHoursExceptionUncheckedCreateInput>
+    /**
+     * In case the BusinessHoursException was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BusinessHoursExceptionUpdateInput, BusinessHoursExceptionUncheckedUpdateInput>
+  }
+
+  /**
+   * BusinessHoursException delete
+   */
+  export type BusinessHoursExceptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+    /**
+     * Filter which BusinessHoursException to delete.
+     */
+    where: BusinessHoursExceptionWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursException deleteMany
+   */
+  export type BusinessHoursExceptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursExceptions to delete
+     */
+    where?: BusinessHoursExceptionWhereInput
+  }
+
+  /**
+   * BusinessHoursException without action
+   */
+  export type BusinessHoursExceptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursException
+     */
+    select?: BusinessHoursExceptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursExceptionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BusinessHoursNotice
+   */
+
+  export type AggregateBusinessHoursNotice = {
+    _count: BusinessHoursNoticeCountAggregateOutputType | null
+    _min: BusinessHoursNoticeMinAggregateOutputType | null
+    _max: BusinessHoursNoticeMaxAggregateOutputType | null
+  }
+
+  export type BusinessHoursNoticeMinAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    policyId: string | null
+    reason: $Enums.BusinessHoursNoticeReason | null
+    windowKey: string | null
+    status: $Enums.BusinessHoursNoticeStatus | null
+    messageId: string | null
+    sentAt: Date | null
+    lastError: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursNoticeMaxAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    policyId: string | null
+    reason: $Enums.BusinessHoursNoticeReason | null
+    windowKey: string | null
+    status: $Enums.BusinessHoursNoticeStatus | null
+    messageId: string | null
+    sentAt: Date | null
+    lastError: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BusinessHoursNoticeCountAggregateOutputType = {
+    id: number
+    conversationId: number
+    policyId: number
+    reason: number
+    windowKey: number
+    status: number
+    messageId: number
+    sentAt: number
+    lastError: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BusinessHoursNoticeMinAggregateInputType = {
+    id?: true
+    conversationId?: true
+    policyId?: true
+    reason?: true
+    windowKey?: true
+    status?: true
+    messageId?: true
+    sentAt?: true
+    lastError?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursNoticeMaxAggregateInputType = {
+    id?: true
+    conversationId?: true
+    policyId?: true
+    reason?: true
+    windowKey?: true
+    status?: true
+    messageId?: true
+    sentAt?: true
+    lastError?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BusinessHoursNoticeCountAggregateInputType = {
+    id?: true
+    conversationId?: true
+    policyId?: true
+    reason?: true
+    windowKey?: true
+    status?: true
+    messageId?: true
+    sentAt?: true
+    lastError?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BusinessHoursNoticeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursNotice to aggregate.
+     */
+    where?: BusinessHoursNoticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursNotices to fetch.
+     */
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursNotices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursNotices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BusinessHoursNotices
+    **/
+    _count?: true | BusinessHoursNoticeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BusinessHoursNoticeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BusinessHoursNoticeMaxAggregateInputType
+  }
+
+  export type GetBusinessHoursNoticeAggregateType<T extends BusinessHoursNoticeAggregateArgs> = {
+        [P in keyof T & keyof AggregateBusinessHoursNotice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBusinessHoursNotice[P]>
+      : GetScalarType<T[P], AggregateBusinessHoursNotice[P]>
+  }
+
+
+
+
+  export type BusinessHoursNoticeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BusinessHoursNoticeWhereInput
+    orderBy?: BusinessHoursNoticeOrderByWithAggregationInput | BusinessHoursNoticeOrderByWithAggregationInput[]
+    by: BusinessHoursNoticeScalarFieldEnum[] | BusinessHoursNoticeScalarFieldEnum
+    having?: BusinessHoursNoticeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BusinessHoursNoticeCountAggregateInputType | true
+    _min?: BusinessHoursNoticeMinAggregateInputType
+    _max?: BusinessHoursNoticeMaxAggregateInputType
+  }
+
+  export type BusinessHoursNoticeGroupByOutputType = {
+    id: string
+    conversationId: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status: $Enums.BusinessHoursNoticeStatus
+    messageId: string | null
+    sentAt: Date | null
+    lastError: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BusinessHoursNoticeCountAggregateOutputType | null
+    _min: BusinessHoursNoticeMinAggregateOutputType | null
+    _max: BusinessHoursNoticeMaxAggregateOutputType | null
+  }
+
+  type GetBusinessHoursNoticeGroupByPayload<T extends BusinessHoursNoticeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BusinessHoursNoticeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BusinessHoursNoticeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BusinessHoursNoticeGroupByOutputType[P]>
+            : GetScalarType<T[P], BusinessHoursNoticeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BusinessHoursNoticeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    policyId?: boolean
+    reason?: boolean
+    windowKey?: boolean
+    status?: boolean
+    messageId?: boolean
+    sentAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursNotice"]>
+
+  export type BusinessHoursNoticeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    policyId?: boolean
+    reason?: boolean
+    windowKey?: boolean
+    status?: boolean
+    messageId?: boolean
+    sentAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["businessHoursNotice"]>
+
+  export type BusinessHoursNoticeSelectScalar = {
+    id?: boolean
+    conversationId?: boolean
+    policyId?: boolean
+    reason?: boolean
+    windowKey?: boolean
+    status?: boolean
+    messageId?: boolean
+    sentAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BusinessHoursNoticeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+  export type BusinessHoursNoticeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+    policy?: boolean | BusinessHoursPolicyDefaultArgs<ExtArgs>
+  }
+
+  export type $BusinessHoursNoticePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BusinessHoursNotice"
+    objects: {
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+      policy: Prisma.$BusinessHoursPolicyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      conversationId: string
+      policyId: string
+      reason: $Enums.BusinessHoursNoticeReason
+      windowKey: string
+      status: $Enums.BusinessHoursNoticeStatus
+      messageId: string | null
+      sentAt: Date | null
+      lastError: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["businessHoursNotice"]>
+    composites: {}
+  }
+
+  type BusinessHoursNoticeGetPayload<S extends boolean | null | undefined | BusinessHoursNoticeDefaultArgs> = $Result.GetResult<Prisma.$BusinessHoursNoticePayload, S>
+
+  type BusinessHoursNoticeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BusinessHoursNoticeFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BusinessHoursNoticeCountAggregateInputType | true
+    }
+
+  export interface BusinessHoursNoticeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BusinessHoursNotice'], meta: { name: 'BusinessHoursNotice' } }
+    /**
+     * Find zero or one BusinessHoursNotice that matches the filter.
+     * @param {BusinessHoursNoticeFindUniqueArgs} args - Arguments to find a BusinessHoursNotice
+     * @example
+     * // Get one BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BusinessHoursNoticeFindUniqueArgs>(args: SelectSubset<T, BusinessHoursNoticeFindUniqueArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BusinessHoursNotice that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BusinessHoursNoticeFindUniqueOrThrowArgs} args - Arguments to find a BusinessHoursNotice
+     * @example
+     * // Get one BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BusinessHoursNoticeFindUniqueOrThrowArgs>(args: SelectSubset<T, BusinessHoursNoticeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursNotice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeFindFirstArgs} args - Arguments to find a BusinessHoursNotice
+     * @example
+     * // Get one BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BusinessHoursNoticeFindFirstArgs>(args?: SelectSubset<T, BusinessHoursNoticeFindFirstArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BusinessHoursNotice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeFindFirstOrThrowArgs} args - Arguments to find a BusinessHoursNotice
+     * @example
+     * // Get one BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BusinessHoursNoticeFindFirstOrThrowArgs>(args?: SelectSubset<T, BusinessHoursNoticeFindFirstOrThrowArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BusinessHoursNotices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BusinessHoursNotices
+     * const businessHoursNotices = await prisma.businessHoursNotice.findMany()
+     * 
+     * // Get first 10 BusinessHoursNotices
+     * const businessHoursNotices = await prisma.businessHoursNotice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const businessHoursNoticeWithIdOnly = await prisma.businessHoursNotice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BusinessHoursNoticeFindManyArgs>(args?: SelectSubset<T, BusinessHoursNoticeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BusinessHoursNotice.
+     * @param {BusinessHoursNoticeCreateArgs} args - Arguments to create a BusinessHoursNotice.
+     * @example
+     * // Create one BusinessHoursNotice
+     * const BusinessHoursNotice = await prisma.businessHoursNotice.create({
+     *   data: {
+     *     // ... data to create a BusinessHoursNotice
+     *   }
+     * })
+     * 
+     */
+    create<T extends BusinessHoursNoticeCreateArgs>(args: SelectSubset<T, BusinessHoursNoticeCreateArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BusinessHoursNotices.
+     * @param {BusinessHoursNoticeCreateManyArgs} args - Arguments to create many BusinessHoursNotices.
+     * @example
+     * // Create many BusinessHoursNotices
+     * const businessHoursNotice = await prisma.businessHoursNotice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BusinessHoursNoticeCreateManyArgs>(args?: SelectSubset<T, BusinessHoursNoticeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BusinessHoursNotices and returns the data saved in the database.
+     * @param {BusinessHoursNoticeCreateManyAndReturnArgs} args - Arguments to create many BusinessHoursNotices.
+     * @example
+     * // Create many BusinessHoursNotices
+     * const businessHoursNotice = await prisma.businessHoursNotice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BusinessHoursNotices and only return the `id`
+     * const businessHoursNoticeWithIdOnly = await prisma.businessHoursNotice.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BusinessHoursNoticeCreateManyAndReturnArgs>(args?: SelectSubset<T, BusinessHoursNoticeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BusinessHoursNotice.
+     * @param {BusinessHoursNoticeDeleteArgs} args - Arguments to delete one BusinessHoursNotice.
+     * @example
+     * // Delete one BusinessHoursNotice
+     * const BusinessHoursNotice = await prisma.businessHoursNotice.delete({
+     *   where: {
+     *     // ... filter to delete one BusinessHoursNotice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BusinessHoursNoticeDeleteArgs>(args: SelectSubset<T, BusinessHoursNoticeDeleteArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BusinessHoursNotice.
+     * @param {BusinessHoursNoticeUpdateArgs} args - Arguments to update one BusinessHoursNotice.
+     * @example
+     * // Update one BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BusinessHoursNoticeUpdateArgs>(args: SelectSubset<T, BusinessHoursNoticeUpdateArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BusinessHoursNotices.
+     * @param {BusinessHoursNoticeDeleteManyArgs} args - Arguments to filter BusinessHoursNotices to delete.
+     * @example
+     * // Delete a few BusinessHoursNotices
+     * const { count } = await prisma.businessHoursNotice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BusinessHoursNoticeDeleteManyArgs>(args?: SelectSubset<T, BusinessHoursNoticeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BusinessHoursNotices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BusinessHoursNotices
+     * const businessHoursNotice = await prisma.businessHoursNotice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BusinessHoursNoticeUpdateManyArgs>(args: SelectSubset<T, BusinessHoursNoticeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BusinessHoursNotice.
+     * @param {BusinessHoursNoticeUpsertArgs} args - Arguments to update or create a BusinessHoursNotice.
+     * @example
+     * // Update or create a BusinessHoursNotice
+     * const businessHoursNotice = await prisma.businessHoursNotice.upsert({
+     *   create: {
+     *     // ... data to create a BusinessHoursNotice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BusinessHoursNotice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BusinessHoursNoticeUpsertArgs>(args: SelectSubset<T, BusinessHoursNoticeUpsertArgs<ExtArgs>>): Prisma__BusinessHoursNoticeClient<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BusinessHoursNotices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeCountArgs} args - Arguments to filter BusinessHoursNotices to count.
+     * @example
+     * // Count the number of BusinessHoursNotices
+     * const count = await prisma.businessHoursNotice.count({
+     *   where: {
+     *     // ... the filter for the BusinessHoursNotices we want to count
+     *   }
+     * })
+    **/
+    count<T extends BusinessHoursNoticeCountArgs>(
+      args?: Subset<T, BusinessHoursNoticeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BusinessHoursNoticeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BusinessHoursNotice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BusinessHoursNoticeAggregateArgs>(args: Subset<T, BusinessHoursNoticeAggregateArgs>): Prisma.PrismaPromise<GetBusinessHoursNoticeAggregateType<T>>
+
+    /**
+     * Group by BusinessHoursNotice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BusinessHoursNoticeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BusinessHoursNoticeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BusinessHoursNoticeGroupByArgs['orderBy'] }
+        : { orderBy?: BusinessHoursNoticeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BusinessHoursNoticeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBusinessHoursNoticeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BusinessHoursNotice model
+   */
+  readonly fields: BusinessHoursNoticeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BusinessHoursNotice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BusinessHoursNoticeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    policy<T extends BusinessHoursPolicyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessHoursPolicyDefaultArgs<ExtArgs>>): Prisma__BusinessHoursPolicyClient<$Result.GetResult<Prisma.$BusinessHoursPolicyPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BusinessHoursNotice model
+   */ 
+  interface BusinessHoursNoticeFieldRefs {
+    readonly id: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly conversationId: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly policyId: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly reason: FieldRef<"BusinessHoursNotice", 'BusinessHoursNoticeReason'>
+    readonly windowKey: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly status: FieldRef<"BusinessHoursNotice", 'BusinessHoursNoticeStatus'>
+    readonly messageId: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly sentAt: FieldRef<"BusinessHoursNotice", 'DateTime'>
+    readonly lastError: FieldRef<"BusinessHoursNotice", 'String'>
+    readonly createdAt: FieldRef<"BusinessHoursNotice", 'DateTime'>
+    readonly updatedAt: FieldRef<"BusinessHoursNotice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BusinessHoursNotice findUnique
+   */
+  export type BusinessHoursNoticeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursNotice to fetch.
+     */
+    where: BusinessHoursNoticeWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursNotice findUniqueOrThrow
+   */
+  export type BusinessHoursNoticeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursNotice to fetch.
+     */
+    where: BusinessHoursNoticeWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursNotice findFirst
+   */
+  export type BusinessHoursNoticeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursNotice to fetch.
+     */
+    where?: BusinessHoursNoticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursNotices to fetch.
+     */
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursNotices.
+     */
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursNotices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursNotices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursNotices.
+     */
+    distinct?: BusinessHoursNoticeScalarFieldEnum | BusinessHoursNoticeScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursNotice findFirstOrThrow
+   */
+  export type BusinessHoursNoticeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursNotice to fetch.
+     */
+    where?: BusinessHoursNoticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursNotices to fetch.
+     */
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BusinessHoursNotices.
+     */
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursNotices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursNotices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BusinessHoursNotices.
+     */
+    distinct?: BusinessHoursNoticeScalarFieldEnum | BusinessHoursNoticeScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursNotice findMany
+   */
+  export type BusinessHoursNoticeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter, which BusinessHoursNotices to fetch.
+     */
+    where?: BusinessHoursNoticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BusinessHoursNotices to fetch.
+     */
+    orderBy?: BusinessHoursNoticeOrderByWithRelationInput | BusinessHoursNoticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BusinessHoursNotices.
+     */
+    cursor?: BusinessHoursNoticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BusinessHoursNotices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BusinessHoursNotices.
+     */
+    skip?: number
+    distinct?: BusinessHoursNoticeScalarFieldEnum | BusinessHoursNoticeScalarFieldEnum[]
+  }
+
+  /**
+   * BusinessHoursNotice create
+   */
+  export type BusinessHoursNoticeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BusinessHoursNotice.
+     */
+    data: XOR<BusinessHoursNoticeCreateInput, BusinessHoursNoticeUncheckedCreateInput>
+  }
+
+  /**
+   * BusinessHoursNotice createMany
+   */
+  export type BusinessHoursNoticeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BusinessHoursNotices.
+     */
+    data: BusinessHoursNoticeCreateManyInput | BusinessHoursNoticeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BusinessHoursNotice createManyAndReturn
+   */
+  export type BusinessHoursNoticeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BusinessHoursNotices.
+     */
+    data: BusinessHoursNoticeCreateManyInput | BusinessHoursNoticeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BusinessHoursNotice update
+   */
+  export type BusinessHoursNoticeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BusinessHoursNotice.
+     */
+    data: XOR<BusinessHoursNoticeUpdateInput, BusinessHoursNoticeUncheckedUpdateInput>
+    /**
+     * Choose, which BusinessHoursNotice to update.
+     */
+    where: BusinessHoursNoticeWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursNotice updateMany
+   */
+  export type BusinessHoursNoticeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BusinessHoursNotices.
+     */
+    data: XOR<BusinessHoursNoticeUpdateManyMutationInput, BusinessHoursNoticeUncheckedUpdateManyInput>
+    /**
+     * Filter which BusinessHoursNotices to update
+     */
+    where?: BusinessHoursNoticeWhereInput
+  }
+
+  /**
+   * BusinessHoursNotice upsert
+   */
+  export type BusinessHoursNoticeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BusinessHoursNotice to update in case it exists.
+     */
+    where: BusinessHoursNoticeWhereUniqueInput
+    /**
+     * In case the BusinessHoursNotice found by the `where` argument doesn't exist, create a new BusinessHoursNotice with this data.
+     */
+    create: XOR<BusinessHoursNoticeCreateInput, BusinessHoursNoticeUncheckedCreateInput>
+    /**
+     * In case the BusinessHoursNotice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BusinessHoursNoticeUpdateInput, BusinessHoursNoticeUncheckedUpdateInput>
+  }
+
+  /**
+   * BusinessHoursNotice delete
+   */
+  export type BusinessHoursNoticeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
+    /**
+     * Filter which BusinessHoursNotice to delete.
+     */
+    where: BusinessHoursNoticeWhereUniqueInput
+  }
+
+  /**
+   * BusinessHoursNotice deleteMany
+   */
+  export type BusinessHoursNoticeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BusinessHoursNotices to delete
+     */
+    where?: BusinessHoursNoticeWhereInput
+  }
+
+  /**
+   * BusinessHoursNotice without action
+   */
+  export type BusinessHoursNoticeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BusinessHoursNotice
+     */
+    select?: BusinessHoursNoticeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BusinessHoursNoticeInclude<ExtArgs> | null
   }
 
 
@@ -30078,6 +34829,69 @@ export namespace Prisma {
   export type ZApiConfigScalarFieldEnum = (typeof ZApiConfigScalarFieldEnum)[keyof typeof ZApiConfigScalarFieldEnum]
 
 
+  export const BusinessHoursPolicyScalarFieldEnum: {
+    id: 'id',
+    zApiConfigId: 'zApiConfigId',
+    departmentId: 'departmentId',
+    enabled: 'enabled',
+    mode: 'mode',
+    timezone: 'timezone',
+    outsideMessage: 'outsideMessage',
+    noAgentMessage: 'noAgentMessage',
+    noticeFrequency: 'noticeFrequency',
+    messageCooldownMinutes: 'messageCooldownMinutes',
+    revision: 'revision',
+    updatedByAgentId: 'updatedByAgentId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BusinessHoursPolicyScalarFieldEnum = (typeof BusinessHoursPolicyScalarFieldEnum)[keyof typeof BusinessHoursPolicyScalarFieldEnum]
+
+
+  export const BusinessHoursIntervalScalarFieldEnum: {
+    id: 'id',
+    policyId: 'policyId',
+    weekday: 'weekday',
+    startMinute: 'startMinute',
+    endMinute: 'endMinute',
+    sortOrder: 'sortOrder'
+  };
+
+  export type BusinessHoursIntervalScalarFieldEnum = (typeof BusinessHoursIntervalScalarFieldEnum)[keyof typeof BusinessHoursIntervalScalarFieldEnum]
+
+
+  export const BusinessHoursExceptionScalarFieldEnum: {
+    id: 'id',
+    policyId: 'policyId',
+    localDate: 'localDate',
+    kind: 'kind',
+    intervalsJson: 'intervalsJson',
+    reason: 'reason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BusinessHoursExceptionScalarFieldEnum = (typeof BusinessHoursExceptionScalarFieldEnum)[keyof typeof BusinessHoursExceptionScalarFieldEnum]
+
+
+  export const BusinessHoursNoticeScalarFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    policyId: 'policyId',
+    reason: 'reason',
+    windowKey: 'windowKey',
+    status: 'status',
+    messageId: 'messageId',
+    sentAt: 'sentAt',
+    lastError: 'lastError',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BusinessHoursNoticeScalarFieldEnum = (typeof BusinessHoursNoticeScalarFieldEnum)[keyof typeof BusinessHoursNoticeScalarFieldEnum]
+
+
   export const LabelScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -30386,6 +35200,62 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'BusinessHoursMode'
+   */
+  export type EnumBusinessHoursModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursMode[]'
+   */
+  export type ListEnumBusinessHoursModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursMode[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursExceptionKind'
+   */
+  export type EnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursExceptionKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursExceptionKind[]'
+   */
+  export type ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursExceptionKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursNoticeReason'
+   */
+  export type EnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursNoticeReason'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursNoticeReason[]'
+   */
+  export type ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursNoticeReason[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursNoticeStatus'
+   */
+  export type EnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursNoticeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'BusinessHoursNoticeStatus[]'
+   */
+  export type ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessHoursNoticeStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'FlowRevisionStatus'
    */
   export type EnumFlowRevisionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FlowRevisionStatus'>
@@ -30471,6 +35341,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     shortcuts?: ShortcutListRelationFilter
     flowNodes?: FlowNodeListRelationFilter
+    businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }
 
   export type DepartmentOrderByWithRelationInput = {
@@ -30483,6 +35354,7 @@ export namespace Prisma {
     conversations?: ConversationOrderByRelationAggregateInput
     shortcuts?: ShortcutOrderByRelationAggregateInput
     flowNodes?: FlowNodeOrderByRelationAggregateInput
+    businessHoursPolicies?: BusinessHoursPolicyOrderByRelationAggregateInput
   }
 
   export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -30498,6 +35370,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     shortcuts?: ShortcutListRelationFilter
     flowNodes?: FlowNodeListRelationFilter
+    businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }, "id">
 
   export type DepartmentOrderByWithAggregationInput = {
@@ -31025,6 +35898,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
+    businessHoursNotices?: BusinessHoursNoticeListRelationFilter
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -31056,6 +35930,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentOrderByRelationAggregateInput
     media?: ConversationMediaOrderByRelationAggregateInput
     labels?: ConversationLabelOrderByRelationAggregateInput
+    businessHoursNotices?: BusinessHoursNoticeOrderByRelationAggregateInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -31090,6 +35965,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
+    businessHoursNotices?: BusinessHoursNoticeListRelationFilter
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -31665,6 +36541,7 @@ export namespace Prisma {
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
+    businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }
 
   export type ZApiConfigOrderByWithRelationInput = {
@@ -31682,6 +36559,7 @@ export namespace Prisma {
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    businessHoursPolicies?: BusinessHoursPolicyOrderByRelationAggregateInput
   }
 
   export type ZApiConfigWhereUniqueInput = Prisma.AtLeast<{
@@ -31702,6 +36580,7 @@ export namespace Prisma {
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
+    businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }, "id">
 
   export type ZApiConfigOrderByWithAggregationInput = {
@@ -31744,6 +36623,343 @@ export namespace Prisma {
     groupConfirmInGroup?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"ZApiConfig"> | Date | string
+  }
+
+  export type BusinessHoursPolicyWhereInput = {
+    AND?: BusinessHoursPolicyWhereInput | BusinessHoursPolicyWhereInput[]
+    OR?: BusinessHoursPolicyWhereInput[]
+    NOT?: BusinessHoursPolicyWhereInput | BusinessHoursPolicyWhereInput[]
+    id?: StringFilter<"BusinessHoursPolicy"> | string
+    zApiConfigId?: StringFilter<"BusinessHoursPolicy"> | string
+    departmentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    enabled?: BoolFilter<"BusinessHoursPolicy"> | boolean
+    mode?: EnumBusinessHoursModeFilter<"BusinessHoursPolicy"> | $Enums.BusinessHoursMode
+    timezone?: StringFilter<"BusinessHoursPolicy"> | string
+    outsideMessage?: StringFilter<"BusinessHoursPolicy"> | string
+    noAgentMessage?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    noticeFrequency?: StringFilter<"BusinessHoursPolicy"> | string
+    messageCooldownMinutes?: IntFilter<"BusinessHoursPolicy"> | number
+    revision?: IntFilter<"BusinessHoursPolicy"> | number
+    updatedByAgentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+    zApiConfig?: XOR<ZApiConfigRelationFilter, ZApiConfigWhereInput>
+    department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
+    intervals?: BusinessHoursIntervalListRelationFilter
+    exceptions?: BusinessHoursExceptionListRelationFilter
+    notices?: BusinessHoursNoticeListRelationFilter
+  }
+
+  export type BusinessHoursPolicyOrderByWithRelationInput = {
+    id?: SortOrder
+    zApiConfigId?: SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    enabled?: SortOrder
+    mode?: SortOrder
+    timezone?: SortOrder
+    outsideMessage?: SortOrder
+    noAgentMessage?: SortOrderInput | SortOrder
+    noticeFrequency?: SortOrder
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+    updatedByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    zApiConfig?: ZApiConfigOrderByWithRelationInput
+    department?: DepartmentOrderByWithRelationInput
+    intervals?: BusinessHoursIntervalOrderByRelationAggregateInput
+    exceptions?: BusinessHoursExceptionOrderByRelationAggregateInput
+    notices?: BusinessHoursNoticeOrderByRelationAggregateInput
+  }
+
+  export type BusinessHoursPolicyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    zApiConfigId_departmentId?: BusinessHoursPolicyZApiConfigIdDepartmentIdCompoundUniqueInput
+    AND?: BusinessHoursPolicyWhereInput | BusinessHoursPolicyWhereInput[]
+    OR?: BusinessHoursPolicyWhereInput[]
+    NOT?: BusinessHoursPolicyWhereInput | BusinessHoursPolicyWhereInput[]
+    zApiConfigId?: StringFilter<"BusinessHoursPolicy"> | string
+    departmentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    enabled?: BoolFilter<"BusinessHoursPolicy"> | boolean
+    mode?: EnumBusinessHoursModeFilter<"BusinessHoursPolicy"> | $Enums.BusinessHoursMode
+    timezone?: StringFilter<"BusinessHoursPolicy"> | string
+    outsideMessage?: StringFilter<"BusinessHoursPolicy"> | string
+    noAgentMessage?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    noticeFrequency?: StringFilter<"BusinessHoursPolicy"> | string
+    messageCooldownMinutes?: IntFilter<"BusinessHoursPolicy"> | number
+    revision?: IntFilter<"BusinessHoursPolicy"> | number
+    updatedByAgentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+    zApiConfig?: XOR<ZApiConfigRelationFilter, ZApiConfigWhereInput>
+    department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
+    intervals?: BusinessHoursIntervalListRelationFilter
+    exceptions?: BusinessHoursExceptionListRelationFilter
+    notices?: BusinessHoursNoticeListRelationFilter
+  }, "id" | "zApiConfigId_departmentId">
+
+  export type BusinessHoursPolicyOrderByWithAggregationInput = {
+    id?: SortOrder
+    zApiConfigId?: SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    enabled?: SortOrder
+    mode?: SortOrder
+    timezone?: SortOrder
+    outsideMessage?: SortOrder
+    noAgentMessage?: SortOrderInput | SortOrder
+    noticeFrequency?: SortOrder
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+    updatedByAgentId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BusinessHoursPolicyCountOrderByAggregateInput
+    _avg?: BusinessHoursPolicyAvgOrderByAggregateInput
+    _max?: BusinessHoursPolicyMaxOrderByAggregateInput
+    _min?: BusinessHoursPolicyMinOrderByAggregateInput
+    _sum?: BusinessHoursPolicySumOrderByAggregateInput
+  }
+
+  export type BusinessHoursPolicyScalarWhereWithAggregatesInput = {
+    AND?: BusinessHoursPolicyScalarWhereWithAggregatesInput | BusinessHoursPolicyScalarWhereWithAggregatesInput[]
+    OR?: BusinessHoursPolicyScalarWhereWithAggregatesInput[]
+    NOT?: BusinessHoursPolicyScalarWhereWithAggregatesInput | BusinessHoursPolicyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BusinessHoursPolicy"> | string
+    zApiConfigId?: StringWithAggregatesFilter<"BusinessHoursPolicy"> | string
+    departmentId?: StringNullableWithAggregatesFilter<"BusinessHoursPolicy"> | string | null
+    enabled?: BoolWithAggregatesFilter<"BusinessHoursPolicy"> | boolean
+    mode?: EnumBusinessHoursModeWithAggregatesFilter<"BusinessHoursPolicy"> | $Enums.BusinessHoursMode
+    timezone?: StringWithAggregatesFilter<"BusinessHoursPolicy"> | string
+    outsideMessage?: StringWithAggregatesFilter<"BusinessHoursPolicy"> | string
+    noAgentMessage?: StringNullableWithAggregatesFilter<"BusinessHoursPolicy"> | string | null
+    noticeFrequency?: StringWithAggregatesFilter<"BusinessHoursPolicy"> | string
+    messageCooldownMinutes?: IntWithAggregatesFilter<"BusinessHoursPolicy"> | number
+    revision?: IntWithAggregatesFilter<"BusinessHoursPolicy"> | number
+    updatedByAgentId?: StringNullableWithAggregatesFilter<"BusinessHoursPolicy"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BusinessHoursPolicy"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BusinessHoursPolicy"> | Date | string
+  }
+
+  export type BusinessHoursIntervalWhereInput = {
+    AND?: BusinessHoursIntervalWhereInput | BusinessHoursIntervalWhereInput[]
+    OR?: BusinessHoursIntervalWhereInput[]
+    NOT?: BusinessHoursIntervalWhereInput | BusinessHoursIntervalWhereInput[]
+    id?: StringFilter<"BusinessHoursInterval"> | string
+    policyId?: StringFilter<"BusinessHoursInterval"> | string
+    weekday?: IntFilter<"BusinessHoursInterval"> | number
+    startMinute?: IntFilter<"BusinessHoursInterval"> | number
+    endMinute?: IntFilter<"BusinessHoursInterval"> | number
+    sortOrder?: IntFilter<"BusinessHoursInterval"> | number
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }
+
+  export type BusinessHoursIntervalOrderByWithRelationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+    policy?: BusinessHoursPolicyOrderByWithRelationInput
+  }
+
+  export type BusinessHoursIntervalWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BusinessHoursIntervalWhereInput | BusinessHoursIntervalWhereInput[]
+    OR?: BusinessHoursIntervalWhereInput[]
+    NOT?: BusinessHoursIntervalWhereInput | BusinessHoursIntervalWhereInput[]
+    policyId?: StringFilter<"BusinessHoursInterval"> | string
+    weekday?: IntFilter<"BusinessHoursInterval"> | number
+    startMinute?: IntFilter<"BusinessHoursInterval"> | number
+    endMinute?: IntFilter<"BusinessHoursInterval"> | number
+    sortOrder?: IntFilter<"BusinessHoursInterval"> | number
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }, "id">
+
+  export type BusinessHoursIntervalOrderByWithAggregationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+    _count?: BusinessHoursIntervalCountOrderByAggregateInput
+    _avg?: BusinessHoursIntervalAvgOrderByAggregateInput
+    _max?: BusinessHoursIntervalMaxOrderByAggregateInput
+    _min?: BusinessHoursIntervalMinOrderByAggregateInput
+    _sum?: BusinessHoursIntervalSumOrderByAggregateInput
+  }
+
+  export type BusinessHoursIntervalScalarWhereWithAggregatesInput = {
+    AND?: BusinessHoursIntervalScalarWhereWithAggregatesInput | BusinessHoursIntervalScalarWhereWithAggregatesInput[]
+    OR?: BusinessHoursIntervalScalarWhereWithAggregatesInput[]
+    NOT?: BusinessHoursIntervalScalarWhereWithAggregatesInput | BusinessHoursIntervalScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BusinessHoursInterval"> | string
+    policyId?: StringWithAggregatesFilter<"BusinessHoursInterval"> | string
+    weekday?: IntWithAggregatesFilter<"BusinessHoursInterval"> | number
+    startMinute?: IntWithAggregatesFilter<"BusinessHoursInterval"> | number
+    endMinute?: IntWithAggregatesFilter<"BusinessHoursInterval"> | number
+    sortOrder?: IntWithAggregatesFilter<"BusinessHoursInterval"> | number
+  }
+
+  export type BusinessHoursExceptionWhereInput = {
+    AND?: BusinessHoursExceptionWhereInput | BusinessHoursExceptionWhereInput[]
+    OR?: BusinessHoursExceptionWhereInput[]
+    NOT?: BusinessHoursExceptionWhereInput | BusinessHoursExceptionWhereInput[]
+    id?: StringFilter<"BusinessHoursException"> | string
+    policyId?: StringFilter<"BusinessHoursException"> | string
+    localDate?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    kind?: EnumBusinessHoursExceptionKindFilter<"BusinessHoursException"> | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: JsonNullableFilter<"BusinessHoursException">
+    reason?: StringNullableFilter<"BusinessHoursException"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }
+
+  export type BusinessHoursExceptionOrderByWithRelationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    localDate?: SortOrder
+    kind?: SortOrder
+    intervalsJson?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    policy?: BusinessHoursPolicyOrderByWithRelationInput
+  }
+
+  export type BusinessHoursExceptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    policyId_localDate?: BusinessHoursExceptionPolicyIdLocalDateCompoundUniqueInput
+    AND?: BusinessHoursExceptionWhereInput | BusinessHoursExceptionWhereInput[]
+    OR?: BusinessHoursExceptionWhereInput[]
+    NOT?: BusinessHoursExceptionWhereInput | BusinessHoursExceptionWhereInput[]
+    policyId?: StringFilter<"BusinessHoursException"> | string
+    localDate?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    kind?: EnumBusinessHoursExceptionKindFilter<"BusinessHoursException"> | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: JsonNullableFilter<"BusinessHoursException">
+    reason?: StringNullableFilter<"BusinessHoursException"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }, "id" | "policyId_localDate">
+
+  export type BusinessHoursExceptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    localDate?: SortOrder
+    kind?: SortOrder
+    intervalsJson?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BusinessHoursExceptionCountOrderByAggregateInput
+    _max?: BusinessHoursExceptionMaxOrderByAggregateInput
+    _min?: BusinessHoursExceptionMinOrderByAggregateInput
+  }
+
+  export type BusinessHoursExceptionScalarWhereWithAggregatesInput = {
+    AND?: BusinessHoursExceptionScalarWhereWithAggregatesInput | BusinessHoursExceptionScalarWhereWithAggregatesInput[]
+    OR?: BusinessHoursExceptionScalarWhereWithAggregatesInput[]
+    NOT?: BusinessHoursExceptionScalarWhereWithAggregatesInput | BusinessHoursExceptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BusinessHoursException"> | string
+    policyId?: StringWithAggregatesFilter<"BusinessHoursException"> | string
+    localDate?: DateTimeWithAggregatesFilter<"BusinessHoursException"> | Date | string
+    kind?: EnumBusinessHoursExceptionKindWithAggregatesFilter<"BusinessHoursException"> | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: JsonNullableWithAggregatesFilter<"BusinessHoursException">
+    reason?: StringNullableWithAggregatesFilter<"BusinessHoursException"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BusinessHoursException"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BusinessHoursException"> | Date | string
+  }
+
+  export type BusinessHoursNoticeWhereInput = {
+    AND?: BusinessHoursNoticeWhereInput | BusinessHoursNoticeWhereInput[]
+    OR?: BusinessHoursNoticeWhereInput[]
+    NOT?: BusinessHoursNoticeWhereInput | BusinessHoursNoticeWhereInput[]
+    id?: StringFilter<"BusinessHoursNotice"> | string
+    conversationId?: StringFilter<"BusinessHoursNotice"> | string
+    policyId?: StringFilter<"BusinessHoursNotice"> | string
+    reason?: EnumBusinessHoursNoticeReasonFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFilter<"BusinessHoursNotice"> | string
+    status?: EnumBusinessHoursNoticeStatusFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeStatus
+    messageId?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    sentAt?: DateTimeNullableFilter<"BusinessHoursNotice"> | Date | string | null
+    lastError?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }
+
+  export type BusinessHoursNoticeOrderByWithRelationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    policyId?: SortOrder
+    reason?: SortOrder
+    windowKey?: SortOrder
+    status?: SortOrder
+    messageId?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    conversation?: ConversationOrderByWithRelationInput
+    policy?: BusinessHoursPolicyOrderByWithRelationInput
+  }
+
+  export type BusinessHoursNoticeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    conversationId_policyId_reason_windowKey?: BusinessHoursNoticeConversationIdPolicyIdReasonWindowKeyCompoundUniqueInput
+    AND?: BusinessHoursNoticeWhereInput | BusinessHoursNoticeWhereInput[]
+    OR?: BusinessHoursNoticeWhereInput[]
+    NOT?: BusinessHoursNoticeWhereInput | BusinessHoursNoticeWhereInput[]
+    conversationId?: StringFilter<"BusinessHoursNotice"> | string
+    policyId?: StringFilter<"BusinessHoursNotice"> | string
+    reason?: EnumBusinessHoursNoticeReasonFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFilter<"BusinessHoursNotice"> | string
+    status?: EnumBusinessHoursNoticeStatusFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeStatus
+    messageId?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    sentAt?: DateTimeNullableFilter<"BusinessHoursNotice"> | Date | string | null
+    lastError?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+    policy?: XOR<BusinessHoursPolicyRelationFilter, BusinessHoursPolicyWhereInput>
+  }, "id" | "conversationId_policyId_reason_windowKey">
+
+  export type BusinessHoursNoticeOrderByWithAggregationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    policyId?: SortOrder
+    reason?: SortOrder
+    windowKey?: SortOrder
+    status?: SortOrder
+    messageId?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BusinessHoursNoticeCountOrderByAggregateInput
+    _max?: BusinessHoursNoticeMaxOrderByAggregateInput
+    _min?: BusinessHoursNoticeMinOrderByAggregateInput
+  }
+
+  export type BusinessHoursNoticeScalarWhereWithAggregatesInput = {
+    AND?: BusinessHoursNoticeScalarWhereWithAggregatesInput | BusinessHoursNoticeScalarWhereWithAggregatesInput[]
+    OR?: BusinessHoursNoticeScalarWhereWithAggregatesInput[]
+    NOT?: BusinessHoursNoticeScalarWhereWithAggregatesInput | BusinessHoursNoticeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BusinessHoursNotice"> | string
+    conversationId?: StringWithAggregatesFilter<"BusinessHoursNotice"> | string
+    policyId?: StringWithAggregatesFilter<"BusinessHoursNotice"> | string
+    reason?: EnumBusinessHoursNoticeReasonWithAggregatesFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringWithAggregatesFilter<"BusinessHoursNotice"> | string
+    status?: EnumBusinessHoursNoticeStatusWithAggregatesFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeStatus
+    messageId?: StringNullableWithAggregatesFilter<"BusinessHoursNotice"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"BusinessHoursNotice"> | Date | string | null
+    lastError?: StringNullableWithAggregatesFilter<"BusinessHoursNotice"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BusinessHoursNotice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BusinessHoursNotice"> | Date | string
   }
 
   export type LabelWhereInput = {
@@ -32615,6 +37831,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateInput = {
@@ -32627,6 +37844,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUpdateInput = {
@@ -32639,6 +37857,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateInput = {
@@ -32651,6 +37870,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentCreateManyInput = {
@@ -33220,6 +38440,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -33246,6 +38467,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUpdateInput = {
@@ -33272,6 +38494,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -33298,6 +38521,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -33938,6 +39162,7 @@ export namespace Prisma {
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
     updatedAt?: Date | string
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutZApiConfigInput
   }
 
   export type ZApiConfigUncheckedCreateInput = {
@@ -33955,6 +39180,7 @@ export namespace Prisma {
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
     updatedAt?: Date | string
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutZApiConfigInput
   }
 
   export type ZApiConfigUpdateInput = {
@@ -33972,6 +39198,7 @@ export namespace Prisma {
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutZApiConfigNestedInput
   }
 
   export type ZApiConfigUncheckedUpdateInput = {
@@ -33989,6 +39216,7 @@ export namespace Prisma {
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutZApiConfigNestedInput
   }
 
   export type ZApiConfigCreateManyInput = {
@@ -34039,6 +39267,369 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursPolicyCreateInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    zApiConfig: ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput
+    department?: DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput
+    intervals?: BusinessHoursIntervalCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateInput = {
+    id?: string
+    zApiConfigId: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intervals?: BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zApiConfig?: ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput
+    department?: DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput
+    intervals?: BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervals?: BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyCreateManyInput = {
+    id?: string
+    zApiConfigId: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursPolicyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursIntervalCreateInput = {
+    id?: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+    policy: BusinessHoursPolicyCreateNestedOneWithoutIntervalsInput
+  }
+
+  export type BusinessHoursIntervalUncheckedCreateInput = {
+    id?: string
+    policyId: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+  }
+
+  export type BusinessHoursIntervalUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    policy?: BusinessHoursPolicyUpdateOneRequiredWithoutIntervalsNestedInput
+  }
+
+  export type BusinessHoursIntervalUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursIntervalCreateManyInput = {
+    id?: string
+    policyId: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+  }
+
+  export type BusinessHoursIntervalUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursIntervalUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursExceptionCreateInput = {
+    id?: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: BusinessHoursPolicyCreateNestedOneWithoutExceptionsInput
+  }
+
+  export type BusinessHoursExceptionUncheckedCreateInput = {
+    id?: string
+    policyId: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursExceptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: BusinessHoursPolicyUpdateOneRequiredWithoutExceptionsNestedInput
+  }
+
+  export type BusinessHoursExceptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursExceptionCreateManyInput = {
+    id?: string
+    policyId: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursExceptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursExceptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeCreateInput = {
+    id?: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutBusinessHoursNoticesInput
+    policy: BusinessHoursPolicyCreateNestedOneWithoutNoticesInput
+  }
+
+  export type BusinessHoursNoticeUncheckedCreateInput = {
+    id?: string
+    conversationId: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutBusinessHoursNoticesNestedInput
+    policy?: BusinessHoursPolicyUpdateOneRequiredWithoutNoticesNestedInput
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeCreateManyInput = {
+    id?: string
+    conversationId: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -34992,6 +40583,12 @@ export namespace Prisma {
     none?: FlowNodeWhereInput
   }
 
+  export type BusinessHoursPolicyListRelationFilter = {
+    every?: BusinessHoursPolicyWhereInput
+    some?: BusinessHoursPolicyWhereInput
+    none?: BusinessHoursPolicyWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -35014,6 +40611,10 @@ export namespace Prisma {
   }
 
   export type FlowNodeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BusinessHoursPolicyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35523,11 +41124,21 @@ export namespace Prisma {
     none?: ConversationMediaWhereInput
   }
 
+  export type BusinessHoursNoticeListRelationFilter = {
+    every?: BusinessHoursNoticeWhereInput
+    some?: BusinessHoursNoticeWhereInput
+    none?: BusinessHoursNoticeWhereInput
+  }
+
   export type FlowExecutionEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ConversationMediaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BusinessHoursNoticeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -36094,6 +41705,296 @@ export namespace Prisma {
 
   export type ZApiConfigSumOrderByAggregateInput = {
     groupCooldownSeconds?: SortOrder
+  }
+
+  export type EnumBusinessHoursModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursMode | EnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursModeFilter<$PrismaModel> | $Enums.BusinessHoursMode
+  }
+
+  export type ZApiConfigRelationFilter = {
+    is?: ZApiConfigWhereInput
+    isNot?: ZApiConfigWhereInput
+  }
+
+  export type BusinessHoursIntervalListRelationFilter = {
+    every?: BusinessHoursIntervalWhereInput
+    some?: BusinessHoursIntervalWhereInput
+    none?: BusinessHoursIntervalWhereInput
+  }
+
+  export type BusinessHoursExceptionListRelationFilter = {
+    every?: BusinessHoursExceptionWhereInput
+    some?: BusinessHoursExceptionWhereInput
+    none?: BusinessHoursExceptionWhereInput
+  }
+
+  export type BusinessHoursIntervalOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BusinessHoursExceptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BusinessHoursPolicyZApiConfigIdDepartmentIdCompoundUniqueInput = {
+    zApiConfigId: string
+    departmentId: string
+  }
+
+  export type BusinessHoursPolicyCountOrderByAggregateInput = {
+    id?: SortOrder
+    zApiConfigId?: SortOrder
+    departmentId?: SortOrder
+    enabled?: SortOrder
+    mode?: SortOrder
+    timezone?: SortOrder
+    outsideMessage?: SortOrder
+    noAgentMessage?: SortOrder
+    noticeFrequency?: SortOrder
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+    updatedByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursPolicyAvgOrderByAggregateInput = {
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+  }
+
+  export type BusinessHoursPolicyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    zApiConfigId?: SortOrder
+    departmentId?: SortOrder
+    enabled?: SortOrder
+    mode?: SortOrder
+    timezone?: SortOrder
+    outsideMessage?: SortOrder
+    noAgentMessage?: SortOrder
+    noticeFrequency?: SortOrder
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+    updatedByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursPolicyMinOrderByAggregateInput = {
+    id?: SortOrder
+    zApiConfigId?: SortOrder
+    departmentId?: SortOrder
+    enabled?: SortOrder
+    mode?: SortOrder
+    timezone?: SortOrder
+    outsideMessage?: SortOrder
+    noAgentMessage?: SortOrder
+    noticeFrequency?: SortOrder
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+    updatedByAgentId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursPolicySumOrderByAggregateInput = {
+    messageCooldownMinutes?: SortOrder
+    revision?: SortOrder
+  }
+
+  export type EnumBusinessHoursModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursMode | EnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursModeWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursModeFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursModeFilter<$PrismaModel>
+  }
+
+  export type BusinessHoursPolicyRelationFilter = {
+    is?: BusinessHoursPolicyWhereInput
+    isNot?: BusinessHoursPolicyWhereInput
+  }
+
+  export type BusinessHoursIntervalCountOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type BusinessHoursIntervalAvgOrderByAggregateInput = {
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type BusinessHoursIntervalMaxOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type BusinessHoursIntervalMinOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type BusinessHoursIntervalSumOrderByAggregateInput = {
+    weekday?: SortOrder
+    startMinute?: SortOrder
+    endMinute?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type EnumBusinessHoursExceptionKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursExceptionKind | EnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel> | $Enums.BusinessHoursExceptionKind
+  }
+
+  export type BusinessHoursExceptionPolicyIdLocalDateCompoundUniqueInput = {
+    policyId: string
+    localDate: Date | string
+  }
+
+  export type BusinessHoursExceptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    localDate?: SortOrder
+    kind?: SortOrder
+    intervalsJson?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursExceptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    localDate?: SortOrder
+    kind?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursExceptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    localDate?: SortOrder
+    kind?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumBusinessHoursExceptionKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursExceptionKind | EnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursExceptionKindWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursExceptionKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel>
+  }
+
+  export type EnumBusinessHoursNoticeReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeReason | EnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel> | $Enums.BusinessHoursNoticeReason
+  }
+
+  export type EnumBusinessHoursNoticeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeStatus | EnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel> | $Enums.BusinessHoursNoticeStatus
+  }
+
+  export type BusinessHoursNoticeConversationIdPolicyIdReasonWindowKeyCompoundUniqueInput = {
+    conversationId: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+  }
+
+  export type BusinessHoursNoticeCountOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    policyId?: SortOrder
+    reason?: SortOrder
+    windowKey?: SortOrder
+    status?: SortOrder
+    messageId?: SortOrder
+    sentAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursNoticeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    policyId?: SortOrder
+    reason?: SortOrder
+    windowKey?: SortOrder
+    status?: SortOrder
+    messageId?: SortOrder
+    sentAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BusinessHoursNoticeMinOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    policyId?: SortOrder
+    reason?: SortOrder
+    windowKey?: SortOrder
+    status?: SortOrder
+    messageId?: SortOrder
+    sentAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumBusinessHoursNoticeReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeReason | EnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeReasonWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursNoticeReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel>
+  }
+
+  export type EnumBusinessHoursNoticeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeStatus | EnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeStatusWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursNoticeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel>
   }
 
   export type LabelCountOrderByAggregateInput = {
@@ -36676,6 +42577,13 @@ export namespace Prisma {
     connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
   }
 
+  export type BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput> | BusinessHoursPolicyCreateWithoutDepartmentInput[] | BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput | BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput[]
+    createMany?: BusinessHoursPolicyCreateManyDepartmentInputEnvelope
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+  }
+
   export type ProcedureUncheckedCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: ProcedureCreateOrConnectWithoutDepartmentInput | ProcedureCreateOrConnectWithoutDepartmentInput[]
@@ -36709,6 +42617,13 @@ export namespace Prisma {
     connectOrCreate?: FlowNodeCreateOrConnectWithoutDepartmentInput | FlowNodeCreateOrConnectWithoutDepartmentInput[]
     createMany?: FlowNodeCreateManyDepartmentInputEnvelope
     connect?: FlowNodeWhereUniqueInput | FlowNodeWhereUniqueInput[]
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput> | BusinessHoursPolicyCreateWithoutDepartmentInput[] | BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput | BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput[]
+    createMany?: BusinessHoursPolicyCreateManyDepartmentInputEnvelope
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -36793,6 +42708,20 @@ export namespace Prisma {
     deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
   }
 
+  export type BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput> | BusinessHoursPolicyCreateWithoutDepartmentInput[] | BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput | BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput[]
+    upsert?: BusinessHoursPolicyUpsertWithWhereUniqueWithoutDepartmentInput | BusinessHoursPolicyUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: BusinessHoursPolicyCreateManyDepartmentInputEnvelope
+    set?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    disconnect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    delete?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    update?: BusinessHoursPolicyUpdateWithWhereUniqueWithoutDepartmentInput | BusinessHoursPolicyUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: BusinessHoursPolicyUpdateManyWithWhereWithoutDepartmentInput | BusinessHoursPolicyUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
+  }
+
   export type ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput = {
     create?: XOR<ProcedureCreateWithoutDepartmentInput, ProcedureUncheckedCreateWithoutDepartmentInput> | ProcedureCreateWithoutDepartmentInput[] | ProcedureUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: ProcedureCreateOrConnectWithoutDepartmentInput | ProcedureCreateOrConnectWithoutDepartmentInput[]
@@ -36861,6 +42790,20 @@ export namespace Prisma {
     update?: FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput | FlowNodeUpdateWithWhereUniqueWithoutDepartmentInput[]
     updateMany?: FlowNodeUpdateManyWithWhereWithoutDepartmentInput | FlowNodeUpdateManyWithWhereWithoutDepartmentInput[]
     deleteMany?: FlowNodeScalarWhereInput | FlowNodeScalarWhereInput[]
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput> | BusinessHoursPolicyCreateWithoutDepartmentInput[] | BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput | BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput[]
+    upsert?: BusinessHoursPolicyUpsertWithWhereUniqueWithoutDepartmentInput | BusinessHoursPolicyUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: BusinessHoursPolicyCreateManyDepartmentInputEnvelope
+    set?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    disconnect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    delete?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    update?: BusinessHoursPolicyUpdateWithWhereUniqueWithoutDepartmentInput | BusinessHoursPolicyUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: BusinessHoursPolicyUpdateManyWithWhereWithoutDepartmentInput | BusinessHoursPolicyUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
   }
 
   export type DepartmentCreateNestedOneWithoutProceduresInput = {
@@ -37882,6 +43825,13 @@ export namespace Prisma {
     connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
   }
 
+  export type BusinessHoursNoticeCreateNestedManyWithoutConversationInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput> | BusinessHoursNoticeCreateWithoutConversationInput[] | BusinessHoursNoticeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutConversationInput | BusinessHoursNoticeCreateOrConnectWithoutConversationInput[]
+    createMany?: BusinessHoursNoticeCreateManyConversationInputEnvelope
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -37922,6 +43872,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
     createMany?: ConversationLabelCreateManyConversationInputEnvelope
     connect?: ConversationLabelWhereUniqueInput | ConversationLabelWhereUniqueInput[]
+  }
+
+  export type BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput> | BusinessHoursNoticeCreateWithoutConversationInput[] | BusinessHoursNoticeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutConversationInput | BusinessHoursNoticeCreateOrConnectWithoutConversationInput[]
+    createMany?: BusinessHoursNoticeCreateManyConversationInputEnvelope
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
   }
 
   export type ContactUpdateOneRequiredWithoutConversationsNestedInput = {
@@ -38056,6 +44013,20 @@ export namespace Prisma {
     deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
   }
 
+  export type BusinessHoursNoticeUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput> | BusinessHoursNoticeCreateWithoutConversationInput[] | BusinessHoursNoticeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutConversationInput | BusinessHoursNoticeCreateOrConnectWithoutConversationInput[]
+    upsert?: BusinessHoursNoticeUpsertWithWhereUniqueWithoutConversationInput | BusinessHoursNoticeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: BusinessHoursNoticeCreateManyConversationInputEnvelope
+    set?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    disconnect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    delete?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    update?: BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput | BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput | BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -38138,6 +44109,20 @@ export namespace Prisma {
     update?: ConversationLabelUpdateWithWhereUniqueWithoutConversationInput | ConversationLabelUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: ConversationLabelUpdateManyWithWhereWithoutConversationInput | ConversationLabelUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: ConversationLabelScalarWhereInput | ConversationLabelScalarWhereInput[]
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput> | BusinessHoursNoticeCreateWithoutConversationInput[] | BusinessHoursNoticeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutConversationInput | BusinessHoursNoticeCreateOrConnectWithoutConversationInput[]
+    upsert?: BusinessHoursNoticeUpsertWithWhereUniqueWithoutConversationInput | BusinessHoursNoticeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: BusinessHoursNoticeCreateManyConversationInputEnvelope
+    set?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    disconnect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    delete?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    update?: BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput | BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput | BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
   }
 
   export type ConversationCreateNestedOneWithoutMessagesInput = {
@@ -38430,6 +44415,276 @@ export namespace Prisma {
     update?: FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput | FlowRevisionUpdateWithWhereUniqueWithoutFlowDefinitionInput[]
     updateMany?: FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput | FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput[]
     deleteMany?: FlowRevisionScalarWhereInput | FlowRevisionScalarWhereInput[]
+  }
+
+  export type BusinessHoursPolicyCreateNestedManyWithoutZApiConfigInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput> | BusinessHoursPolicyCreateWithoutZApiConfigInput[] | BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput | BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput[]
+    createMany?: BusinessHoursPolicyCreateManyZApiConfigInputEnvelope
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateNestedManyWithoutZApiConfigInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput> | BusinessHoursPolicyCreateWithoutZApiConfigInput[] | BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput | BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput[]
+    createMany?: BusinessHoursPolicyCreateManyZApiConfigInputEnvelope
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+  }
+
+  export type BusinessHoursPolicyUpdateManyWithoutZApiConfigNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput> | BusinessHoursPolicyCreateWithoutZApiConfigInput[] | BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput | BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput[]
+    upsert?: BusinessHoursPolicyUpsertWithWhereUniqueWithoutZApiConfigInput | BusinessHoursPolicyUpsertWithWhereUniqueWithoutZApiConfigInput[]
+    createMany?: BusinessHoursPolicyCreateManyZApiConfigInputEnvelope
+    set?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    disconnect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    delete?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    update?: BusinessHoursPolicyUpdateWithWhereUniqueWithoutZApiConfigInput | BusinessHoursPolicyUpdateWithWhereUniqueWithoutZApiConfigInput[]
+    updateMany?: BusinessHoursPolicyUpdateManyWithWhereWithoutZApiConfigInput | BusinessHoursPolicyUpdateManyWithWhereWithoutZApiConfigInput[]
+    deleteMany?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateManyWithoutZApiConfigNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput> | BusinessHoursPolicyCreateWithoutZApiConfigInput[] | BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput[]
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput | BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput[]
+    upsert?: BusinessHoursPolicyUpsertWithWhereUniqueWithoutZApiConfigInput | BusinessHoursPolicyUpsertWithWhereUniqueWithoutZApiConfigInput[]
+    createMany?: BusinessHoursPolicyCreateManyZApiConfigInputEnvelope
+    set?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    disconnect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    delete?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    connect?: BusinessHoursPolicyWhereUniqueInput | BusinessHoursPolicyWhereUniqueInput[]
+    update?: BusinessHoursPolicyUpdateWithWhereUniqueWithoutZApiConfigInput | BusinessHoursPolicyUpdateWithWhereUniqueWithoutZApiConfigInput[]
+    updateMany?: BusinessHoursPolicyUpdateManyWithWhereWithoutZApiConfigInput | BusinessHoursPolicyUpdateManyWithWhereWithoutZApiConfigInput[]
+    deleteMany?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
+  }
+
+  export type ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput = {
+    create?: XOR<ZApiConfigCreateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    connectOrCreate?: ZApiConfigCreateOrConnectWithoutBusinessHoursPoliciesInput
+    connect?: ZApiConfigWhereUniqueInput
+  }
+
+  export type DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput = {
+    create?: XOR<DepartmentCreateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutBusinessHoursPoliciesInput
+    connect?: DepartmentWhereUniqueInput
+  }
+
+  export type BusinessHoursIntervalCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput> | BusinessHoursIntervalCreateWithoutPolicyInput[] | BusinessHoursIntervalUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursIntervalCreateOrConnectWithoutPolicyInput | BusinessHoursIntervalCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursIntervalCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+  }
+
+  export type BusinessHoursExceptionCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput> | BusinessHoursExceptionCreateWithoutPolicyInput[] | BusinessHoursExceptionUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursExceptionCreateOrConnectWithoutPolicyInput | BusinessHoursExceptionCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursExceptionCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+  }
+
+  export type BusinessHoursNoticeCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput> | BusinessHoursNoticeCreateWithoutPolicyInput[] | BusinessHoursNoticeUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutPolicyInput | BusinessHoursNoticeCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursNoticeCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+  }
+
+  export type BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput> | BusinessHoursIntervalCreateWithoutPolicyInput[] | BusinessHoursIntervalUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursIntervalCreateOrConnectWithoutPolicyInput | BusinessHoursIntervalCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursIntervalCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+  }
+
+  export type BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput> | BusinessHoursExceptionCreateWithoutPolicyInput[] | BusinessHoursExceptionUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursExceptionCreateOrConnectWithoutPolicyInput | BusinessHoursExceptionCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursExceptionCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+  }
+
+  export type BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput> | BusinessHoursNoticeCreateWithoutPolicyInput[] | BusinessHoursNoticeUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutPolicyInput | BusinessHoursNoticeCreateOrConnectWithoutPolicyInput[]
+    createMany?: BusinessHoursNoticeCreateManyPolicyInputEnvelope
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+  }
+
+  export type EnumBusinessHoursModeFieldUpdateOperationsInput = {
+    set?: $Enums.BusinessHoursMode
+  }
+
+  export type ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput = {
+    create?: XOR<ZApiConfigCreateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    connectOrCreate?: ZApiConfigCreateOrConnectWithoutBusinessHoursPoliciesInput
+    upsert?: ZApiConfigUpsertWithoutBusinessHoursPoliciesInput
+    connect?: ZApiConfigWhereUniqueInput
+    update?: XOR<XOR<ZApiConfigUpdateToOneWithWhereWithoutBusinessHoursPoliciesInput, ZApiConfigUpdateWithoutBusinessHoursPoliciesInput>, ZApiConfigUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput = {
+    create?: XOR<DepartmentCreateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutBusinessHoursPoliciesInput
+    upsert?: DepartmentUpsertWithoutBusinessHoursPoliciesInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutBusinessHoursPoliciesInput, DepartmentUpdateWithoutBusinessHoursPoliciesInput>, DepartmentUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput> | BusinessHoursIntervalCreateWithoutPolicyInput[] | BusinessHoursIntervalUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursIntervalCreateOrConnectWithoutPolicyInput | BusinessHoursIntervalCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursIntervalUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursIntervalUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursIntervalCreateManyPolicyInputEnvelope
+    set?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    disconnect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    delete?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    connect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    update?: BusinessHoursIntervalUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursIntervalUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursIntervalUpdateManyWithWhereWithoutPolicyInput | BusinessHoursIntervalUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursIntervalScalarWhereInput | BusinessHoursIntervalScalarWhereInput[]
+  }
+
+  export type BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput> | BusinessHoursExceptionCreateWithoutPolicyInput[] | BusinessHoursExceptionUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursExceptionCreateOrConnectWithoutPolicyInput | BusinessHoursExceptionCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursExceptionUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursExceptionUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursExceptionCreateManyPolicyInputEnvelope
+    set?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    disconnect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    delete?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    connect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    update?: BusinessHoursExceptionUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursExceptionUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursExceptionUpdateManyWithWhereWithoutPolicyInput | BusinessHoursExceptionUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursExceptionScalarWhereInput | BusinessHoursExceptionScalarWhereInput[]
+  }
+
+  export type BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput> | BusinessHoursNoticeCreateWithoutPolicyInput[] | BusinessHoursNoticeUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutPolicyInput | BusinessHoursNoticeCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursNoticeUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursNoticeUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursNoticeCreateManyPolicyInputEnvelope
+    set?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    disconnect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    delete?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    update?: BusinessHoursNoticeUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursNoticeUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursNoticeUpdateManyWithWhereWithoutPolicyInput | BusinessHoursNoticeUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+  }
+
+  export type BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput> | BusinessHoursIntervalCreateWithoutPolicyInput[] | BusinessHoursIntervalUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursIntervalCreateOrConnectWithoutPolicyInput | BusinessHoursIntervalCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursIntervalUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursIntervalUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursIntervalCreateManyPolicyInputEnvelope
+    set?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    disconnect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    delete?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    connect?: BusinessHoursIntervalWhereUniqueInput | BusinessHoursIntervalWhereUniqueInput[]
+    update?: BusinessHoursIntervalUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursIntervalUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursIntervalUpdateManyWithWhereWithoutPolicyInput | BusinessHoursIntervalUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursIntervalScalarWhereInput | BusinessHoursIntervalScalarWhereInput[]
+  }
+
+  export type BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput> | BusinessHoursExceptionCreateWithoutPolicyInput[] | BusinessHoursExceptionUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursExceptionCreateOrConnectWithoutPolicyInput | BusinessHoursExceptionCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursExceptionUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursExceptionUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursExceptionCreateManyPolicyInputEnvelope
+    set?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    disconnect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    delete?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    connect?: BusinessHoursExceptionWhereUniqueInput | BusinessHoursExceptionWhereUniqueInput[]
+    update?: BusinessHoursExceptionUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursExceptionUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursExceptionUpdateManyWithWhereWithoutPolicyInput | BusinessHoursExceptionUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursExceptionScalarWhereInput | BusinessHoursExceptionScalarWhereInput[]
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput> | BusinessHoursNoticeCreateWithoutPolicyInput[] | BusinessHoursNoticeUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: BusinessHoursNoticeCreateOrConnectWithoutPolicyInput | BusinessHoursNoticeCreateOrConnectWithoutPolicyInput[]
+    upsert?: BusinessHoursNoticeUpsertWithWhereUniqueWithoutPolicyInput | BusinessHoursNoticeUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: BusinessHoursNoticeCreateManyPolicyInputEnvelope
+    set?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    disconnect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    delete?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
+    update?: BusinessHoursNoticeUpdateWithWhereUniqueWithoutPolicyInput | BusinessHoursNoticeUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: BusinessHoursNoticeUpdateManyWithWhereWithoutPolicyInput | BusinessHoursNoticeUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+  }
+
+  export type BusinessHoursPolicyCreateNestedOneWithoutIntervalsInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutIntervalsInput, BusinessHoursPolicyUncheckedCreateWithoutIntervalsInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutIntervalsInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  export type BusinessHoursPolicyUpdateOneRequiredWithoutIntervalsNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutIntervalsInput, BusinessHoursPolicyUncheckedCreateWithoutIntervalsInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutIntervalsInput
+    upsert?: BusinessHoursPolicyUpsertWithoutIntervalsInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+    update?: XOR<XOR<BusinessHoursPolicyUpdateToOneWithWhereWithoutIntervalsInput, BusinessHoursPolicyUpdateWithoutIntervalsInput>, BusinessHoursPolicyUncheckedUpdateWithoutIntervalsInput>
+  }
+
+  export type BusinessHoursPolicyCreateNestedOneWithoutExceptionsInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutExceptionsInput, BusinessHoursPolicyUncheckedCreateWithoutExceptionsInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutExceptionsInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  export type EnumBusinessHoursExceptionKindFieldUpdateOperationsInput = {
+    set?: $Enums.BusinessHoursExceptionKind
+  }
+
+  export type BusinessHoursPolicyUpdateOneRequiredWithoutExceptionsNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutExceptionsInput, BusinessHoursPolicyUncheckedCreateWithoutExceptionsInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutExceptionsInput
+    upsert?: BusinessHoursPolicyUpsertWithoutExceptionsInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+    update?: XOR<XOR<BusinessHoursPolicyUpdateToOneWithWhereWithoutExceptionsInput, BusinessHoursPolicyUpdateWithoutExceptionsInput>, BusinessHoursPolicyUncheckedUpdateWithoutExceptionsInput>
+  }
+
+  export type ConversationCreateNestedOneWithoutBusinessHoursNoticesInput = {
+    create?: XOR<ConversationCreateWithoutBusinessHoursNoticesInput, ConversationUncheckedCreateWithoutBusinessHoursNoticesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutBusinessHoursNoticesInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type BusinessHoursPolicyCreateNestedOneWithoutNoticesInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutNoticesInput, BusinessHoursPolicyUncheckedCreateWithoutNoticesInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutNoticesInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+  }
+
+  export type EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput = {
+    set?: $Enums.BusinessHoursNoticeReason
+  }
+
+  export type EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BusinessHoursNoticeStatus
+  }
+
+  export type ConversationUpdateOneRequiredWithoutBusinessHoursNoticesNestedInput = {
+    create?: XOR<ConversationCreateWithoutBusinessHoursNoticesInput, ConversationUncheckedCreateWithoutBusinessHoursNoticesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutBusinessHoursNoticesInput
+    upsert?: ConversationUpsertWithoutBusinessHoursNoticesInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutBusinessHoursNoticesInput, ConversationUpdateWithoutBusinessHoursNoticesInput>, ConversationUncheckedUpdateWithoutBusinessHoursNoticesInput>
+  }
+
+  export type BusinessHoursPolicyUpdateOneRequiredWithoutNoticesNestedInput = {
+    create?: XOR<BusinessHoursPolicyCreateWithoutNoticesInput, BusinessHoursPolicyUncheckedCreateWithoutNoticesInput>
+    connectOrCreate?: BusinessHoursPolicyCreateOrConnectWithoutNoticesInput
+    upsert?: BusinessHoursPolicyUpsertWithoutNoticesInput
+    connect?: BusinessHoursPolicyWhereUniqueInput
+    update?: XOR<XOR<BusinessHoursPolicyUpdateToOneWithWhereWithoutNoticesInput, BusinessHoursPolicyUpdateWithoutNoticesInput>, BusinessHoursPolicyUncheckedUpdateWithoutNoticesInput>
   }
 
   export type ConversationLabelCreateNestedManyWithoutLabelInput = {
@@ -39503,6 +45758,74 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumBusinessHoursModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursMode | EnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursModeFilter<$PrismaModel> | $Enums.BusinessHoursMode
+  }
+
+  export type NestedEnumBusinessHoursModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursMode | EnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursMode[] | ListEnumBusinessHoursModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursModeWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursModeFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursModeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursExceptionKind | EnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel> | $Enums.BusinessHoursExceptionKind
+  }
+
+  export type NestedEnumBusinessHoursExceptionKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursExceptionKind | EnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursExceptionKind[] | ListEnumBusinessHoursExceptionKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursExceptionKindWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursExceptionKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursExceptionKindFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeReason | EnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel> | $Enums.BusinessHoursNoticeReason
+  }
+
+  export type NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeStatus | EnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel> | $Enums.BusinessHoursNoticeStatus
+  }
+
+  export type NestedEnumBusinessHoursNoticeReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeReason | EnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeReason[] | ListEnumBusinessHoursNoticeReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeReasonWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursNoticeReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursNoticeReasonFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBusinessHoursNoticeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BusinessHoursNoticeStatus | EnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BusinessHoursNoticeStatus[] | ListEnumBusinessHoursNoticeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBusinessHoursNoticeStatusWithAggregatesFilter<$PrismaModel> | $Enums.BusinessHoursNoticeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel>
+    _max?: NestedEnumBusinessHoursNoticeStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumFlowRevisionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.FlowRevisionStatus | EnumFlowRevisionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FlowRevisionStatus[] | ListEnumFlowRevisionStatusFieldRefInput<$PrismaModel>
@@ -39682,6 +46005,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutDepartmentInput = {
@@ -39707,6 +46031,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutDepartmentInput = {
@@ -39800,6 +46125,54 @@ export namespace Prisma {
 
   export type FlowNodeCreateManyDepartmentInputEnvelope = {
     data: FlowNodeCreateManyDepartmentInput | FlowNodeCreateManyDepartmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BusinessHoursPolicyCreateWithoutDepartmentInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    zApiConfig: ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput
+    intervals?: BusinessHoursIntervalCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput = {
+    id?: string
+    zApiConfigId: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intervals?: BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyCreateOrConnectWithoutDepartmentInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    create: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type BusinessHoursPolicyCreateManyDepartmentInputEnvelope = {
+    data: BusinessHoursPolicyCreateManyDepartmentInput | BusinessHoursPolicyCreateManyDepartmentInput[]
     skipDuplicates?: boolean
   }
 
@@ -39967,6 +46340,42 @@ export namespace Prisma {
     departmentId?: StringNullableFilter<"FlowNode"> | string | null
   }
 
+  export type BusinessHoursPolicyUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    update: XOR<BusinessHoursPolicyUpdateWithoutDepartmentInput, BusinessHoursPolicyUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<BusinessHoursPolicyCreateWithoutDepartmentInput, BusinessHoursPolicyUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type BusinessHoursPolicyUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    data: XOR<BusinessHoursPolicyUpdateWithoutDepartmentInput, BusinessHoursPolicyUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type BusinessHoursPolicyUpdateManyWithWhereWithoutDepartmentInput = {
+    where: BusinessHoursPolicyScalarWhereInput
+    data: XOR<BusinessHoursPolicyUpdateManyMutationInput, BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
+  export type BusinessHoursPolicyScalarWhereInput = {
+    AND?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
+    OR?: BusinessHoursPolicyScalarWhereInput[]
+    NOT?: BusinessHoursPolicyScalarWhereInput | BusinessHoursPolicyScalarWhereInput[]
+    id?: StringFilter<"BusinessHoursPolicy"> | string
+    zApiConfigId?: StringFilter<"BusinessHoursPolicy"> | string
+    departmentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    enabled?: BoolFilter<"BusinessHoursPolicy"> | boolean
+    mode?: EnumBusinessHoursModeFilter<"BusinessHoursPolicy"> | $Enums.BusinessHoursMode
+    timezone?: StringFilter<"BusinessHoursPolicy"> | string
+    outsideMessage?: StringFilter<"BusinessHoursPolicy"> | string
+    noAgentMessage?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    noticeFrequency?: StringFilter<"BusinessHoursPolicy"> | string
+    messageCooldownMinutes?: IntFilter<"BusinessHoursPolicy"> | number
+    revision?: IntFilter<"BusinessHoursPolicy"> | number
+    updatedByAgentId?: StringNullableFilter<"BusinessHoursPolicy"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursPolicy"> | Date | string
+  }
+
   export type DepartmentCreateWithoutProceduresInput = {
     id?: string
     name: string
@@ -39976,6 +46385,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutProceduresInput = {
@@ -39987,6 +46397,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutProceduresInput = {
@@ -40014,6 +46425,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutProceduresInput = {
@@ -40025,6 +46437,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentCreateWithoutAgentsInput = {
@@ -40036,6 +46449,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutAgentsInput = {
@@ -40047,6 +46461,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutAgentsInput = {
@@ -40077,6 +46492,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignedAgentInput = {
@@ -40102,6 +46518,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutAssignedAgentInput = {
@@ -40675,6 +47092,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutAgentsInput = {
@@ -40686,6 +47104,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type ConversationUpsertWithWhereUniqueWithoutAssignedAgentInput = {
@@ -41091,6 +47510,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutContactInput = {
@@ -41116,6 +47536,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutContactInput = {
@@ -41819,6 +48240,7 @@ export namespace Prisma {
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutConversationsInput = {
@@ -41830,6 +48252,7 @@ export namespace Prisma {
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutConversationsInput = {
@@ -42206,6 +48629,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BusinessHoursNoticeCreateWithoutConversationInput = {
+    id?: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: BusinessHoursPolicyCreateNestedOneWithoutNoticesInput
+  }
+
+  export type BusinessHoursNoticeUncheckedCreateWithoutConversationInput = {
+    id?: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeCreateOrConnectWithoutConversationInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    create: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type BusinessHoursNoticeCreateManyConversationInputEnvelope = {
+    data: BusinessHoursNoticeCreateManyConversationInput | BusinessHoursNoticeCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ContactUpsertWithoutConversationsInput = {
     update: XOR<ContactUpdateWithoutConversationsInput, ContactUncheckedUpdateWithoutConversationsInput>
     create: XOR<ContactCreateWithoutConversationsInput, ContactUncheckedCreateWithoutConversationsInput>
@@ -42267,6 +48726,7 @@ export namespace Prisma {
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutConversationsInput = {
@@ -42278,6 +48738,7 @@ export namespace Prisma {
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type AgentUpsertWithoutConversationsInput = {
@@ -42572,6 +49033,39 @@ export namespace Prisma {
     data: XOR<ConversationLabelUpdateManyMutationInput, ConversationLabelUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type BusinessHoursNoticeUpsertWithWhereUniqueWithoutConversationInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    update: XOR<BusinessHoursNoticeUpdateWithoutConversationInput, BusinessHoursNoticeUncheckedUpdateWithoutConversationInput>
+    create: XOR<BusinessHoursNoticeCreateWithoutConversationInput, BusinessHoursNoticeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    data: XOR<BusinessHoursNoticeUpdateWithoutConversationInput, BusinessHoursNoticeUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput = {
+    where: BusinessHoursNoticeScalarWhereInput
+    data: XOR<BusinessHoursNoticeUpdateManyMutationInput, BusinessHoursNoticeUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type BusinessHoursNoticeScalarWhereInput = {
+    AND?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+    OR?: BusinessHoursNoticeScalarWhereInput[]
+    NOT?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+    id?: StringFilter<"BusinessHoursNotice"> | string
+    conversationId?: StringFilter<"BusinessHoursNotice"> | string
+    policyId?: StringFilter<"BusinessHoursNotice"> | string
+    reason?: EnumBusinessHoursNoticeReasonFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFilter<"BusinessHoursNotice"> | string
+    status?: EnumBusinessHoursNoticeStatusFilter<"BusinessHoursNotice"> | $Enums.BusinessHoursNoticeStatus
+    messageId?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    sentAt?: DateTimeNullableFilter<"BusinessHoursNotice"> | Date | string | null
+    lastError?: StringNullableFilter<"BusinessHoursNotice"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
+  }
+
   export type ConversationCreateWithoutMessagesInput = {
     id?: string
     status?: string
@@ -42595,6 +49089,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -42620,6 +49115,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -42847,6 +49343,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -42872,6 +49369,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentUpsertWithoutMessagesInput = {
@@ -43267,6 +49765,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignmentsInput = {
@@ -43292,6 +49791,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutAssignmentsInput = {
@@ -43510,6 +50010,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignmentsInput = {
@@ -43535,6 +50036,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentUpsertWithoutAssignmentFromInput = {
@@ -43794,6 +50296,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMediaInput = {
@@ -43819,6 +50322,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMediaInput = {
@@ -43905,6 +50409,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMediaInput = {
@@ -43930,6 +50435,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionCreateWithoutFlowDefinitionInput = {
@@ -43988,6 +50494,780 @@ export namespace Prisma {
   export type FlowRevisionUpdateManyWithWhereWithoutFlowDefinitionInput = {
     where: FlowRevisionScalarWhereInput
     data: XOR<FlowRevisionUpdateManyMutationInput, FlowRevisionUncheckedUpdateManyWithoutFlowDefinitionInput>
+  }
+
+  export type BusinessHoursPolicyCreateWithoutZApiConfigInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput
+    intervals?: BusinessHoursIntervalCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput = {
+    id?: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intervals?: BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyCreateOrConnectWithoutZApiConfigInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    create: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput>
+  }
+
+  export type BusinessHoursPolicyCreateManyZApiConfigInputEnvelope = {
+    data: BusinessHoursPolicyCreateManyZApiConfigInput | BusinessHoursPolicyCreateManyZApiConfigInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BusinessHoursPolicyUpsertWithWhereUniqueWithoutZApiConfigInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    update: XOR<BusinessHoursPolicyUpdateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedUpdateWithoutZApiConfigInput>
+    create: XOR<BusinessHoursPolicyCreateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedCreateWithoutZApiConfigInput>
+  }
+
+  export type BusinessHoursPolicyUpdateWithWhereUniqueWithoutZApiConfigInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    data: XOR<BusinessHoursPolicyUpdateWithoutZApiConfigInput, BusinessHoursPolicyUncheckedUpdateWithoutZApiConfigInput>
+  }
+
+  export type BusinessHoursPolicyUpdateManyWithWhereWithoutZApiConfigInput = {
+    where: BusinessHoursPolicyScalarWhereInput
+    data: XOR<BusinessHoursPolicyUpdateManyMutationInput, BusinessHoursPolicyUncheckedUpdateManyWithoutZApiConfigInput>
+  }
+
+  export type ZApiConfigCreateWithoutBusinessHoursPoliciesInput = {
+    id?: string
+    instanceId: string
+    token: string
+    clientToken?: string | null
+    webhookUrl?: string | null
+    isActive?: boolean
+    autoReply?: boolean
+    instancePhone?: string | null
+    instanceLid?: string | null
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: number
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ZApiConfigUncheckedCreateWithoutBusinessHoursPoliciesInput = {
+    id?: string
+    instanceId: string
+    token: string
+    clientToken?: string | null
+    webhookUrl?: string | null
+    isActive?: boolean
+    autoReply?: boolean
+    instancePhone?: string | null
+    instanceLid?: string | null
+    groupsEnabled?: boolean
+    groupCooldownSeconds?: number
+    groupConfirmInGroup?: boolean
+    groupConfirmMessage?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ZApiConfigCreateOrConnectWithoutBusinessHoursPoliciesInput = {
+    where: ZApiConfigWhereUniqueInput
+    create: XOR<ZApiConfigCreateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedCreateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type DepartmentCreateWithoutBusinessHoursPoliciesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    procedures?: ProcedureCreateNestedManyWithoutDepartmentInput
+    agents?: AgentCreateNestedManyWithoutDepartmentInput
+    conversations?: ConversationCreateNestedManyWithoutDepartmentInput
+    shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentUncheckedCreateWithoutBusinessHoursPoliciesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    procedures?: ProcedureUncheckedCreateNestedManyWithoutDepartmentInput
+    agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
+    shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentCreateOrConnectWithoutBusinessHoursPoliciesInput = {
+    where: DepartmentWhereUniqueInput
+    create: XOR<DepartmentCreateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedCreateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type BusinessHoursIntervalCreateWithoutPolicyInput = {
+    id?: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+  }
+
+  export type BusinessHoursIntervalUncheckedCreateWithoutPolicyInput = {
+    id?: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+  }
+
+  export type BusinessHoursIntervalCreateOrConnectWithoutPolicyInput = {
+    where: BusinessHoursIntervalWhereUniqueInput
+    create: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursIntervalCreateManyPolicyInputEnvelope = {
+    data: BusinessHoursIntervalCreateManyPolicyInput | BusinessHoursIntervalCreateManyPolicyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BusinessHoursExceptionCreateWithoutPolicyInput = {
+    id?: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursExceptionUncheckedCreateWithoutPolicyInput = {
+    id?: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursExceptionCreateOrConnectWithoutPolicyInput = {
+    where: BusinessHoursExceptionWhereUniqueInput
+    create: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursExceptionCreateManyPolicyInputEnvelope = {
+    data: BusinessHoursExceptionCreateManyPolicyInput | BusinessHoursExceptionCreateManyPolicyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BusinessHoursNoticeCreateWithoutPolicyInput = {
+    id?: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutBusinessHoursNoticesInput
+  }
+
+  export type BusinessHoursNoticeUncheckedCreateWithoutPolicyInput = {
+    id?: string
+    conversationId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeCreateOrConnectWithoutPolicyInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    create: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursNoticeCreateManyPolicyInputEnvelope = {
+    data: BusinessHoursNoticeCreateManyPolicyInput | BusinessHoursNoticeCreateManyPolicyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ZApiConfigUpsertWithoutBusinessHoursPoliciesInput = {
+    update: XOR<ZApiConfigUpdateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+    create: XOR<ZApiConfigCreateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    where?: ZApiConfigWhereInput
+  }
+
+  export type ZApiConfigUpdateToOneWithWhereWithoutBusinessHoursPoliciesInput = {
+    where?: ZApiConfigWhereInput
+    data: XOR<ZApiConfigUpdateWithoutBusinessHoursPoliciesInput, ZApiConfigUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type ZApiConfigUpdateWithoutBusinessHoursPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    clientToken?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ZApiConfigUncheckedUpdateWithoutBusinessHoursPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    clientToken?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    instancePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceLid?: NullableStringFieldUpdateOperationsInput | string | null
+    groupsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
+    groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
+    groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DepartmentUpsertWithoutBusinessHoursPoliciesInput = {
+    update: XOR<DepartmentUpdateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+    create: XOR<DepartmentCreateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedCreateWithoutBusinessHoursPoliciesInput>
+    where?: DepartmentWhereInput
+  }
+
+  export type DepartmentUpdateToOneWithWhereWithoutBusinessHoursPoliciesInput = {
+    where?: DepartmentWhereInput
+    data: XOR<DepartmentUpdateWithoutBusinessHoursPoliciesInput, DepartmentUncheckedUpdateWithoutBusinessHoursPoliciesInput>
+  }
+
+  export type DepartmentUpdateWithoutBusinessHoursPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    procedures?: ProcedureUpdateManyWithoutDepartmentNestedInput
+    agents?: AgentUpdateManyWithoutDepartmentNestedInput
+    conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
+    shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type DepartmentUncheckedUpdateWithoutBusinessHoursPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    procedures?: ProcedureUncheckedUpdateManyWithoutDepartmentNestedInput
+    agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
+    shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type BusinessHoursIntervalUpsertWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursIntervalWhereUniqueInput
+    update: XOR<BusinessHoursIntervalUpdateWithoutPolicyInput, BusinessHoursIntervalUncheckedUpdateWithoutPolicyInput>
+    create: XOR<BusinessHoursIntervalCreateWithoutPolicyInput, BusinessHoursIntervalUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursIntervalUpdateWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursIntervalWhereUniqueInput
+    data: XOR<BusinessHoursIntervalUpdateWithoutPolicyInput, BusinessHoursIntervalUncheckedUpdateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursIntervalUpdateManyWithWhereWithoutPolicyInput = {
+    where: BusinessHoursIntervalScalarWhereInput
+    data: XOR<BusinessHoursIntervalUpdateManyMutationInput, BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyInput>
+  }
+
+  export type BusinessHoursIntervalScalarWhereInput = {
+    AND?: BusinessHoursIntervalScalarWhereInput | BusinessHoursIntervalScalarWhereInput[]
+    OR?: BusinessHoursIntervalScalarWhereInput[]
+    NOT?: BusinessHoursIntervalScalarWhereInput | BusinessHoursIntervalScalarWhereInput[]
+    id?: StringFilter<"BusinessHoursInterval"> | string
+    policyId?: StringFilter<"BusinessHoursInterval"> | string
+    weekday?: IntFilter<"BusinessHoursInterval"> | number
+    startMinute?: IntFilter<"BusinessHoursInterval"> | number
+    endMinute?: IntFilter<"BusinessHoursInterval"> | number
+    sortOrder?: IntFilter<"BusinessHoursInterval"> | number
+  }
+
+  export type BusinessHoursExceptionUpsertWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursExceptionWhereUniqueInput
+    update: XOR<BusinessHoursExceptionUpdateWithoutPolicyInput, BusinessHoursExceptionUncheckedUpdateWithoutPolicyInput>
+    create: XOR<BusinessHoursExceptionCreateWithoutPolicyInput, BusinessHoursExceptionUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursExceptionUpdateWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursExceptionWhereUniqueInput
+    data: XOR<BusinessHoursExceptionUpdateWithoutPolicyInput, BusinessHoursExceptionUncheckedUpdateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursExceptionUpdateManyWithWhereWithoutPolicyInput = {
+    where: BusinessHoursExceptionScalarWhereInput
+    data: XOR<BusinessHoursExceptionUpdateManyMutationInput, BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyInput>
+  }
+
+  export type BusinessHoursExceptionScalarWhereInput = {
+    AND?: BusinessHoursExceptionScalarWhereInput | BusinessHoursExceptionScalarWhereInput[]
+    OR?: BusinessHoursExceptionScalarWhereInput[]
+    NOT?: BusinessHoursExceptionScalarWhereInput | BusinessHoursExceptionScalarWhereInput[]
+    id?: StringFilter<"BusinessHoursException"> | string
+    policyId?: StringFilter<"BusinessHoursException"> | string
+    localDate?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    kind?: EnumBusinessHoursExceptionKindFilter<"BusinessHoursException"> | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: JsonNullableFilter<"BusinessHoursException">
+    reason?: StringNullableFilter<"BusinessHoursException"> | string | null
+    createdAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+    updatedAt?: DateTimeFilter<"BusinessHoursException"> | Date | string
+  }
+
+  export type BusinessHoursNoticeUpsertWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    update: XOR<BusinessHoursNoticeUpdateWithoutPolicyInput, BusinessHoursNoticeUncheckedUpdateWithoutPolicyInput>
+    create: XOR<BusinessHoursNoticeCreateWithoutPolicyInput, BusinessHoursNoticeUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursNoticeUpdateWithWhereUniqueWithoutPolicyInput = {
+    where: BusinessHoursNoticeWhereUniqueInput
+    data: XOR<BusinessHoursNoticeUpdateWithoutPolicyInput, BusinessHoursNoticeUncheckedUpdateWithoutPolicyInput>
+  }
+
+  export type BusinessHoursNoticeUpdateManyWithWhereWithoutPolicyInput = {
+    where: BusinessHoursNoticeScalarWhereInput
+    data: XOR<BusinessHoursNoticeUpdateManyMutationInput, BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyInput>
+  }
+
+  export type BusinessHoursPolicyCreateWithoutIntervalsInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    zApiConfig: ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput
+    department?: DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput
+    exceptions?: BusinessHoursExceptionCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateWithoutIntervalsInput = {
+    id?: string
+    zApiConfigId: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exceptions?: BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyCreateOrConnectWithoutIntervalsInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    create: XOR<BusinessHoursPolicyCreateWithoutIntervalsInput, BusinessHoursPolicyUncheckedCreateWithoutIntervalsInput>
+  }
+
+  export type BusinessHoursPolicyUpsertWithoutIntervalsInput = {
+    update: XOR<BusinessHoursPolicyUpdateWithoutIntervalsInput, BusinessHoursPolicyUncheckedUpdateWithoutIntervalsInput>
+    create: XOR<BusinessHoursPolicyCreateWithoutIntervalsInput, BusinessHoursPolicyUncheckedCreateWithoutIntervalsInput>
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+  export type BusinessHoursPolicyUpdateToOneWithWhereWithoutIntervalsInput = {
+    where?: BusinessHoursPolicyWhereInput
+    data: XOR<BusinessHoursPolicyUpdateWithoutIntervalsInput, BusinessHoursPolicyUncheckedUpdateWithoutIntervalsInput>
+  }
+
+  export type BusinessHoursPolicyUpdateWithoutIntervalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zApiConfig?: ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput
+    department?: DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput
+    exceptions?: BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateWithoutIntervalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exceptions?: BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyCreateWithoutExceptionsInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    zApiConfig: ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput
+    department?: DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput
+    intervals?: BusinessHoursIntervalCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateWithoutExceptionsInput = {
+    id?: string
+    zApiConfigId: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intervals?: BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput
+    notices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyCreateOrConnectWithoutExceptionsInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    create: XOR<BusinessHoursPolicyCreateWithoutExceptionsInput, BusinessHoursPolicyUncheckedCreateWithoutExceptionsInput>
+  }
+
+  export type BusinessHoursPolicyUpsertWithoutExceptionsInput = {
+    update: XOR<BusinessHoursPolicyUpdateWithoutExceptionsInput, BusinessHoursPolicyUncheckedUpdateWithoutExceptionsInput>
+    create: XOR<BusinessHoursPolicyCreateWithoutExceptionsInput, BusinessHoursPolicyUncheckedCreateWithoutExceptionsInput>
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+  export type BusinessHoursPolicyUpdateToOneWithWhereWithoutExceptionsInput = {
+    where?: BusinessHoursPolicyWhereInput
+    data: XOR<BusinessHoursPolicyUpdateWithoutExceptionsInput, BusinessHoursPolicyUncheckedUpdateWithoutExceptionsInput>
+  }
+
+  export type BusinessHoursPolicyUpdateWithoutExceptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zApiConfig?: ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput
+    department?: DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput
+    intervals?: BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateWithoutExceptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervals?: BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ConversationCreateWithoutBusinessHoursNoticesInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutBusinessHoursNoticesInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutBusinessHoursNoticesInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutBusinessHoursNoticesInput, ConversationUncheckedCreateWithoutBusinessHoursNoticesInput>
+  }
+
+  export type BusinessHoursPolicyCreateWithoutNoticesInput = {
+    id?: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    zApiConfig: ZApiConfigCreateNestedOneWithoutBusinessHoursPoliciesInput
+    department?: DepartmentCreateNestedOneWithoutBusinessHoursPoliciesInput
+    intervals?: BusinessHoursIntervalCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyUncheckedCreateWithoutNoticesInput = {
+    id?: string
+    zApiConfigId: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intervals?: BusinessHoursIntervalUncheckedCreateNestedManyWithoutPolicyInput
+    exceptions?: BusinessHoursExceptionUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type BusinessHoursPolicyCreateOrConnectWithoutNoticesInput = {
+    where: BusinessHoursPolicyWhereUniqueInput
+    create: XOR<BusinessHoursPolicyCreateWithoutNoticesInput, BusinessHoursPolicyUncheckedCreateWithoutNoticesInput>
+  }
+
+  export type ConversationUpsertWithoutBusinessHoursNoticesInput = {
+    update: XOR<ConversationUpdateWithoutBusinessHoursNoticesInput, ConversationUncheckedUpdateWithoutBusinessHoursNoticesInput>
+    create: XOR<ConversationCreateWithoutBusinessHoursNoticesInput, ConversationUncheckedCreateWithoutBusinessHoursNoticesInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutBusinessHoursNoticesInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutBusinessHoursNoticesInput, ConversationUncheckedUpdateWithoutBusinessHoursNoticesInput>
+  }
+
+  export type ConversationUpdateWithoutBusinessHoursNoticesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutBusinessHoursNoticesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type BusinessHoursPolicyUpsertWithoutNoticesInput = {
+    update: XOR<BusinessHoursPolicyUpdateWithoutNoticesInput, BusinessHoursPolicyUncheckedUpdateWithoutNoticesInput>
+    create: XOR<BusinessHoursPolicyCreateWithoutNoticesInput, BusinessHoursPolicyUncheckedCreateWithoutNoticesInput>
+    where?: BusinessHoursPolicyWhereInput
+  }
+
+  export type BusinessHoursPolicyUpdateToOneWithWhereWithoutNoticesInput = {
+    where?: BusinessHoursPolicyWhereInput
+    data: XOR<BusinessHoursPolicyUpdateWithoutNoticesInput, BusinessHoursPolicyUncheckedUpdateWithoutNoticesInput>
+  }
+
+  export type BusinessHoursPolicyUpdateWithoutNoticesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zApiConfig?: ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput
+    department?: DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput
+    intervals?: BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateWithoutNoticesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervals?: BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput
   }
 
   export type ConversationLabelCreateWithoutLabelInput = {
@@ -44053,6 +51333,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutLabelsInput = {
@@ -44078,6 +51359,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutLabelsInput = {
@@ -44203,6 +51485,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutLabelsInput = {
@@ -44228,6 +51511,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LabelUpsertWithoutConversationLabelsInput = {
@@ -44499,6 +51783,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowRevisionInput = {
@@ -44524,6 +51809,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowRevisionInput = {
@@ -44783,6 +52069,7 @@ export namespace Prisma {
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutFlowNodesInput = {
@@ -44794,6 +52081,7 @@ export namespace Prisma {
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     shortcuts?: ShortcutUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutFlowNodesInput = {
@@ -44880,6 +52168,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutCurrentFlowNodeInput = {
@@ -44905,6 +52194,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutCurrentFlowNodeInput = {
@@ -45010,6 +52300,7 @@ export namespace Prisma {
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutFlowNodesInput = {
@@ -45021,6 +52312,7 @@ export namespace Prisma {
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     shortcuts?: ShortcutUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type FlowTransitionUpsertWithWhereUniqueWithoutFromNodeInput = {
@@ -45342,6 +52634,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowEventsInput = {
@@ -45367,6 +52660,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutFlowEventsInput = {
@@ -45480,6 +52774,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowEventsInput = {
@@ -45505,6 +52800,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type FlowRevisionUpsertWithoutExecutionEventsInput = {
@@ -45600,6 +52896,7 @@ export namespace Prisma {
     agents?: AgentCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutShortcutsInput = {
@@ -45611,6 +52908,7 @@ export namespace Prisma {
     agents?: AgentUncheckedCreateNestedManyWithoutDepartmentInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutDepartmentInput
     flowNodes?: FlowNodeUncheckedCreateNestedManyWithoutDepartmentInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutShortcutsInput = {
@@ -45841,6 +53139,7 @@ export namespace Prisma {
     agents?: AgentUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutShortcutsInput = {
@@ -45852,6 +53151,7 @@ export namespace Prisma {
     agents?: AgentUncheckedUpdateManyWithoutDepartmentNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutDepartmentNestedInput
     flowNodes?: FlowNodeUncheckedUpdateManyWithoutDepartmentNestedInput
+    businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type AgentUpsertWithoutOwnedShortcutsInput = {
@@ -46355,6 +53655,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutNotificationsInput = {
@@ -46380,6 +53681,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutNotificationsInput = {
@@ -46486,6 +53788,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutNotificationsInput = {
@@ -46511,6 +53814,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AgentCreateWithoutNotificationPreferenceInput = {
@@ -46701,6 +54005,22 @@ export namespace Prisma {
     config?: NullableJsonNullValueInput | InputJsonValue
   }
 
+  export type BusinessHoursPolicyCreateManyDepartmentInput = {
+    id?: string
+    zApiConfigId: string
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProcedureUpdateWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -46810,6 +54130,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutDepartmentInput = {
@@ -46835,6 +54156,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutDepartmentInput = {
@@ -46945,6 +54267,60 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type BusinessHoursPolicyUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zApiConfig?: ZApiConfigUpdateOneRequiredWithoutBusinessHoursPoliciesNestedInput
+    intervals?: BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervals?: BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    zApiConfigId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationCreateManyAssignedAgentInput = {
@@ -47168,6 +54544,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignedAgentInput = {
@@ -47193,6 +54570,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentInput = {
@@ -47847,6 +55225,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutContactInput = {
@@ -47872,6 +55251,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutContactInput = {
@@ -48090,6 +55470,19 @@ export namespace Prisma {
     labelId: string
     addedByAgentId?: string | null
     createdAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeCreateManyConversationInput = {
+    id?: string
+    policyId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MessageUpdateWithoutConversationInput = {
@@ -48357,6 +55750,45 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BusinessHoursNoticeUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: BusinessHoursPolicyUpdateOneRequiredWithoutNoticesNestedInput
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FlowRevisionCreateManyFlowDefinitionInput = {
     id?: string
     version: number
@@ -48409,6 +55841,200 @@ export namespace Prisma {
     revision?: IntFieldUpdateOperationsInput | number
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     publishedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursPolicyCreateManyZApiConfigInput = {
+    id?: string
+    departmentId?: string | null
+    enabled?: boolean
+    mode?: $Enums.BusinessHoursMode
+    timezone?: string
+    outsideMessage: string
+    noAgentMessage?: string | null
+    noticeFrequency?: string
+    messageCooldownMinutes?: number
+    revision?: number
+    updatedByAgentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursPolicyUpdateWithoutZApiConfigInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutBusinessHoursPoliciesNestedInput
+    intervals?: BusinessHoursIntervalUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateWithoutZApiConfigInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervals?: BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyNestedInput
+    exceptions?: BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyNestedInput
+    notices?: BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type BusinessHoursPolicyUncheckedUpdateManyWithoutZApiConfigInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    mode?: EnumBusinessHoursModeFieldUpdateOperationsInput | $Enums.BusinessHoursMode
+    timezone?: StringFieldUpdateOperationsInput | string
+    outsideMessage?: StringFieldUpdateOperationsInput | string
+    noAgentMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    noticeFrequency?: StringFieldUpdateOperationsInput | string
+    messageCooldownMinutes?: IntFieldUpdateOperationsInput | number
+    revision?: IntFieldUpdateOperationsInput | number
+    updatedByAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursIntervalCreateManyPolicyInput = {
+    id?: string
+    weekday: number
+    startMinute: number
+    endMinute: number
+    sortOrder?: number
+  }
+
+  export type BusinessHoursExceptionCreateManyPolicyInput = {
+    id?: string
+    localDate: Date | string
+    kind: $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursNoticeCreateManyPolicyInput = {
+    id?: string
+    conversationId: string
+    reason: $Enums.BusinessHoursNoticeReason
+    windowKey: string
+    status?: $Enums.BusinessHoursNoticeStatus
+    messageId?: string | null
+    sentAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BusinessHoursIntervalUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursIntervalUncheckedUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursIntervalUncheckedUpdateManyWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekday?: IntFieldUpdateOperationsInput | number
+    startMinute?: IntFieldUpdateOperationsInput | number
+    endMinute?: IntFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type BusinessHoursExceptionUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursExceptionUncheckedUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursExceptionUncheckedUpdateManyWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    kind?: EnumBusinessHoursExceptionKindFieldUpdateOperationsInput | $Enums.BusinessHoursExceptionKind
+    intervalsJson?: NullableJsonNullValueInput | InputJsonValue
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutBusinessHoursNoticesNestedInput
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BusinessHoursNoticeUncheckedUpdateManyWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    reason?: EnumBusinessHoursNoticeReasonFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeReason
+    windowKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumBusinessHoursNoticeStatusFieldUpdateOperationsInput | $Enums.BusinessHoursNoticeStatus
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48581,6 +56207,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowRevisionInput = {
@@ -48606,6 +56233,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutFlowRevisionInput = {
@@ -48781,6 +56409,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutCurrentFlowNodeInput = {
@@ -48806,6 +56435,7 @@ export namespace Prisma {
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput = {
@@ -48915,6 +56545,14 @@ export namespace Prisma {
      */
     export type FlowDefinitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use ZApiConfigCountOutputTypeDefaultArgs instead
+     */
+    export type ZApiConfigCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ZApiConfigCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BusinessHoursPolicyCountOutputTypeDefaultArgs instead
+     */
+    export type BusinessHoursPolicyCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BusinessHoursPolicyCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use LabelCountOutputTypeDefaultArgs instead
      */
     export type LabelCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LabelCountOutputTypeDefaultArgs<ExtArgs>
@@ -48986,6 +56624,22 @@ export namespace Prisma {
      * @deprecated Use ZApiConfigDefaultArgs instead
      */
     export type ZApiConfigArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ZApiConfigDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BusinessHoursPolicyDefaultArgs instead
+     */
+    export type BusinessHoursPolicyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BusinessHoursPolicyDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BusinessHoursIntervalDefaultArgs instead
+     */
+    export type BusinessHoursIntervalArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BusinessHoursIntervalDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BusinessHoursExceptionDefaultArgs instead
+     */
+    export type BusinessHoursExceptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BusinessHoursExceptionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BusinessHoursNoticeDefaultArgs instead
+     */
+    export type BusinessHoursNoticeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BusinessHoursNoticeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use LabelDefaultArgs instead
      */

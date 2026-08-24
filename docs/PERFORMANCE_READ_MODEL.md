@@ -33,3 +33,9 @@ A migration `20260814170000_add_message_timeline_index` cria somente o índice `
 ## Observabilidade e aceite
 
 Medir p50/p95/p99, quantidade de queries, tamanho de resposta e eventos por requisição. O aceite inicial busca p95 de até 250 ms para a fila, até 300 ms para a abertura do detalhe e até 500 ms entre evento recebido e mensagem visível em uma conexão saudável.
+
+## Busca global
+
+O filtro `q` de `GET /api/conversations` é aplicado no banco, respeita a paginação da fila e devolve no máximo um `searchMatch` seguro por conversa. O frontend usa debounce de aproximadamente 220 ms, cache curto do React Query e cancela consultas obsoletas enquanto o atendente continua vendo os resultados na mesma lista. `GET /api/conversations/search` permanece como compatibilidade legada.
+
+Devem ser acompanhados separadamente p50/p95 da busca, taxa de consultas sem resultado, quantidade de linhas examinadas e erros 400/403/5xx. Se a busca textual crescer além do limite aceitável, a próxima evolução deve ser um índice PostgreSQL dedicado ou read model, sempre de forma aditiva e sem carregar o histórico integral no navegador.
