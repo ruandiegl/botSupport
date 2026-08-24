@@ -8,22 +8,21 @@
 
 ## 1. Objetivo
 
-Evoluir o fluxo do GTFBot para suportar uma jornada hierárquica de atendimento, na qual o cliente escolhe uma categoria e, em seguida, um item/problema relacionado à categoria. O exemplo de referência é:
+Evoluir o fluxo do GTFBot para suportar uma jornada hierárquica de atendimento, na qual as categorias aparecem como cabeçalhos de um mesmo menu e os itens/problemas ficam listados logo abaixo de cada categoria. O cliente escolhe o item diretamente, sem uma etapa intermediária de seleção de categoria. O exemplo de referência é:
 
 ```text
 Saudação
   └─ Escolha da equipe
        └─ Suporte
-            └─ Escolha uma categoria
+            └─ Menu agrupado (acordeão na configuração/prévia)
                  ├─ InfoAudio
                  │    ├─ Player — Player do AR
                  │    ├─ Central de Aplicativos — Terminal
                  │    ├─ Logger — Censura
                  │    └─ Integrações — vMix, NDI, ProgAuto...
-                 ├─ InfoRadio
-                 └─ Manager
-                      └─ item/problema
-                           └─ triagem, procedimento ou encaminhamento
+                 └─ InfoRadio
+                      ├─ Manager — Opec, financeiro, NFCom
+                      └─ InfoRadio 3.8 — Opec, financeiro, NFCom
 ```
 
 Também será criada uma passagem rápida para contatos já cadastrados. Quando uma conversa nova receber uma saudação como “Bom dia”, o bot poderá apresentar um resumo dos dados conhecidos e solicitar confirmação antes de continuar:
@@ -49,7 +48,7 @@ Ao final da tarefa:
 
 - administradores poderão criar categorias e itens aninhados dentro de uma rota;
 - cada opção terá identificador estável, rótulo, descrição opcional e destino configurável;
-- a seleção de uma categoria abrirá a lista de itens correspondente, sem misturar ramos;
+- categorias e itens serão exibidos no mesmo menu, com o nome da categoria como cabeçalho e sem uma segunda tela de seleção;
 - o fluxo poderá encaminhar o item escolhido para mensagem, procedimento, triagem ou atendimento;
 - contatos locais cadastrados poderão confirmar ou atualizar o perfil antes da triagem;
 - a experiência funcionará em modo claro/escuro, desktop e mobile, usando os componentes já adotados no projeto;
@@ -97,7 +96,7 @@ Ao final da tarefa:
 #### Decisões derivadas da consulta
 
 1. `send-option-list` documenta uma lista plana com `title`, `buttonLabel` e `options[]` (`id`, `title`, `description?`). Não foi encontrada, na documentação oficial consultada, uma estrutura confiável de múltiplas seções/categorias em uma única lista.
-2. Portanto, o MVP representará categorias em uma primeira lista e itens em uma segunda lista. Isso reproduz a experiência do exemplo sem depender de um recurso não documentado.
+2. O fluxo passa a enviar uma única lista de itens, sem obrigar o cliente a escolher a categoria em uma mensagem anterior. Cada item leva o nome da categoria no contexto da descrição e a interface administrativa/prévia exibe as categorias como acordeões, mantendo a hierarquia sem depender de uma estrutura de seções não documentada.
 3. `send-button-list` é adequado para listas curtas; `send-option-list` é o transporte preferencial para itens com descrição.
 4. Respostas devem ser correlacionadas pelos IDs estáveis `buttonsResponseMessage.buttonId` ou `listResponseMessage.selectedRowId`, juntamente com `referenceMessageId`; nunca pelo índice visual.
 5. Listas interativas não devem ser enviadas para grupos. Em grupos, manter o comportamento já previsto para menção válida e, se necessário, responder no privado.
@@ -143,16 +142,16 @@ Sequência recomendada: Product Manager → Tech Lead → Backend/Frontend → S
 
 ### 7.1 Hierarquia do menu
 
-Usar o grafo existente, estendendo-o para decisões aninhadas e não criando uma tabela paralela de categorias. Cada nível é um `DECISION` com opções e transições explícitas:
+Usar o grafo existente, mantendo categorias como agrupamento de uma decisão de rota e não criando uma tabela paralela de categorias. Cada item continua tendo uma chave estável; a transição da categoria representa o destino do ramo, enquanto a seleção do item é registrada no contexto:
 
 ```text
 ROUTE
-  └─ DECISION (CATEGORY)
-       ├─ CATEGORY: InfoAudio
-       │    └─ DECISION (ITEM)
-       │         ├─ ITEM: Player
-       │         └─ ITEM: Logger
-       └─ CATEGORY: InfoRadio
+  └─ DECISION (menu agrupado)
+       ├─ InfoAudio
+       │    ├─ Player
+       │    └─ Logger
+       └─ InfoRadio
+            └─ Manager
 ```
 
 Extensões de configuração propostas, preservando campos legados:
@@ -168,11 +167,11 @@ type FlowDecisionConfig = {
 };
 ```
 
-`parentDecisionId` será usado para a relação entre categoria e itens; `parentRouteId` continua aceito para o submenu já publicado. A relação real de cada opção deverá estar em `FlowTransition.targetNodeId`, evitando que todas as opções apontem para o mesmo próximo passo.
+`parentRouteId` continua aceito para o submenu já publicado. A relação de cada item com a categoria fica em `decisionGroups`; a transição da categoria preserva o ramo existente e a seleção do item é gravada no contexto antes do avanço.
 
 Limites iniciais recomendados, configuráveis no backend:
 
-- até 3 níveis interativos (rota/equipe → categoria → item);
+- até 2 níveis visuais no menu (categoria → item), sem solicitar uma escolha intermediária ao cliente;
 - até 20 opções por decisão, sujeito à homologação da instância;
 - rótulo de opção até 80 caracteres e descrição até 120, mantendo os limites Zod atuais;
 - total máximo de 200 nós e 400 transições por rascunho, preservando o contrato existente;
@@ -251,14 +250,14 @@ Campos aditivos recomendados no modelo `Contact`:
 
 - Refatorar `rebuildTransitions()` para construir uma árvore/DFS de decisões, com uma transição por `optionKey` para seu destino real.
 - Manter as transições lineares existentes quando não houver `parentDecisionId`.
-- Atualizar `validateFlow()` para detectar ciclos, ramos órfãos, categorias sem itens e itens sem saída configurada.
+- Atualizar `validateFlow()` para detectar ciclos, ramos órfãos, categorias sem itens e opções sem saída configurada.
 - Preservar a imutabilidade das revisões publicadas e o vínculo da conversa à revisão inicial.
 - Exibir erro de publicação com o caminho completo, por exemplo: `Suporte > InfoAudio > Player`.
 
 ### 8.3 Execução
 
 - Generalizar `findDecisionChoice()` para localizar a decisão atual por `nodeId`, `referenceMessageId` e `optionKey`.
-- Após a categoria, persistir a categoria escolhida e enviar apenas os itens daquele ramo.
+- Persistir a categoria e o item escolhidos; enviar os itens de todas as categorias em uma única etapa, preservando o nome da categoria na descrição/contexto de cada opção.
 - Após o item, seguir a transição configurada para mensagem, triagem, handoff ou encerramento.
 - Permitir fallback textual numerado com os mesmos IDs internos e limitar o fallback a uma mensagem por prompt.
 - Criar um caminho específico de `CONTACT_CONFIRMATION` no executor, reaproveitando as funções de seleção e anti-replay.
@@ -277,8 +276,8 @@ Campos aditivos recomendados no modelo `Contact`:
 
 Usar os componentes shadcn já presentes no projeto, sem controles HTML crus quando houver equivalente:
 
-- `Card` para cada categoria e item;
-- `Dialog` para criar/editar categoria e item;
+- `Accordion` baseado em shadcn/Base UI para cada categoria e seus itens;
+- `Dialog` para ações destrutivas e edição quando o formulário exigir mais espaço;
 - `FieldGroup`, `Field`, `FieldLabel`, `FieldDescription`, `FieldError` para formulário;
 - `Input` para nome, `Textarea` para descrição e mensagem;
 - `Select` ou `Combobox` para destino, tipo de ação e categoria pai;
@@ -293,7 +292,7 @@ Interações:
 - arrastar para reordenar dentro do mesmo nível, preservando `optionKey`;
 - mover entre categorias somente mediante confirmação e validação do destino;
 - indicador de profundidade e breadcrumb do ramo atual;
-- preview à direita mostrando a sequência: categoria → itens → próximo passo;
+- preview à direita mostrando todas as categorias expandidas/recolhidas e os itens logo abaixo;
 - edição sempre em modal; a lateral permanece como prévia, seguindo o padrão visual já solicitado.
 
 ### 9.2 Preview da conversa
@@ -301,9 +300,8 @@ Interações:
 Criar estados de preview separados:
 
 1. resumo de contato conhecido;
-2. lista de categorias;
-3. lista de itens da categoria selecionada;
-4. mensagem/triagem/handoff final.
+2. menu agrupado em acordeão, com categorias e itens na mesma etapa;
+3. mensagem/triagem/handoff final.
 
 O preview deve mostrar o fallback textual, a versão de botão/lista escolhida e a indicação de que listas não são enviadas em grupos. Nunca enviar mensagens reais a partir do preview.
 
@@ -385,7 +383,7 @@ Sequência:
 
 - [ ] Um administrador consegue criar uma categoria dentro de uma rota e inserir, editar, excluir e reordenar itens.
 - [ ] Cada item mantém sua chave e seu destino depois de reordenar ou publicar uma nova revisão.
-- [ ] O cliente vê a categoria primeiro e os itens somente após escolher a categoria.
+- [ ] O cliente recebe uma única lista de itens; a categoria fica visível no contexto da opção e não existe uma etapa intermediária obrigatória de escolha de categoria.
 - [ ] A seleção de item chega ao ramo correto mesmo com fallback textual ou resposta interativa.
 - [ ] O editor bloqueia ciclos, opções duplicadas, ramos órfãos e excesso de profundidade com mensagem acionável.
 - [ ] Um contato completo recebe um resumo configurável após a primeira mensagem e pode confirmar ou atualizar seus dados.

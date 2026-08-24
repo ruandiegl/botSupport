@@ -17,9 +17,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { ArrowDown, ArrowUp, FolderTree, GripVertical, List, Plus, Trash2 } from "lucide-react";
 import type { FlowDecisionGroup, FlowDecisionOption } from "@/types";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -113,19 +113,24 @@ function CategoryEditor({ group, index, total, onUpdate, onMove, onRemove }: {
   };
 
   return (
-    <Card size="sm" className="flow-category-card">
-      <CardHeader>
-        <div className="flex min-w-0 items-center gap-2">
-          <FolderTree />
-          <div className="min-w-0"><CardTitle>Categoria {index + 1}</CardTitle><CardDescription>{group.items.length} item(ns) disponível(is)</CardDescription></div>
+    <AccordionItem value={group.categoryKey} className="flow-category-accordion-item">
+      <div className="flow-category-accordion-header">
+        <AccordionTrigger className="flow-category-accordion-trigger">
+          <span className="flow-category-accordion-heading">
+            <span className="flow-category-accordion-icon"><FolderTree /></span>
+            <span className="flow-category-accordion-copy">
+              <strong>{group.label || `Categoria ${index + 1}`}</strong>
+              <small>{group.items.length} {group.items.length === 1 ? "opção" : "opções"}</small>
+            </span>
+          </span>
+        </AccordionTrigger>
+        <div className="flow-decision-option-actions" aria-label={`Ações da categoria ${group.label || index + 1}`}>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={index === 0} aria-label="Mover categoria para cima" onClick={() => onMove(-1)}><ArrowUp /></Button>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={index === total - 1} aria-label="Mover categoria para baixo" onClick={() => onMove(1)}><ArrowDown /></Button>
+          <Button type="button" variant="ghost" size="icon-sm" aria-label="Excluir categoria" onClick={onRemove}><Trash2 /></Button>
         </div>
-        <div className="flow-decision-option-actions">
-          <Button variant="ghost" size="icon-sm" disabled={index === 0} aria-label="Mover categoria para cima" onClick={() => onMove(-1)}><ArrowUp /></Button>
-          <Button variant="ghost" size="icon-sm" disabled={index === total - 1} aria-label="Mover categoria para baixo" onClick={() => onMove(1)}><ArrowDown /></Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Excluir categoria" onClick={onRemove}><Trash2 /></Button>
-        </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <AccordionContent className="flow-category-accordion-content">
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor={`flow-category-label-${group.categoryKey}`}>Nome da categoria</FieldLabel>
@@ -136,8 +141,8 @@ function CategoryEditor({ group, index, total, onUpdate, onMove, onRemove }: {
             <Input id={`flow-category-description-${group.categoryKey}`} value={group.description ?? ""} maxLength={120} placeholder="Ex.: Aplicativos de áudio e automação" onChange={(event) => onUpdate({ ...group, description: event.target.value })} />
           </Field>
           <FieldSet>
-            <FieldLegend>Itens desta categoria</FieldLegend>
-            <FieldDescription>O cliente verá somente estes itens depois de escolher {group.label || "a categoria"}.</FieldDescription>
+            <FieldLegend>Opções da categoria</FieldLegend>
+            <FieldDescription>Todos os itens aparecem juntos no menu, agrupados visualmente por esta categoria.</FieldDescription>
             <div className="flow-category-items">
               {group.items.map((item, itemIndex) => (
                 <CategoryItemEditor key={item.optionKey} item={item} index={itemIndex} total={group.items.length} onUpdate={(next) => updateItem(itemIndex, next)} onMove={(direction) => moveItem(itemIndex, direction)} onRemove={() => onUpdate({ ...group, items: group.items.filter((current) => current.optionKey !== item.optionKey) })} />
@@ -145,11 +150,9 @@ function CategoryEditor({ group, index, total, onUpdate, onMove, onRemove }: {
             </div>
           </FieldSet>
         </FieldGroup>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" size="sm" disabled={group.items.length >= MAX_ROUTE_DECISION_OPTIONS} onClick={() => onUpdate({ ...group, items: [...group.items, createDecisionOption("Novo item")] })}><Plus data-icon="inline-start" />Adicionar item</Button>
-      </CardFooter>
-    </Card>
+        <Button type="button" variant="outline" size="sm" disabled={group.items.length >= MAX_ROUTE_DECISION_OPTIONS} onClick={() => onUpdate({ ...group, items: [...group.items, createDecisionOption("Novo item")] })}><Plus data-icon="inline-start" />Adicionar opção</Button>
+      </AccordionContent>
+    </AccordionItem>
   );
 }
 
@@ -199,7 +202,7 @@ export function DecisionStepEditor({ node, issues, onChange }: StepEditorProps) 
             <FieldLegend>Organização das escolhas</FieldLegend>
             <RadioGroup value={mode} onValueChange={changeMode} className="flow-decision-mode">
               <FieldLabel className="flow-decision-mode-option" htmlFor={`decision-mode-flat-${node.id}`}><RadioGroupItem id={`decision-mode-flat-${node.id}`} value="FLAT" /><span><List />Lista simples<small>Mostra todos os botões em uma única etapa.</small></span></FieldLabel>
-              <FieldLabel className="flow-decision-mode-option" htmlFor={`decision-mode-categories-${node.id}`}><RadioGroupItem id={`decision-mode-categories-${node.id}`} value="CATEGORIES" /><span><FolderTree />Categorias e itens<small>O cliente escolhe uma categoria e depois o problema.</small></span></FieldLabel>
+              <FieldLabel className="flow-decision-mode-option" htmlFor={`decision-mode-categories-${node.id}`}><RadioGroupItem id={`decision-mode-categories-${node.id}`} value="CATEGORIES" /><span><FolderTree />Categorias em acordeão<small>O cliente vê cada categoria e suas opções agrupadas no mesmo menu.</small></span></FieldLabel>
             </RadioGroup>
           </FieldSet>
 
@@ -218,7 +221,9 @@ export function DecisionStepEditor({ node, issues, onChange }: StepEditorProps) 
           ) : (
             <FieldSet>
               <div className="flex items-center justify-between gap-3"><div><FieldLegend>Categorias e itens</FieldLegend><FieldDescription>Organize os aplicativos em grupos curtos e fáceis de reconhecer.</FieldDescription></div><Badge variant="secondary">{groups.length} categoria(s)</Badge></div>
-              <div className="flow-decision-groups">{groups.map((group, index) => <CategoryEditor key={group.categoryKey} group={group} index={index} total={groups.length} onUpdate={(next) => updateGroupAt(index, next)} onMove={(direction) => moveGroupAt(index, direction)} onRemove={() => updateGroups(groups.filter((item) => item.categoryKey !== group.categoryKey))} />)}</div>
+              <Accordion multiple defaultValue={groups.map((group) => group.categoryKey)} className="flow-decision-groups">
+                {groups.map((group, index) => <CategoryEditor key={group.categoryKey} group={group} index={index} total={groups.length} onUpdate={(next) => updateGroupAt(index, next)} onMove={(direction) => moveGroupAt(index, direction)} onRemove={() => updateGroups(groups.filter((item) => item.categoryKey !== group.categoryKey))} />)}
+              </Accordion>
               {issueFor(issues, "decisionGroups") ? <FieldError>{issueFor(issues, "decisionGroups")}</FieldError> : null}
               <Button variant="outline" size="sm" disabled={groups.length >= MAX_DECISION_GROUPS} onClick={() => updateGroups([...groups, createDecisionGroup()])}><Plus data-icon="inline-start" />Adicionar categoria</Button>
             </FieldSet>

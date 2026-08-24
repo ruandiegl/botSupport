@@ -12,5 +12,5 @@ export const ExecuteFlowInputSchema = z.object({
 export type ExecuteFlowInput = z.infer<typeof ExecuteFlowInputSchema>;
 export type FlowExecutionAction =
   | { type: "SEND_TEXT"; content: string }
-  | { type: "SEND_OPTIONS"; nodeId: string; content: string; options: Array<{ optionKey: string; label: string; description?: string; departmentId: string }> }
+  | { type: "SEND_OPTIONS"; nodeId: string; content: string; options: Array<{ optionKey: string; label: string; description?: string; categoryLabel?: string; departmentId: string }> }
   | { type: "HANDOFF"; departmentId: string };

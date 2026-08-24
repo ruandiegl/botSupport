@@ -8,6 +8,7 @@ type RuntimeConversation = NonNullable<Awaited<ReturnType<typeof flowExecutionRe
 type RuntimeContact = RuntimeConversation["contact"];
 type DecisionOption = { optionKey: string; label: string; description?: string };
 type DecisionGroup = { categoryKey: string; label: string; description?: string; items: DecisionOption[] };
+type GroupedDecisionOption = DecisionOption & { categoryKey: string; categoryLabel: string };
 
 function normalize(value: string) { return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, " ").trim().toLowerCase(); }
 function nextTransition(revision: RuntimeRevision, nodeId: string) { return revision.transitions.filter((item) => item.fromNodeId === nodeId).sort((a, b) => a.sortOrder - b.sortOrder)[0]; }
@@ -28,6 +29,13 @@ function configuredDecisionGroups(node: FlowNode): DecisionGroup[] {
     const description = typeof group.description === "string" && group.description.trim() ? group.description.trim() : undefined;
     return [{ categoryKey: group.categoryKey, label: group.label, ...(description ? { description } : {}), items }];
   });
+}
+function flattenedDecisionOptions(groups: DecisionGroup[]): GroupedDecisionOption[] {
+  return groups.flatMap((group) => group.items.map((item) => ({
+    ...item,
+    categoryKey: group.categoryKey,
+    categoryLabel: group.label,
+  })));
 }
 function findConfiguredChoice(options: DecisionOption[], content: string, selectedOptionId?: string) {
   return options.find((item, index) => item.optionKey === selectedOptionId || String(index + 1) === selectedOptionId || normalize(item.label) === normalize(content));
@@ -108,8 +116,10 @@ export class FlowExecutionService {
         return { nodeType: node.type, isDecisionSelection: Boolean(group && findConfiguredChoice(group.items, content, selectedOptionId)) };
       }
       if (groups.length) {
-        const categories = groups.map((group) => ({ optionKey: group.categoryKey, label: group.label, description: group.description }));
-        return { nodeType: node.type, isDecisionSelection: Boolean(findConfiguredChoice(categories, content, selectedOptionId)) };
+        // A category menu is delivered as one list. The category remains
+        // attached to every item so the choice can continue through the
+        // category transition without an intermediate category prompt.
+        return { nodeType: node.type, isDecisionSelection: Boolean(findConfiguredChoice(flattenedDecisionOptions(groups), content, selectedOptionId)) };
       }
     }
     return {
@@ -223,23 +233,28 @@ export class FlowExecutionService {
         delete context.pendingCategoryKey;
         context.lastPromptMessageId = null;
         context.lastPromptNodeId = null;
+        // Keep the historical event name for conversations that were already
+        // waiting on the old two-step category prompt.
+        await flowExecutionRepository.recordEvent({ conversationId: conversation!.id, flowRevisionId: revision.id, flowNodeId: node.id, externalEventId: input.externalEventId, type: "WAITING_ITEM" });
         const categoryTransition = revision.transitions.find((item) => item.fromNodeId === decisionNodeId && item.optionKey === group.categoryKey);
         node = categoryTransition ? revision.nodes.find((item) => item.id === categoryTransition.toNodeId) : undefined;
         if (!node) throw new Error("FLOW_NODE_NOT_FOUND");
       } else if (groups.length) {
-        const categories = groups.map((group) => ({ optionKey: group.categoryKey, label: group.label, description: group.description }));
-        const selectedCategory = findConfiguredChoice(categories, input.content, input.selectedOptionId);
-        if (!selectedCategory) return this.waitAtDecision(revision, node, conversation!.id, context);
-        context.pendingCategoryNodeId = node.id;
-        context.pendingCategoryKey = selectedCategory.optionKey;
-        context.selectedCategoryKey = selectedCategory.optionKey;
-        context.selectedCategoryLabel = selectedCategory.label;
+        const selectedItem = findConfiguredChoice(flattenedDecisionOptions(groups), input.content, input.selectedOptionId) as GroupedDecisionOption | undefined;
+        if (!selectedItem) return this.waitAtDecision(revision, node, conversation!.id, context);
+        const selections = contextRecord(context.decisionSelections);
+        context.decisionSelections = { ...selections, [node.stableKey]: { optionKey: selectedItem.optionKey, label: selectedItem.label, categoryKey: selectedItem.categoryKey, categoryLabel: selectedItem.categoryLabel } };
+        context.selectedCategoryKey = selectedItem.categoryKey;
+        context.selectedCategoryLabel = selectedItem.categoryLabel;
+        context.selectedItemKey = selectedItem.optionKey;
+        context.selectedItemLabel = selectedItem.label;
+        context.selectedIssueKey = selectedItem.optionKey;
+        context.selectedIssueLabel = selectedItem.label;
         context.lastPromptMessageId = null;
         context.lastPromptNodeId = null;
-        await flowExecutionRepository.updateState(conversation!.id, node.id, context);
-        const result = this.decisionAction(revision, node, context);
-        await flowExecutionRepository.recordEvent({ conversationId: conversation!.id, flowRevisionId: revision.id, flowNodeId: node.id, externalEventId: input.externalEventId, type: "WAITING_ITEM" });
-        return { status: "waiting_decision", actions: [result] };
+        const categoryTransition = revision.transitions.find((item) => item.fromNodeId === decisionNodeId && item.optionKey === selectedItem.categoryKey);
+        node = categoryTransition ? revision.nodes.find((item) => item.id === categoryTransition.toNodeId) : undefined;
+        if (!node) throw new Error("FLOW_NODE_NOT_FOUND");
       } else {
         const chosen = findDecisionChoice(revision, node, input.content, input.selectedOptionId);
         if (!chosen) return this.waitAtDecision(revision, node, conversation!.id, context);
@@ -309,11 +324,18 @@ export class FlowExecutionService {
       }
     }
     if (groups.length) {
+      const options = flattenedDecisionOptions(groups).map((item) => ({
+        optionKey: item.optionKey,
+        label: item.label,
+        ...(item.description ? { description: item.description } : {}),
+        categoryLabel: item.categoryLabel,
+        departmentId: node.departmentId ?? "",
+      }));
       return {
         type: "SEND_OPTIONS",
         nodeId: node.id,
         content: typeof config.buttonMessage === "string" ? config.buttonMessage : node.content,
-        options: groups.map((group) => ({ optionKey: group.categoryKey, label: group.label, ...(group.description ? { description: group.description } : {}), departmentId: node.departmentId ?? "" })),
+        options,
       };
     }
     const configuredOptions = Array.isArray(config.decisionOptions) ? config.decisionOptions : [];

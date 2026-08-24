@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import type { FlowRevision } from "@/types";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,19 +20,29 @@ function renderKnownContactPreview(template: string) {
 
 function DecisionPreview({ node, routes }: { node: FlowRevision["nodes"][number]; routes: FlowRevision["nodes"] }) {
   const groups = getDecisionGroups(node);
-  const [categoryKey, setCategoryKey] = useState(groups[0]?.categoryKey ?? "");
-  useEffect(() => {
-    if (!groups.some((group) => group.categoryKey === categoryKey)) setCategoryKey(groups[0]?.categoryKey ?? "");
-  }, [categoryKey, groups]);
   if (groups.length) {
-    const selected = groups.find((group) => group.categoryKey === categoryKey);
     return (
-      <div className="flow-preview-category-sequence">
-        <div className="flow-preview-options flow-preview-category-selector">
-          {groups.map((group) => <Button key={group.categoryKey} variant={group.categoryKey === categoryKey ? "secondary" : "outline"} size="sm" onClick={() => setCategoryKey(group.categoryKey)}>{group.label}</Button>)}
-        </div>
-        {selected ? <div className="flow-preview-message flow-preview-message-nested"><small>Itens de {selected.label}</small><p>Escolha uma opção de {selected.label}:</p><div className="flow-preview-options">{selected.items.map((item) => <Button key={item.optionKey} variant="outline" size="sm" tabIndex={-1}>{item.label}</Button>)}</div></div> : null}
-      </div>
+      <Accordion multiple defaultValue={groups.map((group) => group.categoryKey)} className="flow-preview-category-sequence">
+        {groups.map((group) => (
+          <AccordionItem key={group.categoryKey} value={group.categoryKey} className="flow-preview-category-item">
+            <AccordionTrigger className="flow-preview-category-trigger">
+              <span className="flow-preview-category-heading">
+                <strong>{group.label}</strong>
+                <small>{group.description || `${group.items.length} opções`}</small>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="flow-preview-category-content">
+              <div className="flow-preview-options">
+                {group.items.map((item) => (
+                  <Button key={item.optionKey} variant="outline" size="sm" tabIndex={-1} className="flow-preview-option-button">
+                    <span className="flow-preview-option-copy"><strong>{item.label}</strong>{item.description ? <small>{item.description}</small> : null}</span>
+                  </Button>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     );
   }
   const options = node.config.parentRouteId

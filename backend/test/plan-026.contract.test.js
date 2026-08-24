@@ -5,6 +5,7 @@ import test from "node:test";
 import { CreateContactBodySchema } from "../dist/modules/contacts/contacts.schemas.js";
 import { ExecuteFlowInputSchema } from "../dist/modules/flow-execution/flow-execution.schemas.js";
 import { FlowNodeConfigSchema } from "../dist/modules/flow/flow.schemas.js";
+import { buildOptionListPayload, formatInteractiveFallback } from "../dist/modules/zapi/zapi.service.js";
 
 const root = process.cwd();
 const migration = readFileSync(join(root, "prisma", "migrations", "20260824113000_add_contact_profile_summary", "migration.sql"), "utf8");
@@ -60,4 +61,17 @@ test("executor distingue grupo e persiste categoria e item escolhidos", () => {
   assert.match(executionSource, /WAITING_ITEM/);
   assert.match(executionSource, /!input\.isGroup/);
   assert.match(zapiSource, /isGroup: Boolean\(incoming\.group\)/);
+});
+
+test("menu agrupado mantém a categoria no transporte e no fallback textual", () => {
+  const options = [
+    { optionKey: "player", label: "Player", categoryLabel: "InfoAudio", description: "Player do AR", departmentId: "" },
+    { optionKey: "terminal", label: "Central de Aplicativos", categoryLabel: "InfoAudio", departmentId: "" },
+    { optionKey: "manager", label: "Manager", categoryLabel: "InfoRadio", description: "Opec e financeiro", departmentId: "" },
+  ];
+  const payload = buildOptionListPayload("5511999999999", "Escolha uma opção", options);
+  assert.deepEqual(payload.optionList.options.map((item) => item.id), ["player", "terminal", "manager"]);
+  assert.equal(payload.optionList.options[0].description, "InfoAudio · Player do AR");
+  const fallback = formatInteractiveFallback("Escolha uma opção", options);
+  assert.match(fallback, /InfoAudio\n1\. Player — Player do AR[\s\S]*InfoRadio\n3\. Manager — Opec e financeiro/);
 });

@@ -45,6 +45,7 @@ export type BotOption = {
   optionKey?: string;
   label: string;
   description?: string;
+  categoryLabel?: string;
   departmentId: string;
   procedureMessage?: string;
 };
@@ -496,6 +497,15 @@ export function buildButtonListPayload(phone: string, message: string, options: 
   };
 }
 
+function displayOptionDescription(option: BotOption) {
+  const category = option.categoryLabel?.trim();
+  const detail = option.description?.trim();
+  return [
+    category,
+    detail && (!category || (detail !== category && !detail.startsWith(`${category} · `))) ? detail : undefined,
+  ].filter(Boolean).join(" · ");
+}
+
 export function buildOptionListPayload(phone: string, message: string, options: BotOption[]) {
   return {
     phone,
@@ -504,7 +514,7 @@ export function buildOptionListPayload(phone: string, message: string, options: 
       title: "Opções disponíveis",
       buttonLabel: "Ver opções",
       options: options.map((option, index) => {
-        const description = option.description?.trim();
+        const description = displayOptionDescription(option);
         return {
           id: option.optionKey || String(index + 1),
           title: option.label,
@@ -513,6 +523,34 @@ export function buildOptionListPayload(phone: string, message: string, options: 
       }),
     },
   };
+}
+
+/**
+ * Keeps the hierarchy readable when Z-API rejects an interactive list (or
+ * when the instance is configured to use the textual fallback). The numeric
+ * indexes remain global so the existing option-id resolution is unchanged.
+ */
+export function formatInteractiveFallback(message: string, options: BotOption[]) {
+  const hasCategories = options.some((option) => Boolean(option.categoryLabel?.trim()));
+  if (!hasCategories) {
+    return `${message}\n\n${options
+      .map((option, index) => `${index + 1}. ${option.label}${option.description ? ` — ${option.description}` : ""}`)
+      .join("\n")}`;
+  }
+
+  const sections: string[] = [];
+  let currentCategory = "";
+  for (const [index, option] of options.entries()) {
+    const category = option.categoryLabel?.trim() || "Outras opções";
+    if (category !== currentCategory) {
+      currentCategory = category;
+      if (sections.length) sections.push("");
+      sections.push(category);
+    }
+    const detail = option.description?.trim();
+    sections.push(`${index + 1}. ${option.label}${detail ? ` — ${detail}` : ""}`);
+  }
+  return `${message}\n\n${sections.join("\n")}`;
 }
 
 function normalizeWebhookUrl(webhookUrl: string): string {
@@ -846,7 +884,11 @@ export class ZApiService {
 
   private sendInteractiveOptions(phone: string, message: string, options: BotOption[]) {
     const configured = String(process.env.ZAPI_INTERACTIVE_MODE ?? "auto").trim().toLowerCase();
-    const useOptionList = configured === "option" || (configured === "auto" && options.length > 3);
+    // Grouped menus must use the option-list transport so the category context
+    // stays visible in each row description. The button-list transport drops
+    // descriptions and would make categories indistinguishable.
+    const hasCategoryContext = options.some((option) => Boolean(option.categoryLabel));
+    const useOptionList = configured === "option" || hasCategoryContext || (configured === "auto" && options.length > 3);
     return useOptionList ? this.sendOptionList(phone, message, options) : this.sendButtonList(phone, message, options);
   }
 
@@ -893,9 +935,7 @@ export class ZApiService {
       if (!response.ok || data?.error || data?.success === false) {
         // Fallback para envio de mensagem em formato texto se o endpoint de botões/opções falhar
         logger.error({ error: parseZApiError(response.status, data) }, "Falha ao enviar botões Z-API.");
-        const fallbackText = `${message}\n\n${options
-          .map((option, index) => `${index + 1}. ${option.label}`)
-          .join("\n")}`;
+        const fallbackText = formatInteractiveFallback(message, options);
         return this.sendText(phone, fallbackText);
       }
 
@@ -903,9 +943,7 @@ export class ZApiService {
       return data;
     } catch (err) {
       logger.error(err, "Falha ao enviar lista de opções Z-API. Usando fallback de texto.");
-      const fallbackText = `${message}\n\n${options
-        .map((option, index) => `${index + 1}. ${option.label}`)
-        .join("\n")}`;
+      const fallbackText = formatInteractiveFallback(message, options);
       return this.sendText(phone, fallbackText);
     }
   }
@@ -1393,13 +1431,13 @@ export class ZApiService {
       const data = (await response.json().catch(() => ({}))) as any;
       if (!response.ok || data?.error || data?.success === false) {
         logger.warn({ status: response.status, optionCount: options.length }, "Lista de opções Z-API indisponível; usando fallback textual");
-        return this.sendText(phone, `${message}\n\n${options.map((option, index) => `${index + 1}. ${option.label}`).join("\n")}`);
+        return this.sendText(phone, formatInteractiveFallback(message, options));
       }
       logger.info({ status: response.status, optionCount: options.length }, "Lista de opções Z-API enviada com sucesso");
       return data;
     } catch (error) {
       logger.warn({ error, optionCount: options.length }, "Falha na lista de opções Z-API; usando fallback textual");
-      return this.sendText(phone, `${message}\n\n${options.map((option, index) => `${index + 1}. ${option.label}`).join("\n")}`);
+      return this.sendText(phone, formatInteractiveFallback(message, options));
     }
   }
 
