@@ -506,6 +506,52 @@ function displayOptionDescription(option: BotOption) {
   ].filter(Boolean).join(" · ");
 }
 
+function displayRowDescription(option: BotOption) {
+  const detail = option.description?.trim();
+  const category = option.categoryLabel?.trim();
+  if (!detail || detail === category || detail.startsWith(`${category} · `)) return undefined;
+  return detail;
+}
+
+type OptionListSection = {
+  title: string;
+  rows: Array<{ id: string; title: string; description?: string }>;
+};
+
+/**
+ * Builds a WhatsApp-style grouped list while keeping the documented flat
+ * payload available as a compatibility fallback.
+ */
+export function buildGroupedOptionListPayload(phone: string, message: string, options: BotOption[]) {
+  const sectionMap = new Map<string, OptionListSection>();
+
+  for (const [index, option] of options.entries()) {
+    const sectionTitle = option.categoryLabel?.trim() || "Geral";
+    let section = sectionMap.get(sectionTitle);
+    if (!section) {
+      section = { title: sectionTitle, rows: [] };
+      sectionMap.set(sectionTitle, section);
+    }
+
+    const description = displayRowDescription(option);
+    section.rows.push({
+      id: option.optionKey || String(index + 1),
+      title: option.label,
+      ...(description ? { description } : {}),
+    });
+  }
+
+  return {
+    phone,
+    message,
+    optionList: {
+      title: "Opções disponíveis",
+      buttonLabel: "Ver opções",
+      sections: Array.from(sectionMap.values()),
+    },
+  };
+}
+
 export function buildOptionListPayload(phone: string, message: string, options: BotOption[]) {
   return {
     phone,
@@ -884,12 +930,13 @@ export class ZApiService {
 
   private sendInteractiveOptions(phone: string, message: string, options: BotOption[]) {
     const configured = String(process.env.ZAPI_INTERACTIVE_MODE ?? "auto").trim().toLowerCase();
-    // Grouped menus must use the option-list transport so the category context
-    // stays visible in each row description. The button-list transport drops
-    // descriptions and would make categories indistinguishable.
     const hasCategoryContext = options.some((option) => Boolean(option.categoryLabel));
     const useOptionList = configured === "option" || hasCategoryContext || (configured === "auto" && options.length > 3);
-    return useOptionList ? this.sendOptionList(phone, message, options) : this.sendButtonList(phone, message, options);
+    const groupedTransport = String(process.env.ZAPI_GROUPED_MENU_TRANSPORT ?? "sections").trim().toLowerCase();
+    const preferSections = hasCategoryContext && groupedTransport !== "flat";
+    return useOptionList
+      ? this.sendOptionList(phone, message, options, preferSections)
+      : this.sendButtonList(phone, message, options);
   }
 
   private async sendTextToTarget(target: string, text: string) {
@@ -1409,7 +1456,7 @@ export class ZApiService {
     return { status: isNewConversation ? "welcome_sent" : "menu_resent" };
   }
 
-  async sendOptionList(phone: string, message: string, options: BotOption[]) {
+  async sendOptionList(phone: string, message: string, options: BotOption[], preferSections = false): Promise<any> {
     if (await botExclusionsService.isBlocked(phone)) {
       logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot option list suppressed by exclusion list");
       return { blocked: true as const, status: "bot_excluded" as const };
@@ -1426,16 +1473,34 @@ export class ZApiService {
           "Content-Type": "application/json",
           ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
         },
-        body: JSON.stringify(buildOptionListPayload(formattedPhone, message, options)),
+        body: JSON.stringify(
+          preferSections
+            ? buildGroupedOptionListPayload(formattedPhone, message, options)
+            : buildOptionListPayload(formattedPhone, message, options),
+        ),
       });
       const data = (await response.json().catch(() => ({}))) as any;
       if (!response.ok || data?.error || data?.success === false) {
+        if (preferSections) {
+          logger.warn(
+            { status: response.status, optionCount: options.length },
+            "Seções do menu Z-API indisponíveis; tentando lista plana compatível",
+          );
+          return this.sendOptionList(phone, message, options, false);
+        }
         logger.warn({ status: response.status, optionCount: options.length }, "Lista de opções Z-API indisponível; usando fallback textual");
         return this.sendText(phone, formatInteractiveFallback(message, options));
       }
-      logger.info({ status: response.status, optionCount: options.length }, "Lista de opções Z-API enviada com sucesso");
+      logger.info(
+        { status: response.status, optionCount: options.length, grouped: preferSections },
+        preferSections ? "Menu agrupado Z-API enviado com sucesso" : "Lista de opções Z-API enviada com sucesso",
+      );
       return data;
     } catch (error) {
+      if (preferSections) {
+        logger.warn({ error, optionCount: options.length }, "Falha no menu agrupado Z-API; tentando lista plana compatível");
+        return this.sendOptionList(phone, message, options, false);
+      }
       logger.warn({ error, optionCount: options.length }, "Falha na lista de opções Z-API; usando fallback textual");
       return this.sendText(phone, formatInteractiveFallback(message, options));
     }

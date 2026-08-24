@@ -95,8 +95,8 @@ Ao final da tarefa:
 
 #### Decisões derivadas da consulta
 
-1. `send-option-list` documenta uma lista plana com `title`, `buttonLabel` e `options[]` (`id`, `title`, `description?`). Não foi encontrada, na documentação oficial consultada, uma estrutura confiável de múltiplas seções/categorias em uma única lista.
-2. O fluxo passa a enviar uma única lista de itens, sem obrigar o cliente a escolher a categoria em uma mensagem anterior. Cada item leva o nome da categoria no contexto da descrição e a interface administrativa/prévia exibe as categorias como acordeões, mantendo a hierarquia sem depender de uma estrutura de seções não documentada.
+1. `send-option-list` documenta uma lista plana com `title`, `buttonLabel` e `options[]` (`id`, `title`, `description?`). A estrutura de múltiplas seções/categorias em uma única lista não está documentada de forma estável pela Z-API.
+2. O fluxo tenta enviar uma única lista agrupada (`optionList.sections`) para instâncias que aceitam o formato nativo de seções. Se a instância rejeitar o payload, o adaptador repete automaticamente no formato plano documentado, mantendo a categoria no contexto da opção e no fallback textual. A interface administrativa/prévia continua exibindo as categorias como acordeões.
 3. `send-button-list` é adequado para listas curtas; `send-option-list` é o transporte preferencial para itens com descrição.
 4. Respostas devem ser correlacionadas pelos IDs estáveis `buttonsResponseMessage.buttonId` ou `listResponseMessage.selectedRowId`, juntamente com `referenceMessageId`; nunca pelo índice visual.
 5. Listas interativas não devem ser enviadas para grupos. Em grupos, manter o comportamento já previsto para menção válida e, se necessário, responder no privado.
@@ -383,7 +383,7 @@ Sequência:
 
 - [ ] Um administrador consegue criar uma categoria dentro de uma rota e inserir, editar, excluir e reordenar itens.
 - [ ] Cada item mantém sua chave e seu destino depois de reordenar ou publicar uma nova revisão.
-- [ ] O cliente recebe uma única lista de itens; a categoria fica visível no contexto da opção e não existe uma etapa intermediária obrigatória de escolha de categoria.
+- [ ] O cliente recebe uma única lista de itens agrupada por categoria quando a instância aceitar `sections`; em instâncias incompatíveis, recebe a lista plana com contexto da categoria e fallback seguro, sem etapa intermediária obrigatória.
 - [ ] A seleção de item chega ao ramo correto mesmo com fallback textual ou resposta interativa.
 - [ ] O editor bloqueia ciclos, opções duplicadas, ramos órfãos e excesso de profundidade com mensagem acionável.
 - [ ] Um contato completo recebe um resumo configurável após a primeira mensagem e pode confirmar ou atualizar seus dados.

@@ -23,7 +23,12 @@ ZAPI_TOKEN=<segredo>
 ZAPI_CLIENT_TOKEN=<segredo>
 ZAPI_WEBHOOK_URL=https://<dominio-publico-da-api>/api/webhooks/z-api
 ZAPI_INTERACTIVE_MODE=auto
+ZAPI_GROUPED_MENU_TRANSPORT=sections
 ```
+
+`sections` tenta o menu de categorias em acordeão para decisões hierárquicas. Se a
+instância Z-API não aceitar esse campo, a API repete automaticamente o envio no
+formato plano documentado; use `flat` para desativar a tentativa experimental.
 
 Não copie `.env` para o repositório e não coloque `DATABASE_URL`, JWT ou tokens no front-end.
 

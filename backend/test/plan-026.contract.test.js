@@ -5,7 +5,11 @@ import test from "node:test";
 import { CreateContactBodySchema } from "../dist/modules/contacts/contacts.schemas.js";
 import { ExecuteFlowInputSchema } from "../dist/modules/flow-execution/flow-execution.schemas.js";
 import { FlowNodeConfigSchema } from "../dist/modules/flow/flow.schemas.js";
-import { buildOptionListPayload, formatInteractiveFallback } from "../dist/modules/zapi/zapi.service.js";
+import {
+  buildGroupedOptionListPayload,
+  buildOptionListPayload,
+  formatInteractiveFallback,
+} from "../dist/modules/zapi/zapi.service.js";
 
 const root = process.cwd();
 const migration = readFileSync(join(root, "prisma", "migrations", "20260824113000_add_contact_profile_summary", "migration.sql"), "utf8");
@@ -74,4 +78,17 @@ test("menu agrupado mantém a categoria no transporte e no fallback textual", ()
   assert.equal(payload.optionList.options[0].description, "InfoAudio · Player do AR");
   const fallback = formatInteractiveFallback("Escolha uma opção", options);
   assert.match(fallback, /InfoAudio\n1\. Player — Player do AR[\s\S]*InfoRadio\n3\. Manager — Opec e financeiro/);
+});
+
+test("menu agrupado envia cabeçalhos de categoria e linhas aninhadas", () => {
+  const payload = buildGroupedOptionListPayload("5511999999999", "Escolha uma opção", [
+    { optionKey: "player", label: "Player", categoryLabel: "InfoAudio", description: "Player do AR", departmentId: "" },
+    { optionKey: "terminal", label: "Central de Aplicativos", categoryLabel: "InfoAudio", departmentId: "" },
+    { optionKey: "manager", label: "Manager", categoryLabel: "InfoRadio", description: "Opec e financeiro", departmentId: "" },
+  ]);
+
+  assert.deepEqual(payload.optionList.sections.map((section) => section.title), ["InfoAudio", "InfoRadio"]);
+  assert.deepEqual(payload.optionList.sections[0].rows.map((row) => row.title), ["Player", "Central de Aplicativos"]);
+  assert.equal(payload.optionList.sections[0].rows[0].description, "Player do AR");
+  assert.equal(payload.optionList.sections[1].rows[0].description, "Opec e financeiro");
 });

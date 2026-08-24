@@ -70,7 +70,7 @@ Credenciais são segredos operacionais e nunca devem aparecer em documentação,
 
 > O endpoint de botões efetivamente configurado no cliente Z-API deve ser a fonte de verdade. O adaptador de transporte pode usar `send-option-list` ou `send-button-list` conforme o contrato suportado pela instância, mas o motor recebe e devolve um modelo interno único. Essa escolha não pode ficar espalhada na regra de negócio.
 
-`ZAPI_INTERACTIVE_MODE` aceita `auto`, `button` ou `option`. O modo automático usa botões para até três opções e lista para menus maiores. `send-option-list` é usado somente em conversas individuais; fluxos iniciados por menção em grupo continuam no privado. Toda opção envia `id=optionKey`, e falhas do provedor usam fallback textual numerado.
+`ZAPI_INTERACTIVE_MODE` aceita `auto`, `button` ou `option`. O modo automático usa botões para até três opções e lista para menus maiores. `send-option-list` é usado somente em conversas individuais; fluxos iniciados por menção em grupo continuam no privado. Toda opção envia `id=optionKey`, e falhas do provedor usam fallback textual numerado. Para decisões com categorias, `ZAPI_GROUPED_MENU_TRANSPORT=sections` tenta um payload nativo agrupado por cabeçalhos e linhas; como a documentação pública ainda especifica somente `optionList.options`, a integração repete automaticamente a lista plana quando a instância rejeitar `sections`. `ZAPI_GROUPED_MENU_TRANSPORT=flat` força o comportamento documentado.
 
 ## 7. Contrato do motor e garantias do webhook
 
