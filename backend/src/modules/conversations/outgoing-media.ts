@@ -13,7 +13,7 @@ export class OutgoingMediaValidationError extends Error {
 const MIME_TYPES: Record<OutgoingMediaKind, Set<string>> = {
   IMAGE: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
   AUDIO: new Set(["audio/ogg", "audio/mpeg", "audio/mp3", "audio/mp4", "audio/wav", "audio/x-wav", "audio/webm"]),
-  VIDEO: new Set(["video/mp4", "video/webm", "video/3gpp"]),
+  VIDEO: new Set(["video/mp4", "video/webm", "video/3gpp", "video/quicktime"]),
   DOCUMENT: new Set([
     "application/pdf",
     "application/msword",
@@ -73,6 +73,42 @@ function hasAscii(buffer: Buffer, value: string, offset = 0): boolean {
   return buffer.subarray(offset, offset + value.length).toString("ascii") === value;
 }
 
+function hasAsciiWithin(buffer: Buffer, value: string, maxOffset = 4096): boolean {
+  const needle = Buffer.from(value, "ascii");
+  const lastOffset = Math.min(Math.max(0, buffer.length - needle.length), maxOffset);
+  for (let offset = 0; offset <= lastOffset; offset += 1) {
+    if (buffer.subarray(offset, offset + needle.length).equals(needle)) return true;
+  }
+  return false;
+}
+
+/**
+ * Browsers can preserve a stale/incorrect MIME value when a video comes from
+ * a download or from MediaRecorder. Normalize the provider MIME from the
+ * container signature before rejecting the upload. This keeps validation
+ * strict while accepting a valid MP4/WebM whose declared type is wrong.
+ */
+function mimeFromSignature(kind: OutgoingMediaKind, buffer: Buffer): string | null {
+  if (kind === "IMAGE") {
+    if (hasPrefix(buffer, [0xff, 0xd8, 0xff])) return "image/jpeg";
+    if (hasPrefix(buffer, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return "image/png";
+    if (hasAscii(buffer, "RIFF") && hasAscii(buffer, "WEBP", 8)) return "image/webp";
+    if (hasAscii(buffer, "GIF8")) return "image/gif";
+  }
+  if (kind === "VIDEO") {
+    if (hasAsciiWithin(buffer, "\x1a\x45\xdf\xa3", 32)) return "video/webm";
+    if (hasAsciiWithin(buffer, "ftyp", 4096)) return "video/mp4";
+  }
+  if (kind === "AUDIO") {
+    if (hasAscii(buffer, "OggS")) return "audio/ogg";
+    if (hasAscii(buffer, "RIFF") && hasAscii(buffer, "WAVE", 8)) return "audio/wav";
+    if (hasAscii(buffer, "ID3") || (buffer[0] === 0xff && (buffer[1] & 0xe0) === 0xe0)) return "audio/mpeg";
+    if (hasAsciiWithin(buffer, "\x1a\x45\xdf\xa3", 32)) return "audio/webm";
+    if (hasAsciiWithin(buffer, "ftyp", 4096)) return "audio/mp4";
+  }
+  return null;
+}
+
 function validSignature(kind: OutgoingMediaKind, mimeType: string, buffer: Buffer): boolean {
   if (buffer.length < 4) return false;
   if (kind === "IMAGE") {
@@ -82,9 +118,9 @@ function validSignature(kind: OutgoingMediaKind, mimeType: string, buffer: Buffe
     if (mimeType === "image/gif") return hasAscii(buffer, "GIF8");
   }
   if (kind === "VIDEO") {
-    if (mimeType === "video/mp4") return hasAscii(buffer, "ftyp", 4);
-    if (mimeType === "video/webm") return hasAscii(buffer, "\x1a\x45\xdf\xa3");
-    if (mimeType === "video/3gpp") return hasAscii(buffer, "ftyp", 4) || hasAscii(buffer, "3gp", 4);
+    if (mimeType === "video/mp4" || mimeType === "video/quicktime") return hasAsciiWithin(buffer, "ftyp", 4096);
+    if (mimeType === "video/webm") return hasAsciiWithin(buffer, "\x1a\x45\xdf\xa3", 32);
+    if (mimeType === "video/3gpp") return hasAsciiWithin(buffer, "ftyp", 4096) || hasAsciiWithin(buffer, "3gp", 64);
   }
   if (kind === "AUDIO") {
     if (mimeType === "audio/ogg") return hasAscii(buffer, "OggS");
@@ -113,9 +149,12 @@ function safeFileName(fileName: string, mimeType: string): string {
 
 export function validateOutgoingMedia(file: MultipartFile | null, caption: string, clientMessageId: string) {
   if (!file || !file.buffer.length) throw new OutgoingMediaValidationError("FILE_REQUIRED");
-  const mimeType = file.mimeType.split(";")[0].trim().toLowerCase();
+  let mimeType = file.mimeType.split(";")[0].trim().toLowerCase();
   const kind = kindForMime(mimeType);
   if (!kind) throw new OutgoingMediaValidationError("TYPE_NOT_ALLOWED");
+
+  const detectedMime = mimeFromSignature(kind, file.buffer);
+  if (detectedMime && kindForMime(detectedMime) === kind) mimeType = detectedMime;
 
   const limitName = `OUTBOUND_MEDIA_MAX_${kind}_BYTES`;
   const fallback = kind === "VIDEO" ? 64 * 1024 * 1024 : kind === "DOCUMENT" ? 16 * 1024 * 1024 : 8 * 1024 * 1024;

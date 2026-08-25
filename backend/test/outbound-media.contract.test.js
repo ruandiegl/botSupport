@@ -32,6 +32,18 @@ test("rejeita extensão/conteúdo incompatíveis e tipo não permitido", () => {
   );
 });
 
+test("normaliza vídeos quando o MIME declarado não acompanha o container real", () => {
+  const mp4 = Buffer.concat([Buffer.from("free000000000000"), Buffer.from("ftypisom")]);
+  const mp4Metadata = validateOutgoingMedia({ fieldName: "file", fileName: "video.mp4", mimeType: "video/webm", buffer: mp4 }, "", id);
+  assert.equal(mp4Metadata.type, "VIDEO");
+  assert.equal(mp4Metadata.mimeType, "video/mp4");
+
+  const webm = Buffer.concat([Buffer.from([0x1a, 0x45, 0xdf, 0xa3]), Buffer.from("webm")]);
+  const webmMetadata = validateOutgoingMedia({ fieldName: "file", fileName: "video.webm", mimeType: "video/mp4", buffer: webm }, "", id);
+  assert.equal(webmMetadata.type, "VIDEO");
+  assert.equal(webmMetadata.mimeType, "video/webm");
+});
+
 test("contrato de saída usa endpoints específicos e migration somente aditiva", () => {
   assert.match(source, /send-image/);
   assert.match(source, /send-video/);

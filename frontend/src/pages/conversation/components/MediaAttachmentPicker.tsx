@@ -17,7 +17,7 @@ import { VideoEditorDialog } from "./VideoEditorDialog";
 
 const ACCEPT = [
   "image/jpeg", "image/png", "image/webp", "image/gif",
-  "video/mp4", "video/webm", "video/3gpp",
+  "video/mp4", "video/webm", "video/3gpp", "video/quicktime",
   "audio/ogg", "audio/mpeg", "audio/mp3", "audio/mp4", "audio/wav", "audio/webm",
   "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
