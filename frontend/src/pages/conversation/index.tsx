@@ -51,6 +51,12 @@ const dateLabel = (date?: string) =>
     ? new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")
     : "";
 
+const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
+
+function formatFileSize(bytes: number) {
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 function friendlyMediaError(error: unknown, file: File | null) {
   const raw = error instanceof Error ? error.message : String(error || "");
   const normalized = raw.toLowerCase();
@@ -233,6 +239,11 @@ export default function ConversationPage() {
 
   const send = () => {
     if (mediaFile) {
+      if (mediaFile.type.startsWith("video/") && mediaFile.size > MAX_VIDEO_BYTES) {
+        setMediaValidationError(`Este vídeo é grande demais para enviar (${formatFileSize(mediaFile.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
+        return;
+      }
+      setMediaValidationError(null);
       const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;

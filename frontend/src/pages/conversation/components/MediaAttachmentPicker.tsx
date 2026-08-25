@@ -24,8 +24,6 @@ const ACCEPT = [
   "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "text/plain",
 ].join(",");
 
-const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
-
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -99,11 +97,6 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
         onChange={(event) => {
           const nextFile = event.target.files?.[0] ?? null;
           onValidationError?.(null);
-          if (nextFile?.type.startsWith("video/") && nextFile.size > MAX_VIDEO_BYTES) {
-            onValidationError?.(`Este vídeo é grande demais para enviar (${formatBytes(nextFile.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
-            event.currentTarget.value = "";
-            return;
-          }
           if (nextFile?.type.startsWith("image/")) {
             openEditor(nextFile);
           } else if (nextFile?.type.startsWith("video/")) {
