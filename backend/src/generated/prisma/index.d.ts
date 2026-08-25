@@ -55,6 +55,21 @@ export type BotExclusion = $Result.DefaultSelection<Prisma.$BotExclusionPayload>
  */
 export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
 /**
+ * Model GroupChat
+ * 
+ */
+export type GroupChat = $Result.DefaultSelection<Prisma.$GroupChatPayload>
+/**
+ * Model GroupMessage
+ * 
+ */
+export type GroupMessage = $Result.DefaultSelection<Prisma.$GroupMessagePayload>
+/**
+ * Model GroupOutboundMessage
+ * 
+ */
+export type GroupOutboundMessage = $Result.DefaultSelection<Prisma.$GroupOutboundMessagePayload>
+/**
  * Model Message
  * 
  */
@@ -532,6 +547,36 @@ export class PrismaClient<
     * ```
     */
   get conversation(): Prisma.ConversationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.groupChat`: Exposes CRUD operations for the **GroupChat** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroupChats
+    * const groupChats = await prisma.groupChat.findMany()
+    * ```
+    */
+  get groupChat(): Prisma.GroupChatDelegate<ExtArgs>;
+
+  /**
+   * `prisma.groupMessage`: Exposes CRUD operations for the **GroupMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroupMessages
+    * const groupMessages = await prisma.groupMessage.findMany()
+    * ```
+    */
+  get groupMessage(): Prisma.GroupMessageDelegate<ExtArgs>;
+
+  /**
+   * `prisma.groupOutboundMessage`: Exposes CRUD operations for the **GroupOutboundMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroupOutboundMessages
+    * const groupOutboundMessages = await prisma.groupOutboundMessage.findMany()
+    * ```
+    */
+  get groupOutboundMessage(): Prisma.GroupOutboundMessageDelegate<ExtArgs>;
 
   /**
    * `prisma.message`: Exposes CRUD operations for the **Message** model.
@@ -1201,6 +1246,9 @@ export namespace Prisma {
     ContactPhone: 'ContactPhone',
     BotExclusion: 'BotExclusion',
     Conversation: 'Conversation',
+    GroupChat: 'GroupChat',
+    GroupMessage: 'GroupMessage',
+    GroupOutboundMessage: 'GroupOutboundMessage',
     Message: 'Message',
     ContactShare: 'ContactShare',
     ConversationAssignment: 'ConversationAssignment',
@@ -1238,7 +1286,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "outgoingMedia" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "businessHoursPolicy" | "businessHoursInterval" | "businessHoursException" | "businessHoursNotice" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "groupChat" | "groupMessage" | "groupOutboundMessage" | "message" | "contactShare" | "conversationAssignment" | "outgoingMedia" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "businessHoursPolicy" | "businessHoursInterval" | "businessHoursException" | "businessHoursNotice" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1799,6 +1847,216 @@ export namespace Prisma {
           count: {
             args: Prisma.ConversationCountArgs<ExtArgs>
             result: $Utils.Optional<ConversationCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroupChat: {
+        payload: Prisma.$GroupChatPayload<ExtArgs>
+        fields: Prisma.GroupChatFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupChatFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupChatFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          findFirst: {
+            args: Prisma.GroupChatFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupChatFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          findMany: {
+            args: Prisma.GroupChatFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>[]
+          }
+          create: {
+            args: Prisma.GroupChatCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          createMany: {
+            args: Prisma.GroupChatCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroupChatCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>[]
+          }
+          delete: {
+            args: Prisma.GroupChatDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          update: {
+            args: Prisma.GroupChatUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupChatDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupChatUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GroupChatUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupChatPayload>
+          }
+          aggregate: {
+            args: Prisma.GroupChatAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroupChat>
+          }
+          groupBy: {
+            args: Prisma.GroupChatGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupChatGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupChatCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupChatCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroupMessage: {
+        payload: Prisma.$GroupMessagePayload<ExtArgs>
+        fields: Prisma.GroupMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.GroupMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          findMany: {
+            args: Prisma.GroupMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>[]
+          }
+          create: {
+            args: Prisma.GroupMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          createMany: {
+            args: Prisma.GroupMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroupMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.GroupMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          update: {
+            args: Prisma.GroupMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GroupMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.GroupMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroupMessage>
+          }
+          groupBy: {
+            args: Prisma.GroupMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupMessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroupOutboundMessage: {
+        payload: Prisma.$GroupOutboundMessagePayload<ExtArgs>
+        fields: Prisma.GroupOutboundMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupOutboundMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupOutboundMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.GroupOutboundMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupOutboundMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          findMany: {
+            args: Prisma.GroupOutboundMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>[]
+          }
+          create: {
+            args: Prisma.GroupOutboundMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          createMany: {
+            args: Prisma.GroupOutboundMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroupOutboundMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.GroupOutboundMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          update: {
+            args: Prisma.GroupOutboundMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupOutboundMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupOutboundMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GroupOutboundMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupOutboundMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.GroupOutboundMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroupOutboundMessage>
+          }
+          groupBy: {
+            args: Prisma.GroupOutboundMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupOutboundMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupOutboundMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupOutboundMessageCountAggregateOutputType> | number
           }
         }
       }
@@ -3581,6 +3839,7 @@ export namespace Prisma {
   export type AgentCountOutputType = {
     conversations: number
     messages: number
+    groupOutboundMessages: number
     assignmentFrom: number
     assignmentTo: number
     assignmentActor: number
@@ -3599,6 +3858,7 @@ export namespace Prisma {
   export type AgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | AgentCountOutputTypeCountConversationsArgs
     messages?: boolean | AgentCountOutputTypeCountMessagesArgs
+    groupOutboundMessages?: boolean | AgentCountOutputTypeCountGroupOutboundMessagesArgs
     assignmentFrom?: boolean | AgentCountOutputTypeCountAssignmentFromArgs
     assignmentTo?: boolean | AgentCountOutputTypeCountAssignmentToArgs
     assignmentActor?: boolean | AgentCountOutputTypeCountAssignmentActorArgs
@@ -3637,6 +3897,13 @@ export namespace Prisma {
    */
   export type AgentCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * AgentCountOutputType without action
+   */
+  export type AgentCountOutputTypeCountGroupOutboundMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupOutboundMessageWhereInput
   }
 
   /**
@@ -3738,6 +4005,7 @@ export namespace Prisma {
   export type ContactCountOutputType = {
     conversations: number
     messageSenders: number
+    groupMessageSenders: number
     phoneNumbers: number
     sharedCards: number
   }
@@ -3745,6 +4013,7 @@ export namespace Prisma {
   export type ContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | ContactCountOutputTypeCountConversationsArgs
     messageSenders?: boolean | ContactCountOutputTypeCountMessageSendersArgs
+    groupMessageSenders?: boolean | ContactCountOutputTypeCountGroupMessageSendersArgs
     phoneNumbers?: boolean | ContactCountOutputTypeCountPhoneNumbersArgs
     sharedCards?: boolean | ContactCountOutputTypeCountSharedCardsArgs
   }
@@ -3777,6 +4046,13 @@ export namespace Prisma {
   /**
    * ContactCountOutputType without action
    */
+  export type ContactCountOutputTypeCountGroupMessageSendersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMessageWhereInput
+  }
+
+  /**
+   * ContactCountOutputType without action
+   */
   export type ContactCountOutputTypeCountPhoneNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ContactPhoneWhereInput
   }
@@ -3795,6 +4071,7 @@ export namespace Prisma {
 
   export type ConversationCountOutputType = {
     messages: number
+    groupMessages: number
     flowEvents: number
     notifications: number
     assignments: number
@@ -3806,6 +4083,7 @@ export namespace Prisma {
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+    groupMessages?: boolean | ConversationCountOutputTypeCountGroupMessagesArgs
     flowEvents?: boolean | ConversationCountOutputTypeCountFlowEventsArgs
     notifications?: boolean | ConversationCountOutputTypeCountNotificationsArgs
     assignments?: boolean | ConversationCountOutputTypeCountAssignmentsArgs
@@ -3831,6 +4109,13 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountGroupMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMessageWhereInput
   }
 
   /**
@@ -3880,6 +4165,55 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountBusinessHoursNoticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BusinessHoursNoticeWhereInput
+  }
+
+
+  /**
+   * Count Type GroupChatCountOutputType
+   */
+
+  export type GroupChatCountOutputType = {
+    conversations: number
+    messages: number
+    outboundMessages: number
+  }
+
+  export type GroupChatCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversations?: boolean | GroupChatCountOutputTypeCountConversationsArgs
+    messages?: boolean | GroupChatCountOutputTypeCountMessagesArgs
+    outboundMessages?: boolean | GroupChatCountOutputTypeCountOutboundMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GroupChatCountOutputType without action
+   */
+  export type GroupChatCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChatCountOutputType
+     */
+    select?: GroupChatCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GroupChatCountOutputType without action
+   */
+  export type GroupChatCountOutputTypeCountConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationWhereInput
+  }
+
+  /**
+   * GroupChatCountOutputType without action
+   */
+  export type GroupChatCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMessageWhereInput
+  }
+
+  /**
+   * GroupChatCountOutputType without action
+   */
+  export type GroupChatCountOutputTypeCountOutboundMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupOutboundMessageWhereInput
   }
 
 
@@ -6398,6 +6732,7 @@ export namespace Prisma {
     department?: boolean | Agent$departmentArgs<ExtArgs>
     conversations?: boolean | Agent$conversationsArgs<ExtArgs>
     messages?: boolean | Agent$messagesArgs<ExtArgs>
+    groupOutboundMessages?: boolean | Agent$groupOutboundMessagesArgs<ExtArgs>
     assignmentFrom?: boolean | Agent$assignmentFromArgs<ExtArgs>
     assignmentTo?: boolean | Agent$assignmentToArgs<ExtArgs>
     assignmentActor?: boolean | Agent$assignmentActorArgs<ExtArgs>
@@ -6444,6 +6779,7 @@ export namespace Prisma {
     department?: boolean | Agent$departmentArgs<ExtArgs>
     conversations?: boolean | Agent$conversationsArgs<ExtArgs>
     messages?: boolean | Agent$messagesArgs<ExtArgs>
+    groupOutboundMessages?: boolean | Agent$groupOutboundMessagesArgs<ExtArgs>
     assignmentFrom?: boolean | Agent$assignmentFromArgs<ExtArgs>
     assignmentTo?: boolean | Agent$assignmentToArgs<ExtArgs>
     assignmentActor?: boolean | Agent$assignmentActorArgs<ExtArgs>
@@ -6470,6 +6806,7 @@ export namespace Prisma {
       department: Prisma.$DepartmentPayload<ExtArgs> | null
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      groupOutboundMessages: Prisma.$GroupOutboundMessagePayload<ExtArgs>[]
       assignmentFrom: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       assignmentTo: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       assignmentActor: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
@@ -6862,6 +7199,7 @@ export namespace Prisma {
     department<T extends Agent$departmentArgs<ExtArgs> = {}>(args?: Subset<T, Agent$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     conversations<T extends Agent$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Agent$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     messages<T extends Agent$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Agent$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    groupOutboundMessages<T extends Agent$groupOutboundMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Agent$groupOutboundMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findMany"> | Null>
     assignmentFrom<T extends Agent$assignmentFromArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentFromArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     assignmentTo<T extends Agent$assignmentToArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentToArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     assignmentActor<T extends Agent$assignmentActorArgs<ExtArgs> = {}>(args?: Subset<T, Agent$assignmentActorArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
@@ -7284,6 +7622,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Agent.groupOutboundMessages
+   */
+  export type Agent$groupOutboundMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    where?: GroupOutboundMessageWhereInput
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupOutboundMessageScalarFieldEnum | GroupOutboundMessageScalarFieldEnum[]
   }
 
   /**
@@ -8680,6 +9038,7 @@ export namespace Prisma {
     updatedAt?: boolean
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
     messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
+    groupMessageSenders?: boolean | Contact$groupMessageSendersArgs<ExtArgs>
     phoneNumbers?: boolean | Contact$phoneNumbersArgs<ExtArgs>
     sharedCards?: boolean | Contact$sharedCardsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
@@ -8720,6 +9079,7 @@ export namespace Prisma {
   export type ContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversations?: boolean | Contact$conversationsArgs<ExtArgs>
     messageSenders?: boolean | Contact$messageSendersArgs<ExtArgs>
+    groupMessageSenders?: boolean | Contact$groupMessageSendersArgs<ExtArgs>
     phoneNumbers?: boolean | Contact$phoneNumbersArgs<ExtArgs>
     sharedCards?: boolean | Contact$sharedCardsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
@@ -8731,6 +9091,7 @@ export namespace Prisma {
     objects: {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       messageSenders: Prisma.$MessagePayload<ExtArgs>[]
+      groupMessageSenders: Prisma.$GroupMessagePayload<ExtArgs>[]
       phoneNumbers: Prisma.$ContactPhonePayload<ExtArgs>[]
       sharedCards: Prisma.$ContactSharePayload<ExtArgs>[]
     }
@@ -9114,6 +9475,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     conversations<T extends Contact$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
     messageSenders<T extends Contact$messageSendersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$messageSendersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    groupMessageSenders<T extends Contact$groupMessageSendersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$groupMessageSendersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findMany"> | Null>
     phoneNumbers<T extends Contact$phoneNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Contact$phoneNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPhonePayload<ExtArgs>, T, "findMany"> | Null>
     sharedCards<T extends Contact$sharedCardsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$sharedCardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findMany"> | Null>
     /**
@@ -9509,6 +9871,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Contact.groupMessageSenders
+   */
+  export type Contact$groupMessageSendersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    where?: GroupMessageWhereInput
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    cursor?: GroupMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
   }
 
   /**
@@ -11598,6 +11980,8 @@ export namespace Prisma {
   export type ConversationMinAggregateOutputType = {
     id: string | null
     contactId: string | null
+    channel: string | null
+    remoteChatId: string | null
     status: string | null
     departmentId: string | null
     assignedAgentId: string | null
@@ -11612,11 +11996,14 @@ export namespace Prisma {
     closeReason: string | null
     groupChatName: string | null
     groupParticipant: string | null
+    groupChatId: string | null
   }
 
   export type ConversationMaxAggregateOutputType = {
     id: string | null
     contactId: string | null
+    channel: string | null
+    remoteChatId: string | null
     status: string | null
     departmentId: string | null
     assignedAgentId: string | null
@@ -11631,11 +12018,14 @@ export namespace Prisma {
     closeReason: string | null
     groupChatName: string | null
     groupParticipant: string | null
+    groupChatId: string | null
   }
 
   export type ConversationCountAggregateOutputType = {
     id: number
     contactId: number
+    channel: number
+    remoteChatId: number
     status: number
     departmentId: number
     assignedAgentId: number
@@ -11651,6 +12041,7 @@ export namespace Prisma {
     closeReason: number
     groupChatName: number
     groupParticipant: number
+    groupChatId: number
     _all: number
   }
 
@@ -11658,6 +12049,8 @@ export namespace Prisma {
   export type ConversationMinAggregateInputType = {
     id?: true
     contactId?: true
+    channel?: true
+    remoteChatId?: true
     status?: true
     departmentId?: true
     assignedAgentId?: true
@@ -11672,11 +12065,14 @@ export namespace Prisma {
     closeReason?: true
     groupChatName?: true
     groupParticipant?: true
+    groupChatId?: true
   }
 
   export type ConversationMaxAggregateInputType = {
     id?: true
     contactId?: true
+    channel?: true
+    remoteChatId?: true
     status?: true
     departmentId?: true
     assignedAgentId?: true
@@ -11691,11 +12087,14 @@ export namespace Prisma {
     closeReason?: true
     groupChatName?: true
     groupParticipant?: true
+    groupChatId?: true
   }
 
   export type ConversationCountAggregateInputType = {
     id?: true
     contactId?: true
+    channel?: true
+    remoteChatId?: true
     status?: true
     departmentId?: true
     assignedAgentId?: true
@@ -11711,6 +12110,7 @@ export namespace Prisma {
     closeReason?: true
     groupChatName?: true
     groupParticipant?: true
+    groupChatId?: true
     _all?: true
   }
 
@@ -11789,6 +12189,8 @@ export namespace Prisma {
   export type ConversationGroupByOutputType = {
     id: string
     contactId: string
+    channel: string
+    remoteChatId: string | null
     status: string
     departmentId: string | null
     assignedAgentId: string | null
@@ -11804,6 +12206,7 @@ export namespace Prisma {
     closeReason: string | null
     groupChatName: string | null
     groupParticipant: string | null
+    groupChatId: string | null
     _count: ConversationCountAggregateOutputType | null
     _min: ConversationMinAggregateOutputType | null
     _max: ConversationMaxAggregateOutputType | null
@@ -11826,6 +12229,8 @@ export namespace Prisma {
   export type ConversationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     contactId?: boolean
+    channel?: boolean
+    remoteChatId?: boolean
     status?: boolean
     departmentId?: boolean
     assignedAgentId?: boolean
@@ -11841,10 +12246,12 @@ export namespace Prisma {
     closeReason?: boolean
     groupChatName?: boolean
     groupParticipant?: boolean
+    groupChatId?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    groupMessages?: boolean | Conversation$groupMessagesArgs<ExtArgs>
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
@@ -11854,12 +12261,15 @@ export namespace Prisma {
     outgoingMedia?: boolean | Conversation$outgoingMediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
+    groupChat?: boolean | Conversation$groupChatArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
   export type ConversationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     contactId?: boolean
+    channel?: boolean
+    remoteChatId?: boolean
     status?: boolean
     departmentId?: boolean
     assignedAgentId?: boolean
@@ -11875,16 +12285,20 @@ export namespace Prisma {
     closeReason?: boolean
     groupChatName?: boolean
     groupParticipant?: boolean
+    groupChatId?: boolean
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
+    groupChat?: boolean | Conversation$groupChatArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
   export type ConversationSelectScalar = {
     id?: boolean
     contactId?: boolean
+    channel?: boolean
+    remoteChatId?: boolean
     status?: boolean
     departmentId?: boolean
     assignedAgentId?: boolean
@@ -11900,6 +12314,7 @@ export namespace Prisma {
     closeReason?: boolean
     groupChatName?: boolean
     groupParticipant?: boolean
+    groupChatId?: boolean
   }
 
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11907,6 +12322,7 @@ export namespace Prisma {
     department?: boolean | Conversation$departmentArgs<ExtArgs>
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    groupMessages?: boolean | Conversation$groupMessagesArgs<ExtArgs>
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
     flowEvents?: boolean | Conversation$flowEventsArgs<ExtArgs>
@@ -11916,6 +12332,7 @@ export namespace Prisma {
     outgoingMedia?: boolean | Conversation$outgoingMediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
+    groupChat?: boolean | Conversation$groupChatArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11924,6 +12341,7 @@ export namespace Prisma {
     assignedAgent?: boolean | Conversation$assignedAgentArgs<ExtArgs>
     flowRevision?: boolean | Conversation$flowRevisionArgs<ExtArgs>
     currentFlowNode?: boolean | Conversation$currentFlowNodeArgs<ExtArgs>
+    groupChat?: boolean | Conversation$groupChatArgs<ExtArgs>
   }
 
   export type $ConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11933,6 +12351,7 @@ export namespace Prisma {
       department: Prisma.$DepartmentPayload<ExtArgs> | null
       assignedAgent: Prisma.$AgentPayload<ExtArgs> | null
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      groupMessages: Prisma.$GroupMessagePayload<ExtArgs>[]
       flowRevision: Prisma.$FlowRevisionPayload<ExtArgs> | null
       currentFlowNode: Prisma.$FlowNodePayload<ExtArgs> | null
       flowEvents: Prisma.$FlowExecutionEventPayload<ExtArgs>[]
@@ -11942,10 +12361,13 @@ export namespace Prisma {
       outgoingMedia: Prisma.$OutgoingMediaPayload<ExtArgs>[]
       labels: Prisma.$ConversationLabelPayload<ExtArgs>[]
       businessHoursNotices: Prisma.$BusinessHoursNoticePayload<ExtArgs>[]
+      groupChat: Prisma.$GroupChatPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       contactId: string
+      channel: string
+      remoteChatId: string | null
       status: string
       departmentId: string | null
       assignedAgentId: string | null
@@ -11961,6 +12383,7 @@ export namespace Prisma {
       closeReason: string | null
       groupChatName: string | null
       groupParticipant: string | null
+      groupChatId: string | null
     }, ExtArgs["result"]["conversation"]>
     composites: {}
   }
@@ -12329,6 +12752,7 @@ export namespace Prisma {
     department<T extends Conversation$departmentArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     assignedAgent<T extends Conversation$assignedAgentArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$assignedAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     messages<T extends Conversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany"> | Null>
+    groupMessages<T extends Conversation$groupMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$groupMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findMany"> | Null>
     flowRevision<T extends Conversation$flowRevisionArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowRevisionArgs<ExtArgs>>): Prisma__FlowRevisionClient<$Result.GetResult<Prisma.$FlowRevisionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     currentFlowNode<T extends Conversation$currentFlowNodeArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$currentFlowNodeArgs<ExtArgs>>): Prisma__FlowNodeClient<$Result.GetResult<Prisma.$FlowNodePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     flowEvents<T extends Conversation$flowEventsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$flowEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowExecutionEventPayload<ExtArgs>, T, "findMany"> | Null>
@@ -12338,6 +12762,7 @@ export namespace Prisma {
     outgoingMedia<T extends Conversation$outgoingMediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$outgoingMediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findMany"> | Null>
     labels<T extends Conversation$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
     businessHoursNotices<T extends Conversation$businessHoursNoticesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$businessHoursNoticesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findMany"> | Null>
+    groupChat<T extends Conversation$groupChatArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$groupChatArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12369,6 +12794,8 @@ export namespace Prisma {
   interface ConversationFieldRefs {
     readonly id: FieldRef<"Conversation", 'String'>
     readonly contactId: FieldRef<"Conversation", 'String'>
+    readonly channel: FieldRef<"Conversation", 'String'>
+    readonly remoteChatId: FieldRef<"Conversation", 'String'>
     readonly status: FieldRef<"Conversation", 'String'>
     readonly departmentId: FieldRef<"Conversation", 'String'>
     readonly assignedAgentId: FieldRef<"Conversation", 'String'>
@@ -12384,6 +12811,7 @@ export namespace Prisma {
     readonly closeReason: FieldRef<"Conversation", 'String'>
     readonly groupChatName: FieldRef<"Conversation", 'String'>
     readonly groupParticipant: FieldRef<"Conversation", 'String'>
+    readonly groupChatId: FieldRef<"Conversation", 'String'>
   }
     
 
@@ -12752,6 +13180,26 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.groupMessages
+   */
+  export type Conversation$groupMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    where?: GroupMessageWhereInput
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    cursor?: GroupMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
+  }
+
+  /**
    * Conversation.flowRevision
    */
   export type Conversation$flowRevisionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12922,6 +13370,21 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.groupChat
+   */
+  export type Conversation$groupChatArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    where?: GroupChatWhereInput
+  }
+
+  /**
    * Conversation without action
    */
   export type ConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12933,6 +13396,3142 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ConversationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroupChat
+   */
+
+  export type AggregateGroupChat = {
+    _count: GroupChatCountAggregateOutputType | null
+    _avg: GroupChatAvgAggregateOutputType | null
+    _sum: GroupChatSumAggregateOutputType | null
+    _min: GroupChatMinAggregateOutputType | null
+    _max: GroupChatMaxAggregateOutputType | null
+  }
+
+  export type GroupChatAvgAggregateOutputType = {
+    unreadCount: number | null
+  }
+
+  export type GroupChatSumAggregateOutputType = {
+    unreadCount: number | null
+  }
+
+  export type GroupChatMinAggregateOutputType = {
+    id: string | null
+    remoteChatId: string | null
+    name: string | null
+    isActive: boolean | null
+    unreadCount: number | null
+    lastMessageAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroupChatMaxAggregateOutputType = {
+    id: string | null
+    remoteChatId: string | null
+    name: string | null
+    isActive: boolean | null
+    unreadCount: number | null
+    lastMessageAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroupChatCountAggregateOutputType = {
+    id: number
+    remoteChatId: number
+    name: number
+    isActive: number
+    unreadCount: number
+    lastMessageAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroupChatAvgAggregateInputType = {
+    unreadCount?: true
+  }
+
+  export type GroupChatSumAggregateInputType = {
+    unreadCount?: true
+  }
+
+  export type GroupChatMinAggregateInputType = {
+    id?: true
+    remoteChatId?: true
+    name?: true
+    isActive?: true
+    unreadCount?: true
+    lastMessageAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroupChatMaxAggregateInputType = {
+    id?: true
+    remoteChatId?: true
+    name?: true
+    isActive?: true
+    unreadCount?: true
+    lastMessageAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroupChatCountAggregateInputType = {
+    id?: true
+    remoteChatId?: true
+    name?: true
+    isActive?: true
+    unreadCount?: true
+    lastMessageAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroupChatAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupChat to aggregate.
+     */
+    where?: GroupChatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupChats to fetch.
+     */
+    orderBy?: GroupChatOrderByWithRelationInput | GroupChatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupChatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupChats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupChats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroupChats
+    **/
+    _count?: true | GroupChatCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroupChatAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroupChatSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupChatMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupChatMaxAggregateInputType
+  }
+
+  export type GetGroupChatAggregateType<T extends GroupChatAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroupChat]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroupChat[P]>
+      : GetScalarType<T[P], AggregateGroupChat[P]>
+  }
+
+
+
+
+  export type GroupChatGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupChatWhereInput
+    orderBy?: GroupChatOrderByWithAggregationInput | GroupChatOrderByWithAggregationInput[]
+    by: GroupChatScalarFieldEnum[] | GroupChatScalarFieldEnum
+    having?: GroupChatScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupChatCountAggregateInputType | true
+    _avg?: GroupChatAvgAggregateInputType
+    _sum?: GroupChatSumAggregateInputType
+    _min?: GroupChatMinAggregateInputType
+    _max?: GroupChatMaxAggregateInputType
+  }
+
+  export type GroupChatGroupByOutputType = {
+    id: string
+    remoteChatId: string
+    name: string
+    isActive: boolean
+    unreadCount: number
+    lastMessageAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: GroupChatCountAggregateOutputType | null
+    _avg: GroupChatAvgAggregateOutputType | null
+    _sum: GroupChatSumAggregateOutputType | null
+    _min: GroupChatMinAggregateOutputType | null
+    _max: GroupChatMaxAggregateOutputType | null
+  }
+
+  type GetGroupChatGroupByPayload<T extends GroupChatGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupChatGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupChatGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupChatGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupChatGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupChatSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    remoteChatId?: boolean
+    name?: boolean
+    isActive?: boolean
+    unreadCount?: boolean
+    lastMessageAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    conversations?: boolean | GroupChat$conversationsArgs<ExtArgs>
+    messages?: boolean | GroupChat$messagesArgs<ExtArgs>
+    outboundMessages?: boolean | GroupChat$outboundMessagesArgs<ExtArgs>
+    _count?: boolean | GroupChatCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groupChat"]>
+
+  export type GroupChatSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    remoteChatId?: boolean
+    name?: boolean
+    isActive?: boolean
+    unreadCount?: boolean
+    lastMessageAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["groupChat"]>
+
+  export type GroupChatSelectScalar = {
+    id?: boolean
+    remoteChatId?: boolean
+    name?: boolean
+    isActive?: boolean
+    unreadCount?: boolean
+    lastMessageAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroupChatInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversations?: boolean | GroupChat$conversationsArgs<ExtArgs>
+    messages?: boolean | GroupChat$messagesArgs<ExtArgs>
+    outboundMessages?: boolean | GroupChat$outboundMessagesArgs<ExtArgs>
+    _count?: boolean | GroupChatCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type GroupChatIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $GroupChatPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroupChat"
+    objects: {
+      conversations: Prisma.$ConversationPayload<ExtArgs>[]
+      messages: Prisma.$GroupMessagePayload<ExtArgs>[]
+      outboundMessages: Prisma.$GroupOutboundMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      remoteChatId: string
+      name: string
+      isActive: boolean
+      unreadCount: number
+      lastMessageAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groupChat"]>
+    composites: {}
+  }
+
+  type GroupChatGetPayload<S extends boolean | null | undefined | GroupChatDefaultArgs> = $Result.GetResult<Prisma.$GroupChatPayload, S>
+
+  type GroupChatCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GroupChatFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GroupChatCountAggregateInputType | true
+    }
+
+  export interface GroupChatDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroupChat'], meta: { name: 'GroupChat' } }
+    /**
+     * Find zero or one GroupChat that matches the filter.
+     * @param {GroupChatFindUniqueArgs} args - Arguments to find a GroupChat
+     * @example
+     * // Get one GroupChat
+     * const groupChat = await prisma.groupChat.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupChatFindUniqueArgs>(args: SelectSubset<T, GroupChatFindUniqueArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one GroupChat that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {GroupChatFindUniqueOrThrowArgs} args - Arguments to find a GroupChat
+     * @example
+     * // Get one GroupChat
+     * const groupChat = await prisma.groupChat.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupChatFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupChatFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first GroupChat that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatFindFirstArgs} args - Arguments to find a GroupChat
+     * @example
+     * // Get one GroupChat
+     * const groupChat = await prisma.groupChat.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupChatFindFirstArgs>(args?: SelectSubset<T, GroupChatFindFirstArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first GroupChat that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatFindFirstOrThrowArgs} args - Arguments to find a GroupChat
+     * @example
+     * // Get one GroupChat
+     * const groupChat = await prisma.groupChat.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupChatFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupChatFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more GroupChats that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroupChats
+     * const groupChats = await prisma.groupChat.findMany()
+     * 
+     * // Get first 10 GroupChats
+     * const groupChats = await prisma.groupChat.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groupChatWithIdOnly = await prisma.groupChat.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroupChatFindManyArgs>(args?: SelectSubset<T, GroupChatFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a GroupChat.
+     * @param {GroupChatCreateArgs} args - Arguments to create a GroupChat.
+     * @example
+     * // Create one GroupChat
+     * const GroupChat = await prisma.groupChat.create({
+     *   data: {
+     *     // ... data to create a GroupChat
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupChatCreateArgs>(args: SelectSubset<T, GroupChatCreateArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many GroupChats.
+     * @param {GroupChatCreateManyArgs} args - Arguments to create many GroupChats.
+     * @example
+     * // Create many GroupChats
+     * const groupChat = await prisma.groupChat.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupChatCreateManyArgs>(args?: SelectSubset<T, GroupChatCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroupChats and returns the data saved in the database.
+     * @param {GroupChatCreateManyAndReturnArgs} args - Arguments to create many GroupChats.
+     * @example
+     * // Create many GroupChats
+     * const groupChat = await prisma.groupChat.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroupChats and only return the `id`
+     * const groupChatWithIdOnly = await prisma.groupChat.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroupChatCreateManyAndReturnArgs>(args?: SelectSubset<T, GroupChatCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a GroupChat.
+     * @param {GroupChatDeleteArgs} args - Arguments to delete one GroupChat.
+     * @example
+     * // Delete one GroupChat
+     * const GroupChat = await prisma.groupChat.delete({
+     *   where: {
+     *     // ... filter to delete one GroupChat
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupChatDeleteArgs>(args: SelectSubset<T, GroupChatDeleteArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one GroupChat.
+     * @param {GroupChatUpdateArgs} args - Arguments to update one GroupChat.
+     * @example
+     * // Update one GroupChat
+     * const groupChat = await prisma.groupChat.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupChatUpdateArgs>(args: SelectSubset<T, GroupChatUpdateArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more GroupChats.
+     * @param {GroupChatDeleteManyArgs} args - Arguments to filter GroupChats to delete.
+     * @example
+     * // Delete a few GroupChats
+     * const { count } = await prisma.groupChat.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupChatDeleteManyArgs>(args?: SelectSubset<T, GroupChatDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroupChats.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroupChats
+     * const groupChat = await prisma.groupChat.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupChatUpdateManyArgs>(args: SelectSubset<T, GroupChatUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GroupChat.
+     * @param {GroupChatUpsertArgs} args - Arguments to update or create a GroupChat.
+     * @example
+     * // Update or create a GroupChat
+     * const groupChat = await prisma.groupChat.upsert({
+     *   create: {
+     *     // ... data to create a GroupChat
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroupChat we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupChatUpsertArgs>(args: SelectSubset<T, GroupChatUpsertArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of GroupChats.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatCountArgs} args - Arguments to filter GroupChats to count.
+     * @example
+     * // Count the number of GroupChats
+     * const count = await prisma.groupChat.count({
+     *   where: {
+     *     // ... the filter for the GroupChats we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupChatCountArgs>(
+      args?: Subset<T, GroupChatCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupChatCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroupChat.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupChatAggregateArgs>(args: Subset<T, GroupChatAggregateArgs>): Prisma.PrismaPromise<GetGroupChatAggregateType<T>>
+
+    /**
+     * Group by GroupChat.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupChatGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupChatGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupChatGroupByArgs['orderBy'] }
+        : { orderBy?: GroupChatGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupChatGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupChatGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroupChat model
+   */
+  readonly fields: GroupChatFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroupChat.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupChatClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversations<T extends GroupChat$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, GroupChat$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany"> | Null>
+    messages<T extends GroupChat$messagesArgs<ExtArgs> = {}>(args?: Subset<T, GroupChat$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findMany"> | Null>
+    outboundMessages<T extends GroupChat$outboundMessagesArgs<ExtArgs> = {}>(args?: Subset<T, GroupChat$outboundMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroupChat model
+   */ 
+  interface GroupChatFieldRefs {
+    readonly id: FieldRef<"GroupChat", 'String'>
+    readonly remoteChatId: FieldRef<"GroupChat", 'String'>
+    readonly name: FieldRef<"GroupChat", 'String'>
+    readonly isActive: FieldRef<"GroupChat", 'Boolean'>
+    readonly unreadCount: FieldRef<"GroupChat", 'Int'>
+    readonly lastMessageAt: FieldRef<"GroupChat", 'DateTime'>
+    readonly createdAt: FieldRef<"GroupChat", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroupChat", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroupChat findUnique
+   */
+  export type GroupChatFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupChat to fetch.
+     */
+    where: GroupChatWhereUniqueInput
+  }
+
+  /**
+   * GroupChat findUniqueOrThrow
+   */
+  export type GroupChatFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupChat to fetch.
+     */
+    where: GroupChatWhereUniqueInput
+  }
+
+  /**
+   * GroupChat findFirst
+   */
+  export type GroupChatFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupChat to fetch.
+     */
+    where?: GroupChatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupChats to fetch.
+     */
+    orderBy?: GroupChatOrderByWithRelationInput | GroupChatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupChats.
+     */
+    cursor?: GroupChatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupChats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupChats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupChats.
+     */
+    distinct?: GroupChatScalarFieldEnum | GroupChatScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat findFirstOrThrow
+   */
+  export type GroupChatFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupChat to fetch.
+     */
+    where?: GroupChatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupChats to fetch.
+     */
+    orderBy?: GroupChatOrderByWithRelationInput | GroupChatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupChats.
+     */
+    cursor?: GroupChatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupChats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupChats.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupChats.
+     */
+    distinct?: GroupChatScalarFieldEnum | GroupChatScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat findMany
+   */
+  export type GroupChatFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupChats to fetch.
+     */
+    where?: GroupChatWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupChats to fetch.
+     */
+    orderBy?: GroupChatOrderByWithRelationInput | GroupChatOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroupChats.
+     */
+    cursor?: GroupChatWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupChats from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupChats.
+     */
+    skip?: number
+    distinct?: GroupChatScalarFieldEnum | GroupChatScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat create
+   */
+  export type GroupChatCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroupChat.
+     */
+    data: XOR<GroupChatCreateInput, GroupChatUncheckedCreateInput>
+  }
+
+  /**
+   * GroupChat createMany
+   */
+  export type GroupChatCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroupChats.
+     */
+    data: GroupChatCreateManyInput | GroupChatCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupChat createManyAndReturn
+   */
+  export type GroupChatCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GroupChats.
+     */
+    data: GroupChatCreateManyInput | GroupChatCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupChat update
+   */
+  export type GroupChatUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroupChat.
+     */
+    data: XOR<GroupChatUpdateInput, GroupChatUncheckedUpdateInput>
+    /**
+     * Choose, which GroupChat to update.
+     */
+    where: GroupChatWhereUniqueInput
+  }
+
+  /**
+   * GroupChat updateMany
+   */
+  export type GroupChatUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroupChats.
+     */
+    data: XOR<GroupChatUpdateManyMutationInput, GroupChatUncheckedUpdateManyInput>
+    /**
+     * Filter which GroupChats to update
+     */
+    where?: GroupChatWhereInput
+  }
+
+  /**
+   * GroupChat upsert
+   */
+  export type GroupChatUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroupChat to update in case it exists.
+     */
+    where: GroupChatWhereUniqueInput
+    /**
+     * In case the GroupChat found by the `where` argument doesn't exist, create a new GroupChat with this data.
+     */
+    create: XOR<GroupChatCreateInput, GroupChatUncheckedCreateInput>
+    /**
+     * In case the GroupChat was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupChatUpdateInput, GroupChatUncheckedUpdateInput>
+  }
+
+  /**
+   * GroupChat delete
+   */
+  export type GroupChatDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+    /**
+     * Filter which GroupChat to delete.
+     */
+    where: GroupChatWhereUniqueInput
+  }
+
+  /**
+   * GroupChat deleteMany
+   */
+  export type GroupChatDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupChats to delete
+     */
+    where?: GroupChatWhereInput
+  }
+
+  /**
+   * GroupChat.conversations
+   */
+  export type GroupChat$conversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    cursor?: ConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat.messages
+   */
+  export type GroupChat$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    where?: GroupMessageWhereInput
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    cursor?: GroupMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat.outboundMessages
+   */
+  export type GroupChat$outboundMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    where?: GroupOutboundMessageWhereInput
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupOutboundMessageScalarFieldEnum | GroupOutboundMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupChat without action
+   */
+  export type GroupChatDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupChat
+     */
+    select?: GroupChatSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupChatInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroupMessage
+   */
+
+  export type AggregateGroupMessage = {
+    _count: GroupMessageCountAggregateOutputType | null
+    _min: GroupMessageMinAggregateOutputType | null
+    _max: GroupMessageMaxAggregateOutputType | null
+  }
+
+  export type GroupMessageMinAggregateOutputType = {
+    id: string | null
+    groupChatId: string | null
+    conversationId: string | null
+    externalMessageId: string | null
+    direction: string | null
+    senderType: string | null
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    messageType: string | null
+    content: string | null
+    isMention: boolean | null
+    createdAt: Date | null
+    readAt: Date | null
+  }
+
+  export type GroupMessageMaxAggregateOutputType = {
+    id: string | null
+    groupChatId: string | null
+    conversationId: string | null
+    externalMessageId: string | null
+    direction: string | null
+    senderType: string | null
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    messageType: string | null
+    content: string | null
+    isMention: boolean | null
+    createdAt: Date | null
+    readAt: Date | null
+  }
+
+  export type GroupMessageCountAggregateOutputType = {
+    id: number
+    groupChatId: number
+    conversationId: number
+    externalMessageId: number
+    direction: number
+    senderType: number
+    senderContactId: number
+    senderNameSnapshot: number
+    messageType: number
+    content: number
+    isMention: number
+    createdAt: number
+    readAt: number
+    _all: number
+  }
+
+
+  export type GroupMessageMinAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    conversationId?: true
+    externalMessageId?: true
+    direction?: true
+    senderType?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    messageType?: true
+    content?: true
+    isMention?: true
+    createdAt?: true
+    readAt?: true
+  }
+
+  export type GroupMessageMaxAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    conversationId?: true
+    externalMessageId?: true
+    direction?: true
+    senderType?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    messageType?: true
+    content?: true
+    isMention?: true
+    createdAt?: true
+    readAt?: true
+  }
+
+  export type GroupMessageCountAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    conversationId?: true
+    externalMessageId?: true
+    direction?: true
+    senderType?: true
+    senderContactId?: true
+    senderNameSnapshot?: true
+    messageType?: true
+    content?: true
+    isMention?: true
+    createdAt?: true
+    readAt?: true
+    _all?: true
+  }
+
+  export type GroupMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMessage to aggregate.
+     */
+    where?: GroupMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMessages to fetch.
+     */
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroupMessages
+    **/
+    _count?: true | GroupMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupMessageMaxAggregateInputType
+  }
+
+  export type GetGroupMessageAggregateType<T extends GroupMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroupMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroupMessage[P]>
+      : GetScalarType<T[P], AggregateGroupMessage[P]>
+  }
+
+
+
+
+  export type GroupMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMessageWhereInput
+    orderBy?: GroupMessageOrderByWithAggregationInput | GroupMessageOrderByWithAggregationInput[]
+    by: GroupMessageScalarFieldEnum[] | GroupMessageScalarFieldEnum
+    having?: GroupMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupMessageCountAggregateInputType | true
+    _min?: GroupMessageMinAggregateInputType
+    _max?: GroupMessageMaxAggregateInputType
+  }
+
+  export type GroupMessageGroupByOutputType = {
+    id: string
+    groupChatId: string
+    conversationId: string | null
+    externalMessageId: string | null
+    direction: string
+    senderType: string
+    senderContactId: string | null
+    senderNameSnapshot: string | null
+    messageType: string
+    content: string
+    isMention: boolean
+    createdAt: Date
+    readAt: Date | null
+    _count: GroupMessageCountAggregateOutputType | null
+    _min: GroupMessageMinAggregateOutputType | null
+    _max: GroupMessageMaxAggregateOutputType | null
+  }
+
+  type GetGroupMessageGroupByPayload<T extends GroupMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupChatId?: boolean
+    conversationId?: boolean
+    externalMessageId?: boolean
+    direction?: boolean
+    senderType?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    messageType?: boolean
+    content?: boolean
+    isMention?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    conversation?: boolean | GroupMessage$conversationArgs<ExtArgs>
+    senderContact?: boolean | GroupMessage$senderContactArgs<ExtArgs>
+  }, ExtArgs["result"]["groupMessage"]>
+
+  export type GroupMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupChatId?: boolean
+    conversationId?: boolean
+    externalMessageId?: boolean
+    direction?: boolean
+    senderType?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    messageType?: boolean
+    content?: boolean
+    isMention?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    conversation?: boolean | GroupMessage$conversationArgs<ExtArgs>
+    senderContact?: boolean | GroupMessage$senderContactArgs<ExtArgs>
+  }, ExtArgs["result"]["groupMessage"]>
+
+  export type GroupMessageSelectScalar = {
+    id?: boolean
+    groupChatId?: boolean
+    conversationId?: boolean
+    externalMessageId?: boolean
+    direction?: boolean
+    senderType?: boolean
+    senderContactId?: boolean
+    senderNameSnapshot?: boolean
+    messageType?: boolean
+    content?: boolean
+    isMention?: boolean
+    createdAt?: boolean
+    readAt?: boolean
+  }
+
+  export type GroupMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    conversation?: boolean | GroupMessage$conversationArgs<ExtArgs>
+    senderContact?: boolean | GroupMessage$senderContactArgs<ExtArgs>
+  }
+  export type GroupMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    conversation?: boolean | GroupMessage$conversationArgs<ExtArgs>
+    senderContact?: boolean | GroupMessage$senderContactArgs<ExtArgs>
+  }
+
+  export type $GroupMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroupMessage"
+    objects: {
+      groupChat: Prisma.$GroupChatPayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs> | null
+      senderContact: Prisma.$ContactPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groupChatId: string
+      conversationId: string | null
+      externalMessageId: string | null
+      direction: string
+      senderType: string
+      senderContactId: string | null
+      senderNameSnapshot: string | null
+      messageType: string
+      content: string
+      isMention: boolean
+      createdAt: Date
+      readAt: Date | null
+    }, ExtArgs["result"]["groupMessage"]>
+    composites: {}
+  }
+
+  type GroupMessageGetPayload<S extends boolean | null | undefined | GroupMessageDefaultArgs> = $Result.GetResult<Prisma.$GroupMessagePayload, S>
+
+  type GroupMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GroupMessageFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GroupMessageCountAggregateInputType | true
+    }
+
+  export interface GroupMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroupMessage'], meta: { name: 'GroupMessage' } }
+    /**
+     * Find zero or one GroupMessage that matches the filter.
+     * @param {GroupMessageFindUniqueArgs} args - Arguments to find a GroupMessage
+     * @example
+     * // Get one GroupMessage
+     * const groupMessage = await prisma.groupMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupMessageFindUniqueArgs>(args: SelectSubset<T, GroupMessageFindUniqueArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one GroupMessage that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {GroupMessageFindUniqueOrThrowArgs} args - Arguments to find a GroupMessage
+     * @example
+     * // Get one GroupMessage
+     * const groupMessage = await prisma.groupMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first GroupMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageFindFirstArgs} args - Arguments to find a GroupMessage
+     * @example
+     * // Get one GroupMessage
+     * const groupMessage = await prisma.groupMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupMessageFindFirstArgs>(args?: SelectSubset<T, GroupMessageFindFirstArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first GroupMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageFindFirstOrThrowArgs} args - Arguments to find a GroupMessage
+     * @example
+     * // Get one GroupMessage
+     * const groupMessage = await prisma.groupMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more GroupMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroupMessages
+     * const groupMessages = await prisma.groupMessage.findMany()
+     * 
+     * // Get first 10 GroupMessages
+     * const groupMessages = await prisma.groupMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groupMessageWithIdOnly = await prisma.groupMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroupMessageFindManyArgs>(args?: SelectSubset<T, GroupMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a GroupMessage.
+     * @param {GroupMessageCreateArgs} args - Arguments to create a GroupMessage.
+     * @example
+     * // Create one GroupMessage
+     * const GroupMessage = await prisma.groupMessage.create({
+     *   data: {
+     *     // ... data to create a GroupMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupMessageCreateArgs>(args: SelectSubset<T, GroupMessageCreateArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many GroupMessages.
+     * @param {GroupMessageCreateManyArgs} args - Arguments to create many GroupMessages.
+     * @example
+     * // Create many GroupMessages
+     * const groupMessage = await prisma.groupMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupMessageCreateManyArgs>(args?: SelectSubset<T, GroupMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroupMessages and returns the data saved in the database.
+     * @param {GroupMessageCreateManyAndReturnArgs} args - Arguments to create many GroupMessages.
+     * @example
+     * // Create many GroupMessages
+     * const groupMessage = await prisma.groupMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroupMessages and only return the `id`
+     * const groupMessageWithIdOnly = await prisma.groupMessage.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroupMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, GroupMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a GroupMessage.
+     * @param {GroupMessageDeleteArgs} args - Arguments to delete one GroupMessage.
+     * @example
+     * // Delete one GroupMessage
+     * const GroupMessage = await prisma.groupMessage.delete({
+     *   where: {
+     *     // ... filter to delete one GroupMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupMessageDeleteArgs>(args: SelectSubset<T, GroupMessageDeleteArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one GroupMessage.
+     * @param {GroupMessageUpdateArgs} args - Arguments to update one GroupMessage.
+     * @example
+     * // Update one GroupMessage
+     * const groupMessage = await prisma.groupMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupMessageUpdateArgs>(args: SelectSubset<T, GroupMessageUpdateArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more GroupMessages.
+     * @param {GroupMessageDeleteManyArgs} args - Arguments to filter GroupMessages to delete.
+     * @example
+     * // Delete a few GroupMessages
+     * const { count } = await prisma.groupMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupMessageDeleteManyArgs>(args?: SelectSubset<T, GroupMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroupMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroupMessages
+     * const groupMessage = await prisma.groupMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupMessageUpdateManyArgs>(args: SelectSubset<T, GroupMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GroupMessage.
+     * @param {GroupMessageUpsertArgs} args - Arguments to update or create a GroupMessage.
+     * @example
+     * // Update or create a GroupMessage
+     * const groupMessage = await prisma.groupMessage.upsert({
+     *   create: {
+     *     // ... data to create a GroupMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroupMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupMessageUpsertArgs>(args: SelectSubset<T, GroupMessageUpsertArgs<ExtArgs>>): Prisma__GroupMessageClient<$Result.GetResult<Prisma.$GroupMessagePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of GroupMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageCountArgs} args - Arguments to filter GroupMessages to count.
+     * @example
+     * // Count the number of GroupMessages
+     * const count = await prisma.groupMessage.count({
+     *   where: {
+     *     // ... the filter for the GroupMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupMessageCountArgs>(
+      args?: Subset<T, GroupMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroupMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupMessageAggregateArgs>(args: Subset<T, GroupMessageAggregateArgs>): Prisma.PrismaPromise<GetGroupMessageAggregateType<T>>
+
+    /**
+     * Group by GroupMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupMessageGroupByArgs['orderBy'] }
+        : { orderBy?: GroupMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroupMessage model
+   */
+  readonly fields: GroupMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroupMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groupChat<T extends GroupChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GroupChatDefaultArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    conversation<T extends GroupMessage$conversationArgs<ExtArgs> = {}>(args?: Subset<T, GroupMessage$conversationArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    senderContact<T extends GroupMessage$senderContactArgs<ExtArgs> = {}>(args?: Subset<T, GroupMessage$senderContactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroupMessage model
+   */ 
+  interface GroupMessageFieldRefs {
+    readonly id: FieldRef<"GroupMessage", 'String'>
+    readonly groupChatId: FieldRef<"GroupMessage", 'String'>
+    readonly conversationId: FieldRef<"GroupMessage", 'String'>
+    readonly externalMessageId: FieldRef<"GroupMessage", 'String'>
+    readonly direction: FieldRef<"GroupMessage", 'String'>
+    readonly senderType: FieldRef<"GroupMessage", 'String'>
+    readonly senderContactId: FieldRef<"GroupMessage", 'String'>
+    readonly senderNameSnapshot: FieldRef<"GroupMessage", 'String'>
+    readonly messageType: FieldRef<"GroupMessage", 'String'>
+    readonly content: FieldRef<"GroupMessage", 'String'>
+    readonly isMention: FieldRef<"GroupMessage", 'Boolean'>
+    readonly createdAt: FieldRef<"GroupMessage", 'DateTime'>
+    readonly readAt: FieldRef<"GroupMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroupMessage findUnique
+   */
+  export type GroupMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMessage to fetch.
+     */
+    where: GroupMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupMessage findUniqueOrThrow
+   */
+  export type GroupMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMessage to fetch.
+     */
+    where: GroupMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupMessage findFirst
+   */
+  export type GroupMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMessage to fetch.
+     */
+    where?: GroupMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMessages to fetch.
+     */
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMessages.
+     */
+    cursor?: GroupMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMessages.
+     */
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMessage findFirstOrThrow
+   */
+  export type GroupMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMessage to fetch.
+     */
+    where?: GroupMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMessages to fetch.
+     */
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMessages.
+     */
+    cursor?: GroupMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMessages.
+     */
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMessage findMany
+   */
+  export type GroupMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMessages to fetch.
+     */
+    where?: GroupMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMessages to fetch.
+     */
+    orderBy?: GroupMessageOrderByWithRelationInput | GroupMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroupMessages.
+     */
+    cursor?: GroupMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMessages.
+     */
+    skip?: number
+    distinct?: GroupMessageScalarFieldEnum | GroupMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMessage create
+   */
+  export type GroupMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroupMessage.
+     */
+    data: XOR<GroupMessageCreateInput, GroupMessageUncheckedCreateInput>
+  }
+
+  /**
+   * GroupMessage createMany
+   */
+  export type GroupMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroupMessages.
+     */
+    data: GroupMessageCreateManyInput | GroupMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupMessage createManyAndReturn
+   */
+  export type GroupMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GroupMessages.
+     */
+    data: GroupMessageCreateManyInput | GroupMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroupMessage update
+   */
+  export type GroupMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroupMessage.
+     */
+    data: XOR<GroupMessageUpdateInput, GroupMessageUncheckedUpdateInput>
+    /**
+     * Choose, which GroupMessage to update.
+     */
+    where: GroupMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupMessage updateMany
+   */
+  export type GroupMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroupMessages.
+     */
+    data: XOR<GroupMessageUpdateManyMutationInput, GroupMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which GroupMessages to update
+     */
+    where?: GroupMessageWhereInput
+  }
+
+  /**
+   * GroupMessage upsert
+   */
+  export type GroupMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroupMessage to update in case it exists.
+     */
+    where: GroupMessageWhereUniqueInput
+    /**
+     * In case the GroupMessage found by the `where` argument doesn't exist, create a new GroupMessage with this data.
+     */
+    create: XOR<GroupMessageCreateInput, GroupMessageUncheckedCreateInput>
+    /**
+     * In case the GroupMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupMessageUpdateInput, GroupMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * GroupMessage delete
+   */
+  export type GroupMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+    /**
+     * Filter which GroupMessage to delete.
+     */
+    where: GroupMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupMessage deleteMany
+   */
+  export type GroupMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMessages to delete
+     */
+    where?: GroupMessageWhereInput
+  }
+
+  /**
+   * GroupMessage.conversation
+   */
+  export type GroupMessage$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+  }
+
+  /**
+   * GroupMessage.senderContact
+   */
+  export type GroupMessage$senderContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+  }
+
+  /**
+   * GroupMessage without action
+   */
+  export type GroupMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMessage
+     */
+    select?: GroupMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroupOutboundMessage
+   */
+
+  export type AggregateGroupOutboundMessage = {
+    _count: GroupOutboundMessageCountAggregateOutputType | null
+    _min: GroupOutboundMessageMinAggregateOutputType | null
+    _max: GroupOutboundMessageMaxAggregateOutputType | null
+  }
+
+  export type GroupOutboundMessageMinAggregateOutputType = {
+    id: string | null
+    groupChatId: string | null
+    agentId: string | null
+    clientMessageId: string | null
+    providerMessageId: string | null
+    content: string | null
+    status: string | null
+    failureCode: string | null
+    createdAt: Date | null
+    sentAt: Date | null
+  }
+
+  export type GroupOutboundMessageMaxAggregateOutputType = {
+    id: string | null
+    groupChatId: string | null
+    agentId: string | null
+    clientMessageId: string | null
+    providerMessageId: string | null
+    content: string | null
+    status: string | null
+    failureCode: string | null
+    createdAt: Date | null
+    sentAt: Date | null
+  }
+
+  export type GroupOutboundMessageCountAggregateOutputType = {
+    id: number
+    groupChatId: number
+    agentId: number
+    clientMessageId: number
+    providerMessageId: number
+    content: number
+    status: number
+    failureCode: number
+    createdAt: number
+    sentAt: number
+    _all: number
+  }
+
+
+  export type GroupOutboundMessageMinAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    agentId?: true
+    clientMessageId?: true
+    providerMessageId?: true
+    content?: true
+    status?: true
+    failureCode?: true
+    createdAt?: true
+    sentAt?: true
+  }
+
+  export type GroupOutboundMessageMaxAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    agentId?: true
+    clientMessageId?: true
+    providerMessageId?: true
+    content?: true
+    status?: true
+    failureCode?: true
+    createdAt?: true
+    sentAt?: true
+  }
+
+  export type GroupOutboundMessageCountAggregateInputType = {
+    id?: true
+    groupChatId?: true
+    agentId?: true
+    clientMessageId?: true
+    providerMessageId?: true
+    content?: true
+    status?: true
+    failureCode?: true
+    createdAt?: true
+    sentAt?: true
+    _all?: true
+  }
+
+  export type GroupOutboundMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupOutboundMessage to aggregate.
+     */
+    where?: GroupOutboundMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupOutboundMessages to fetch.
+     */
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupOutboundMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupOutboundMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroupOutboundMessages
+    **/
+    _count?: true | GroupOutboundMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupOutboundMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupOutboundMessageMaxAggregateInputType
+  }
+
+  export type GetGroupOutboundMessageAggregateType<T extends GroupOutboundMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroupOutboundMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroupOutboundMessage[P]>
+      : GetScalarType<T[P], AggregateGroupOutboundMessage[P]>
+  }
+
+
+
+
+  export type GroupOutboundMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupOutboundMessageWhereInput
+    orderBy?: GroupOutboundMessageOrderByWithAggregationInput | GroupOutboundMessageOrderByWithAggregationInput[]
+    by: GroupOutboundMessageScalarFieldEnum[] | GroupOutboundMessageScalarFieldEnum
+    having?: GroupOutboundMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupOutboundMessageCountAggregateInputType | true
+    _min?: GroupOutboundMessageMinAggregateInputType
+    _max?: GroupOutboundMessageMaxAggregateInputType
+  }
+
+  export type GroupOutboundMessageGroupByOutputType = {
+    id: string
+    groupChatId: string
+    agentId: string
+    clientMessageId: string
+    providerMessageId: string | null
+    content: string
+    status: string
+    failureCode: string | null
+    createdAt: Date
+    sentAt: Date | null
+    _count: GroupOutboundMessageCountAggregateOutputType | null
+    _min: GroupOutboundMessageMinAggregateOutputType | null
+    _max: GroupOutboundMessageMaxAggregateOutputType | null
+  }
+
+  type GetGroupOutboundMessageGroupByPayload<T extends GroupOutboundMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupOutboundMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupOutboundMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupOutboundMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupOutboundMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupOutboundMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupChatId?: boolean
+    agentId?: boolean
+    clientMessageId?: boolean
+    providerMessageId?: boolean
+    content?: boolean
+    status?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groupOutboundMessage"]>
+
+  export type GroupOutboundMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groupChatId?: boolean
+    agentId?: boolean
+    clientMessageId?: boolean
+    providerMessageId?: boolean
+    content?: boolean
+    status?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groupOutboundMessage"]>
+
+  export type GroupOutboundMessageSelectScalar = {
+    id?: boolean
+    groupChatId?: boolean
+    agentId?: boolean
+    clientMessageId?: boolean
+    providerMessageId?: boolean
+    content?: boolean
+    status?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    sentAt?: boolean
+  }
+
+  export type GroupOutboundMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+  export type GroupOutboundMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groupChat?: boolean | GroupChatDefaultArgs<ExtArgs>
+    agent?: boolean | AgentDefaultArgs<ExtArgs>
+  }
+
+  export type $GroupOutboundMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroupOutboundMessage"
+    objects: {
+      groupChat: Prisma.$GroupChatPayload<ExtArgs>
+      agent: Prisma.$AgentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groupChatId: string
+      agentId: string
+      clientMessageId: string
+      providerMessageId: string | null
+      content: string
+      status: string
+      failureCode: string | null
+      createdAt: Date
+      sentAt: Date | null
+    }, ExtArgs["result"]["groupOutboundMessage"]>
+    composites: {}
+  }
+
+  type GroupOutboundMessageGetPayload<S extends boolean | null | undefined | GroupOutboundMessageDefaultArgs> = $Result.GetResult<Prisma.$GroupOutboundMessagePayload, S>
+
+  type GroupOutboundMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GroupOutboundMessageFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GroupOutboundMessageCountAggregateInputType | true
+    }
+
+  export interface GroupOutboundMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroupOutboundMessage'], meta: { name: 'GroupOutboundMessage' } }
+    /**
+     * Find zero or one GroupOutboundMessage that matches the filter.
+     * @param {GroupOutboundMessageFindUniqueArgs} args - Arguments to find a GroupOutboundMessage
+     * @example
+     * // Get one GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupOutboundMessageFindUniqueArgs>(args: SelectSubset<T, GroupOutboundMessageFindUniqueArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one GroupOutboundMessage that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {GroupOutboundMessageFindUniqueOrThrowArgs} args - Arguments to find a GroupOutboundMessage
+     * @example
+     * // Get one GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupOutboundMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupOutboundMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first GroupOutboundMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageFindFirstArgs} args - Arguments to find a GroupOutboundMessage
+     * @example
+     * // Get one GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupOutboundMessageFindFirstArgs>(args?: SelectSubset<T, GroupOutboundMessageFindFirstArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first GroupOutboundMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageFindFirstOrThrowArgs} args - Arguments to find a GroupOutboundMessage
+     * @example
+     * // Get one GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupOutboundMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupOutboundMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more GroupOutboundMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroupOutboundMessages
+     * const groupOutboundMessages = await prisma.groupOutboundMessage.findMany()
+     * 
+     * // Get first 10 GroupOutboundMessages
+     * const groupOutboundMessages = await prisma.groupOutboundMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groupOutboundMessageWithIdOnly = await prisma.groupOutboundMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroupOutboundMessageFindManyArgs>(args?: SelectSubset<T, GroupOutboundMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a GroupOutboundMessage.
+     * @param {GroupOutboundMessageCreateArgs} args - Arguments to create a GroupOutboundMessage.
+     * @example
+     * // Create one GroupOutboundMessage
+     * const GroupOutboundMessage = await prisma.groupOutboundMessage.create({
+     *   data: {
+     *     // ... data to create a GroupOutboundMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupOutboundMessageCreateArgs>(args: SelectSubset<T, GroupOutboundMessageCreateArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many GroupOutboundMessages.
+     * @param {GroupOutboundMessageCreateManyArgs} args - Arguments to create many GroupOutboundMessages.
+     * @example
+     * // Create many GroupOutboundMessages
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupOutboundMessageCreateManyArgs>(args?: SelectSubset<T, GroupOutboundMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroupOutboundMessages and returns the data saved in the database.
+     * @param {GroupOutboundMessageCreateManyAndReturnArgs} args - Arguments to create many GroupOutboundMessages.
+     * @example
+     * // Create many GroupOutboundMessages
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroupOutboundMessages and only return the `id`
+     * const groupOutboundMessageWithIdOnly = await prisma.groupOutboundMessage.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroupOutboundMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, GroupOutboundMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a GroupOutboundMessage.
+     * @param {GroupOutboundMessageDeleteArgs} args - Arguments to delete one GroupOutboundMessage.
+     * @example
+     * // Delete one GroupOutboundMessage
+     * const GroupOutboundMessage = await prisma.groupOutboundMessage.delete({
+     *   where: {
+     *     // ... filter to delete one GroupOutboundMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupOutboundMessageDeleteArgs>(args: SelectSubset<T, GroupOutboundMessageDeleteArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one GroupOutboundMessage.
+     * @param {GroupOutboundMessageUpdateArgs} args - Arguments to update one GroupOutboundMessage.
+     * @example
+     * // Update one GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupOutboundMessageUpdateArgs>(args: SelectSubset<T, GroupOutboundMessageUpdateArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more GroupOutboundMessages.
+     * @param {GroupOutboundMessageDeleteManyArgs} args - Arguments to filter GroupOutboundMessages to delete.
+     * @example
+     * // Delete a few GroupOutboundMessages
+     * const { count } = await prisma.groupOutboundMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupOutboundMessageDeleteManyArgs>(args?: SelectSubset<T, GroupOutboundMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroupOutboundMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroupOutboundMessages
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupOutboundMessageUpdateManyArgs>(args: SelectSubset<T, GroupOutboundMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GroupOutboundMessage.
+     * @param {GroupOutboundMessageUpsertArgs} args - Arguments to update or create a GroupOutboundMessage.
+     * @example
+     * // Update or create a GroupOutboundMessage
+     * const groupOutboundMessage = await prisma.groupOutboundMessage.upsert({
+     *   create: {
+     *     // ... data to create a GroupOutboundMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroupOutboundMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupOutboundMessageUpsertArgs>(args: SelectSubset<T, GroupOutboundMessageUpsertArgs<ExtArgs>>): Prisma__GroupOutboundMessageClient<$Result.GetResult<Prisma.$GroupOutboundMessagePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of GroupOutboundMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageCountArgs} args - Arguments to filter GroupOutboundMessages to count.
+     * @example
+     * // Count the number of GroupOutboundMessages
+     * const count = await prisma.groupOutboundMessage.count({
+     *   where: {
+     *     // ... the filter for the GroupOutboundMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupOutboundMessageCountArgs>(
+      args?: Subset<T, GroupOutboundMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupOutboundMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroupOutboundMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupOutboundMessageAggregateArgs>(args: Subset<T, GroupOutboundMessageAggregateArgs>): Prisma.PrismaPromise<GetGroupOutboundMessageAggregateType<T>>
+
+    /**
+     * Group by GroupOutboundMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupOutboundMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupOutboundMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupOutboundMessageGroupByArgs['orderBy'] }
+        : { orderBy?: GroupOutboundMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupOutboundMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupOutboundMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroupOutboundMessage model
+   */
+  readonly fields: GroupOutboundMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroupOutboundMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupOutboundMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groupChat<T extends GroupChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GroupChatDefaultArgs<ExtArgs>>): Prisma__GroupChatClient<$Result.GetResult<Prisma.$GroupChatPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    agent<T extends AgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgentDefaultArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroupOutboundMessage model
+   */ 
+  interface GroupOutboundMessageFieldRefs {
+    readonly id: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly groupChatId: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly agentId: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly clientMessageId: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly providerMessageId: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly content: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly status: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly failureCode: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly createdAt: FieldRef<"GroupOutboundMessage", 'DateTime'>
+    readonly sentAt: FieldRef<"GroupOutboundMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroupOutboundMessage findUnique
+   */
+  export type GroupOutboundMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupOutboundMessage to fetch.
+     */
+    where: GroupOutboundMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupOutboundMessage findUniqueOrThrow
+   */
+  export type GroupOutboundMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupOutboundMessage to fetch.
+     */
+    where: GroupOutboundMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupOutboundMessage findFirst
+   */
+  export type GroupOutboundMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupOutboundMessage to fetch.
+     */
+    where?: GroupOutboundMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupOutboundMessages to fetch.
+     */
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupOutboundMessages.
+     */
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupOutboundMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupOutboundMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupOutboundMessages.
+     */
+    distinct?: GroupOutboundMessageScalarFieldEnum | GroupOutboundMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupOutboundMessage findFirstOrThrow
+   */
+  export type GroupOutboundMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupOutboundMessage to fetch.
+     */
+    where?: GroupOutboundMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupOutboundMessages to fetch.
+     */
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupOutboundMessages.
+     */
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupOutboundMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupOutboundMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupOutboundMessages.
+     */
+    distinct?: GroupOutboundMessageScalarFieldEnum | GroupOutboundMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupOutboundMessage findMany
+   */
+  export type GroupOutboundMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupOutboundMessages to fetch.
+     */
+    where?: GroupOutboundMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupOutboundMessages to fetch.
+     */
+    orderBy?: GroupOutboundMessageOrderByWithRelationInput | GroupOutboundMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroupOutboundMessages.
+     */
+    cursor?: GroupOutboundMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupOutboundMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupOutboundMessages.
+     */
+    skip?: number
+    distinct?: GroupOutboundMessageScalarFieldEnum | GroupOutboundMessageScalarFieldEnum[]
+  }
+
+  /**
+   * GroupOutboundMessage create
+   */
+  export type GroupOutboundMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroupOutboundMessage.
+     */
+    data: XOR<GroupOutboundMessageCreateInput, GroupOutboundMessageUncheckedCreateInput>
+  }
+
+  /**
+   * GroupOutboundMessage createMany
+   */
+  export type GroupOutboundMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroupOutboundMessages.
+     */
+    data: GroupOutboundMessageCreateManyInput | GroupOutboundMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupOutboundMessage createManyAndReturn
+   */
+  export type GroupOutboundMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GroupOutboundMessages.
+     */
+    data: GroupOutboundMessageCreateManyInput | GroupOutboundMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroupOutboundMessage update
+   */
+  export type GroupOutboundMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroupOutboundMessage.
+     */
+    data: XOR<GroupOutboundMessageUpdateInput, GroupOutboundMessageUncheckedUpdateInput>
+    /**
+     * Choose, which GroupOutboundMessage to update.
+     */
+    where: GroupOutboundMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupOutboundMessage updateMany
+   */
+  export type GroupOutboundMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroupOutboundMessages.
+     */
+    data: XOR<GroupOutboundMessageUpdateManyMutationInput, GroupOutboundMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which GroupOutboundMessages to update
+     */
+    where?: GroupOutboundMessageWhereInput
+  }
+
+  /**
+   * GroupOutboundMessage upsert
+   */
+  export type GroupOutboundMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroupOutboundMessage to update in case it exists.
+     */
+    where: GroupOutboundMessageWhereUniqueInput
+    /**
+     * In case the GroupOutboundMessage found by the `where` argument doesn't exist, create a new GroupOutboundMessage with this data.
+     */
+    create: XOR<GroupOutboundMessageCreateInput, GroupOutboundMessageUncheckedCreateInput>
+    /**
+     * In case the GroupOutboundMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupOutboundMessageUpdateInput, GroupOutboundMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * GroupOutboundMessage delete
+   */
+  export type GroupOutboundMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
+    /**
+     * Filter which GroupOutboundMessage to delete.
+     */
+    where: GroupOutboundMessageWhereUniqueInput
+  }
+
+  /**
+   * GroupOutboundMessage deleteMany
+   */
+  export type GroupOutboundMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupOutboundMessages to delete
+     */
+    where?: GroupOutboundMessageWhereInput
+  }
+
+  /**
+   * GroupOutboundMessage without action
+   */
+  export type GroupOutboundMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupOutboundMessage
+     */
+    select?: GroupOutboundMessageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupOutboundMessageInclude<ExtArgs> | null
   }
 
 
@@ -19424,6 +23023,8 @@ export namespace Prisma {
     groupCooldownSeconds: number | null
     groupConfirmInGroup: boolean | null
     groupConfirmMessage: string | null
+    groupConversationMode: string | null
+    groupResponseMode: string | null
     updatedAt: Date | null
   }
 
@@ -19441,6 +23042,8 @@ export namespace Prisma {
     groupCooldownSeconds: number | null
     groupConfirmInGroup: boolean | null
     groupConfirmMessage: string | null
+    groupConversationMode: string | null
+    groupResponseMode: string | null
     updatedAt: Date | null
   }
 
@@ -19458,6 +23061,8 @@ export namespace Prisma {
     groupCooldownSeconds: number
     groupConfirmInGroup: number
     groupConfirmMessage: number
+    groupConversationMode: number
+    groupResponseMode: number
     updatedAt: number
     _all: number
   }
@@ -19485,6 +23090,8 @@ export namespace Prisma {
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
     groupConfirmMessage?: true
+    groupConversationMode?: true
+    groupResponseMode?: true
     updatedAt?: true
   }
 
@@ -19502,6 +23109,8 @@ export namespace Prisma {
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
     groupConfirmMessage?: true
+    groupConversationMode?: true
+    groupResponseMode?: true
     updatedAt?: true
   }
 
@@ -19519,6 +23128,8 @@ export namespace Prisma {
     groupCooldownSeconds?: true
     groupConfirmInGroup?: true
     groupConfirmMessage?: true
+    groupConversationMode?: true
+    groupResponseMode?: true
     updatedAt?: true
     _all?: true
   }
@@ -19623,6 +23234,8 @@ export namespace Prisma {
     groupCooldownSeconds: number
     groupConfirmInGroup: boolean
     groupConfirmMessage: string | null
+    groupConversationMode: string
+    groupResponseMode: string
     updatedAt: Date
     _count: ZApiConfigCountAggregateOutputType | null
     _avg: ZApiConfigAvgAggregateOutputType | null
@@ -19659,6 +23272,8 @@ export namespace Prisma {
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: boolean
+    groupConversationMode?: boolean
+    groupResponseMode?: boolean
     updatedAt?: boolean
     businessHoursPolicies?: boolean | ZApiConfig$businessHoursPoliciesArgs<ExtArgs>
     _count?: boolean | ZApiConfigCountOutputTypeDefaultArgs<ExtArgs>
@@ -19678,6 +23293,8 @@ export namespace Prisma {
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: boolean
+    groupConversationMode?: boolean
+    groupResponseMode?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["zApiConfig"]>
 
@@ -19695,6 +23312,8 @@ export namespace Prisma {
     groupCooldownSeconds?: boolean
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: boolean
+    groupConversationMode?: boolean
+    groupResponseMode?: boolean
     updatedAt?: boolean
   }
 
@@ -19723,6 +23342,8 @@ export namespace Prisma {
       groupCooldownSeconds: number
       groupConfirmInGroup: boolean
       groupConfirmMessage: string | null
+      groupConversationMode: string
+      groupResponseMode: string
       updatedAt: Date
     }, ExtArgs["result"]["zApiConfig"]>
     composites: {}
@@ -20131,6 +23752,8 @@ export namespace Prisma {
     readonly groupCooldownSeconds: FieldRef<"ZApiConfig", 'Int'>
     readonly groupConfirmInGroup: FieldRef<"ZApiConfig", 'Boolean'>
     readonly groupConfirmMessage: FieldRef<"ZApiConfig", 'String'>
+    readonly groupConversationMode: FieldRef<"ZApiConfig", 'String'>
+    readonly groupResponseMode: FieldRef<"ZApiConfig", 'String'>
     readonly updatedAt: FieldRef<"ZApiConfig", 'DateTime'>
   }
     
@@ -35978,6 +39601,8 @@ export namespace Prisma {
   export const ConversationScalarFieldEnum: {
     id: 'id',
     contactId: 'contactId',
+    channel: 'channel',
+    remoteChatId: 'remoteChatId',
     status: 'status',
     departmentId: 'departmentId',
     assignedAgentId: 'assignedAgentId',
@@ -35992,10 +39617,60 @@ export namespace Prisma {
     warningSentAt: 'warningSentAt',
     closeReason: 'closeReason',
     groupChatName: 'groupChatName',
-    groupParticipant: 'groupParticipant'
+    groupParticipant: 'groupParticipant',
+    groupChatId: 'groupChatId'
   };
 
   export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+  export const GroupChatScalarFieldEnum: {
+    id: 'id',
+    remoteChatId: 'remoteChatId',
+    name: 'name',
+    isActive: 'isActive',
+    unreadCount: 'unreadCount',
+    lastMessageAt: 'lastMessageAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroupChatScalarFieldEnum = (typeof GroupChatScalarFieldEnum)[keyof typeof GroupChatScalarFieldEnum]
+
+
+  export const GroupMessageScalarFieldEnum: {
+    id: 'id',
+    groupChatId: 'groupChatId',
+    conversationId: 'conversationId',
+    externalMessageId: 'externalMessageId',
+    direction: 'direction',
+    senderType: 'senderType',
+    senderContactId: 'senderContactId',
+    senderNameSnapshot: 'senderNameSnapshot',
+    messageType: 'messageType',
+    content: 'content',
+    isMention: 'isMention',
+    createdAt: 'createdAt',
+    readAt: 'readAt'
+  };
+
+  export type GroupMessageScalarFieldEnum = (typeof GroupMessageScalarFieldEnum)[keyof typeof GroupMessageScalarFieldEnum]
+
+
+  export const GroupOutboundMessageScalarFieldEnum: {
+    id: 'id',
+    groupChatId: 'groupChatId',
+    agentId: 'agentId',
+    clientMessageId: 'clientMessageId',
+    providerMessageId: 'providerMessageId',
+    content: 'content',
+    status: 'status',
+    failureCode: 'failureCode',
+    createdAt: 'createdAt',
+    sentAt: 'sentAt'
+  };
+
+  export type GroupOutboundMessageScalarFieldEnum = (typeof GroupOutboundMessageScalarFieldEnum)[keyof typeof GroupOutboundMessageScalarFieldEnum]
 
 
   export const MessageScalarFieldEnum: {
@@ -36128,6 +39803,8 @@ export namespace Prisma {
     groupCooldownSeconds: 'groupCooldownSeconds',
     groupConfirmInGroup: 'groupConfirmInGroup',
     groupConfirmMessage: 'groupConfirmMessage',
+    groupConversationMode: 'groupConversationMode',
+    groupResponseMode: 'groupResponseMode',
     updatedAt: 'updatedAt'
   };
 
@@ -36785,6 +40462,7 @@ export namespace Prisma {
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     conversations?: ConversationListRelationFilter
     messages?: MessageListRelationFilter
+    groupOutboundMessages?: GroupOutboundMessageListRelationFilter
     assignmentFrom?: ConversationAssignmentListRelationFilter
     assignmentTo?: ConversationAssignmentListRelationFilter
     assignmentActor?: ConversationAssignmentListRelationFilter
@@ -36814,6 +40492,7 @@ export namespace Prisma {
     department?: DepartmentOrderByWithRelationInput
     conversations?: ConversationOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
+    groupOutboundMessages?: GroupOutboundMessageOrderByRelationAggregateInput
     assignmentFrom?: ConversationAssignmentOrderByRelationAggregateInput
     assignmentTo?: ConversationAssignmentOrderByRelationAggregateInput
     assignmentActor?: ConversationAssignmentOrderByRelationAggregateInput
@@ -36846,6 +40525,7 @@ export namespace Prisma {
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     conversations?: ConversationListRelationFilter
     messages?: MessageListRelationFilter
+    groupOutboundMessages?: GroupOutboundMessageListRelationFilter
     assignmentFrom?: ConversationAssignmentListRelationFilter
     assignmentTo?: ConversationAssignmentListRelationFilter
     assignmentActor?: ConversationAssignmentListRelationFilter
@@ -36964,6 +40644,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
     messageSenders?: MessageListRelationFilter
+    groupMessageSenders?: GroupMessageListRelationFilter
     phoneNumbers?: ContactPhoneListRelationFilter
     sharedCards?: ContactShareListRelationFilter
   }
@@ -36984,6 +40665,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     conversations?: ConversationOrderByRelationAggregateInput
     messageSenders?: MessageOrderByRelationAggregateInput
+    groupMessageSenders?: GroupMessageOrderByRelationAggregateInput
     phoneNumbers?: ContactPhoneOrderByRelationAggregateInput
     sharedCards?: ContactShareOrderByRelationAggregateInput
   }
@@ -37007,6 +40689,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
     conversations?: ConversationListRelationFilter
     messageSenders?: MessageListRelationFilter
+    groupMessageSenders?: GroupMessageListRelationFilter
     phoneNumbers?: ContactPhoneListRelationFilter
     sharedCards?: ContactShareListRelationFilter
   }, "id" | "phone">
@@ -37211,6 +40894,8 @@ export namespace Prisma {
     NOT?: ConversationWhereInput | ConversationWhereInput[]
     id?: StringFilter<"Conversation"> | string
     contactId?: StringFilter<"Conversation"> | string
+    channel?: StringFilter<"Conversation"> | string
+    remoteChatId?: StringNullableFilter<"Conversation"> | string | null
     status?: StringFilter<"Conversation"> | string
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
@@ -37226,10 +40911,12 @@ export namespace Prisma {
     closeReason?: StringNullableFilter<"Conversation"> | string | null
     groupChatName?: StringNullableFilter<"Conversation"> | string | null
     groupParticipant?: StringNullableFilter<"Conversation"> | string | null
+    groupChatId?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     messages?: MessageListRelationFilter
+    groupMessages?: GroupMessageListRelationFilter
     flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
@@ -37239,11 +40926,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
     businessHoursNotices?: BusinessHoursNoticeListRelationFilter
+    groupChat?: XOR<GroupChatNullableRelationFilter, GroupChatWhereInput> | null
   }
 
   export type ConversationOrderByWithRelationInput = {
     id?: SortOrder
     contactId?: SortOrder
+    channel?: SortOrder
+    remoteChatId?: SortOrderInput | SortOrder
     status?: SortOrder
     departmentId?: SortOrderInput | SortOrder
     assignedAgentId?: SortOrderInput | SortOrder
@@ -37259,10 +40949,12 @@ export namespace Prisma {
     closeReason?: SortOrderInput | SortOrder
     groupChatName?: SortOrderInput | SortOrder
     groupParticipant?: SortOrderInput | SortOrder
+    groupChatId?: SortOrderInput | SortOrder
     contact?: ContactOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
     assignedAgent?: AgentOrderByWithRelationInput
     messages?: MessageOrderByRelationAggregateInput
+    groupMessages?: GroupMessageOrderByRelationAggregateInput
     flowRevision?: FlowRevisionOrderByWithRelationInput
     currentFlowNode?: FlowNodeOrderByWithRelationInput
     flowEvents?: FlowExecutionEventOrderByRelationAggregateInput
@@ -37272,6 +40964,7 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaOrderByRelationAggregateInput
     labels?: ConversationLabelOrderByRelationAggregateInput
     businessHoursNotices?: BusinessHoursNoticeOrderByRelationAggregateInput
+    groupChat?: GroupChatOrderByWithRelationInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -37280,6 +40973,8 @@ export namespace Prisma {
     OR?: ConversationWhereInput[]
     NOT?: ConversationWhereInput | ConversationWhereInput[]
     contactId?: StringFilter<"Conversation"> | string
+    channel?: StringFilter<"Conversation"> | string
+    remoteChatId?: StringNullableFilter<"Conversation"> | string | null
     status?: StringFilter<"Conversation"> | string
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
@@ -37295,10 +40990,12 @@ export namespace Prisma {
     closeReason?: StringNullableFilter<"Conversation"> | string | null
     groupChatName?: StringNullableFilter<"Conversation"> | string | null
     groupParticipant?: StringNullableFilter<"Conversation"> | string | null
+    groupChatId?: StringNullableFilter<"Conversation"> | string | null
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     department?: XOR<DepartmentNullableRelationFilter, DepartmentWhereInput> | null
     assignedAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     messages?: MessageListRelationFilter
+    groupMessages?: GroupMessageListRelationFilter
     flowRevision?: XOR<FlowRevisionNullableRelationFilter, FlowRevisionWhereInput> | null
     currentFlowNode?: XOR<FlowNodeNullableRelationFilter, FlowNodeWhereInput> | null
     flowEvents?: FlowExecutionEventListRelationFilter
@@ -37308,11 +41005,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
     businessHoursNotices?: BusinessHoursNoticeListRelationFilter
+    groupChat?: XOR<GroupChatNullableRelationFilter, GroupChatWhereInput> | null
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
     id?: SortOrder
     contactId?: SortOrder
+    channel?: SortOrder
+    remoteChatId?: SortOrderInput | SortOrder
     status?: SortOrder
     departmentId?: SortOrderInput | SortOrder
     assignedAgentId?: SortOrderInput | SortOrder
@@ -37328,6 +41028,7 @@ export namespace Prisma {
     closeReason?: SortOrderInput | SortOrder
     groupChatName?: SortOrderInput | SortOrder
     groupParticipant?: SortOrderInput | SortOrder
+    groupChatId?: SortOrderInput | SortOrder
     _count?: ConversationCountOrderByAggregateInput
     _max?: ConversationMaxOrderByAggregateInput
     _min?: ConversationMinOrderByAggregateInput
@@ -37339,6 +41040,8 @@ export namespace Prisma {
     NOT?: ConversationScalarWhereWithAggregatesInput | ConversationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Conversation"> | string
     contactId?: StringWithAggregatesFilter<"Conversation"> | string
+    channel?: StringWithAggregatesFilter<"Conversation"> | string
+    remoteChatId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     status?: StringWithAggregatesFilter<"Conversation"> | string
     departmentId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
@@ -37354,6 +41057,269 @@ export namespace Prisma {
     closeReason?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     groupChatName?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     groupParticipant?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    groupChatId?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+  }
+
+  export type GroupChatWhereInput = {
+    AND?: GroupChatWhereInput | GroupChatWhereInput[]
+    OR?: GroupChatWhereInput[]
+    NOT?: GroupChatWhereInput | GroupChatWhereInput[]
+    id?: StringFilter<"GroupChat"> | string
+    remoteChatId?: StringFilter<"GroupChat"> | string
+    name?: StringFilter<"GroupChat"> | string
+    isActive?: BoolFilter<"GroupChat"> | boolean
+    unreadCount?: IntFilter<"GroupChat"> | number
+    lastMessageAt?: DateTimeNullableFilter<"GroupChat"> | Date | string | null
+    createdAt?: DateTimeFilter<"GroupChat"> | Date | string
+    updatedAt?: DateTimeFilter<"GroupChat"> | Date | string
+    conversations?: ConversationListRelationFilter
+    messages?: GroupMessageListRelationFilter
+    outboundMessages?: GroupOutboundMessageListRelationFilter
+  }
+
+  export type GroupChatOrderByWithRelationInput = {
+    id?: SortOrder
+    remoteChatId?: SortOrder
+    name?: SortOrder
+    isActive?: SortOrder
+    unreadCount?: SortOrder
+    lastMessageAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    conversations?: ConversationOrderByRelationAggregateInput
+    messages?: GroupMessageOrderByRelationAggregateInput
+    outboundMessages?: GroupOutboundMessageOrderByRelationAggregateInput
+  }
+
+  export type GroupChatWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    remoteChatId?: string
+    AND?: GroupChatWhereInput | GroupChatWhereInput[]
+    OR?: GroupChatWhereInput[]
+    NOT?: GroupChatWhereInput | GroupChatWhereInput[]
+    name?: StringFilter<"GroupChat"> | string
+    isActive?: BoolFilter<"GroupChat"> | boolean
+    unreadCount?: IntFilter<"GroupChat"> | number
+    lastMessageAt?: DateTimeNullableFilter<"GroupChat"> | Date | string | null
+    createdAt?: DateTimeFilter<"GroupChat"> | Date | string
+    updatedAt?: DateTimeFilter<"GroupChat"> | Date | string
+    conversations?: ConversationListRelationFilter
+    messages?: GroupMessageListRelationFilter
+    outboundMessages?: GroupOutboundMessageListRelationFilter
+  }, "id" | "remoteChatId">
+
+  export type GroupChatOrderByWithAggregationInput = {
+    id?: SortOrder
+    remoteChatId?: SortOrder
+    name?: SortOrder
+    isActive?: SortOrder
+    unreadCount?: SortOrder
+    lastMessageAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroupChatCountOrderByAggregateInput
+    _avg?: GroupChatAvgOrderByAggregateInput
+    _max?: GroupChatMaxOrderByAggregateInput
+    _min?: GroupChatMinOrderByAggregateInput
+    _sum?: GroupChatSumOrderByAggregateInput
+  }
+
+  export type GroupChatScalarWhereWithAggregatesInput = {
+    AND?: GroupChatScalarWhereWithAggregatesInput | GroupChatScalarWhereWithAggregatesInput[]
+    OR?: GroupChatScalarWhereWithAggregatesInput[]
+    NOT?: GroupChatScalarWhereWithAggregatesInput | GroupChatScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroupChat"> | string
+    remoteChatId?: StringWithAggregatesFilter<"GroupChat"> | string
+    name?: StringWithAggregatesFilter<"GroupChat"> | string
+    isActive?: BoolWithAggregatesFilter<"GroupChat"> | boolean
+    unreadCount?: IntWithAggregatesFilter<"GroupChat"> | number
+    lastMessageAt?: DateTimeNullableWithAggregatesFilter<"GroupChat"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GroupChat"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroupChat"> | Date | string
+  }
+
+  export type GroupMessageWhereInput = {
+    AND?: GroupMessageWhereInput | GroupMessageWhereInput[]
+    OR?: GroupMessageWhereInput[]
+    NOT?: GroupMessageWhereInput | GroupMessageWhereInput[]
+    id?: StringFilter<"GroupMessage"> | string
+    groupChatId?: StringFilter<"GroupMessage"> | string
+    conversationId?: StringNullableFilter<"GroupMessage"> | string | null
+    externalMessageId?: StringNullableFilter<"GroupMessage"> | string | null
+    direction?: StringFilter<"GroupMessage"> | string
+    senderType?: StringFilter<"GroupMessage"> | string
+    senderContactId?: StringNullableFilter<"GroupMessage"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"GroupMessage"> | string | null
+    messageType?: StringFilter<"GroupMessage"> | string
+    content?: StringFilter<"GroupMessage"> | string
+    isMention?: BoolFilter<"GroupMessage"> | boolean
+    createdAt?: DateTimeFilter<"GroupMessage"> | Date | string
+    readAt?: DateTimeNullableFilter<"GroupMessage"> | Date | string | null
+    groupChat?: XOR<GroupChatRelationFilter, GroupChatWhereInput>
+    conversation?: XOR<ConversationNullableRelationFilter, ConversationWhereInput> | null
+    senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+  }
+
+  export type GroupMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    externalMessageId?: SortOrderInput | SortOrder
+    direction?: SortOrder
+    senderType?: SortOrder
+    senderContactId?: SortOrderInput | SortOrder
+    senderNameSnapshot?: SortOrderInput | SortOrder
+    messageType?: SortOrder
+    content?: SortOrder
+    isMention?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    groupChat?: GroupChatOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
+    senderContact?: ContactOrderByWithRelationInput
+  }
+
+  export type GroupMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    externalMessageId?: string
+    AND?: GroupMessageWhereInput | GroupMessageWhereInput[]
+    OR?: GroupMessageWhereInput[]
+    NOT?: GroupMessageWhereInput | GroupMessageWhereInput[]
+    groupChatId?: StringFilter<"GroupMessage"> | string
+    conversationId?: StringNullableFilter<"GroupMessage"> | string | null
+    direction?: StringFilter<"GroupMessage"> | string
+    senderType?: StringFilter<"GroupMessage"> | string
+    senderContactId?: StringNullableFilter<"GroupMessage"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"GroupMessage"> | string | null
+    messageType?: StringFilter<"GroupMessage"> | string
+    content?: StringFilter<"GroupMessage"> | string
+    isMention?: BoolFilter<"GroupMessage"> | boolean
+    createdAt?: DateTimeFilter<"GroupMessage"> | Date | string
+    readAt?: DateTimeNullableFilter<"GroupMessage"> | Date | string | null
+    groupChat?: XOR<GroupChatRelationFilter, GroupChatWhereInput>
+    conversation?: XOR<ConversationNullableRelationFilter, ConversationWhereInput> | null
+    senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+  }, "id" | "externalMessageId">
+
+  export type GroupMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    externalMessageId?: SortOrderInput | SortOrder
+    direction?: SortOrder
+    senderType?: SortOrder
+    senderContactId?: SortOrderInput | SortOrder
+    senderNameSnapshot?: SortOrderInput | SortOrder
+    messageType?: SortOrder
+    content?: SortOrder
+    isMention?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    _count?: GroupMessageCountOrderByAggregateInput
+    _max?: GroupMessageMaxOrderByAggregateInput
+    _min?: GroupMessageMinOrderByAggregateInput
+  }
+
+  export type GroupMessageScalarWhereWithAggregatesInput = {
+    AND?: GroupMessageScalarWhereWithAggregatesInput | GroupMessageScalarWhereWithAggregatesInput[]
+    OR?: GroupMessageScalarWhereWithAggregatesInput[]
+    NOT?: GroupMessageScalarWhereWithAggregatesInput | GroupMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroupMessage"> | string
+    groupChatId?: StringWithAggregatesFilter<"GroupMessage"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"GroupMessage"> | string | null
+    externalMessageId?: StringNullableWithAggregatesFilter<"GroupMessage"> | string | null
+    direction?: StringWithAggregatesFilter<"GroupMessage"> | string
+    senderType?: StringWithAggregatesFilter<"GroupMessage"> | string
+    senderContactId?: StringNullableWithAggregatesFilter<"GroupMessage"> | string | null
+    senderNameSnapshot?: StringNullableWithAggregatesFilter<"GroupMessage"> | string | null
+    messageType?: StringWithAggregatesFilter<"GroupMessage"> | string
+    content?: StringWithAggregatesFilter<"GroupMessage"> | string
+    isMention?: BoolWithAggregatesFilter<"GroupMessage"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"GroupMessage"> | Date | string
+    readAt?: DateTimeNullableWithAggregatesFilter<"GroupMessage"> | Date | string | null
+  }
+
+  export type GroupOutboundMessageWhereInput = {
+    AND?: GroupOutboundMessageWhereInput | GroupOutboundMessageWhereInput[]
+    OR?: GroupOutboundMessageWhereInput[]
+    NOT?: GroupOutboundMessageWhereInput | GroupOutboundMessageWhereInput[]
+    id?: StringFilter<"GroupOutboundMessage"> | string
+    groupChatId?: StringFilter<"GroupOutboundMessage"> | string
+    agentId?: StringFilter<"GroupOutboundMessage"> | string
+    clientMessageId?: StringFilter<"GroupOutboundMessage"> | string
+    providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    content?: StringFilter<"GroupOutboundMessage"> | string
+    status?: StringFilter<"GroupOutboundMessage"> | string
+    failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
+    sentAt?: DateTimeNullableFilter<"GroupOutboundMessage"> | Date | string | null
+    groupChat?: XOR<GroupChatRelationFilter, GroupChatWhereInput>
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }
+
+  export type GroupOutboundMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    agentId?: SortOrder
+    clientMessageId?: SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    groupChat?: GroupChatOrderByWithRelationInput
+    agent?: AgentOrderByWithRelationInput
+  }
+
+  export type GroupOutboundMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    clientMessageId?: string
+    AND?: GroupOutboundMessageWhereInput | GroupOutboundMessageWhereInput[]
+    OR?: GroupOutboundMessageWhereInput[]
+    NOT?: GroupOutboundMessageWhereInput | GroupOutboundMessageWhereInput[]
+    groupChatId?: StringFilter<"GroupOutboundMessage"> | string
+    agentId?: StringFilter<"GroupOutboundMessage"> | string
+    providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    content?: StringFilter<"GroupOutboundMessage"> | string
+    status?: StringFilter<"GroupOutboundMessage"> | string
+    failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
+    sentAt?: DateTimeNullableFilter<"GroupOutboundMessage"> | Date | string | null
+    groupChat?: XOR<GroupChatRelationFilter, GroupChatWhereInput>
+    agent?: XOR<AgentRelationFilter, AgentWhereInput>
+  }, "id" | "clientMessageId">
+
+  export type GroupOutboundMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    agentId?: SortOrder
+    clientMessageId?: SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    _count?: GroupOutboundMessageCountOrderByAggregateInput
+    _max?: GroupOutboundMessageMaxOrderByAggregateInput
+    _min?: GroupOutboundMessageMinOrderByAggregateInput
+  }
+
+  export type GroupOutboundMessageScalarWhereWithAggregatesInput = {
+    AND?: GroupOutboundMessageScalarWhereWithAggregatesInput | GroupOutboundMessageScalarWhereWithAggregatesInput[]
+    OR?: GroupOutboundMessageScalarWhereWithAggregatesInput[]
+    NOT?: GroupOutboundMessageScalarWhereWithAggregatesInput | GroupOutboundMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    groupChatId?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    agentId?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    clientMessageId?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    providerMessageId?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
+    content?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    status?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    failureCode?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GroupOutboundMessage"> | Date | string
+    sentAt?: DateTimeNullableWithAggregatesFilter<"GroupOutboundMessage"> | Date | string | null
   }
 
   export type MessageWhereInput = {
@@ -37990,6 +41956,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
+    groupConversationMode?: StringFilter<"ZApiConfig"> | string
+    groupResponseMode?: StringFilter<"ZApiConfig"> | string
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
     businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }
@@ -38008,6 +41976,8 @@ export namespace Prisma {
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrderInput | SortOrder
+    groupConversationMode?: SortOrder
+    groupResponseMode?: SortOrder
     updatedAt?: SortOrder
     businessHoursPolicies?: BusinessHoursPolicyOrderByRelationAggregateInput
   }
@@ -38029,6 +41999,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableFilter<"ZApiConfig"> | string | null
+    groupConversationMode?: StringFilter<"ZApiConfig"> | string
+    groupResponseMode?: StringFilter<"ZApiConfig"> | string
     updatedAt?: DateTimeFilter<"ZApiConfig"> | Date | string
     businessHoursPolicies?: BusinessHoursPolicyListRelationFilter
   }, "id">
@@ -38047,6 +42019,8 @@ export namespace Prisma {
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrderInput | SortOrder
+    groupConversationMode?: SortOrder
+    groupResponseMode?: SortOrder
     updatedAt?: SortOrder
     _count?: ZApiConfigCountOrderByAggregateInput
     _avg?: ZApiConfigAvgOrderByAggregateInput
@@ -38072,6 +42046,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntWithAggregatesFilter<"ZApiConfig"> | number
     groupConfirmInGroup?: BoolWithAggregatesFilter<"ZApiConfig"> | boolean
     groupConfirmMessage?: StringNullableWithAggregatesFilter<"ZApiConfig"> | string | null
+    groupConversationMode?: StringWithAggregatesFilter<"ZApiConfig"> | string
+    groupResponseMode?: StringWithAggregatesFilter<"ZApiConfig"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"ZApiConfig"> | Date | string
   }
 
@@ -39411,6 +43387,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -39439,6 +43416,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -39467,6 +43445,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -39495,6 +43474,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -39618,6 +43598,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
@@ -39638,6 +43619,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
@@ -39658,6 +43640,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -39678,6 +43661,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -39896,6 +43880,8 @@ export namespace Prisma {
 
   export type ConversationCreateInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -39911,6 +43897,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -39920,11 +43907,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -39940,7 +43930,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -39952,6 +43944,8 @@ export namespace Prisma {
 
   export type ConversationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -39967,6 +43961,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -39976,11 +43971,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39996,7 +43994,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -40009,6 +44009,8 @@ export namespace Prisma {
   export type ConversationCreateManyInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -40024,10 +44026,13 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type ConversationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -40044,6 +44049,8 @@ export namespace Prisma {
   export type ConversationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40059,6 +44066,294 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GroupChatCreateInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutGroupChatInput
+    messages?: GroupMessageCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatUncheckedCreateInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutGroupChatInput
+    messages?: GroupMessageUncheckedCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutGroupChatNestedInput
+    messages?: GroupMessageUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type GroupChatUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutGroupChatNestedInput
+    messages?: GroupMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type GroupChatCreateManyInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroupChatUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupChatUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupMessageCreateInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    groupChat: GroupChatCreateNestedOneWithoutMessagesInput
+    conversation?: ConversationCreateNestedOneWithoutGroupMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutGroupMessageSendersInput
+  }
+
+  export type GroupMessageUncheckedCreateInput = {
+    id?: string
+    groupChatId: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    groupChat?: GroupChatUpdateOneRequiredWithoutMessagesNestedInput
+    conversation?: ConversationUpdateOneWithoutGroupMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutGroupMessageSendersNestedInput
+  }
+
+  export type GroupMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageCreateManyInput = {
+    id?: string
+    groupChatId: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateInput = {
+    id?: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    groupChat: GroupChatCreateNestedOneWithoutOutboundMessagesInput
+    agent: AgentCreateNestedOneWithoutGroupOutboundMessagesInput
+  }
+
+  export type GroupOutboundMessageUncheckedCreateInput = {
+    id?: string
+    groupChatId: string
+    agentId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    groupChat?: GroupChatUpdateOneRequiredWithoutOutboundMessagesNestedInput
+    agent?: AgentUpdateOneRequiredWithoutGroupOutboundMessagesNestedInput
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateManyInput = {
+    id?: string
+    groupChatId: string
+    agentId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageCreateInput = {
@@ -40764,6 +45059,8 @@ export namespace Prisma {
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
+    groupConversationMode?: string
+    groupResponseMode?: string
     updatedAt?: Date | string
     businessHoursPolicies?: BusinessHoursPolicyCreateNestedManyWithoutZApiConfigInput
   }
@@ -40782,6 +45079,8 @@ export namespace Prisma {
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
+    groupConversationMode?: string
+    groupResponseMode?: string
     updatedAt?: Date | string
     businessHoursPolicies?: BusinessHoursPolicyUncheckedCreateNestedManyWithoutZApiConfigInput
   }
@@ -40800,6 +45099,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businessHoursPolicies?: BusinessHoursPolicyUpdateManyWithoutZApiConfigNestedInput
   }
@@ -40818,6 +45119,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businessHoursPolicies?: BusinessHoursPolicyUncheckedUpdateManyWithoutZApiConfigNestedInput
   }
@@ -40836,6 +45139,8 @@ export namespace Prisma {
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
+    groupConversationMode?: string
+    groupResponseMode?: string
     updatedAt?: Date | string
   }
 
@@ -40853,6 +45158,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -40870,6 +45177,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -42372,6 +46681,12 @@ export namespace Prisma {
     none?: MessageWhereInput
   }
 
+  export type GroupOutboundMessageListRelationFilter = {
+    every?: GroupOutboundMessageWhereInput
+    some?: GroupOutboundMessageWhereInput
+    none?: GroupOutboundMessageWhereInput
+  }
+
   export type ConversationAssignmentListRelationFilter = {
     every?: ConversationAssignmentWhereInput
     some?: ConversationAssignmentWhereInput
@@ -42414,6 +46729,10 @@ export namespace Prisma {
   }
 
   export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroupOutboundMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -42531,6 +46850,12 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type GroupMessageListRelationFilter = {
+    every?: GroupMessageWhereInput
+    some?: GroupMessageWhereInput
+    none?: GroupMessageWhereInput
+  }
+
   export type ContactPhoneListRelationFilter = {
     every?: ContactPhoneWhereInput
     some?: ContactPhoneWhereInput
@@ -42541,6 +46866,10 @@ export namespace Prisma {
     every?: ContactShareWhereInput
     some?: ContactShareWhereInput
     none?: ContactShareWhereInput
+  }
+
+  export type GroupMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ContactPhoneOrderByRelationAggregateInput = {
@@ -42751,6 +47080,11 @@ export namespace Prisma {
     none?: BusinessHoursNoticeWhereInput
   }
 
+  export type GroupChatNullableRelationFilter = {
+    is?: GroupChatWhereInput | null
+    isNot?: GroupChatWhereInput | null
+  }
+
   export type FlowExecutionEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -42770,6 +47104,8 @@ export namespace Prisma {
   export type ConversationCountOrderByAggregateInput = {
     id?: SortOrder
     contactId?: SortOrder
+    channel?: SortOrder
+    remoteChatId?: SortOrder
     status?: SortOrder
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
@@ -42785,11 +47121,14 @@ export namespace Prisma {
     closeReason?: SortOrder
     groupChatName?: SortOrder
     groupParticipant?: SortOrder
+    groupChatId?: SortOrder
   }
 
   export type ConversationMaxOrderByAggregateInput = {
     id?: SortOrder
     contactId?: SortOrder
+    channel?: SortOrder
+    remoteChatId?: SortOrder
     status?: SortOrder
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
@@ -42804,11 +47143,14 @@ export namespace Prisma {
     closeReason?: SortOrder
     groupChatName?: SortOrder
     groupParticipant?: SortOrder
+    groupChatId?: SortOrder
   }
 
   export type ConversationMinOrderByAggregateInput = {
     id?: SortOrder
     contactId?: SortOrder
+    channel?: SortOrder
+    remoteChatId?: SortOrder
     status?: SortOrder
     departmentId?: SortOrder
     assignedAgentId?: SortOrder
@@ -42823,6 +47165,7 @@ export namespace Prisma {
     closeReason?: SortOrder
     groupChatName?: SortOrder
     groupParticipant?: SortOrder
+    groupChatId?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -42850,14 +47193,157 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type ConversationRelationFilter = {
-    is?: ConversationWhereInput
-    isNot?: ConversationWhereInput
+  export type GroupChatCountOrderByAggregateInput = {
+    id?: SortOrder
+    remoteChatId?: SortOrder
+    name?: SortOrder
+    isActive?: SortOrder
+    unreadCount?: SortOrder
+    lastMessageAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroupChatAvgOrderByAggregateInput = {
+    unreadCount?: SortOrder
+  }
+
+  export type GroupChatMaxOrderByAggregateInput = {
+    id?: SortOrder
+    remoteChatId?: SortOrder
+    name?: SortOrder
+    isActive?: SortOrder
+    unreadCount?: SortOrder
+    lastMessageAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroupChatMinOrderByAggregateInput = {
+    id?: SortOrder
+    remoteChatId?: SortOrder
+    name?: SortOrder
+    isActive?: SortOrder
+    unreadCount?: SortOrder
+    lastMessageAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroupChatSumOrderByAggregateInput = {
+    unreadCount?: SortOrder
+  }
+
+  export type GroupChatRelationFilter = {
+    is?: GroupChatWhereInput
+    isNot?: GroupChatWhereInput
+  }
+
+  export type ConversationNullableRelationFilter = {
+    is?: ConversationWhereInput | null
+    isNot?: ConversationWhereInput | null
   }
 
   export type ContactNullableRelationFilter = {
     is?: ContactWhereInput | null
     isNot?: ContactWhereInput | null
+  }
+
+  export type GroupMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    conversationId?: SortOrder
+    externalMessageId?: SortOrder
+    direction?: SortOrder
+    senderType?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    messageType?: SortOrder
+    content?: SortOrder
+    isMention?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+  }
+
+  export type GroupMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    conversationId?: SortOrder
+    externalMessageId?: SortOrder
+    direction?: SortOrder
+    senderType?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    messageType?: SortOrder
+    content?: SortOrder
+    isMention?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+  }
+
+  export type GroupMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    conversationId?: SortOrder
+    externalMessageId?: SortOrder
+    direction?: SortOrder
+    senderType?: SortOrder
+    senderContactId?: SortOrder
+    senderNameSnapshot?: SortOrder
+    messageType?: SortOrder
+    content?: SortOrder
+    isMention?: SortOrder
+    createdAt?: SortOrder
+    readAt?: SortOrder
+  }
+
+  export type AgentRelationFilter = {
+    is?: AgentWhereInput
+    isNot?: AgentWhereInput
+  }
+
+  export type GroupOutboundMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    agentId?: SortOrder
+    clientMessageId?: SortOrder
+    providerMessageId?: SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type GroupOutboundMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    agentId?: SortOrder
+    clientMessageId?: SortOrder
+    providerMessageId?: SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type GroupOutboundMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    groupChatId?: SortOrder
+    agentId?: SortOrder
+    clientMessageId?: SortOrder
+    providerMessageId?: SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type ConversationRelationFilter = {
+    is?: ConversationWhereInput
+    isNot?: ConversationWhereInput
   }
 
   export type ConversationMediaNullableRelationFilter = {
@@ -43010,11 +47496,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
-  }
-
-  export type AgentRelationFilter = {
-    is?: AgentWhereInput
-    isNot?: AgentWhereInput
   }
 
   export type ConversationAssignmentCountOrderByAggregateInput = {
@@ -43368,6 +47849,8 @@ export namespace Prisma {
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrder
+    groupConversationMode?: SortOrder
+    groupResponseMode?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -43389,6 +47872,8 @@ export namespace Prisma {
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrder
+    groupConversationMode?: SortOrder
+    groupResponseMode?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -43406,6 +47891,8 @@ export namespace Prisma {
     groupCooldownSeconds?: SortOrder
     groupConfirmInGroup?: SortOrder
     groupConfirmMessage?: SortOrder
+    groupConversationMode?: SortOrder
+    groupResponseMode?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -44152,11 +48639,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type ConversationNullableRelationFilter = {
-    is?: ConversationWhereInput | null
-    isNot?: ConversationWhereInput | null
-  }
-
   export type NotificationAgentIdDedupeKeyCompoundUniqueInput = {
     agentId: string
     dedupeKey: string
@@ -44554,6 +49036,13 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type GroupOutboundMessageCreateNestedManyWithoutAgentInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput> | GroupOutboundMessageCreateWithoutAgentInput[] | GroupOutboundMessageUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutAgentInput | GroupOutboundMessageCreateOrConnectWithoutAgentInput[]
+    createMany?: GroupOutboundMessageCreateManyAgentInputEnvelope
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+  }
+
   export type ConversationAssignmentCreateNestedManyWithoutFromAgentInput = {
     create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
     connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
@@ -44663,6 +49152,13 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutSenderAgentInput | MessageCreateOrConnectWithoutSenderAgentInput[]
     createMany?: MessageCreateManySenderAgentInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput> | GroupOutboundMessageCreateWithoutAgentInput[] | GroupOutboundMessageUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutAgentInput | GroupOutboundMessageCreateOrConnectWithoutAgentInput[]
+    createMany?: GroupOutboundMessageCreateManyAgentInputEnvelope
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
   }
 
   export type ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput = {
@@ -44802,6 +49298,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderAgentInput | MessageUpdateWithWhereUniqueWithoutSenderAgentInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderAgentInput | MessageUpdateManyWithWhereWithoutSenderAgentInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type GroupOutboundMessageUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput> | GroupOutboundMessageCreateWithoutAgentInput[] | GroupOutboundMessageUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutAgentInput | GroupOutboundMessageCreateOrConnectWithoutAgentInput[]
+    upsert?: GroupOutboundMessageUpsertWithWhereUniqueWithoutAgentInput | GroupOutboundMessageUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: GroupOutboundMessageCreateManyAgentInputEnvelope
+    set?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    disconnect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    delete?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    update?: GroupOutboundMessageUpdateWithWhereUniqueWithoutAgentInput | GroupOutboundMessageUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: GroupOutboundMessageUpdateManyWithWhereWithoutAgentInput | GroupOutboundMessageUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
   }
 
   export type ConversationAssignmentUpdateManyWithoutFromAgentNestedInput = {
@@ -45024,6 +49534,20 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput> | GroupOutboundMessageCreateWithoutAgentInput[] | GroupOutboundMessageUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutAgentInput | GroupOutboundMessageCreateOrConnectWithoutAgentInput[]
+    upsert?: GroupOutboundMessageUpsertWithWhereUniqueWithoutAgentInput | GroupOutboundMessageUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: GroupOutboundMessageCreateManyAgentInputEnvelope
+    set?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    disconnect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    delete?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    update?: GroupOutboundMessageUpdateWithWhereUniqueWithoutAgentInput | GroupOutboundMessageUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: GroupOutboundMessageUpdateManyWithWhereWithoutAgentInput | GroupOutboundMessageUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
+  }
+
   export type ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput = {
     create?: XOR<ConversationAssignmentCreateWithoutFromAgentInput, ConversationAssignmentUncheckedCreateWithoutFromAgentInput> | ConversationAssignmentCreateWithoutFromAgentInput[] | ConversationAssignmentUncheckedCreateWithoutFromAgentInput[]
     connectOrCreate?: ConversationAssignmentCreateOrConnectWithoutFromAgentInput | ConversationAssignmentCreateOrConnectWithoutFromAgentInput[]
@@ -45239,6 +49763,13 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type GroupMessageCreateNestedManyWithoutSenderContactInput = {
+    create?: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput> | GroupMessageCreateWithoutSenderContactInput[] | GroupMessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutSenderContactInput | GroupMessageCreateOrConnectWithoutSenderContactInput[]
+    createMany?: GroupMessageCreateManySenderContactInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+  }
+
   export type ContactPhoneCreateNestedManyWithoutContactInput = {
     create?: XOR<ContactPhoneCreateWithoutContactInput, ContactPhoneUncheckedCreateWithoutContactInput> | ContactPhoneCreateWithoutContactInput[] | ContactPhoneUncheckedCreateWithoutContactInput[]
     connectOrCreate?: ContactPhoneCreateOrConnectWithoutContactInput | ContactPhoneCreateOrConnectWithoutContactInput[]
@@ -45265,6 +49796,13 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutSenderContactInput | MessageCreateOrConnectWithoutSenderContactInput[]
     createMany?: MessageCreateManySenderContactInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput = {
+    create?: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput> | GroupMessageCreateWithoutSenderContactInput[] | GroupMessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutSenderContactInput | GroupMessageCreateOrConnectWithoutSenderContactInput[]
+    createMany?: GroupMessageCreateManySenderContactInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
   }
 
   export type ContactPhoneUncheckedCreateNestedManyWithoutContactInput = {
@@ -45311,6 +49849,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type GroupMessageUpdateManyWithoutSenderContactNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput> | GroupMessageCreateWithoutSenderContactInput[] | GroupMessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutSenderContactInput | GroupMessageCreateOrConnectWithoutSenderContactInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutSenderContactInput | GroupMessageUpsertWithWhereUniqueWithoutSenderContactInput[]
+    createMany?: GroupMessageCreateManySenderContactInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutSenderContactInput | GroupMessageUpdateWithWhereUniqueWithoutSenderContactInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutSenderContactInput | GroupMessageUpdateManyWithWhereWithoutSenderContactInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
   }
 
   export type ContactPhoneUpdateManyWithoutContactNestedInput = {
@@ -45367,6 +49919,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderContactInput | MessageUpdateWithWhereUniqueWithoutSenderContactInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderContactInput | MessageUpdateManyWithWhereWithoutSenderContactInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput> | GroupMessageCreateWithoutSenderContactInput[] | GroupMessageUncheckedCreateWithoutSenderContactInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutSenderContactInput | GroupMessageCreateOrConnectWithoutSenderContactInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutSenderContactInput | GroupMessageUpsertWithWhereUniqueWithoutSenderContactInput[]
+    createMany?: GroupMessageCreateManySenderContactInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutSenderContactInput | GroupMessageUpdateWithWhereUniqueWithoutSenderContactInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutSenderContactInput | GroupMessageUpdateManyWithWhereWithoutSenderContactInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
   }
 
   export type ContactPhoneUncheckedUpdateManyWithoutContactNestedInput = {
@@ -45484,6 +50050,13 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type GroupMessageCreateNestedManyWithoutConversationInput = {
+    create?: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput> | GroupMessageCreateWithoutConversationInput[] | GroupMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutConversationInput | GroupMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: GroupMessageCreateManyConversationInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+  }
+
   export type FlowRevisionCreateNestedOneWithoutConversationsInput = {
     create?: XOR<FlowRevisionCreateWithoutConversationsInput, FlowRevisionUncheckedCreateWithoutConversationsInput>
     connectOrCreate?: FlowRevisionCreateOrConnectWithoutConversationsInput
@@ -45545,11 +50118,24 @@ export namespace Prisma {
     connect?: BusinessHoursNoticeWhereUniqueInput | BusinessHoursNoticeWhereUniqueInput[]
   }
 
+  export type GroupChatCreateNestedOneWithoutConversationsInput = {
+    create?: XOR<GroupChatCreateWithoutConversationsInput, GroupChatUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutConversationsInput
+    connect?: GroupChatWhereUniqueInput
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
     createMany?: MessageCreateManyConversationInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type GroupMessageUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput> | GroupMessageCreateWithoutConversationInput[] | GroupMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutConversationInput | GroupMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: GroupMessageCreateManyConversationInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
   }
 
   export type FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput = {
@@ -45641,6 +50227,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type GroupMessageUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput> | GroupMessageCreateWithoutConversationInput[] | GroupMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutConversationInput | GroupMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutConversationInput | GroupMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: GroupMessageCreateManyConversationInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutConversationInput | GroupMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutConversationInput | GroupMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
   }
 
   export type FlowRevisionUpdateOneWithoutConversationsNestedInput = {
@@ -45761,6 +50361,16 @@ export namespace Prisma {
     deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
   }
 
+  export type GroupChatUpdateOneWithoutConversationsNestedInput = {
+    create?: XOR<GroupChatCreateWithoutConversationsInput, GroupChatUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutConversationsInput
+    upsert?: GroupChatUpsertWithoutConversationsInput
+    disconnect?: GroupChatWhereInput | boolean
+    delete?: GroupChatWhereInput | boolean
+    connect?: GroupChatWhereUniqueInput
+    update?: XOR<XOR<GroupChatUpdateToOneWithWhereWithoutConversationsInput, GroupChatUpdateWithoutConversationsInput>, GroupChatUncheckedUpdateWithoutConversationsInput>
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -45773,6 +50383,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput> | GroupMessageCreateWithoutConversationInput[] | GroupMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutConversationInput | GroupMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutConversationInput | GroupMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: GroupMessageCreateManyConversationInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutConversationInput | GroupMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutConversationInput | GroupMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
   }
 
   export type FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput = {
@@ -45871,6 +50495,206 @@ export namespace Prisma {
     update?: BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput | BusinessHoursNoticeUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput | BusinessHoursNoticeUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: BusinessHoursNoticeScalarWhereInput | BusinessHoursNoticeScalarWhereInput[]
+  }
+
+  export type ConversationCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput> | ConversationCreateWithoutGroupChatInput[] | ConversationUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupChatInput | ConversationCreateOrConnectWithoutGroupChatInput[]
+    createMany?: ConversationCreateManyGroupChatInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type GroupMessageCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput> | GroupMessageCreateWithoutGroupChatInput[] | GroupMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutGroupChatInput | GroupMessageCreateOrConnectWithoutGroupChatInput[]
+    createMany?: GroupMessageCreateManyGroupChatInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+  }
+
+  export type GroupOutboundMessageCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput> | GroupOutboundMessageCreateWithoutGroupChatInput[] | GroupOutboundMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutGroupChatInput | GroupOutboundMessageCreateOrConnectWithoutGroupChatInput[]
+    createMany?: GroupOutboundMessageCreateManyGroupChatInputEnvelope
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+  }
+
+  export type ConversationUncheckedCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput> | ConversationCreateWithoutGroupChatInput[] | ConversationUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupChatInput | ConversationCreateOrConnectWithoutGroupChatInput[]
+    createMany?: ConversationCreateManyGroupChatInputEnvelope
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type GroupMessageUncheckedCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput> | GroupMessageCreateWithoutGroupChatInput[] | GroupMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutGroupChatInput | GroupMessageCreateOrConnectWithoutGroupChatInput[]
+    createMany?: GroupMessageCreateManyGroupChatInputEnvelope
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+  }
+
+  export type GroupOutboundMessageUncheckedCreateNestedManyWithoutGroupChatInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput> | GroupOutboundMessageCreateWithoutGroupChatInput[] | GroupOutboundMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutGroupChatInput | GroupOutboundMessageCreateOrConnectWithoutGroupChatInput[]
+    createMany?: GroupOutboundMessageCreateManyGroupChatInputEnvelope
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+  }
+
+  export type ConversationUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput> | ConversationCreateWithoutGroupChatInput[] | ConversationUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupChatInput | ConversationCreateOrConnectWithoutGroupChatInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutGroupChatInput | ConversationUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: ConversationCreateManyGroupChatInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutGroupChatInput | ConversationUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutGroupChatInput | ConversationUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type GroupMessageUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput> | GroupMessageCreateWithoutGroupChatInput[] | GroupMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutGroupChatInput | GroupMessageCreateOrConnectWithoutGroupChatInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutGroupChatInput | GroupMessageUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: GroupMessageCreateManyGroupChatInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutGroupChatInput | GroupMessageUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutGroupChatInput | GroupMessageUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
+  }
+
+  export type GroupOutboundMessageUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput> | GroupOutboundMessageCreateWithoutGroupChatInput[] | GroupOutboundMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutGroupChatInput | GroupOutboundMessageCreateOrConnectWithoutGroupChatInput[]
+    upsert?: GroupOutboundMessageUpsertWithWhereUniqueWithoutGroupChatInput | GroupOutboundMessageUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: GroupOutboundMessageCreateManyGroupChatInputEnvelope
+    set?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    disconnect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    delete?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    update?: GroupOutboundMessageUpdateWithWhereUniqueWithoutGroupChatInput | GroupOutboundMessageUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: GroupOutboundMessageUpdateManyWithWhereWithoutGroupChatInput | GroupOutboundMessageUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput> | ConversationCreateWithoutGroupChatInput[] | ConversationUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupChatInput | ConversationCreateOrConnectWithoutGroupChatInput[]
+    upsert?: ConversationUpsertWithWhereUniqueWithoutGroupChatInput | ConversationUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: ConversationCreateManyGroupChatInputEnvelope
+    set?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    disconnect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    delete?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+    update?: ConversationUpdateWithWhereUniqueWithoutGroupChatInput | ConversationUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: ConversationUpdateManyWithWhereWithoutGroupChatInput | ConversationUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput> | GroupMessageCreateWithoutGroupChatInput[] | GroupMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupMessageCreateOrConnectWithoutGroupChatInput | GroupMessageCreateOrConnectWithoutGroupChatInput[]
+    upsert?: GroupMessageUpsertWithWhereUniqueWithoutGroupChatInput | GroupMessageUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: GroupMessageCreateManyGroupChatInputEnvelope
+    set?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    disconnect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    delete?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    connect?: GroupMessageWhereUniqueInput | GroupMessageWhereUniqueInput[]
+    update?: GroupMessageUpdateWithWhereUniqueWithoutGroupChatInput | GroupMessageUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: GroupMessageUpdateManyWithWhereWithoutGroupChatInput | GroupMessageUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatNestedInput = {
+    create?: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput> | GroupOutboundMessageCreateWithoutGroupChatInput[] | GroupOutboundMessageUncheckedCreateWithoutGroupChatInput[]
+    connectOrCreate?: GroupOutboundMessageCreateOrConnectWithoutGroupChatInput | GroupOutboundMessageCreateOrConnectWithoutGroupChatInput[]
+    upsert?: GroupOutboundMessageUpsertWithWhereUniqueWithoutGroupChatInput | GroupOutboundMessageUpsertWithWhereUniqueWithoutGroupChatInput[]
+    createMany?: GroupOutboundMessageCreateManyGroupChatInputEnvelope
+    set?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    disconnect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    delete?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    connect?: GroupOutboundMessageWhereUniqueInput | GroupOutboundMessageWhereUniqueInput[]
+    update?: GroupOutboundMessageUpdateWithWhereUniqueWithoutGroupChatInput | GroupOutboundMessageUpdateWithWhereUniqueWithoutGroupChatInput[]
+    updateMany?: GroupOutboundMessageUpdateManyWithWhereWithoutGroupChatInput | GroupOutboundMessageUpdateManyWithWhereWithoutGroupChatInput[]
+    deleteMany?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
+  }
+
+  export type GroupChatCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<GroupChatCreateWithoutMessagesInput, GroupChatUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutMessagesInput
+    connect?: GroupChatWhereUniqueInput
+  }
+
+  export type ConversationCreateNestedOneWithoutGroupMessagesInput = {
+    create?: XOR<ConversationCreateWithoutGroupMessagesInput, ConversationUncheckedCreateWithoutGroupMessagesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupMessagesInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutGroupMessageSendersInput = {
+    create?: XOR<ContactCreateWithoutGroupMessageSendersInput, ContactUncheckedCreateWithoutGroupMessageSendersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutGroupMessageSendersInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type GroupChatUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<GroupChatCreateWithoutMessagesInput, GroupChatUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutMessagesInput
+    upsert?: GroupChatUpsertWithoutMessagesInput
+    connect?: GroupChatWhereUniqueInput
+    update?: XOR<XOR<GroupChatUpdateToOneWithWhereWithoutMessagesInput, GroupChatUpdateWithoutMessagesInput>, GroupChatUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ConversationUpdateOneWithoutGroupMessagesNestedInput = {
+    create?: XOR<ConversationCreateWithoutGroupMessagesInput, ConversationUncheckedCreateWithoutGroupMessagesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutGroupMessagesInput
+    upsert?: ConversationUpsertWithoutGroupMessagesInput
+    disconnect?: ConversationWhereInput | boolean
+    delete?: ConversationWhereInput | boolean
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutGroupMessagesInput, ConversationUpdateWithoutGroupMessagesInput>, ConversationUncheckedUpdateWithoutGroupMessagesInput>
+  }
+
+  export type ContactUpdateOneWithoutGroupMessageSendersNestedInput = {
+    create?: XOR<ContactCreateWithoutGroupMessageSendersInput, ContactUncheckedCreateWithoutGroupMessageSendersInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutGroupMessageSendersInput
+    upsert?: ContactUpsertWithoutGroupMessageSendersInput
+    disconnect?: ContactWhereInput | boolean
+    delete?: ContactWhereInput | boolean
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutGroupMessageSendersInput, ContactUpdateWithoutGroupMessageSendersInput>, ContactUncheckedUpdateWithoutGroupMessageSendersInput>
+  }
+
+  export type GroupChatCreateNestedOneWithoutOutboundMessagesInput = {
+    create?: XOR<GroupChatCreateWithoutOutboundMessagesInput, GroupChatUncheckedCreateWithoutOutboundMessagesInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutOutboundMessagesInput
+    connect?: GroupChatWhereUniqueInput
+  }
+
+  export type AgentCreateNestedOneWithoutGroupOutboundMessagesInput = {
+    create?: XOR<AgentCreateWithoutGroupOutboundMessagesInput, AgentUncheckedCreateWithoutGroupOutboundMessagesInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutGroupOutboundMessagesInput
+    connect?: AgentWhereUniqueInput
+  }
+
+  export type GroupChatUpdateOneRequiredWithoutOutboundMessagesNestedInput = {
+    create?: XOR<GroupChatCreateWithoutOutboundMessagesInput, GroupChatUncheckedCreateWithoutOutboundMessagesInput>
+    connectOrCreate?: GroupChatCreateOrConnectWithoutOutboundMessagesInput
+    upsert?: GroupChatUpsertWithoutOutboundMessagesInput
+    connect?: GroupChatWhereUniqueInput
+    update?: XOR<XOR<GroupChatUpdateToOneWithWhereWithoutOutboundMessagesInput, GroupChatUpdateWithoutOutboundMessagesInput>, GroupChatUncheckedUpdateWithoutOutboundMessagesInput>
+  }
+
+  export type AgentUpdateOneRequiredWithoutGroupOutboundMessagesNestedInput = {
+    create?: XOR<AgentCreateWithoutGroupOutboundMessagesInput, AgentUncheckedCreateWithoutGroupOutboundMessagesInput>
+    connectOrCreate?: AgentCreateOrConnectWithoutGroupOutboundMessagesInput
+    upsert?: AgentUpsertWithoutGroupOutboundMessagesInput
+    connect?: AgentWhereUniqueInput
+    update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutGroupOutboundMessagesInput, AgentUpdateWithoutGroupOutboundMessagesInput>, AgentUncheckedUpdateWithoutGroupOutboundMessagesInput>
   }
 
   export type ConversationCreateNestedOneWithoutMessagesInput = {
@@ -47758,6 +52582,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -47785,6 +52610,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -47813,6 +52639,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutDepartmentInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -47827,6 +52655,7 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -47836,11 +52665,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutDepartmentInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     assignedAgentId?: string | null
     currentStep?: string | null
@@ -47855,7 +52687,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -48087,6 +52921,8 @@ export namespace Prisma {
     NOT?: ConversationScalarWhereInput | ConversationScalarWhereInput[]
     id?: StringFilter<"Conversation"> | string
     contactId?: StringFilter<"Conversation"> | string
+    channel?: StringFilter<"Conversation"> | string
+    remoteChatId?: StringNullableFilter<"Conversation"> | string | null
     status?: StringFilter<"Conversation"> | string
     departmentId?: StringNullableFilter<"Conversation"> | string | null
     assignedAgentId?: StringNullableFilter<"Conversation"> | string | null
@@ -48102,6 +52938,7 @@ export namespace Prisma {
     closeReason?: StringNullableFilter<"Conversation"> | string | null
     groupChatName?: StringNullableFilter<"Conversation"> | string | null
     groupParticipant?: StringNullableFilter<"Conversation"> | string | null
+    groupChatId?: StringNullableFilter<"Conversation"> | string | null
   }
 
   export type ShortcutUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -48302,6 +53139,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutAssignedAgentInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -48316,6 +53155,7 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -48325,11 +53165,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignedAgentInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     currentStep?: string | null
@@ -48344,7 +53187,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -48407,6 +53252,40 @@ export namespace Prisma {
 
   export type MessageCreateManySenderAgentInputEnvelope = {
     data: MessageCreateManySenderAgentInput | MessageCreateManySenderAgentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroupOutboundMessageCreateWithoutAgentInput = {
+    id?: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    groupChat: GroupChatCreateNestedOneWithoutOutboundMessagesInput
+  }
+
+  export type GroupOutboundMessageUncheckedCreateWithoutAgentInput = {
+    id?: string
+    groupChatId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateOrConnectWithoutAgentInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    create: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput>
+  }
+
+  export type GroupOutboundMessageCreateManyAgentInputEnvelope = {
+    data: GroupOutboundMessageCreateManyAgentInput | GroupOutboundMessageCreateManyAgentInput[]
     skipDuplicates?: boolean
   }
 
@@ -48993,6 +53872,38 @@ export namespace Prisma {
     readAt?: DateTimeNullableFilter<"Message"> | Date | string | null
   }
 
+  export type GroupOutboundMessageUpsertWithWhereUniqueWithoutAgentInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    update: XOR<GroupOutboundMessageUpdateWithoutAgentInput, GroupOutboundMessageUncheckedUpdateWithoutAgentInput>
+    create: XOR<GroupOutboundMessageCreateWithoutAgentInput, GroupOutboundMessageUncheckedCreateWithoutAgentInput>
+  }
+
+  export type GroupOutboundMessageUpdateWithWhereUniqueWithoutAgentInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    data: XOR<GroupOutboundMessageUpdateWithoutAgentInput, GroupOutboundMessageUncheckedUpdateWithoutAgentInput>
+  }
+
+  export type GroupOutboundMessageUpdateManyWithWhereWithoutAgentInput = {
+    where: GroupOutboundMessageScalarWhereInput
+    data: XOR<GroupOutboundMessageUpdateManyMutationInput, GroupOutboundMessageUncheckedUpdateManyWithoutAgentInput>
+  }
+
+  export type GroupOutboundMessageScalarWhereInput = {
+    AND?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
+    OR?: GroupOutboundMessageScalarWhereInput[]
+    NOT?: GroupOutboundMessageScalarWhereInput | GroupOutboundMessageScalarWhereInput[]
+    id?: StringFilter<"GroupOutboundMessage"> | string
+    groupChatId?: StringFilter<"GroupOutboundMessage"> | string
+    agentId?: StringFilter<"GroupOutboundMessage"> | string
+    clientMessageId?: StringFilter<"GroupOutboundMessage"> | string
+    providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    content?: StringFilter<"GroupOutboundMessage"> | string
+    status?: StringFilter<"GroupOutboundMessage"> | string
+    failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
+    sentAt?: DateTimeNullableFilter<"GroupOutboundMessage"> | Date | string | null
+  }
+
   export type ConversationAssignmentUpsertWithWhereUniqueWithoutFromAgentInput = {
     where: ConversationAssignmentWhereUniqueInput
     update: XOR<ConversationAssignmentUpdateWithoutFromAgentInput, ConversationAssignmentUncheckedUpdateWithoutFromAgentInput>
@@ -49324,6 +54235,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutContactInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -49338,6 +54251,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -49347,10 +54261,13 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutContactInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -49366,7 +54283,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -49429,6 +54348,46 @@ export namespace Prisma {
 
   export type MessageCreateManySenderContactInputEnvelope = {
     data: MessageCreateManySenderContactInput | MessageCreateManySenderContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroupMessageCreateWithoutSenderContactInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    groupChat: GroupChatCreateNestedOneWithoutMessagesInput
+    conversation?: ConversationCreateNestedOneWithoutGroupMessagesInput
+  }
+
+  export type GroupMessageUncheckedCreateWithoutSenderContactInput = {
+    id?: string
+    groupChatId: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageCreateOrConnectWithoutSenderContactInput = {
+    where: GroupMessageWhereUniqueInput
+    create: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput>
+  }
+
+  export type GroupMessageCreateManySenderContactInputEnvelope = {
+    data: GroupMessageCreateManySenderContactInput | GroupMessageCreateManySenderContactInput[]
     skipDuplicates?: boolean
   }
 
@@ -49526,6 +54485,41 @@ export namespace Prisma {
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderContactInput>
   }
 
+  export type GroupMessageUpsertWithWhereUniqueWithoutSenderContactInput = {
+    where: GroupMessageWhereUniqueInput
+    update: XOR<GroupMessageUpdateWithoutSenderContactInput, GroupMessageUncheckedUpdateWithoutSenderContactInput>
+    create: XOR<GroupMessageCreateWithoutSenderContactInput, GroupMessageUncheckedCreateWithoutSenderContactInput>
+  }
+
+  export type GroupMessageUpdateWithWhereUniqueWithoutSenderContactInput = {
+    where: GroupMessageWhereUniqueInput
+    data: XOR<GroupMessageUpdateWithoutSenderContactInput, GroupMessageUncheckedUpdateWithoutSenderContactInput>
+  }
+
+  export type GroupMessageUpdateManyWithWhereWithoutSenderContactInput = {
+    where: GroupMessageScalarWhereInput
+    data: XOR<GroupMessageUpdateManyMutationInput, GroupMessageUncheckedUpdateManyWithoutSenderContactInput>
+  }
+
+  export type GroupMessageScalarWhereInput = {
+    AND?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
+    OR?: GroupMessageScalarWhereInput[]
+    NOT?: GroupMessageScalarWhereInput | GroupMessageScalarWhereInput[]
+    id?: StringFilter<"GroupMessage"> | string
+    groupChatId?: StringFilter<"GroupMessage"> | string
+    conversationId?: StringNullableFilter<"GroupMessage"> | string | null
+    externalMessageId?: StringNullableFilter<"GroupMessage"> | string | null
+    direction?: StringFilter<"GroupMessage"> | string
+    senderType?: StringFilter<"GroupMessage"> | string
+    senderContactId?: StringNullableFilter<"GroupMessage"> | string | null
+    senderNameSnapshot?: StringNullableFilter<"GroupMessage"> | string | null
+    messageType?: StringFilter<"GroupMessage"> | string
+    content?: StringFilter<"GroupMessage"> | string
+    isMention?: BoolFilter<"GroupMessage"> | boolean
+    createdAt?: DateTimeFilter<"GroupMessage"> | Date | string
+    readAt?: DateTimeNullableFilter<"GroupMessage"> | Date | string | null
+  }
+
   export type ContactPhoneUpsertWithWhereUniqueWithoutContactInput = {
     where: ContactPhoneWhereUniqueInput
     update: XOR<ContactPhoneUpdateWithoutContactInput, ContactPhoneUncheckedUpdateWithoutContactInput>
@@ -49603,6 +54597,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageCreateNestedManyWithoutSenderContactInput
     sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
 
@@ -49622,6 +54617,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput
     sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
 
@@ -49657,6 +54653,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUpdateManyWithoutSenderContactNestedInput
     sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
 
@@ -49676,6 +54673,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput
     sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
 
@@ -49691,6 +54689,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -49718,6 +54717,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -49750,6 +54750,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -49777,6 +54778,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -49809,6 +54811,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -49836,6 +54839,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -49879,6 +54883,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -49906,6 +54911,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -49944,6 +54950,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -49971,6 +54978,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -50009,6 +55017,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -50036,6 +55045,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -50066,6 +55076,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
@@ -50085,6 +55096,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
@@ -50134,6 +55146,7 @@ export namespace Prisma {
     createdAt?: Date | string
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -50161,6 +55174,7 @@ export namespace Prisma {
     isOnline?: boolean
     createdAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -50225,6 +55239,46 @@ export namespace Prisma {
 
   export type MessageCreateManyConversationInputEnvelope = {
     data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroupMessageCreateWithoutConversationInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    groupChat: GroupChatCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutGroupMessageSendersInput
+  }
+
+  export type GroupMessageUncheckedCreateWithoutConversationInput = {
+    id?: string
+    groupChatId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageCreateOrConnectWithoutConversationInput = {
+    where: GroupMessageWhereUniqueInput
+    create: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type GroupMessageCreateManyConversationInputEnvelope = {
+    data: GroupMessageCreateManyConversationInput | GroupMessageCreateManyConversationInput[]
     skipDuplicates?: boolean
   }
 
@@ -50572,6 +55626,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GroupChatCreateWithoutConversationsInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: GroupMessageCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatUncheckedCreateWithoutConversationsInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: GroupMessageUncheckedCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatCreateOrConnectWithoutConversationsInput = {
+    where: GroupChatWhereUniqueInput
+    create: XOR<GroupChatCreateWithoutConversationsInput, GroupChatUncheckedCreateWithoutConversationsInput>
+  }
+
   export type ContactUpsertWithoutConversationsInput = {
     update: XOR<ContactUpdateWithoutConversationsInput, ContactUncheckedUpdateWithoutConversationsInput>
     create: XOR<ContactCreateWithoutConversationsInput, ContactUncheckedCreateWithoutConversationsInput>
@@ -50598,6 +55683,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -50617,6 +55703,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -50678,6 +55765,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -50705,6 +55793,7 @@ export namespace Prisma {
     isOnline?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -50735,6 +55824,22 @@ export namespace Prisma {
   export type MessageUpdateManyWithWhereWithoutConversationInput = {
     where: MessageScalarWhereInput
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type GroupMessageUpsertWithWhereUniqueWithoutConversationInput = {
+    where: GroupMessageWhereUniqueInput
+    update: XOR<GroupMessageUpdateWithoutConversationInput, GroupMessageUncheckedUpdateWithoutConversationInput>
+    create: XOR<GroupMessageCreateWithoutConversationInput, GroupMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type GroupMessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: GroupMessageWhereUniqueInput
+    data: XOR<GroupMessageUpdateWithoutConversationInput, GroupMessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type GroupMessageUpdateManyWithWhereWithoutConversationInput = {
+    where: GroupMessageScalarWhereInput
+    data: XOR<GroupMessageUpdateManyMutationInput, GroupMessageUncheckedUpdateManyWithoutConversationInput>
   }
 
   export type FlowRevisionUpsertWithoutConversationsInput = {
@@ -51017,8 +56122,47 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BusinessHoursNotice"> | Date | string
   }
 
-  export type ConversationCreateWithoutMessagesInput = {
+  export type GroupChatUpsertWithoutConversationsInput = {
+    update: XOR<GroupChatUpdateWithoutConversationsInput, GroupChatUncheckedUpdateWithoutConversationsInput>
+    create: XOR<GroupChatCreateWithoutConversationsInput, GroupChatUncheckedCreateWithoutConversationsInput>
+    where?: GroupChatWhereInput
+  }
+
+  export type GroupChatUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: GroupChatWhereInput
+    data: XOR<GroupChatUpdateWithoutConversationsInput, GroupChatUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type GroupChatUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: GroupMessageUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type GroupChatUncheckedUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: GroupMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type ConversationCreateWithoutGroupChatInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -51033,6 +56177,8 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutConversationsInput
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -51044,9 +56190,11 @@ export namespace Prisma {
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
-  export type ConversationUncheckedCreateWithoutMessagesInput = {
+  export type ConversationUncheckedCreateWithoutGroupChatInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -51062,6 +56210,702 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutGroupChatInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type ConversationCreateManyGroupChatInputEnvelope = {
+    data: ConversationCreateManyGroupChatInput | ConversationCreateManyGroupChatInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroupMessageCreateWithoutGroupChatInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    conversation?: ConversationCreateNestedOneWithoutGroupMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutGroupMessageSendersInput
+  }
+
+  export type GroupMessageUncheckedCreateWithoutGroupChatInput = {
+    id?: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageCreateOrConnectWithoutGroupChatInput = {
+    where: GroupMessageWhereUniqueInput
+    create: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type GroupMessageCreateManyGroupChatInputEnvelope = {
+    data: GroupMessageCreateManyGroupChatInput | GroupMessageCreateManyGroupChatInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroupOutboundMessageCreateWithoutGroupChatInput = {
+    id?: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+    agent: AgentCreateNestedOneWithoutGroupOutboundMessagesInput
+  }
+
+  export type GroupOutboundMessageUncheckedCreateWithoutGroupChatInput = {
+    id?: string
+    agentId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateOrConnectWithoutGroupChatInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    create: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type GroupOutboundMessageCreateManyGroupChatInputEnvelope = {
+    data: GroupOutboundMessageCreateManyGroupChatInput | GroupOutboundMessageCreateManyGroupChatInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ConversationUpsertWithWhereUniqueWithoutGroupChatInput = {
+    where: ConversationWhereUniqueInput
+    update: XOR<ConversationUpdateWithoutGroupChatInput, ConversationUncheckedUpdateWithoutGroupChatInput>
+    create: XOR<ConversationCreateWithoutGroupChatInput, ConversationUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type ConversationUpdateWithWhereUniqueWithoutGroupChatInput = {
+    where: ConversationWhereUniqueInput
+    data: XOR<ConversationUpdateWithoutGroupChatInput, ConversationUncheckedUpdateWithoutGroupChatInput>
+  }
+
+  export type ConversationUpdateManyWithWhereWithoutGroupChatInput = {
+    where: ConversationScalarWhereInput
+    data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyWithoutGroupChatInput>
+  }
+
+  export type GroupMessageUpsertWithWhereUniqueWithoutGroupChatInput = {
+    where: GroupMessageWhereUniqueInput
+    update: XOR<GroupMessageUpdateWithoutGroupChatInput, GroupMessageUncheckedUpdateWithoutGroupChatInput>
+    create: XOR<GroupMessageCreateWithoutGroupChatInput, GroupMessageUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type GroupMessageUpdateWithWhereUniqueWithoutGroupChatInput = {
+    where: GroupMessageWhereUniqueInput
+    data: XOR<GroupMessageUpdateWithoutGroupChatInput, GroupMessageUncheckedUpdateWithoutGroupChatInput>
+  }
+
+  export type GroupMessageUpdateManyWithWhereWithoutGroupChatInput = {
+    where: GroupMessageScalarWhereInput
+    data: XOR<GroupMessageUpdateManyMutationInput, GroupMessageUncheckedUpdateManyWithoutGroupChatInput>
+  }
+
+  export type GroupOutboundMessageUpsertWithWhereUniqueWithoutGroupChatInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    update: XOR<GroupOutboundMessageUpdateWithoutGroupChatInput, GroupOutboundMessageUncheckedUpdateWithoutGroupChatInput>
+    create: XOR<GroupOutboundMessageCreateWithoutGroupChatInput, GroupOutboundMessageUncheckedCreateWithoutGroupChatInput>
+  }
+
+  export type GroupOutboundMessageUpdateWithWhereUniqueWithoutGroupChatInput = {
+    where: GroupOutboundMessageWhereUniqueInput
+    data: XOR<GroupOutboundMessageUpdateWithoutGroupChatInput, GroupOutboundMessageUncheckedUpdateWithoutGroupChatInput>
+  }
+
+  export type GroupOutboundMessageUpdateManyWithWhereWithoutGroupChatInput = {
+    where: GroupOutboundMessageScalarWhereInput
+    data: XOR<GroupOutboundMessageUpdateManyMutationInput, GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatInput>
+  }
+
+  export type GroupChatCreateWithoutMessagesInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutGroupChatInput
+    outboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatCreateOrConnectWithoutMessagesInput = {
+    where: GroupChatWhereUniqueInput
+    create: XOR<GroupChatCreateWithoutMessagesInput, GroupChatUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ConversationCreateWithoutGroupMessagesInput = {
+    id?: string
+    channel?: string
+    remoteChatId?: string | null
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
+  }
+
+  export type ConversationUncheckedCreateWithoutGroupMessagesInput = {
+    id?: string
+    contactId: string
+    channel?: string
+    remoteChatId?: string | null
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    groupChatId?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutGroupMessagesInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutGroupMessagesInput, ConversationUncheckedCreateWithoutGroupMessagesInput>
+  }
+
+  export type ContactCreateWithoutGroupMessageSendersInput = {
+    id?: string
+    phone: string
+    name: string
+    isRegistered?: boolean
+    email?: string | null
+    organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutContactInput
+    messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutGroupMessageSendersInput = {
+    id?: string
+    phone: string
+    name: string
+    isRegistered?: boolean
+    email?: string | null
+    organization?: string | null
+    station?: string | null
+    city?: string | null
+    state?: string | null
+    profileConfirmedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
+    sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutGroupMessageSendersInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutGroupMessageSendersInput, ContactUncheckedCreateWithoutGroupMessageSendersInput>
+  }
+
+  export type GroupChatUpsertWithoutMessagesInput = {
+    update: XOR<GroupChatUpdateWithoutMessagesInput, GroupChatUncheckedUpdateWithoutMessagesInput>
+    create: XOR<GroupChatCreateWithoutMessagesInput, GroupChatUncheckedCreateWithoutMessagesInput>
+    where?: GroupChatWhereInput
+  }
+
+  export type GroupChatUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: GroupChatWhereInput
+    data: XOR<GroupChatUpdateWithoutMessagesInput, GroupChatUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type GroupChatUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type GroupChatUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutGroupChatNestedInput
+    outboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type ConversationUpsertWithoutGroupMessagesInput = {
+    update: XOR<ConversationUpdateWithoutGroupMessagesInput, ConversationUncheckedUpdateWithoutGroupMessagesInput>
+    create: XOR<ConversationCreateWithoutGroupMessagesInput, ConversationUncheckedCreateWithoutGroupMessagesInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutGroupMessagesInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutGroupMessagesInput, ConversationUncheckedUpdateWithoutGroupMessagesInput>
+  }
+
+  export type ConversationUpdateWithoutGroupMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutGroupMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ContactUpsertWithoutGroupMessageSendersInput = {
+    update: XOR<ContactUpdateWithoutGroupMessageSendersInput, ContactUncheckedUpdateWithoutGroupMessageSendersInput>
+    create: XOR<ContactCreateWithoutGroupMessageSendersInput, ContactUncheckedCreateWithoutGroupMessageSendersInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutGroupMessageSendersInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutGroupMessageSendersInput, ContactUncheckedUpdateWithoutGroupMessageSendersInput>
+  }
+
+  export type ContactUpdateWithoutGroupMessageSendersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutGroupMessageSendersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isRegistered?: BoolFieldUpdateOperationsInput | boolean
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    station?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    profileConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
+    sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
+  }
+
+  export type GroupChatCreateWithoutOutboundMessagesInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationCreateNestedManyWithoutGroupChatInput
+    messages?: GroupMessageCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatUncheckedCreateWithoutOutboundMessagesInput = {
+    id?: string
+    remoteChatId: string
+    name: string
+    isActive?: boolean
+    unreadCount?: number
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutGroupChatInput
+    messages?: GroupMessageUncheckedCreateNestedManyWithoutGroupChatInput
+  }
+
+  export type GroupChatCreateOrConnectWithoutOutboundMessagesInput = {
+    where: GroupChatWhereUniqueInput
+    create: XOR<GroupChatCreateWithoutOutboundMessagesInput, GroupChatUncheckedCreateWithoutOutboundMessagesInput>
+  }
+
+  export type AgentCreateWithoutGroupOutboundMessagesInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    isOnline?: boolean
+    createdAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutAgentsInput
+    conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentUncheckedCreateWithoutGroupOutboundMessagesInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string
+    role?: string
+    isActive?: boolean
+    departmentId?: string | null
+    isOnline?: boolean
+    createdAt?: Date | string
+    conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
+    assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
+    assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
+    ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
+    createdShortcuts?: ShortcutUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutUpdatedByInput
+    shortcutAudits?: ShortcutAuditUncheckedCreateNestedManyWithoutActorInput
+    publishedFlowRevisions?: FlowRevisionUncheckedCreateNestedManyWithoutPublishedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutAgentInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutAgentInput
+    addedConversationLabels?: ConversationLabelUncheckedCreateNestedManyWithoutAddedByAgentInput
+    botExclusionsCreated?: BotExclusionUncheckedCreateNestedManyWithoutCreatedByAgentInput
+    botExclusionsUpdated?: BotExclusionUncheckedCreateNestedManyWithoutUpdatedByAgentInput
+    botExclusionsDisabled?: BotExclusionUncheckedCreateNestedManyWithoutDisabledByAgentInput
+  }
+
+  export type AgentCreateOrConnectWithoutGroupOutboundMessagesInput = {
+    where: AgentWhereUniqueInput
+    create: XOR<AgentCreateWithoutGroupOutboundMessagesInput, AgentUncheckedCreateWithoutGroupOutboundMessagesInput>
+  }
+
+  export type GroupChatUpsertWithoutOutboundMessagesInput = {
+    update: XOR<GroupChatUpdateWithoutOutboundMessagesInput, GroupChatUncheckedUpdateWithoutOutboundMessagesInput>
+    create: XOR<GroupChatCreateWithoutOutboundMessagesInput, GroupChatUncheckedCreateWithoutOutboundMessagesInput>
+    where?: GroupChatWhereInput
+  }
+
+  export type GroupChatUpdateToOneWithWhereWithoutOutboundMessagesInput = {
+    where?: GroupChatWhereInput
+    data: XOR<GroupChatUpdateWithoutOutboundMessagesInput, GroupChatUncheckedUpdateWithoutOutboundMessagesInput>
+  }
+
+  export type GroupChatUpdateWithoutOutboundMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUpdateManyWithoutGroupChatNestedInput
+    messages?: GroupMessageUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type GroupChatUncheckedUpdateWithoutOutboundMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutGroupChatNestedInput
+    messages?: GroupMessageUncheckedUpdateManyWithoutGroupChatNestedInput
+  }
+
+  export type AgentUpsertWithoutGroupOutboundMessagesInput = {
+    update: XOR<AgentUpdateWithoutGroupOutboundMessagesInput, AgentUncheckedUpdateWithoutGroupOutboundMessagesInput>
+    create: XOR<AgentCreateWithoutGroupOutboundMessagesInput, AgentUncheckedCreateWithoutGroupOutboundMessagesInput>
+    where?: AgentWhereInput
+  }
+
+  export type AgentUpdateToOneWithWhereWithoutGroupOutboundMessagesInput = {
+    where?: AgentWhereInput
+    data: XOR<AgentUpdateWithoutGroupOutboundMessagesInput, AgentUncheckedUpdateWithoutGroupOutboundMessagesInput>
+  }
+
+  export type AgentUpdateWithoutGroupOutboundMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutAgentsNestedInput
+    conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type AgentUncheckedUpdateWithoutGroupOutboundMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
+    assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
+    assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
+    ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
+    createdShortcuts?: ShortcutUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedShortcuts?: ShortcutUncheckedUpdateManyWithoutUpdatedByNestedInput
+    shortcutAudits?: ShortcutAuditUncheckedUpdateManyWithoutActorNestedInput
+    publishedFlowRevisions?: FlowRevisionUncheckedUpdateManyWithoutPublishedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutAgentNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutAgentNestedInput
+    addedConversationLabels?: ConversationLabelUncheckedUpdateManyWithoutAddedByAgentNestedInput
+    botExclusionsCreated?: BotExclusionUncheckedUpdateManyWithoutCreatedByAgentNestedInput
+    botExclusionsUpdated?: BotExclusionUncheckedUpdateManyWithoutUpdatedByAgentNestedInput
+    botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
+  }
+
+  export type ConversationCreateWithoutMessagesInput = {
+    id?: string
+    channel?: string
+    remoteChatId?: string | null
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
+  }
+
+  export type ConversationUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    contactId: string
+    channel?: string
+    remoteChatId?: string | null
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    groupChatId?: string | null
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -51087,6 +56931,7 @@ export namespace Prisma {
     createdAt?: Date | string
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -51114,6 +56959,7 @@ export namespace Prisma {
     isOnline?: boolean
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -51150,6 +56996,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
+    groupMessageSenders?: GroupMessageCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareCreateNestedManyWithoutCanonicalContactInput
   }
@@ -51169,6 +57016,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
+    groupMessageSenders?: GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
     sharedCards?: ContactShareUncheckedCreateNestedManyWithoutCanonicalContactInput
   }
@@ -51320,6 +57168,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -51334,6 +57184,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -51343,11 +57194,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51363,6 +57217,8 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -51394,6 +57250,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -51421,6 +57278,7 @@ export namespace Prisma {
     isOnline?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -51463,6 +57321,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
+    groupMessageSenders?: GroupMessageUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -51482,6 +57341,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
+    groupMessageSenders?: GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
     sharedCards?: ContactShareUncheckedUpdateManyWithoutCanonicalContactNestedInput
   }
@@ -51690,6 +57550,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutContactInput
     messageSenders?: MessageCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneCreateNestedManyWithoutContactInput
   }
 
@@ -51709,6 +57570,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutContactInput
     messageSenders?: MessageUncheckedCreateNestedManyWithoutSenderContactInput
+    groupMessageSenders?: GroupMessageUncheckedCreateNestedManyWithoutSenderContactInput
     phoneNumbers?: ContactPhoneUncheckedCreateNestedManyWithoutContactInput
   }
 
@@ -51791,6 +57653,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUpdateManyWithoutContactNestedInput
   }
 
@@ -51810,11 +57673,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutContactNestedInput
     messageSenders?: MessageUncheckedUpdateManyWithoutSenderContactNestedInput
+    groupMessageSenders?: GroupMessageUncheckedUpdateManyWithoutSenderContactNestedInput
     phoneNumbers?: ContactPhoneUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ConversationCreateWithoutAssignmentsInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -51830,6 +57696,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -51838,11 +57705,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutAssignmentsInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -51858,7 +57728,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -51884,6 +57756,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
@@ -51911,6 +57784,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
@@ -51943,6 +57817,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
@@ -51970,6 +57845,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
@@ -52002,6 +57878,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     ownedShortcuts?: ShortcutCreateNestedManyWithoutOwnerInput
@@ -52029,6 +57906,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     ownedShortcuts?: ShortcutUncheckedCreateNestedManyWithoutOwnerInput
@@ -52062,6 +57940,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -52077,6 +57957,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -52085,11 +57966,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52105,7 +57989,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -52137,6 +58023,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
@@ -52164,6 +58051,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
@@ -52202,6 +58090,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
@@ -52229,6 +58118,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
@@ -52267,6 +58157,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     ownedShortcuts?: ShortcutUpdateManyWithoutOwnerNestedInput
@@ -52294,6 +58185,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     ownedShortcuts?: ShortcutUncheckedUpdateManyWithoutOwnerNestedInput
@@ -52352,6 +58244,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutOutgoingMediaInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -52367,6 +58261,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -52375,11 +58270,14 @@ export namespace Prisma {
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutOutgoingMediaInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -52395,7 +58293,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -52469,6 +58369,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutOutgoingMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -52484,6 +58386,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -52492,11 +58395,14 @@ export namespace Prisma {
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutOutgoingMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52512,7 +58418,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -52564,6 +58472,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutMediaInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -52579,6 +58489,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -52587,11 +58498,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutMediaInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -52607,7 +58521,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -52681,6 +58597,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -52696,6 +58614,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -52704,11 +58623,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52724,7 +58646,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -52869,6 +58793,8 @@ export namespace Prisma {
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
+    groupConversationMode?: string
+    groupResponseMode?: string
     updatedAt?: Date | string
   }
 
@@ -52886,6 +58812,8 @@ export namespace Prisma {
     groupCooldownSeconds?: number
     groupConfirmInGroup?: boolean
     groupConfirmMessage?: string | null
+    groupConversationMode?: string
+    groupResponseMode?: string
     updatedAt?: Date | string
   }
 
@@ -53040,6 +58968,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -53057,6 +58987,8 @@ export namespace Prisma {
     groupCooldownSeconds?: IntFieldUpdateOperationsInput | number
     groupConfirmInGroup?: BoolFieldUpdateOperationsInput | boolean
     groupConfirmMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    groupConversationMode?: StringFieldUpdateOperationsInput | string
+    groupResponseMode?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -53355,6 +59287,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutBusinessHoursNoticesInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -53370,6 +59304,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -53378,11 +59313,14 @@ export namespace Prisma {
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutBusinessHoursNoticesInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -53398,7 +59336,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -53468,6 +59408,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutBusinessHoursNoticesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -53483,6 +59425,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -53491,11 +59434,14 @@ export namespace Prisma {
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutBusinessHoursNoticesInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53511,7 +59457,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -53611,6 +59559,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutLabelsInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -53626,6 +59576,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -53634,11 +59585,14 @@ export namespace Prisma {
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutLabelsInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -53654,7 +59608,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -53705,6 +59661,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -53732,6 +59689,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -53765,6 +59723,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -53780,6 +59740,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -53788,11 +59749,14 @@ export namespace Prisma {
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53808,7 +59772,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -53871,6 +59837,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -53898,6 +59865,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -53948,6 +59916,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -53975,6 +59944,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -54065,6 +60035,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutFlowRevisionInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -54080,6 +60052,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
@@ -54088,11 +60061,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowRevisionInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -54107,7 +60083,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -54209,6 +60187,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -54236,6 +60215,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -54452,6 +60432,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutCurrentFlowNodeInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -54467,6 +60449,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
@@ -54475,11 +60458,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutCurrentFlowNodeInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -54494,7 +60480,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
@@ -54920,6 +60908,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutFlowEventsInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -54935,6 +60925,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
@@ -54943,11 +60934,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutFlowEventsInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -54963,7 +60957,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -55062,6 +61058,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutFlowEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -55077,6 +61075,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
@@ -55085,11 +61084,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55105,7 +61107,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -55239,6 +61243,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -55266,6 +61271,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -55298,6 +61304,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -55325,6 +61332,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -55357,6 +61365,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -55384,6 +61393,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -55488,6 +61498,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -55515,6 +61526,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -55553,6 +61565,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -55580,6 +61593,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -55618,6 +61632,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -55645,6 +61660,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -55727,6 +61743,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -55754,6 +61771,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -55842,6 +61860,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -55869,6 +61888,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -55896,6 +61916,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -55923,6 +61944,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -55945,6 +61967,8 @@ export namespace Prisma {
 
   export type ConversationCreateWithoutNotificationsInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     currentStep?: string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -55960,6 +61984,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutConversationsInput
     assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageCreateNestedManyWithoutConversationInput
     flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
     currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
@@ -55968,11 +61993,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+    groupChat?: GroupChatCreateNestedOneWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateWithoutNotificationsInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -55988,7 +62016,9 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    groupMessages?: GroupMessageUncheckedCreateNestedManyWithoutConversationInput
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
@@ -56025,6 +62055,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -56052,6 +62083,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -56080,6 +62112,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -56095,6 +62129,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -56103,11 +62138,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56123,7 +62161,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
@@ -56144,6 +62184,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutAgentsInput
     conversations?: ConversationCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentCreateNestedManyWithoutActorAgentInput
@@ -56171,6 +62212,7 @@ export namespace Prisma {
     createdAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutAssignedAgentInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderAgentInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedCreateNestedManyWithoutAgentInput
     assignmentFrom?: ConversationAssignmentUncheckedCreateNestedManyWithoutFromAgentInput
     assignmentTo?: ConversationAssignmentUncheckedCreateNestedManyWithoutToAgentInput
     assignmentActor?: ConversationAssignmentUncheckedCreateNestedManyWithoutActorAgentInput
@@ -56214,6 +62256,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutAgentsNestedInput
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -56241,6 +62284,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -56277,6 +62321,8 @@ export namespace Prisma {
   export type ConversationCreateManyDepartmentInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     assignedAgentId?: string | null
     currentStep?: string | null
@@ -56291,6 +62337,7 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type ShortcutCreateManyDepartmentInput = {
@@ -56368,6 +62415,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUpdateManyWithoutActorAgentNestedInput
@@ -56395,6 +62443,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutAssignedAgentNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderAgentNestedInput
+    groupOutboundMessages?: GroupOutboundMessageUncheckedUpdateManyWithoutAgentNestedInput
     assignmentFrom?: ConversationAssignmentUncheckedUpdateManyWithoutFromAgentNestedInput
     assignmentTo?: ConversationAssignmentUncheckedUpdateManyWithoutToAgentNestedInput
     assignmentActor?: ConversationAssignmentUncheckedUpdateManyWithoutActorAgentNestedInput
@@ -56424,6 +62473,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -56438,6 +62489,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -56447,11 +62499,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56466,7 +62521,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -56479,6 +62536,8 @@ export namespace Prisma {
   export type ConversationUncheckedUpdateManyWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56493,6 +62552,7 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ShortcutUpdateWithoutDepartmentInput = {
@@ -56643,6 +62703,8 @@ export namespace Prisma {
   export type ConversationCreateManyAssignedAgentInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     currentStep?: string | null
@@ -56657,6 +62719,7 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type MessageCreateManySenderAgentInput = {
@@ -56672,6 +62735,18 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateManyAgentInput = {
+    id?: string
+    groupChatId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
   }
 
   export type ConversationAssignmentCreateManyFromAgentInput = {
@@ -56840,6 +62915,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -56854,6 +62931,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -56863,11 +62941,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56882,7 +62963,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -56895,6 +62978,8 @@ export namespace Prisma {
   export type ConversationUncheckedUpdateManyWithoutAssignedAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56909,6 +62994,7 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageUpdateWithoutSenderAgentInput = {
@@ -56960,6 +63046,42 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    groupChat?: GroupChatUpdateOneRequiredWithoutOutboundMessagesNestedInput
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateManyWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ConversationAssignmentUpdateWithoutFromAgentInput = {
@@ -57470,6 +63592,8 @@ export namespace Prisma {
 
   export type ConversationCreateManyContactInput = {
     id?: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -57485,6 +63609,7 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type MessageCreateManySenderContactInput = {
@@ -57498,6 +63623,21 @@ export namespace Prisma {
     senderDepartmentSnapshot?: string | null
     messageType?: string
     content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageCreateManySenderContactInput = {
+    id?: string
+    groupChatId: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
     createdAt?: Date | string
     readAt?: Date | string | null
   }
@@ -57525,6 +63665,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutContactInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -57539,6 +63681,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
@@ -57548,10 +63691,13 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutContactInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57567,7 +63713,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -57579,6 +63727,8 @@ export namespace Prisma {
 
   export type ConversationUncheckedUpdateManyWithoutContactInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57594,6 +63744,7 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageUpdateWithoutSenderContactInput = {
@@ -57643,6 +63794,51 @@ export namespace Prisma {
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUpdateWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    groupChat?: GroupChatUpdateOneRequiredWithoutMessagesNestedInput
+    conversation?: ConversationUpdateOneWithoutGroupMessagesNestedInput
+  }
+
+  export type GroupMessageUncheckedUpdateWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutSenderContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -57721,6 +63917,21 @@ export namespace Prisma {
     senderDepartmentSnapshot?: string | null
     messageType?: string
     content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupMessageCreateManyConversationInput = {
+    id?: string
+    groupChatId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
     createdAt?: Date | string
     readAt?: Date | string | null
   }
@@ -57873,6 +64084,51 @@ export namespace Prisma {
     senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
     messageType?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    groupChat?: GroupChatUpdateOneRequiredWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutGroupMessageSendersNestedInput
+  }
+
+  export type GroupMessageUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groupChatId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -58180,6 +64436,220 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationCreateManyGroupChatInput = {
+    id?: string
+    contactId: string
+    channel?: string
+    remoteChatId?: string | null
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+  }
+
+  export type GroupMessageCreateManyGroupChatInput = {
+    id?: string
+    conversationId?: string | null
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    messageType?: string
+    content: string
+    isMention?: boolean
+    createdAt?: Date | string
+    readAt?: Date | string | null
+  }
+
+  export type GroupOutboundMessageCreateManyGroupChatInput = {
+    id?: string
+    agentId: string
+    clientMessageId: string
+    providerMessageId?: string | null
+    content: string
+    status?: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    sentAt?: Date | string | null
+  }
+
+  export type ConversationUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateManyWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GroupMessageUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneWithoutGroupMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutGroupMessageSendersNestedInput
+  }
+
+  export type GroupMessageUncheckedUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupMessageUncheckedUpdateManyWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isMention?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent?: AgentUpdateOneRequiredWithoutGroupOutboundMessagesNestedInput
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GroupOutboundMessageUncheckedUpdateManyWithoutGroupChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type FlowRevisionCreateManyFlowDefinitionInput = {
     id?: string
     version: number
@@ -58481,6 +64951,8 @@ export namespace Prisma {
   export type ConversationCreateManyFlowRevisionInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -58495,6 +64967,7 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowRevisionInput = {
@@ -58577,6 +65050,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutFlowRevisionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -58592,6 +65067,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
@@ -58600,11 +65076,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutFlowRevisionInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58619,7 +65098,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -58632,6 +65113,8 @@ export namespace Prisma {
   export type ConversationUncheckedUpdateManyWithoutFlowRevisionInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58646,6 +65129,7 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowRevisionInput = {
@@ -58699,6 +65183,8 @@ export namespace Prisma {
   export type ConversationCreateManyCurrentFlowNodeInput = {
     id?: string
     contactId: string
+    channel?: string
+    remoteChatId?: string | null
     status?: string
     departmentId?: string | null
     assignedAgentId?: string | null
@@ -58713,6 +65199,7 @@ export namespace Prisma {
     closeReason?: string | null
     groupChatName?: string | null
     groupParticipant?: string | null
+    groupChatId?: string | null
   }
 
   export type FlowExecutionEventCreateManyFlowNodeInput = {
@@ -58781,6 +65268,8 @@ export namespace Prisma {
 
   export type ConversationUpdateWithoutCurrentFlowNodeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     currentStep?: NullableStringFieldUpdateOperationsInput | string | null
     flowContext?: NullableJsonNullValueInput | InputJsonValue
@@ -58796,6 +65285,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutConversationsNestedInput
     assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUpdateManyWithoutConversationNestedInput
     flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
@@ -58804,11 +65294,14 @@ export namespace Prisma {
     outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+    groupChat?: GroupChatUpdateOneWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutCurrentFlowNodeInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58823,7 +65316,9 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    groupMessages?: GroupMessageUncheckedUpdateManyWithoutConversationNestedInput
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
@@ -58836,6 +65331,8 @@ export namespace Prisma {
   export type ConversationUncheckedUpdateManyWithoutCurrentFlowNodeInput = {
     id?: StringFieldUpdateOperationsInput | string
     contactId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    remoteChatId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58850,6 +65347,7 @@ export namespace Prisma {
     closeReason?: NullableStringFieldUpdateOperationsInput | string | null
     groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
     groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FlowExecutionEventUpdateWithoutFlowNodeInput = {
@@ -58936,6 +65434,10 @@ export namespace Prisma {
      */
     export type ConversationCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use GroupChatCountOutputTypeDefaultArgs instead
+     */
+    export type GroupChatCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GroupChatCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use FlowDefinitionCountOutputTypeDefaultArgs instead
      */
     export type FlowDefinitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FlowDefinitionCountOutputTypeDefaultArgs<ExtArgs>
@@ -58995,6 +65497,18 @@ export namespace Prisma {
      * @deprecated Use ConversationDefaultArgs instead
      */
     export type ConversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GroupChatDefaultArgs instead
+     */
+    export type GroupChatArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GroupChatDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GroupMessageDefaultArgs instead
+     */
+    export type GroupMessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GroupMessageDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GroupOutboundMessageDefaultArgs instead
+     */
+    export type GroupOutboundMessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GroupOutboundMessageDefaultArgs<ExtArgs>
     /**
      * @deprecated Use MessageDefaultArgs instead
      */

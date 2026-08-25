@@ -535,3 +535,13 @@ Cria uma conversa manual. `contactId` é opcional: quando omitido, o backend pro
 ```
 
 O endpoint exige `contacts:create`, evita duplicar conversas abertas e respeita o departamento do atendente. A conversa criada inicia em `DRAFT` (rascunho privado): não aparece na fila, não altera os contadores e não gera notificações. Ela só é promovida para `OPEN` depois que a primeira mensagem do atendente é enviada com sucesso ao WhatsApp.
+
+## Atendimento e envio direto em grupos (plan-028)
+
+O catálogo de grupos da Z-API é persistido em `GroupChat`; mensagens recebidas são auditadas em `GroupMessage` mesmo antes de uma menção válida. O navegador recebe apenas o identificador interno do grupo, nunca token ou JID cru.
+
+Com `groupsEnabled=true` e `groupConversationMode=IN_GROUP`, uma menção à própria instância abre ou reutiliza uma única `Conversation` com `channel=GROUP`. A autoria continua sendo do participante individual, mas confirmação, triagem e respostas humanas são entregues no grupo. `PRIVATE_LEGACY` preserva o fluxo privado atual e `groupResponseMode=ORIGIN_PARTICIPANT` restringe quem avança a triagem.
+
+`GET /zapi/groups` lista grupos (com busca `q` e fallback de cache). `GET /zapi/groups/:groupId/messages` retorna histórico sanitizado. `POST /zapi/groups/:groupId/messages` recebe `{ message, clientMessageId }`, exige `groups:send_message`, envia sem criar `Conversation` e grava `GroupOutboundMessage` com idempotência e estados `PENDING`, `SENT` ou `FAILED`.
+
+Para rollback, mantenha `groupsEnabled=false` ou altere `groupConversationMode` para `PRIVATE_LEGACY`; as tabelas e auditorias aditivas permanecem intactas.

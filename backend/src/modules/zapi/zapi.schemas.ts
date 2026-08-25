@@ -14,12 +14,19 @@ export const UpdateZApiConfigSchema = z.object({
     const unknown = value?.match(/{{\s*([^}]+)\s*}}/g)?.filter((item) => !/^{{\s*(nome|grupo)\s*}}$/.test(item));
     if (unknown?.length) context.addIssue({ code: z.ZodIssueCode.custom, message: "Use somente as variáveis {{nome}} e {{grupo}}." });
   }),
+  groupConversationMode: z.enum(["PRIVATE_LEGACY", "IN_GROUP"]).optional(),
+  groupResponseMode: z.enum(["ANY_PARTICIPANT", "ORIGIN_PARTICIPANT"]).optional(),
 }).strict();
 
 export const TestZApiConnectionSchema = z.object({
   instanceId: z.string().optional(),
   token: z.string().optional(),
 });
+
+export const SendGroupMessageSchema = z.object({
+  message: z.string().trim().min(1, "Digite uma mensagem.").max(4096, "A mensagem deve ter no máximo 4.096 caracteres."),
+  clientMessageId: z.string().trim().min(8).max(120).regex(/^[a-zA-Z0-9_-]+$/, "Identificador de mensagem inválido."),
+}).strict();
 
 const HttpsUrlSchema = z
   .string()

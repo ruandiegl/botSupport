@@ -200,6 +200,8 @@ exports.Prisma.BotExclusionScalarFieldEnum = {
 exports.Prisma.ConversationScalarFieldEnum = {
   id: 'id',
   contactId: 'contactId',
+  channel: 'channel',
+  remoteChatId: 'remoteChatId',
   status: 'status',
   departmentId: 'departmentId',
   assignedAgentId: 'assignedAgentId',
@@ -214,7 +216,48 @@ exports.Prisma.ConversationScalarFieldEnum = {
   warningSentAt: 'warningSentAt',
   closeReason: 'closeReason',
   groupChatName: 'groupChatName',
-  groupParticipant: 'groupParticipant'
+  groupParticipant: 'groupParticipant',
+  groupChatId: 'groupChatId'
+};
+
+exports.Prisma.GroupChatScalarFieldEnum = {
+  id: 'id',
+  remoteChatId: 'remoteChatId',
+  name: 'name',
+  isActive: 'isActive',
+  unreadCount: 'unreadCount',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GroupMessageScalarFieldEnum = {
+  id: 'id',
+  groupChatId: 'groupChatId',
+  conversationId: 'conversationId',
+  externalMessageId: 'externalMessageId',
+  direction: 'direction',
+  senderType: 'senderType',
+  senderContactId: 'senderContactId',
+  senderNameSnapshot: 'senderNameSnapshot',
+  messageType: 'messageType',
+  content: 'content',
+  isMention: 'isMention',
+  createdAt: 'createdAt',
+  readAt: 'readAt'
+};
+
+exports.Prisma.GroupOutboundMessageScalarFieldEnum = {
+  id: 'id',
+  groupChatId: 'groupChatId',
+  agentId: 'agentId',
+  clientMessageId: 'clientMessageId',
+  providerMessageId: 'providerMessageId',
+  content: 'content',
+  status: 'status',
+  failureCode: 'failureCode',
+  createdAt: 'createdAt',
+  sentAt: 'sentAt'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
@@ -329,6 +372,8 @@ exports.Prisma.ZApiConfigScalarFieldEnum = {
   groupCooldownSeconds: 'groupCooldownSeconds',
   groupConfirmInGroup: 'groupConfirmInGroup',
   groupConfirmMessage: 'groupConfirmMessage',
+  groupConversationMode: 'groupConversationMode',
+  groupResponseMode: 'groupResponseMode',
   updatedAt: 'updatedAt'
 };
 
@@ -620,6 +665,9 @@ exports.Prisma.ModelName = {
   ContactPhone: 'ContactPhone',
   BotExclusion: 'BotExclusion',
   Conversation: 'Conversation',
+  GroupChat: 'GroupChat',
+  GroupMessage: 'GroupMessage',
+  GroupOutboundMessage: 'GroupOutboundMessage',
   Message: 'Message',
   ContactShare: 'ContactShare',
   ConversationAssignment: 'ConversationAssignment',

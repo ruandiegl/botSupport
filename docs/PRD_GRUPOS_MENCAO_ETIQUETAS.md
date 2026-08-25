@@ -407,3 +407,9 @@ mentionedJids: z.array(z.string().max(200)).optional(), // JIDs mencionados
 | Usuário de grupo sem conversa privada anterior gera estado inconsistente | Baixa | Médio | `findOrCreate` de contato e conversa antes de qualquer operação |
 | Spam de menções mesmo com cooldown (ex: bot em 100 grupos) | Média | Médio | Cooldown por `(remetente, grupo)` + rate limit por grupo + toggle de desabilitar grupos |
 | Usuário marca `@todos` + `@suporte` na mesma mensagem | Alta | Médio | Verificar presença de JID de broadcast; se presente, ignora mesmo que o bot também esteja nos `mentionedJids` |
+
+## Atualização de operação — plan-028
+
+O comportamento privado das histórias originais continua disponível como `PRIVATE_LEGACY`, mas `IN_GROUP` mantém confirmação, triagem, respostas de atendentes e encerramento no grupo. Cada mensagem recebida registra o participante e a menção em `GroupMessage`, inclusive antes da abertura do chamado, deixando o grupo consultável em `/groups`.
+
+O envio manual usa `GroupOutboundMessage`, não cria `Conversation`, não inicia o fluxo e exige `groups:send_message`. A ativação recomendada é gradual: catálogo, grupo de teste, depois `IN_GROUP`; o rollback para `PRIVATE_LEGACY` ou `groupsEnabled=false` não remove dados.

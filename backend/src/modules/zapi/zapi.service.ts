@@ -64,6 +64,7 @@ export type ZApiOutgoingMediaInput = {
 
 export type ParsedIncomingMessage = {
   phone: string;
+  targetPhone?: string;
   senderName: string;
   content: string;
   messageType?: "CONTACT";
@@ -72,7 +73,7 @@ export type ParsedIncomingMessage = {
   referenceMessageId?: string;
   externalEventId?: string;
   media?: ParsedIncomingMedia;
-  group?: { jid: string; name: string; participant: string };
+  group?: { jid: string; name: string; participant: string; participantLid?: string };
 };
 
 export type ParsedSharedContact = {
@@ -248,6 +249,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   const referenceMessageId = String(payload.referenceMessageId || buttonResponse?.referenceMessageId || listResponse?.referenceMessageId || "").trim() || undefined;
   return {
     phone,
+    ...(payload.isGroup === true ? { targetPhone: String(payload.phone || payload.chatId || "").trim() } : {}),
     senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
     content,
     ...(contactShare ? { messageType: "CONTACT" as const, contactShare } : {}),
@@ -255,7 +257,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     ...(referenceMessageId ? { referenceMessageId } : {}),
     ...(externalEventId ? { externalEventId } : {}),
     ...(media ? { media } : {}),
-    ...(payload.isGroup === true ? { group: { jid: String(payload.phone || payload.chatId || ""), name: String(payload.chatName || "Grupo do WhatsApp"), participant } } : {}),
+    ...(payload.isGroup === true ? { group: { jid: String(payload.phone || payload.chatId || "").trim(), name: String(payload.chatName || "Grupo do WhatsApp"), participant, ...(payload.participantLid ? { participantLid: String(payload.participantLid) } : {}) } } : {}),
   };
 }
 
@@ -649,6 +651,12 @@ export class ZApiService {
     return cleaned;
   }
 
+  private formatTarget(target: string): string {
+    const value = String(target || "").trim();
+    if (value.includes("-") || value.endsWith("@g.us") || value.endsWith("@lid")) return value;
+    return this.formatPhone(value);
+  }
+
   private async getGroupMentionIdentity(config: {
     instanceId: string;
     token: string;
@@ -758,7 +766,59 @@ export class ZApiService {
       // rows. The admin toggle remains the source of truth when this flag is
       // absent; the environment flag is intentionally opt-in.
       groupsEnabled: Boolean(dbConfig.groupsEnabled || envGroupsEnabled),
+      groupConversationMode: dbConfig.groupConversationMode || "PRIVATE_LEGACY",
+      groupResponseMode: dbConfig.groupResponseMode || "ANY_PARTICIPANT",
     };
+  }
+
+  async listGroups(query?: string) {
+    const config = await this.getConfig();
+    if (!config.isActive || !config.instanceId || !config.token) return [];
+    const headers = { "Content-Type": "application/json", ...(config.clientToken ? { "Client-Token": config.clientToken } : {}) };
+    const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/groups`, { headers, signal: AbortSignal.timeout(10_000) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(parseZApiError(response.status, data));
+    const groups = Array.isArray(data) ? data : Array.isArray((data as any)?.groups) ? (data as any).groups : [];
+    const normalized = groups.map((item: any) => ({
+      id: String(item.phone || item.id || "").trim(),
+      name: String(item.name || item.subject || "Grupo do WhatsApp").trim().slice(0, 300),
+      isGroup: true as const,
+      lastMessageAt: item.lastMessageTime || item.lastMessageAt || null,
+      unread: Number(item.unreadCount ?? item.unread ?? 0) || 0,
+    })).filter((item: any) => item.id);
+    const filtered = query?.trim() ? normalized.filter((item: any) => item.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) : normalized;
+    await Promise.all(filtered.map((item: any) => zApiRepository.upsertGroupChat(item.id, item.name, item.lastMessageAt ? new Date(item.lastMessageAt) : new Date()).catch(() => undefined)));
+    const cached = await zApiRepository.listGroupChats(query);
+    return cached.map((row) => ({ id: row.id, name: row.name, isGroup: true as const, lastMessageAt: row.lastMessageAt?.toISOString() ?? null, unread: row.unreadCount, activeConversation: row.conversations[0] ?? null }));
+  }
+
+  async listCachedGroups(query?: string) {
+    const rows = await zApiRepository.listGroupChats(query);
+    return rows.map((row) => ({ id: row.id, name: row.name, isGroup: true as const, lastMessageAt: row.lastMessageAt?.toISOString() ?? null, unread: row.unreadCount, activeConversation: row.conversations[0] ?? null }));
+  }
+
+  async listGroupHistory(groupChatId: string) {
+    const group = await zApiRepository.findGroupChatById(groupChatId);
+    if (!group) throw new Error("Grupo não encontrado ou indisponível.");
+    return zApiRepository.listGroupHistory(groupChatId);
+  }
+
+  async sendDirectGroupMessage(groupChatId: string, agentId: string, clientMessageId: string, content: string) {
+    const group = await zApiRepository.findGroupChatById(groupChatId);
+    if (!group) throw new Error("Grupo não encontrado ou indisponível.");
+    const existing = await zApiRepository.findGroupOutboundByClientMessageId(clientMessageId);
+    if (existing?.status === "SENT") return { ...existing, duplicate: true };
+    const audit = existing ?? await zApiRepository.createGroupOutboundMessage({ groupChatId, agentId, clientMessageId, content });
+    if (!audit) throw new Error("Não foi possível registrar o envio do grupo.");
+    const result = await this.sendText(group.remoteChatId, content, clientMessageId);
+    if (!result || result.error) {
+      const failure = String(result?.error || "A conexão com a Z-API está indisponível.");
+      await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "FAILED", failureCode: failure.slice(0, 500) });
+      throw new Error(failure);
+    }
+    const providerMessageId = typeof result?.messageId === "string" ? result.messageId : typeof result?.id === "string" ? result.id : null;
+    const sent = await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "SENT", providerMessageId });
+    return { ...sent, duplicate: Boolean(existing) };
   }
 
   async checkStatus(overrideInstanceId?: string, overrideToken?: string) {
@@ -893,14 +953,14 @@ export class ZApiService {
     }
   }
 
-  async sendText(phone: string, text: string) {
+  async sendText(phone: string, text: string, clientMessageId?: string) {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) {
       logger.warn("Z-API desativada ou sem credenciais. Mensagem não enviada.");
       return null;
     }
 
-    const formattedPhone = this.formatPhone(phone);
+    const formattedPhone = this.formatTarget(phone);
     const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-text`;
 
     try {
@@ -913,6 +973,7 @@ export class ZApiService {
         body: JSON.stringify({
           phone: formattedPhone,
           message: text,
+          ...(clientMessageId ? { messageId: clientMessageId } : {}),
         }),
       });
 
@@ -946,7 +1007,7 @@ export class ZApiService {
 
     const mimeType = input.mimeType.toLowerCase().split(";")[0].trim();
     let dataUrl = `data:${mimeType};base64,${input.buffer.toString("base64")}`;
-    const formattedPhone = this.formatPhone(input.phone);
+    const formattedPhone = this.formatTarget(input.phone);
     const timeoutMs = Math.min(120_000, Math.max(5_000, Number(process.env.OUTBOUND_MEDIA_REQUEST_TIMEOUT_MS ?? 30_000)));
     const headers = {
       "Content-Type": "application/json",
@@ -1029,17 +1090,19 @@ export class ZApiService {
    * Automated delivery guard. Human-agent sends continue to use sendText and
    * are intentionally not affected by the bot exclusion list.
    */
-  async sendBotText(phone: string, text: string) {
-    if (await botExclusionsService.isBlocked(phone)) {
-      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot reply suppressed by exclusion list");
+  async sendBotText(phone: string, text: string, exclusionPhone?: string) {
+    const exclusionTarget = exclusionPhone || phone;
+    if (await botExclusionsService.isBlocked(exclusionTarget)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(exclusionTarget)) }, "Bot reply suppressed by exclusion list");
       return { blocked: true as const, status: "bot_excluded" as const };
     }
     return this.sendText(phone, text);
   }
 
-  async sendBotButtonList(phone: string, message: string, options: BotOption[]) {
-    if (await botExclusionsService.isBlocked(phone)) {
-      logger.info({ phoneHash: hashIdentifier(this.formatPhone(phone)) }, "Bot button list suppressed by exclusion list");
+  async sendBotButtonList(phone: string, message: string, options: BotOption[], exclusionPhone?: string) {
+    const exclusionTarget = exclusionPhone || phone;
+    if (await botExclusionsService.isBlocked(exclusionTarget)) {
+      logger.info({ phoneHash: hashIdentifier(this.formatPhone(exclusionTarget)) }, "Bot button list suppressed by exclusion list");
       return { blocked: true as const, status: "bot_excluded" as const };
     }
     return this.sendInteractiveOptions(phone, message, options);
@@ -1075,7 +1138,7 @@ export class ZApiService {
       const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-text`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(config.clientToken ? { "Client-Token": config.clientToken } : {}) },
-        body: JSON.stringify({ phone: target, message: text }),
+        body: JSON.stringify({ phone: this.formatTarget(target), message: text }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) return { error: parseZApiError(response.status, data) };
@@ -1093,7 +1156,7 @@ export class ZApiService {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
 
-    const formattedPhone = this.formatPhone(phone);
+    const formattedPhone = this.formatTarget(phone);
     const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-button-list`;
 
     try {
@@ -1180,20 +1243,52 @@ export class ZApiService {
 
     const config = await this.getConfig();
     const isGroup = payload.isGroup === true;
+    const incoming = parseIncomingMessage(payload);
+    if (!incoming) return { status: "ignored" };
+    let groupMentioned = false;
+    let groupChat: Awaited<ReturnType<typeof zApiRepository.upsertGroupChat>> | null = null;
+    let preloadedContact: Awaited<ReturnType<typeof zApiRepository.findContactByPhone>> | null = null;
+    let activeGroupConversation: Awaited<ReturnType<typeof zApiRepository.findActiveConversationByGroup>> | null = null;
     if (isGroup) {
       if (!config.groupsEnabled) return { status: "ignored_groups_disabled" };
       const participant = payload.participantPhone || payload.participant;
       if (!participant || !payload.phone) return { status: "ignored_invalid_group_context" };
+      groupChat = await zApiRepository.upsertGroupChat(incoming.group?.jid || String(payload.phone), incoming.group?.name || String(payload.chatName || "Grupo do WhatsApp"));
+      if (config.groupConversationMode === "IN_GROUP" && incoming.group?.jid) {
+        activeGroupConversation = await zApiRepository.findActiveConversationByGroup(incoming.group.jid);
+      }
+      const senderPhone = this.formatPhone(incoming.phone);
+      preloadedContact = await zApiRepository.findContactByPhone(senderPhone);
+      if (!preloadedContact) preloadedContact = await zApiRepository.createContact(senderPhone, incoming.senderName);
       const mentions = collectMentionValues(payload);
-      if (payload.broadcast === true || hasBroadcastMention(mentions)) return { status: "ignored_broadcast_mention" };
+      if (payload.broadcast === true || hasBroadcastMention(mentions)) {
+        await zApiRepository.addGroupMessage({ groupChatId: groupChat.id, externalMessageId: incoming.externalEventId, content: incoming.content, messageType: incoming.messageType, senderNameSnapshot: incoming.senderName, isMention: false });
+        return { status: "ignored_broadcast_mention" };
+      }
       const instancePhone = canonicalJid(payload.connectedPhone || config.instancePhone || "");
       const mentionIdentity = await this.getGroupMentionIdentity(
         config,
         payload.connectedPhone,
         typeof (payload as any).connectedLid === "string" ? (payload as any).connectedLid : null,
       );
-      if (!instancePhone && !mentionIdentity.lids.length && !mentionIdentity.aliases.length) return { status: "ignored_instance_identity_unavailable" };
-      if (!isInstanceMentioned(payload, instancePhone, mentionIdentity.aliases, mentionIdentity.lids)) {
+      const identityAvailable = Boolean(instancePhone || mentionIdentity.lids.length || mentionIdentity.aliases.length);
+      groupMentioned = identityAvailable && isInstanceMentioned(payload, instancePhone, mentionIdentity.aliases, mentionIdentity.lids);
+      const groupAudit = await zApiRepository.addGroupMessage({
+        groupChatId: groupChat.id,
+        externalMessageId: incoming.externalEventId,
+        content: incoming.content,
+        messageType: incoming.messageType,
+        senderContactId: preloadedContact.id,
+        senderNameSnapshot: incoming.senderName,
+        isMention: groupMentioned,
+      });
+      if (groupAudit.duplicate) return { status: "duplicate_event" };
+      if (activeGroupConversation && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
+        const origin = this.formatPhone(activeGroupConversation.groupParticipant || "");
+        const sender = this.formatPhone(incoming.phone);
+        if (!origin || !sender || origin !== sender) return { status: "group_message_logged_non_origin" };
+      }
+      if (!groupMentioned && !(config.groupConversationMode === "IN_GROUP" && activeGroupConversation)) {
         const textCandidates = incomingTextCandidates(payload);
         const normalizedTexts = textCandidates.map(normalizeMentionName);
         const aliasTextMatch = hasTextMentionAlias(payload, mentionIdentity.aliases);
@@ -1214,22 +1309,20 @@ export class ZApiService {
           },
           "Menção de grupo não reconhecida",
         );
-        return { status: mentions.length ? "ignored_not_mentioned" : "ignored_no_mention" };
+        return { status: identityAvailable ? (mentions.length ? "group_message_logged_not_mentioned" : "group_message_logged") : "ignored_instance_identity_unavailable" };
       }
-      if (await zApiRepository.findIncomingMessage(payload.messageId)) return { status: "duplicate_event" };
-      const reserved = await zApiRepository.reserveGroupMention(
-        hashIdentifier(String(payload.phone)),
-        hashIdentifier(String(participant)),
-        config.groupCooldownSeconds,
-      );
-      if (!reserved) return { status: "cooldown" };
+      if (groupMentioned) {
+        const reserved = await zApiRepository.reserveGroupMention(
+          hashIdentifier(String(payload.phone)),
+          hashIdentifier(String(participant)),
+          config.groupCooldownSeconds,
+        );
+        if (!reserved) return { status: "cooldown" };
+      }
     }
 
-    const incoming = parseIncomingMessage(payload);
-    if (!incoming) return { status: "ignored" };
-
     const phone = this.formatPhone(incoming.phone);
-    let contact = await zApiRepository.findContactByPhone(phone);
+    let contact = preloadedContact || await zApiRepository.findContactByPhone(phone);
     if (!contact) contact = await zApiRepository.createContact(phone, incoming.senderName);
 
     if (incoming.contactShare?.phones.length) {
@@ -1237,20 +1330,28 @@ export class ZApiService {
       if (sharedOwner) incoming.contactShare.canonicalContactId = sharedOwner.id;
     }
 
-    let activeConversation = await zApiRepository.findActiveConversationByContact(contact.id);
+    let activeConversation = incoming.group && config.groupConversationMode === "IN_GROUP"
+      ? activeGroupConversation
+      : await zApiRepository.findActiveConversationByContact(contact.id);
     const isNewConversation = !activeConversation;
     if (!activeConversation) {
       activeConversation = await zApiRepository.createConversation(
         contact.id,
         "OPEN",
         "AWAITING_TEAM",
-        incoming.group ? { chatName: incoming.group.name, participant: phone } : undefined,
+        incoming.group ? {
+          chatName: incoming.group.name,
+          participant: phone,
+          ...(config.groupConversationMode === "IN_GROUP" ? { channel: "GROUP" as const, remoteChatId: incoming.group.jid, groupChatId: groupChat?.id ?? null } : {}),
+        } : undefined,
       );
     } else if (incoming.group) {
       await zApiRepository.updateGroupContext(activeConversation.id, incoming.group.name, phone);
     }
 
     const conversationId = activeConversation.id;
+    if (incoming.group) await zApiRepository.linkGroupMessageToConversation(incoming.externalEventId, conversationId);
+    const deliveryTarget = incoming.group && config.groupConversationMode === "IN_GROUP" ? incoming.group.jid : phone;
     // Z-API examples may represent `momment` in Unix seconds or milliseconds.
     const rawMoment = Number(payload.momment);
     const sourceTimeCandidate = new Date(rawMoment < 1_000_000_000_000 ? rawMoment * 1000 : rawMoment);
@@ -1378,7 +1479,7 @@ export class ZApiService {
         messageType: "BUSINESS_HOURS",
         content: businessHours.message,
       });
-      const delivery = await this.sendBotText(phone, businessHours.message);
+      const delivery = await this.sendBotText(deliveryTarget, businessHours.message, phone);
       if (delivery && "blocked" in delivery && delivery.blocked) {
         await zApiRepository.deleteMessage(storedNotice.id);
         await businessHoursService.markFailed(businessHours.notice.id, "Contato bloqueado para respostas automáticas.");
@@ -1408,19 +1509,20 @@ export class ZApiService {
       return { status: businessHours.reason === "OUTSIDE_HOURS" ? "outside_hours_reply" : "no_agent_online_reply" };
     }
 
-    if (incoming.group) {
+    if (incoming.group && (isNewConversation || groupMentioned)) {
       const confirmation = renderGroupTemplate(config.groupConfirmMessage, incoming.senderName, incoming.group.name);
       const storedConfirmation = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: confirmation });
-      const directResult = await this.sendBotText(phone, confirmation);
+      const sendInGroup = config.groupConversationMode === "IN_GROUP";
+      const directResult = await this.sendBotText(sendInGroup ? incoming.group.jid : phone, confirmation, phone);
       if (directResult && "blocked" in directResult && directResult.blocked) {
         await zApiRepository.deleteMessage(storedConfirmation.id);
         return { status: "bot_excluded" };
       }
       if (!directResult || directResult?.error) {
         await zApiRepository.deleteMessage(storedConfirmation.id);
-        logger.error({ conversationId, error: directResult?.error || "integration_inactive" }, "Falha ao confirmar menção por mensagem privada");
+        logger.error({ conversationId, error: directResult?.error || "integration_inactive" }, sendInGroup ? "Falha ao confirmar menção no grupo" : "Falha ao confirmar menção por mensagem privada");
       }
-      if (config.groupConfirmInGroup) {
+      if (!sendInGroup && config.groupConfirmInGroup) {
         const groupResult = await this.sendTextToTarget(incoming.group.jid, confirmation);
         if (groupResult && "error" in groupResult) logger.warn({ conversationId, error: groupResult.error }, "Falha na confirmação opcional no grupo");
       }
@@ -1474,7 +1576,7 @@ export class ZApiService {
       for (const action of execution.actions) {
         if (action.type === "SEND_TEXT") {
           const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
-          const delivery = await this.sendBotText(phone, action.content);
+          const delivery = await this.sendBotText(deliveryTarget, action.content, phone);
           if (delivery && "blocked" in delivery && delivery.blocked) {
             await zApiRepository.deleteMessage(storedMessage.id);
             await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
@@ -1488,7 +1590,7 @@ export class ZApiService {
           }
         } else if (action.type === "SEND_OPTIONS") {
           const storedMessage = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: action.content });
-          const delivery = await this.sendBotButtonList(phone, action.content, action.options);
+          const delivery = await this.sendBotButtonList(deliveryTarget, action.content, action.options, phone);
           if (delivery && "blocked" in delivery && delivery.blocked) {
             await zApiRepository.deleteMessage(storedMessage.id);
             await flowExecutionService.rollbackDelivery(conversationId, activeConversation.currentFlowNodeId, activeConversation.flowContext);
@@ -1535,7 +1637,7 @@ export class ZApiService {
         senderType: "BOT",
         content: replyMessage,
       });
-      const delivery = await this.sendBotText(phone, replyMessage);
+      const delivery = await this.sendBotText(deliveryTarget, replyMessage, phone);
       if (delivery && "blocked" in delivery && delivery.blocked) {
         await zApiRepository.deleteMessage(storedRouteMessage.id);
         await zApiRepository.updateConversationStatus(conversationId, {
@@ -1556,7 +1658,7 @@ export class ZApiService {
       senderType: "BOT",
       content: menuMessage,
     });
-    const textResult = await this.sendBotText(phone, menuMessage);
+    const textResult = await this.sendBotText(deliveryTarget, menuMessage, phone);
     if (textResult && "blocked" in textResult && textResult.blocked) {
       await zApiRepository.deleteMessage(storedMenuMessage.id);
       return { status: "bot_excluded" };
@@ -1572,7 +1674,7 @@ export class ZApiService {
       senderType: "BOT",
       content: buttonMessage,
     });
-    const buttonResult = await this.sendBotButtonList(phone, buttonMessage, options);
+    const buttonResult = await this.sendBotButtonList(deliveryTarget, buttonMessage, options, phone);
     if (buttonResult && "blocked" in buttonResult && buttonResult.blocked) {
       await zApiRepository.deleteMessage(storedButtonMessage.id);
       return { status: "bot_excluded" };
@@ -1593,7 +1695,7 @@ export class ZApiService {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
 
-    const formattedPhone = this.formatPhone(phone);
+    const formattedPhone = this.formatTarget(phone);
     const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-option-list`;
     try {
       const response = await fetch(url, {

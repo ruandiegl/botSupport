@@ -1,6 +1,6 @@
 import { rbacRepository } from "./rbac.repository.js";
 
-export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports", "bot_exclusions", "contacts", "business_hours"] as const;
+export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports", "bot_exclusions", "contacts", "business_hours", "groups"] as const;
 export const RBAC_ACTIONS = ["view", "assume", "delegate", "close", "send_message", "send_media", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
 
 type PermissionMap = Record<string, string[]>;
@@ -8,17 +8,17 @@ type PermissionMap = Record<string, string[]>;
 const defaults: Record<string, PermissionMap> = {
   ADMIN: {
     conversations: ["view", "assume", "delegate", "close", "send_message", "send_media"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
-    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"], bot_exclusions: ["view", "create", "update", "delete"], contacts: ["view", "create", "update", "delete"], business_hours: ["view", "configure"],
+    departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"], bot_exclusions: ["view", "create", "update", "delete"], contacts: ["view", "create", "update", "delete"], business_hours: ["view", "configure"], groups: ["view", "send_message"],
   },
   SUPERVISOR: {
-    conversations: ["view", "assume", "delegate", "close", "send_message", "send_media"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: ["view"],
+    conversations: ["view", "assume", "delegate", "close", "send_message", "send_media"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: ["view"], groups: ["view", "send_message"],
   },
   AGENT: {
-    conversations: ["view", "assume", "close", "send_message", "send_media"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: [],
+    conversations: ["view", "assume", "close", "send_message", "send_media"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: [], groups: ["view"],
   },
 };
 
-const screens = ["/", "/my-conversations", "/contacts", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac", "/admin/bot-exclusions", "/admin/business-hours"];
+const screens = ["/", "/my-conversations", "/contacts", "/groups", "/conversation/:id", "/admin/departments", "/admin/agents", "/admin/shortcuts", "/admin/labels", "/admin/flow", "/admin/zapi", "/admin/rbac", "/admin/bot-exclusions", "/admin/business-hours"];
 
 function screenResource(path: string) { return `screen:${path}`; }
 
@@ -42,7 +42,7 @@ export class RbacService {
         }),
       ...screens
         .filter((path) => !existingResources.has(screenResource(path)))
-        .map((path) => rbacRepository.upsert(role, screenResource(path), role === "ADMIN" || path === "/" || path === "/my-conversations" || path === "/contacts" || path === "/conversation/:id" || path === "/admin/shortcuts" || (path === "/admin/business-hours" && role === "SUPERVISOR") ? ["view"] : [])),
+        .map((path) => rbacRepository.upsert(role, screenResource(path), role === "ADMIN" || path === "/" || path === "/my-conversations" || path === "/contacts" || path === "/groups" || path === "/conversation/:id" || path === "/admin/shortcuts" || (path === "/admin/business-hours" && role === "SUPERVISOR") ? ["view"] : [])),
     ];
     if (missing.length === 0) return current;
     await Promise.all(missing);

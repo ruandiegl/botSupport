@@ -102,6 +102,9 @@ export interface ConversationMedia {
 export interface Conversation {
   id: string;
   contact: Contact;
+  /** Delivery channel for this conversation. Group conversations keep the
+   * originating participant in `contact` while publishing to the group JID. */
+  channel?: "PRIVATE" | "GROUP" | string;
   status: ConversationStatus;
   departmentId: string | null;
   departmentName: string | null;

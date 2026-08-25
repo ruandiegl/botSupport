@@ -64,6 +64,8 @@ export function ConversationRow({
   selected?: boolean;
   searchQuery?: string;
 }) {
+  const isGroup = conversation.channel === "GROUP" || Boolean(conversation.groupChatName);
+  const displayName = isGroup ? (conversation.groupChatName || "Grupo do WhatsApp") : conversation.contact.name;
   return (
     <Link
       href={`/conversation/${conversation.id}`}
@@ -75,8 +77,9 @@ export function ConversationRow({
       </div>
       <div className="conversation-main">
         <div className="conversation-meta">
-          <span className="conversation-name">{conversation.contact.name}</span>
-          <span className="conversation-phone">{conversation.contact.phone}</span>
+          <span className="conversation-name">{displayName}</span>
+          {isGroup ? <span className="conversation-channel">Grupo</span> : null}
+          <span className="conversation-phone">{isGroup ? `Solicitado por ${conversation.contact.name}` : conversation.contact.phone}</span>
         </div>
         <div className={`last-message ${conversation.searchMatch ? "search-match" : ""}`}>
           {conversation.searchMatch ? <><span className="search-match-source">{searchSourceLabel[conversation.searchMatch.source] || "Busca"}:</span> <HighlightedText text={conversation.searchMatch.snippet} query={conversation.searchMatch.source === "message" ? searchQuery : undefined} /></> : (conversation.lastMessage || "Sem mensagens recentes")}

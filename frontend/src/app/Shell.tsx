@@ -135,6 +135,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       items: [
         { href: "/", label: "Fila de atendimento", icon: MessageCircle, badge: queueCount || undefined },
         { href: "/my-conversations", label: "Meus atendimentos", icon: Headphones },
+        { href: "/groups", label: "Grupos do WhatsApp", icon: Users },
         { href: "/admin/shortcuts", label: "Atalhos e procedimentos", icon: MessagesSquare },
       ],
     },
@@ -177,6 +178,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const getPageTitle = () => {
     if (location === "/") return "Fila de atendimento";
     if (location === "/contacts") return "Contatos";
+    if (location === "/groups") return "Grupos do WhatsApp";
     if (location.includes("conversation")) return "Conversa";
     if (location.includes("departments")) return "Departamentos";
     if (location.includes("agents")) return "Atendentes";
@@ -194,6 +196,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     if (location === "/") return "/";
     if (location === "/my-conversations") return "/my-conversations";
     if (location === "/contacts") return "/contacts";
+    if (location === "/groups") return "/groups";
     if (location.includes("conversation")) return "/";
     if (location.includes("departments")) return "/admin/departments";
     if (location.includes("agents")) return "/admin/agents";

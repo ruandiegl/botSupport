@@ -59,6 +59,8 @@ export default function ZApiAdmin() {
   const [groupCooldownSeconds, setGroupCooldownSeconds] = useState(60);
   const [groupConfirmInGroup, setGroupConfirmInGroup] = useState(false);
   const [groupConfirmMessage, setGroupConfirmMessage] = useState("");
+  const [groupConversationMode, setGroupConversationMode] = useState<"PRIVATE_LEGACY" | "IN_GROUP">("PRIVATE_LEGACY");
+  const [groupResponseMode, setGroupResponseMode] = useState<"ANY_PARTICIPANT" | "ORIGIN_PARTICIPANT">("ANY_PARTICIPANT");
   const [copied, setCopied] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveConfirmOpen, setSaveConfirmOpen] = useState(false);
@@ -77,6 +79,8 @@ export default function ZApiAdmin() {
       setGroupCooldownSeconds(config.groupCooldownSeconds ?? 60);
       setGroupConfirmInGroup(config.groupConfirmInGroup ?? false);
       setGroupConfirmMessage(config.groupConfirmMessage || "");
+      setGroupConversationMode(config.groupConversationMode ?? "PRIVATE_LEGACY");
+      setGroupResponseMode(config.groupResponseMode ?? "ANY_PARTICIPANT");
     }
   }, [config]);
 
@@ -103,6 +107,8 @@ export default function ZApiAdmin() {
         groupCooldownSeconds,
         groupConfirmInGroup,
         groupConfirmMessage: groupConfirmMessage.trim() || null,
+        groupConversationMode,
+        groupResponseMode,
       },
       {
         onSuccess: () => {
@@ -343,13 +349,17 @@ export default function ZApiAdmin() {
 
                 <div className="rounded-xl border bg-card p-4">
                   <div className="mb-3 flex items-center justify-between gap-3">
-                    <div><strong className="text-sm">Menções em grupos</strong><p className="text-xs text-muted-foreground">Abre atendimento privado somente quando esta instância é mencionada.</p></div>
+                    <div><strong className="text-sm">Menções em grupos</strong><p className="text-xs text-muted-foreground">Registra o grupo e abre atendimento somente quando esta instância é mencionada.</p></div>
                     <Checkbox checked={groupsEnabled} onCheckedChange={(checked) => setGroupsEnabled(checked === true)} aria-label="Ativar atendimento por menção em grupos" />
                   </div>
                   <div className="grid gap-3">
                     <div className="field"><label htmlFor="zapi-instance-phone" style={{ fontSize: 11 }}>Número detectado da instância</label><Input id="zapi-instance-phone" value={config?.instancePhoneMasked || "Atualize o status para detectar"} readOnly disabled /></div>
                     <div className="field"><label htmlFor="group-cooldown" style={{ fontSize: 11 }}>Intervalo mínimo por participante (segundos)</label><Input id="group-cooldown" type="number" min={5} max={3600} value={groupCooldownSeconds} onChange={(event) => setGroupCooldownSeconds(Math.min(3600, Math.max(5, Number(event.target.value) || 60)))} disabled={!groupsEnabled} /></div>
                     <div className="field"><label htmlFor="group-message" style={{ fontSize: 11 }}>Mensagem de confirmação privada</label><Textarea id="group-message" value={groupConfirmMessage} onChange={(event) => setGroupConfirmMessage(event.target.value)} placeholder="Olá, {{nome}}! Recebemos sua solicitação no grupo {{grupo}}." disabled={!groupsEnabled} /></div>
+                    <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                      <div className="field"><label htmlFor="group-mode" style={{ fontSize: 11 }}>Destino do atendimento</label><select id="group-mode" className="input" value={groupConversationMode} onChange={(event) => setGroupConversationMode(event.target.value as "PRIVATE_LEGACY" | "IN_GROUP")} disabled={!groupsEnabled}><option value="PRIVATE_LEGACY">Continuar no privado</option><option value="IN_GROUP">Continuar no grupo</option></select></div>
+                      <div className="field"><label htmlFor="group-response-mode" style={{ fontSize: 11 }}>Quem pode responder</label><select id="group-response-mode" className="input" value={groupResponseMode} onChange={(event) => setGroupResponseMode(event.target.value as "ANY_PARTICIPANT" | "ORIGIN_PARTICIPANT")} disabled={!groupsEnabled}><option value="ANY_PARTICIPANT">Qualquer participante</option><option value="ORIGIN_PARTICIPANT">Somente solicitante</option></select></div>
+                    </div>
                     <label className="flex items-center gap-2 text-xs"><Checkbox checked={groupConfirmInGroup} onCheckedChange={(checked) => setGroupConfirmInGroup(checked === true)} disabled={!groupsEnabled} />Confirmar também no grupo (opcional)</label>
                   </div>
                 </div>

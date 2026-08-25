@@ -5,6 +5,9 @@ import { authMiddleware, requirePermission } from "../auth/auth.middleware.js";
 const router = Router();
 
 router.get("/zapi/config", authMiddleware, requirePermission("zapi", "view"), (req, res) => zApiController.getConfig(req, res));
+router.get("/zapi/groups", authMiddleware, requirePermission("groups", "view"), (req, res) => zApiController.getGroups(req, res));
+router.get("/zapi/groups/:groupId/messages", authMiddleware, requirePermission("groups", "view"), (req, res) => zApiController.getGroupHistory(req, res));
+router.post("/zapi/groups/:groupId/messages", authMiddleware, requirePermission("groups", "send_message"), (req, res) => zApiController.sendGroupMessage(req, res));
 router.put("/zapi/config", authMiddleware, requirePermission("zapi", "configure"), (req, res) => zApiController.updateConfig(req, res));
 router.post("/zapi/test", authMiddleware, requirePermission("zapi", "configure"), (req, res) => zApiController.testConnection(req, res));
 router.get("/zapi/qr-code", authMiddleware, requirePermission("zapi", "view"), (req, res) => zApiController.getQrCode(req, res));

@@ -147,3 +147,9 @@ O exemplo oficial de `ReceivedCallback` da Z-API pode conter um objeto `contact`
 O callback é confirmado rapidamente e a persistência usa `messageId` como `externalMessageId`. O conteúdo textual salvo é um resumo (`Contato compartilhado: <nome>`), enquanto os campos úteis ficam em `ContactShare`. O vCard bruto não é retornado ao frontend nem incluído em eventos Socket.IO. Se não houver nome nem telefone utilizável, o payload segue o comportamento legado sem criar cartão.
 
 No chat, o atendente autorizado vê o cartão e pode adicionar/editar o contato, abrir suas conversas ou criar uma conversa manual. O servidor verifica RBAC e escopo de departamento em todas as operações; a interface nunca escolhe o `agentId` nem usa o JID do grupo como telefone do contato.
+
+## 12. Atendimento no próprio grupo e envio avulso
+
+O plano 028 adiciona `groupsEnabled`, `groupConversationMode=PRIVATE_LEGACY|IN_GROUP` e `groupResponseMode`. No modo `IN_GROUP`, a menção válida à própria instância cria/reutiliza o chamado identificado pelo grupo, registra o participante autor e mantém confirmação, triagem e atendimento no grupo. O modo privado continua disponível para rollout e rollback.
+
+Mensagens de grupo são persistidas em `GroupMessage` antes do filtro de menção; broadcasts, `fromMe` e menções a terceiros não acionam automação. O catálogo, histórico e envio avulso usam `/api/zapi/groups` e `/api/zapi/groups/:groupId/messages`. O envio exige `groups:send_message`, usa `clientMessageId` e audita `GroupOutboundMessage` sem criar chamado.

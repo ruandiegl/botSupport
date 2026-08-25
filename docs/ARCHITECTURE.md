@@ -110,6 +110,12 @@ Mensagens mantêm autoria independente da atribuição da conversa. `Message.sen
 
 Delegação segue Route → Controller → Service → Repository. O Service resolve o ator pelo JWT, valida RBAC/escopo e o Repository executa atualização otimista e criação de `ConversationAssignment` na mesma transação. O evento `conversation_updated` alimenta a fila e o módulo de notificações cria `CONVERSATION_DELEGATED` direcionada ao novo responsável; Socket.IO é complementar ao REST.
 
+## 7. Atendimento público e mensagens avulsas em grupos
+
+O tratamento de grupos separa o participante individual (autoria e exclusões do bot), o grupo remoto (destino) e a conversa interna (auditoria). `Conversation.channel`/`remoteChatId` evitam que um JID de grupo seja tratado como telefone de contato. `GroupChat` mantém o catálogo, `GroupMessage` registra mensagens recebidas antes da menção e `GroupOutboundMessage` audita envios manuais sem criar conversa.
+
+O webhook persiste o evento antes da regra de menção. Broadcasts e menções a terceiros não acionam o bot. Em `IN_GROUP`, uma menção válida abre/reutiliza o chamado do grupo e todas as entregas automáticas e humanas usam o JID do grupo; em `PRIVATE_LEGACY`, o comportamento privado permanece. A tela `/groups` consulta o catálogo/histórico e envia texto com RBAC, sem expor credenciais.
+
 ## 7. Contatos compartilhados
 
 ## 8. Horários de funcionamento

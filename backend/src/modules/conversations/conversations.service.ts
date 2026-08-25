@@ -193,6 +193,7 @@ export class ConversationsService {
         initials: getInitials(contactName),
       },
       status: summary.status,
+      channel: summary.channel ?? "PRIVATE",
       departmentId: summary.departmentId,
       departmentName: summary.department?.name ?? null,
       assignedAgentId: summary.assignedAgentId,
@@ -245,6 +246,7 @@ export class ConversationsService {
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
       status: conversation.status,
+      channel: conversation.channel ?? "PRIVATE",
       departmentId: conversation.departmentId,
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
@@ -461,6 +463,7 @@ export class ConversationsService {
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
       status: conversation.status,
+      channel: conversation.channel ?? "PRIVATE",
       departmentId: conversation.departmentId,
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
@@ -676,8 +679,11 @@ export class ConversationsService {
     });
 
     // Disparar via Z-API no WhatsApp real
-    if (conversation.contact?.phone) {
-      await zApiService.sendText(conversation.contact.phone, content);
+    const deliveryTarget = conversation.channel === "GROUP" && conversation.remoteChatId
+      ? conversation.remoteChatId
+      : conversation.contact?.phone;
+    if (deliveryTarget) {
+      await zApiService.sendText(deliveryTarget, content);
     }
 
     if (wasDraft) {
@@ -781,7 +787,7 @@ export class ConversationsService {
     await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "SENDING" });
 
     const sendInput = {
-      phone: conversation.contact?.phone || "",
+      phone: conversation.channel === "GROUP" && conversation.remoteChatId ? conversation.remoteChatId : conversation.contact?.phone || "",
       mimeType: metadata.mimeType,
       buffer: input.file!.buffer,
       fileName: metadata.fileName,

@@ -151,6 +151,7 @@ export class ConversationsRepository {
             where: { id: { in: ids } },
             select: {
               id: true,
+              channel: true,
               status: true,
               departmentId: true,
               assignedAgentId: true,
@@ -312,6 +313,8 @@ export class ConversationsRepository {
       where: { id: { in: ids } },
       select: {
         id: true,
+        channel: true,
+        remoteChatId: true,
         status: true,
         departmentId: true,
         assignedAgentId: true,
@@ -443,6 +446,8 @@ export class ConversationsRepository {
       where: { id },
       select: {
         id: true,
+        channel: true,
+        remoteChatId: true,
         status: true,
         departmentId: true,
         assignedAgentId: true,

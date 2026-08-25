@@ -47,6 +47,7 @@ model Agent {
   department              Department?              @relation(fields: [departmentId], references: [id])
   conversations           Conversation[]
   messages                Message[]
+  groupOutboundMessages   GroupOutboundMessage[]
   assignmentFrom          ConversationAssignment[] @relation("AssignmentFrom")
   assignmentTo            ConversationAssignment[] @relation("AssignmentTo")
   assignmentActor         ConversationAssignment[] @relation("AssignmentActor")
@@ -93,6 +94,7 @@ model Contact {
   updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
   conversations  Conversation[]
   messageSenders Message[]      @relation("MessageSenderContact")
+  groupMessageSenders GroupMessage[] @relation("GroupMessageSenderContact")
   phoneNumbers   ContactPhone[] @relation("ContactPhoneOwner")
   sharedCards    ContactShare[] @relation("ContactShareCanonicalContact")
 
@@ -138,6 +140,8 @@ model BotExclusion {
 model Conversation {
   id                   String                   @id @default(uuid())
   contactId            String                   @map("contact_id")
+  channel              String                   @default("PRIVATE")
+  remoteChatId         String?                  @map("remote_chat_id")
   status               String                   @default("OPEN")
   departmentId         String?                  @map("department_id")
   assignedAgentId      String?                  @map("assigned_agent_id")
@@ -155,6 +159,7 @@ model Conversation {
   department           Department?              @relation(fields: [departmentId], references: [id])
   assignedAgent        Agent?                   @relation(fields: [assignedAgentId], references: [id])
   messages             Message[]
+  groupMessages        GroupMessage[]
   flowRevision         FlowRevision?            @relation(fields: [flowRevisionId], references: [id], onDelete: SetNull)
   currentFlowNode      FlowNode?                @relation(fields: [currentFlowNodeId], references: [id], onDelete: SetNull)
   flowEvents           FlowExecutionEvent[]
@@ -166,6 +171,8 @@ model Conversation {
   businessHoursNotices BusinessHoursNotice[]
   groupChatName        String?                  @map("group_chat_name")
   groupParticipant     String?                  @map("group_participant")
+  groupChat            GroupChat?               @relation(fields: [groupChatId], references: [id], onDelete: SetNull)
+  groupChatId          String?                  @map("group_chat_id")
 
   @@index([flowRevisionId])
   @@index([currentFlowNodeId])
@@ -174,7 +181,69 @@ model Conversation {
   @@index([assignedAgentId, status, lastActivityAt])
   @@index([lastActivityAt])
   @@index([warningSentAt])
+  @@index([channel, remoteChatId, status])
+  @@index([groupChatId, status])
   @@map("gtf_conversations")
+}
+
+model GroupChat {
+  id             String          @id @default(uuid())
+  remoteChatId   String          @unique @map("remote_chat_id")
+  name           String
+  isActive       Boolean         @default(true) @map("is_active")
+  unreadCount    Int             @default(0) @map("unread_count")
+  lastMessageAt  DateTime?       @map("last_message_at") @db.Timestamptz
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  conversations  Conversation[]
+  messages       GroupMessage[]
+  outboundMessages GroupOutboundMessage[]
+
+  @@index([isActive, lastMessageAt])
+  @@map("gtf_group_chats")
+}
+
+model GroupMessage {
+  id                       String        @id @default(uuid())
+  groupChatId              String        @map("group_chat_id")
+  conversationId           String?       @map("conversation_id")
+  externalMessageId        String?       @unique @map("external_message_id")
+  direction                String
+  senderType               String        @map("sender_type")
+  senderContactId          String?       @map("sender_contact_id")
+  senderNameSnapshot       String?       @map("sender_name_snapshot")
+  messageType              String        @default("TEXT") @map("message_type")
+  content                  String
+  isMention                Boolean       @default(false) @map("is_mention")
+  createdAt                DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  readAt                   DateTime?     @map("read_at") @db.Timestamptz
+  groupChat                GroupChat     @relation(fields: [groupChatId], references: [id], onDelete: Cascade)
+  conversation             Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  senderContact            Contact?      @relation("GroupMessageSenderContact", fields: [senderContactId], references: [id], onDelete: SetNull)
+
+  @@index([groupChatId, createdAt])
+  @@index([conversationId, createdAt])
+  @@index([senderContactId])
+  @@map("gtf_group_messages")
+}
+
+model GroupOutboundMessage {
+  id                String    @id @default(uuid())
+  groupChatId       String    @map("group_chat_id")
+  agentId           String    @map("agent_id")
+  clientMessageId   String    @unique @map("client_message_id")
+  providerMessageId String?   @map("provider_message_id")
+  content           String
+  status            String    @default("PENDING")
+  failureCode       String?   @map("failure_code")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  sentAt            DateTime? @map("sent_at") @db.Timestamptz
+  groupChat         GroupChat @relation(fields: [groupChatId], references: [id], onDelete: Cascade)
+  agent             Agent     @relation(fields: [agentId], references: [id], onDelete: Restrict)
+
+  @@index([groupChatId, createdAt])
+  @@index([agentId, createdAt])
+  @@map("gtf_group_outbound_messages")
 }
 
 model Message {
@@ -352,6 +421,8 @@ model ZApiConfig {
   groupCooldownSeconds  Int                   @default(60) @map("group_cooldown_seconds")
   groupConfirmInGroup   Boolean               @default(false) @map("group_confirm_in_group")
   groupConfirmMessage   String?               @map("group_confirm_message")
+  groupConversationMode String                @default("PRIVATE_LEGACY") @map("group_conversation_mode")
+  groupResponseMode     String                @default("ANY_PARTICIPANT") @map("group_response_mode")
   businessHoursPolicies BusinessHoursPolicy[]
   updatedAt             DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 

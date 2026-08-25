@@ -32,6 +32,8 @@ export class ZApiRepository {
     groupCooldownSeconds?: number;
     groupConfirmInGroup?: boolean;
     groupConfirmMessage?: string | null;
+    groupConversationMode?: string;
+    groupResponseMode?: string;
   }) {
     const existing = await this.getConfig();
     if (existing) {
@@ -48,6 +50,8 @@ export class ZApiRepository {
           groupCooldownSeconds: data.groupCooldownSeconds ?? existing.groupCooldownSeconds,
           groupConfirmInGroup: data.groupConfirmInGroup ?? existing.groupConfirmInGroup,
           groupConfirmMessage: data.groupConfirmMessage !== undefined ? data.groupConfirmMessage : existing.groupConfirmMessage,
+          groupConversationMode: data.groupConversationMode ?? existing.groupConversationMode,
+          groupResponseMode: data.groupResponseMode ?? existing.groupResponseMode,
           updatedAt: new Date(),
         },
       });
@@ -65,6 +69,8 @@ export class ZApiRepository {
         groupCooldownSeconds: data.groupCooldownSeconds ?? 60,
         groupConfirmInGroup: data.groupConfirmInGroup ?? false,
         groupConfirmMessage: data.groupConfirmMessage ?? null,
+        groupConversationMode: data.groupConversationMode ?? "PRIVATE_LEGACY",
+        groupResponseMode: data.groupResponseMode ?? "ANY_PARTICIPANT",
       },
     });
   }
@@ -101,7 +107,15 @@ export class ZApiRepository {
     });
   }
 
-  async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM", group?: { chatName?: string | null; participant?: string | null }) {
+  async findActiveConversationByGroup(remoteChatId: string) {
+    return prisma.conversation.findFirst({
+      where: { channel: "GROUP", remoteChatId, status: { notIn: ["CLOSED", "DRAFT"] } },
+      include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+      orderBy: { startedAt: "desc" },
+    });
+  }
+
+  async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM", group?: { chatName?: string | null; participant?: string | null; remoteChatId?: string | null; groupChatId?: string | null; channel?: "GROUP" | "PRIVATE" }) {
     const now = new Date();
     return prisma.conversation.create({
       data: {
@@ -111,6 +125,9 @@ export class ZApiRepository {
         lastActivityAt: now,
         ...(status === "OPEN" ? { queuedAt: now } : {}),
         ...(group ? { groupChatName: group.chatName ?? null, groupParticipant: group.participant ?? null } : {}),
+        ...(group?.channel ? { channel: group.channel } : {}),
+        ...(group?.remoteChatId ? { remoteChatId: group.remoteChatId } : {}),
+        ...(group?.groupChatId ? { groupChatId: group.groupChatId } : {}),
       },
       include: {
         contact: true,
@@ -166,6 +183,113 @@ export class ZApiRepository {
     });
     await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
     return message;
+  }
+
+  async upsertGroupChat(remoteChatId: string, name: string, lastMessageAt = new Date()) {
+    const safeName = name.trim().slice(0, 300) || "Grupo do WhatsApp";
+    return prisma.groupChat.upsert({
+      where: { remoteChatId },
+      create: { remoteChatId, name: safeName, lastMessageAt },
+      update: { name: safeName, lastMessageAt, isActive: true },
+    });
+  }
+
+  async addGroupMessage(data: {
+    groupChatId: string;
+    conversationId?: string | null;
+    externalMessageId?: string | null;
+    content: string;
+    messageType?: string;
+    senderContactId?: string | null;
+    senderNameSnapshot?: string | null;
+    isMention?: boolean;
+  }) {
+    if (data.externalMessageId) {
+      const existing = await prisma.groupMessage.findUnique({ where: { externalMessageId: data.externalMessageId } });
+      if (existing) return { duplicate: true, message: existing };
+    }
+    try {
+      const message = await prisma.groupMessage.create({
+        data: {
+          groupChatId: data.groupChatId,
+          conversationId: data.conversationId ?? null,
+          externalMessageId: data.externalMessageId ?? null,
+          direction: "IN",
+          senderType: "CLIENT",
+          senderContactId: data.senderContactId ?? null,
+          senderNameSnapshot: data.senderNameSnapshot ?? null,
+          messageType: data.messageType ?? "TEXT",
+          content: data.content,
+          isMention: data.isMention ?? false,
+        },
+      });
+      await prisma.groupChat.update({ where: { id: data.groupChatId }, data: { lastMessageAt: message.createdAt, unreadCount: { increment: 1 } } });
+      return { duplicate: false, message };
+    } catch (error: any) {
+      if (error?.code !== "P2002" || !data.externalMessageId) throw error;
+      const existing = await prisma.groupMessage.findUnique({ where: { externalMessageId: data.externalMessageId } });
+      if (!existing) throw error;
+      return { duplicate: true, message: existing };
+    }
+  }
+
+  async linkGroupMessageToConversation(externalMessageId: string | undefined, conversationId: string) {
+    if (!externalMessageId) return;
+    await prisma.groupMessage.updateMany({ where: { externalMessageId }, data: { conversationId } });
+  }
+
+  async listGroupChats(query?: string) {
+    return prisma.groupChat.findMany({
+      where: { isActive: true, ...(query?.trim() ? { name: { contains: query.trim(), mode: "insensitive" } } : {}) },
+      orderBy: [{ lastMessageAt: "desc" }, { name: "asc" }],
+      take: 100,
+      include: { conversations: { where: { status: { notIn: ["CLOSED", "DRAFT"] } }, select: { id: true, status: true, assignedAgentId: true }, take: 1 } },
+    });
+  }
+
+  async findGroupChatById(id: string) {
+    return prisma.groupChat.findFirst({ where: { id, isActive: true } });
+  }
+
+  async listGroupHistory(groupChatId: string) {
+    const [incoming, outgoing] = await Promise.all([
+      prisma.groupMessage.findMany({
+        where: { groupChatId },
+        orderBy: { createdAt: "desc" },
+        take: 100,
+        include: { senderContact: { select: { name: true, phone: true } } },
+      }),
+      prisma.groupOutboundMessage.findMany({ where: { groupChatId }, orderBy: { createdAt: "desc" }, take: 100, include: { agent: { select: { name: true } } } }),
+    ]);
+    return [
+      ...incoming.map((message) => ({ id: message.id, direction: message.direction, content: message.content, messageType: message.messageType, senderName: message.senderNameSnapshot || message.senderContact?.name || "Participante", status: "RECEIVED", createdAt: message.createdAt.toISOString() })),
+      ...outgoing.map((message) => ({ id: message.id, direction: "OUT", content: message.content, messageType: "TEXT", senderName: message.agent.name, status: message.status, createdAt: message.createdAt.toISOString() })),
+    ].sort((a, b) => a.createdAt.localeCompare(b.createdAt)).slice(-100);
+  }
+
+  async findGroupOutboundByClientMessageId(clientMessageId: string) {
+    return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId } });
+  }
+
+  async createGroupOutboundMessage(data: { groupChatId: string; agentId: string; clientMessageId: string; content: string }) {
+    try {
+      return await prisma.groupOutboundMessage.create({ data });
+    } catch (error: any) {
+      if (error?.code === "P2002") return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId: data.clientMessageId } });
+      throw error;
+    }
+  }
+
+  async updateGroupOutboundMessage(id: string, data: { status: string; providerMessageId?: string | null; failureCode?: string | null }) {
+    return prisma.groupOutboundMessage.update({
+      where: { id },
+      data: {
+        status: data.status,
+        providerMessageId: data.providerMessageId ?? undefined,
+        failureCode: data.failureCode ?? undefined,
+        ...(data.status === "SENT" ? { sentAt: new Date() } : {}),
+      },
+    });
   }
 
   async findContactByAnyPhone(phones: string[]) {

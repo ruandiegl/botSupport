@@ -16,6 +16,8 @@ export interface ZApiConfig {
   groupCooldownSeconds: number;
   groupConfirmInGroup: boolean;
   groupConfirmMessage?: string | null;
+  groupConversationMode?: "PRIVATE_LEGACY" | "IN_GROUP";
+  groupResponseMode?: "ANY_PARTICIPANT" | "ORIGIN_PARTICIPANT";
   updatedAt?: string;
 }
 
