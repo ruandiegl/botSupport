@@ -3,7 +3,7 @@ import { logger } from "../../shared/logger.js";
 import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import { flowExecutionService } from "../flow-execution/flow-execution.service.js";
-import type { ZApiReceivedWebhook } from "./zapi.schemas.js";
+import type { ZApiDeliveryWebhook, ZApiMessageStatusWebhook, ZApiReceivedWebhook } from "./zapi.schemas.js";
 import { mediaCryptoService } from "../media/media-crypto.service.js";
 import { mediaService } from "../media/media.service.js";
 import { createHash } from "node:crypto";
@@ -656,6 +656,14 @@ function normalizeWebhookUrl(webhookUrl: string): string {
 
   try {
     const parsed = new URL(trimmed);
+    // Older deployments stored the receive callback with a terminal
+    // `/message`, `/delivery` or `/status` segment. Keep one canonical base
+    // URL so the three Z-API callbacks are never registered below a route
+    // that only exists for a single event type.
+    parsed.pathname = parsed.pathname.replace(/\/(?:message|delivery|status)\/?$/i, "");
+    if (/\/webhooks\/zapi$/i.test(parsed.pathname)) {
+      parsed.pathname = parsed.pathname.replace(/\/webhooks\/zapi$/i, "/webhooks/z-api");
+    }
     if (parsed.pathname === "/" || parsed.pathname === "") {
       parsed.pathname = "/api/webhooks/z-api";
     }
@@ -678,7 +686,11 @@ export class ZApiService {
 
   private formatTarget(target: string): string {
     const value = String(target || "").trim();
-    if (value.includes("-") || value.endsWith("@g.us") || value.endsWith("@lid")) return value;
+    // A private number may arrive formatted as "+55 (24) 99256-6342". Do
+    // not mistake its hyphen for a group separator: Z-API requires private
+    // recipients as digits only. Preserve only explicit WhatsApp JIDs (or
+    // the un-suffixed group-id form returned by get/chats).
+    if (value.includes("@") || /^\d{8,}-\d+$/.test(value)) return value;
     return this.formatPhone(value);
   }
 
@@ -1379,15 +1391,18 @@ export class ZApiService {
       throw new Error("A Z-API exige um webhook público HTTPS; localhost não recebe mensagens externas.");
     }
 
+    const deliveryWebhookUrl = this.resolveDeliveryWebhookUrl(parsedWebhookUrl, "delivery");
+    const statusWebhookUrl = this.resolveDeliveryWebhookUrl(parsedWebhookUrl, "status");
+    const headers = {
+      "Content-Type": "application/json",
+      ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
+    };
     const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/update-webhook-received`;
 
     try {
       const response = await fetch(url, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
-        },
+        headers,
         body: JSON.stringify({ value: normalizedWebhookUrl }),
       });
 
@@ -1398,13 +1413,94 @@ export class ZApiService {
         throw new Error(errorMsg);
       }
 
+      let deliveryWebhookConfigured = true;
+      let deliveryWebhookWarning: string | undefined;
+      try {
+        const deliveryUrl = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/update-webhook-delivery`;
+        const deliveryResponse = await fetch(deliveryUrl, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ value: deliveryWebhookUrl }),
+        });
+        const deliveryData = (await deliveryResponse.json().catch(() => ({}))) as any;
+        if (!deliveryResponse.ok) {
+          deliveryWebhookConfigured = false;
+          deliveryWebhookWarning = parseZApiError(deliveryResponse.status, deliveryData);
+          logger.warn({ status: deliveryResponse.status, deliveryWebhookUrl, error: deliveryWebhookWarning }, "Webhook de entrega Z-API não foi registrado");
+        }
+      } catch (error: any) {
+        deliveryWebhookConfigured = false;
+        deliveryWebhookWarning = error?.message || "Não foi possível registrar o webhook de entrega.";
+        logger.warn({ deliveryWebhookUrl, error: deliveryWebhookWarning }, "Falha ao registrar webhook de entrega Z-API");
+      }
+
+      let statusWebhookConfigured = true;
+      let statusWebhookWarning: string | undefined;
+      try {
+        const statusUrl = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/update-webhook-message-status`;
+        const statusResponse = await fetch(statusUrl, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ value: statusWebhookUrl }),
+        });
+        const statusData = (await statusResponse.json().catch(() => ({}))) as any;
+        if (!statusResponse.ok) {
+          statusWebhookConfigured = false;
+          statusWebhookWarning = parseZApiError(statusResponse.status, statusData);
+          logger.warn({ status: statusResponse.status, statusWebhookUrl, error: statusWebhookWarning }, "Webhook de status Z-API não foi registrado");
+        }
+      } catch (error: any) {
+        statusWebhookConfigured = false;
+        statusWebhookWarning = error?.message || "Não foi possível registrar o webhook de status.";
+        logger.warn({ statusWebhookUrl, error: statusWebhookWarning }, "Falha ao registrar webhook de status Z-API");
+      }
+
+      // Z-API only sends messages sent by the connected number to the receive
+      // webhook when this option is enabled. Keeping it on makes the local
+      // conversation timeline auditable for media and text alike.
+      let sentByMeConfigured = true;
+      let sentByMeWarning: string | undefined;
+      try {
+        const sentByMeUrl = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/update-notify-sent-by-me`;
+        const sentByMeResponse = await fetch(sentByMeUrl, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ notifySentByMe: true }),
+        });
+        const sentByMeData = (await sentByMeResponse.json().catch(() => ({}))) as any;
+        if (!sentByMeResponse.ok) {
+          sentByMeConfigured = false;
+          sentByMeWarning = parseZApiError(sentByMeResponse.status, sentByMeData);
+          logger.warn({ status: sentByMeResponse.status, error: sentByMeWarning }, "Notificação de mensagens enviadas pela própria instância não foi ativada");
+        }
+      } catch (error: any) {
+        sentByMeConfigured = false;
+        sentByMeWarning = error?.message || "Não foi possível ativar notificações de mensagens enviadas pela instância.";
+        logger.warn({ error: sentByMeWarning }, "Falha ao ativar notifySentByMe Z-API");
+      }
+
       await zApiRepository.upsertConfig({
         instanceId: config.instanceId,
         token: config.token,
         webhookUrl: normalizedWebhookUrl,
       });
 
-      return { success: true, message: "URL de Webhook registrada com sucesso na Z-API!" };
+      return {
+        success: true,
+        deliveryWebhookConfigured,
+        statusWebhookConfigured,
+        sentByMeConfigured,
+        ...((deliveryWebhookWarning || statusWebhookWarning || sentByMeWarning) ? {
+          warning: [
+            deliveryWebhookWarning ? `entrega: ${deliveryWebhookWarning}` : null,
+            statusWebhookWarning ? `status: ${statusWebhookWarning}` : null,
+            sentByMeWarning ? `mensagens enviadas: ${sentByMeWarning}` : null,
+          ].filter(Boolean).join("; "),
+        } : {}),
+        message: deliveryWebhookConfigured && statusWebhookConfigured && sentByMeConfigured
+          ? "Webhooks de recebimento, entrega e status registrados com sucesso na Z-API!"
+          : "Webhook de recebimento registrado. Verifique os avisos para acompanhar a entrega das mensagens.",
+      };
     } catch (err: any) {
       throw new Error(err.message || "Não foi possível registrar o webhook na Z-API.");
     }
@@ -1903,6 +1999,106 @@ export class ZApiService {
     conversationEvents.emit("conversation_updated", { conversationId, status: "OPEN" });
 
     return { status: isNewConversation ? "welcome_sent" : "menu_resent" };
+  }
+
+  private resolveDeliveryWebhookUrl(parsedWebhookUrl: URL, kind: "delivery" | "status"): string {
+    const configured = (kind === "delivery" ? process.env.ZAPI_DELIVERY_WEBHOOK_URL : process.env.ZAPI_STATUS_WEBHOOK_URL)?.trim();
+    const candidate = configured || (() => {
+      const url = new URL(parsedWebhookUrl.toString());
+      url.pathname = `${url.pathname.replace(/\/$/, "")}/${kind}`;
+      return url.toString();
+    })();
+    let parsed: URL;
+    try {
+      parsed = new URL(candidate);
+    } catch {
+      throw new Error("Informe uma URL pública HTTPS válida para o webhook de entrega.");
+    }
+    if (parsed.protocol !== "https:" || ["localhost", "127.0.0.1"].includes(parsed.hostname)) {
+      throw new Error("A Z-API exige um webhook de entrega público HTTPS.");
+    }
+    return parsed.toString();
+  }
+
+  async handleDeliveryWebhook(payload: ZApiDeliveryWebhook) {
+    const providerMessageIds = [payload.messageId, payload.zaapId].filter((value): value is string => Boolean(value && value.trim()));
+    const providerMessageId = providerMessageIds[0] || null;
+    const failureCode = payload.error?.trim() || null;
+    const media = await zApiRepository.findOutgoingMediaByProviderMessageIds(providerMessageIds);
+    const groupOutbound = await zApiRepository.findGroupOutboundByProviderMessageIds(providerMessageIds);
+    let mediaUpdated = false;
+    let groupUpdated = false;
+
+    if (failureCode) {
+      if (media) {
+        mediaUpdated = (await zApiRepository.markOutgoingMediaDeliveryFailed(media.id, failureCode)).count > 0;
+      }
+      if (groupOutbound) {
+        groupUpdated = (await zApiRepository.markGroupOutboundDeliveryFailed(groupOutbound.id, failureCode)).count > 0;
+      }
+    }
+
+    const status = failureCode ? "FAILED" : "DELIVERED";
+    if (media) {
+      socketEmitter.emitToConversation(media.conversationId, "media:delivery", {
+        conversationId: media.conversationId,
+        providerMessageId,
+        status,
+        failureCode,
+      });
+    }
+    if (groupOutbound) {
+      socketEmitter.emitToGroup(groupOutbound.groupChatId, "group:media_delivery", {
+        groupId: groupOutbound.groupChatId,
+        providerMessageId,
+        status,
+        failureCode,
+      });
+    }
+
+    logger.info({
+      callbackType: payload.type,
+      providerMessageId,
+      status,
+      matchedMedia: Boolean(media),
+      matchedGroupMedia: Boolean(groupOutbound),
+      updated: mediaUpdated || groupUpdated,
+    }, "Callback de entrega Z-API processado");
+
+    return {
+      status: failureCode ? "delivery_failed" : "delivered",
+      providerMessageId,
+      updated: mediaUpdated || groupUpdated,
+    };
+  }
+
+  async handleMessageStatusWebhook(payload: ZApiMessageStatusWebhook) {
+    const providerMessageIds = payload.ids.flatMap((value: unknown) => {
+      if (typeof value === "string" || typeof value === "number") return [String(value).trim()];
+      if (!value || typeof value !== "object") return [];
+      const item = value as Record<string, unknown>;
+      return [item.messageId, item.zaapId, item.id].filter((id): id is string | number => typeof id === "string" || typeof id === "number").map(String);
+    }).filter(Boolean);
+    const media = await zApiRepository.findOutgoingMediaByProviderMessageIds(providerMessageIds);
+    const groupOutbound = await zApiRepository.findGroupOutboundByProviderMessageIds(providerMessageIds);
+    const status = payload.status;
+    if (media) {
+      socketEmitter.emitToConversation(media.conversationId, "media:delivery", {
+        conversationId: media.conversationId,
+        providerMessageId: media.providerMessageId,
+        status,
+        failureCode: null,
+      });
+    }
+    if (groupOutbound) {
+      socketEmitter.emitToGroup(groupOutbound.groupChatId, "group:media_delivery", {
+        groupId: groupOutbound.groupChatId,
+        providerMessageId: groupOutbound.providerMessageId,
+        status,
+        failureCode: null,
+      });
+    }
+    return { status: status.toLowerCase(), matched: Boolean(media || groupOutbound), providerMessageIds };
   }
 
   async sendOptionList(phone: string, message: string, options: BotOption[], preferSections = false): Promise<any> {

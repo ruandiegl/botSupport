@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { logger } from "../../shared/logger.js";
 import { zApiService } from "./zapi.service.js";
-import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema, SendGroupMessageSchema } from "./zapi.schemas.js";
+import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiDeliveryWebhookSchema, ZApiMessageStatusWebhookSchema, ZApiReceivedWebhookSchema, SendGroupMessageSchema } from "./zapi.schemas.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { MultipartError, readMultipartForm } from "../../shared/multipart.js";
 import { outboundMediaBodyLimit } from "../conversations/outgoing-media.js";
@@ -177,6 +177,36 @@ export class ZApiController {
   }
 
   async handleWebhook(req: Request, res: Response): Promise<void> {
+    const statusParsed = ZApiMessageStatusWebhookSchema.safeParse(req.body);
+    if (statusParsed.success) {
+      try {
+        const result = await zApiService.handleMessageStatusWebhook(statusParsed.data);
+        logger.info(
+          { callbackType: statusParsed.data.type, status: statusParsed.data.status, matched: result.matched },
+          "Webhook de status de mensagem Z-API processado",
+        );
+        res.json({ value: true, ...result });
+      } catch (err: any) {
+        res.status(500).json({ error: err.message });
+      }
+      return;
+    }
+
+    const deliveryParsed = ZApiDeliveryWebhookSchema.safeParse(req.body);
+    if (deliveryParsed.success) {
+      try {
+        const result = await zApiService.handleDeliveryWebhook(deliveryParsed.data);
+        logger.info(
+          { callbackType: deliveryParsed.data.type, result: result.status, providerMessageId: result.providerMessageId },
+          "Webhook de entrega Z-API processado",
+        );
+        res.json({ value: true, ...result });
+      } catch (err: any) {
+        res.status(500).json({ error: err.message });
+      }
+      return;
+    }
+
     const parsed = ZApiReceivedWebhookSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ error: "Callback Z-API inválido.", issues: parsed.error.flatten().fieldErrors });

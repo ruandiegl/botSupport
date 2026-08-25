@@ -329,6 +329,7 @@ export class ZApiRepository {
           sizeBytes: message.sizeBytes || 0,
           status: message.status,
           providerMessageId: message.providerMessageId,
+          failureCode: message.failureCode,
           createdAt: message.createdAt.toISOString(),
         },
       })),
@@ -346,6 +347,15 @@ export class ZApiRepository {
 
   async findGroupOutboundByClientMessageId(clientMessageId: string) {
     return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId }, include: { agent: { select: { name: true } } } });
+  }
+
+  async findGroupOutboundByProviderMessageIds(providerMessageIds: string[]) {
+    const ids = providerMessageIds.filter(Boolean);
+    if (!ids.length) return null;
+    return prisma.groupOutboundMessage.findFirst({
+      where: { providerMessageId: { in: ids } },
+      select: { id: true, groupChatId: true, status: true, providerMessageId: true },
+    });
   }
 
   async createGroupOutboundMessage(data: {
@@ -382,6 +392,29 @@ export class ZApiRepository {
       await prisma.groupChat.update({ where: { id: updated.groupChatId }, data: { lastMessageAt: updated.sentAt ?? updated.createdAt } });
     }
     return updated;
+  }
+
+  async findOutgoingMediaByProviderMessageIds(providerMessageIds: string[]) {
+    const ids = providerMessageIds.filter(Boolean);
+    if (!ids.length) return null;
+    return prisma.outgoingMedia.findFirst({
+      where: { providerMessageId: { in: ids } },
+      select: { id: true, conversationId: true, status: true, providerMessageId: true },
+    });
+  }
+
+  async markOutgoingMediaDeliveryFailed(id: string, failureCode: string) {
+    return prisma.outgoingMedia.updateMany({
+      where: { id, status: { in: ["PENDING", "SENDING", "SENT"] } },
+      data: { status: "FAILED", failureCode: failureCode.slice(0, 160) },
+    });
+  }
+
+  async markGroupOutboundDeliveryFailed(id: string, failureCode: string) {
+    return prisma.groupOutboundMessage.updateMany({
+      where: { id, status: { in: ["PENDING", "SENDING", "SENT"] } },
+      data: { status: "FAILED", failureCode: failureCode.slice(0, 500) },
+    });
   }
 
   async findAgentById(id: string) {

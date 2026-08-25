@@ -16,9 +16,13 @@ router.get("/zapi/qr-code", authMiddleware, requirePermission("zapi", "view"), (
 router.post("/zapi/disconnect", authMiddleware, requirePermission("zapi", "configure"), (req, res) => zApiController.disconnect(req, res));
 router.post("/zapi/webhook-url", authMiddleware, requirePermission("zapi", "configure"), (req, res) => zApiController.setWebhookUrl(req, res));
 router.post("/webhooks/z-api", (req, res) => zApiController.handleWebhook(req, res));
+router.post("/webhooks/z-api/delivery", (req, res) => zApiController.handleWebhook(req, res));
+router.post("/webhooks/z-api/status", (req, res) => zApiController.handleWebhook(req, res));
 // Aliases kept for webhook URLs registered by older deployments and the PRD
 // path (`/webhooks/zapi/message`). All aliases share the same idempotent handler.
 router.post("/webhooks/zapi/message", (req, res) => zApiController.handleWebhook(req, res));
 router.post("/webhooks/z-api/message", (req, res) => zApiController.handleWebhook(req, res));
+router.post("/webhooks/zapi/delivery", (req, res) => zApiController.handleWebhook(req, res));
+router.post("/webhooks/zapi/status", (req, res) => zApiController.handleWebhook(req, res));
 
 export default router;

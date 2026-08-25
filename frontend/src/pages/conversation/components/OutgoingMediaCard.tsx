@@ -23,6 +23,20 @@ function Icon({ type }: { type: OutgoingMedia["type"] }) {
   return <FileText />;
 }
 
+function failureLabel(reason?: string | null) {
+  const normalized = reason?.toLowerCase() || "";
+  if (normalized.includes("size") || normalized.includes("large") || normalized.includes("too big")) {
+    return "O WhatsApp recusou o arquivo porque ele é grande demais.";
+  }
+  if (normalized.includes("format") || normalized.includes("mime") || normalized.includes("type")) {
+    return "O WhatsApp recusou o formato deste arquivo.";
+  }
+  if (normalized.includes("not found") || normalized.includes("media")) {
+    return "A mídia não pôde ser processada pela Z-API.";
+  }
+  return "Não foi possível entregar esta mídia ao WhatsApp. Tente enviar novamente.";
+}
+
 export function OutgoingMediaCard({ media }: { media: OutgoingMedia }) {
   const failed = media.status === "FAILED";
   const sending = media.status === "PENDING" || media.status === "SENDING";
@@ -32,7 +46,7 @@ export function OutgoingMediaCard({ media }: { media: OutgoingMedia }) {
       <AttachmentContent>
         <AttachmentTitle>{media.fileName || label(media.type)}</AttachmentTitle>
         <AttachmentDescription>
-          {failed ? "Falha ao enviar para o WhatsApp" : sending ? "Enviando para o WhatsApp…" : "Enviado · arquivo não retido por política de privacidade"}
+          {failed ? failureLabel(media.failureCode) : sending ? "Enviando para o WhatsApp…" : "Aceito pela Z-API · aguardando confirmação do WhatsApp"}
         </AttachmentDescription>
       </AttachmentContent>
       <Badge variant={failed ? "destructive" : sending ? "outline" : "secondary"}>

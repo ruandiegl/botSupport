@@ -14,7 +14,8 @@ initSocketIO(httpServer);
 const server = httpServer.listen(PORT, "0.0.0.0", () => {
   logger.info(`Servidor GTF-Bot Backend rodando na porta ${PORT} com suporte a Socket.IO`);
 
-  if (process.env.ZAPI_REGISTER_WEBHOOK_ON_STARTUP === "true") {
+  const autoRegister = process.env.ZAPI_REGISTER_WEBHOOK_ON_STARTUP !== "false";
+  if (autoRegister) {
     const webhookUrl = process.env.ZAPI_WEBHOOK_URL?.trim();
     if (!webhookUrl) {
       logger.warn("Registro automático do webhook ignorado: ZAPI_WEBHOOK_URL não configurada");

@@ -192,6 +192,15 @@ export default function ConversationPage() {
     }
   }, [id]));
 
+  // A mídia só é considerada realmente entregue depois do DeliveryCallback
+  // da Z-API. Em caso de rejeição posterior, o backend altera o registro para
+  // FAILED e este evento atualiza imediatamente o cartão já aberto no chat.
+  useSocketEvent("media:delivery", useCallback((data: any) => {
+    if (data.conversationId === id) {
+      queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+    }
+  }, [id]));
+
   useEffect(() => {
     const container = messagesRef.current;
     if (!container) return;

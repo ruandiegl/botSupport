@@ -33,6 +33,10 @@ function normalizeWebhookUrl(webhookUrl: string): string {
 
   try {
     const parsed = new URL(trimmed);
+    parsed.pathname = parsed.pathname.replace(/\/(?:message|delivery|status)\/?$/i, "");
+    if (/\/webhooks\/zapi$/i.test(parsed.pathname)) {
+      parsed.pathname = parsed.pathname.replace(/\/webhooks\/zapi$/i, "/webhooks/z-api");
+    }
     if (parsed.pathname === "/" || parsed.pathname === "") {
       parsed.pathname = "/api/webhooks/z-api";
     }
@@ -436,8 +440,8 @@ export default function ZApiAdmin() {
               </Button>
 
               {setWebhook.isSuccess && (
-                <p style={{ color: "#10b981", fontSize: 11, marginTop: 6, textAlign: "center" }}>
-                  ✓ Webhook registrado com sucesso!
+                <p style={{ color: setWebhook.data?.warning ? "#f59e0b" : "#10b981", fontSize: 11, marginTop: 6, textAlign: "center" }}>
+                  {setWebhook.data?.warning ? `⚠ ${setWebhook.data.warning}` : "✓ Webhooks de recebimento, entrega e status registrados com sucesso!"}
                 </p>
               )}
               {setWebhook.isError && (

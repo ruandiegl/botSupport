@@ -98,9 +98,23 @@ export function useDisconnectZApi() {
 }
 
 export function useSetZApiWebhook() {
-  return useMutation<{ success: boolean; message: string }, Error, { webhookUrl: string }>({
+  return useMutation<{
+    success: boolean;
+    message: string;
+    warning?: string;
+    deliveryWebhookConfigured?: boolean;
+    statusWebhookConfigured?: boolean;
+    sentByMeConfigured?: boolean;
+  }, Error, { webhookUrl: string }>({
     mutationFn: (data) =>
-      apiFetch<{ success: boolean; message: string }>("/zapi/webhook-url", {
+      apiFetch<{
+        success: boolean;
+        message: string;
+        warning?: string;
+        deliveryWebhookConfigured?: boolean;
+        statusWebhookConfigured?: boolean;
+        sentByMeConfigured?: boolean;
+      }>("/zapi/webhook-url", {
         method: "POST",
         body: JSON.stringify(data),
       }),

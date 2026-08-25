@@ -175,6 +175,53 @@ export const ZApiReceivedWebhookSchema = z
     }
   });
 
+/**
+ * Callback sent by Z-API after an outbound message is delivered (or rejected)
+ * by WhatsApp. The provider may identify the message with either `messageId`
+ * or `zaapId`, depending on the endpoint and instance version.
+ */
+export const ZApiDeliveryWebhookSchema = z
+  .object({
+    type: z.literal("DeliveryCallback"),
+    phone: z.union([z.string(), z.number()]).transform(String),
+    zaapId: z.string().min(1).max(300).optional(),
+    messageId: z.string().min(1).max(300).optional(),
+    instanceId: z.string().max(300).optional(),
+    momment: z.number().int().nonnegative().optional(),
+    error: z.string().max(1000).nullable().optional(),
+  })
+  .passthrough()
+  .superRefine((value, context) => {
+    if (!value.zaapId && !value.messageId) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["messageId"],
+        message: "O callback de entrega precisa informar messageId ou zaapId.",
+      });
+    }
+  });
+
+/**
+ * Callback emitted by Z-API when the WhatsApp message status changes. The
+ * `ids` array is documented as message identifiers, but older instances may
+ * return identifier objects, so both forms are accepted and normalized by
+ * the service before matching our outbound records.
+ */
+export const ZApiMessageStatusWebhookSchema = z
+  .object({
+    instanceId: z.union([z.string(), z.number()]).transform(String).optional(),
+    status: z.enum(["SENT", "RECEIVED", "READ", "READ_BY_ME", "PLAYED"]),
+    ids: z.array(z.union([z.string(), z.number(), z.record(z.unknown())])).min(1).max(100),
+    momment: z.number().int().nonnegative().optional(),
+    phoneDevice: z.number().int().optional(),
+    phone: z.union([z.string(), z.number()]).transform(String).optional(),
+    type: z.literal("MessageStatusCallback"),
+    isGroup: z.boolean().optional(),
+  })
+  .passthrough();
+
 export type UpdateZApiConfig = z.infer<typeof UpdateZApiConfigSchema>;
 export type TestZApiConnection = z.infer<typeof TestZApiConnectionSchema>;
 export type ZApiReceivedWebhook = z.infer<typeof ZApiReceivedWebhookSchema>;
+export type ZApiDeliveryWebhook = z.infer<typeof ZApiDeliveryWebhookSchema>;
+export type ZApiMessageStatusWebhook = z.infer<typeof ZApiMessageStatusWebhookSchema>;

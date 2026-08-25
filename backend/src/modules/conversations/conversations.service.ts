@@ -114,6 +114,7 @@ export class ConversationsService {
             sizeBytes: message.outgoingMedia.sizeBytes,
             status: message.outgoingMedia.status,
             providerMessageId: message.outgoingMedia.providerMessageId,
+            failureCode: message.outgoingMedia.failureCode,
             createdAt: message.outgoingMedia.createdAt.toISOString(),
           }
         : null,

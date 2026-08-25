@@ -7,6 +7,7 @@ import {
   parseIncomingMessage,
   parseZApiTimestamp,
 } from "../dist/modules/zapi/zapi.service.js";
+import { ZApiDeliveryWebhookSchema } from "../dist/modules/zapi/zapi.schemas.js";
 
 const options = [
   { label: "Suporte", departmentId: "support" },
@@ -114,6 +115,26 @@ test("ignora callbacks que não são mensagens de clientes", () => {
     }),
     null
   );
+});
+
+test("valida callback de entrega com messageId ou zaapId", () => {
+  assert.equal(ZApiDeliveryWebhookSchema.safeParse({
+    type: "DeliveryCallback",
+    phone: "5511999999999",
+    messageId: "provider-message-1",
+    momment: 1730918668000,
+    error: null,
+  }).success, true);
+  assert.equal(ZApiDeliveryWebhookSchema.safeParse({
+    type: "DeliveryCallback",
+    phone: "5511999999999",
+    zaapId: "provider-zaap-1",
+    error: "media rejected",
+  }).success, true);
+  assert.equal(ZApiDeliveryWebhookSchema.safeParse({
+    type: "DeliveryCallback",
+    phone: "5511999999999",
+  }).success, false);
 });
 
 test("gera o payload oficial de botões da Z-API", () => {

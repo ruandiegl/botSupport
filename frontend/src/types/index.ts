@@ -74,6 +74,7 @@ export interface OutgoingMedia {
   sizeBytes: number;
   status: OutgoingMediaStatus;
   providerMessageId?: string | null;
+  failureCode?: string | null;
   createdAt: string;
 }
 

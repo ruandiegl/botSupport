@@ -9,6 +9,9 @@ const source = readFileSync(join(root, "src", "modules", "zapi", "zapi.service.t
 const schema = readFileSync(join(root, "prisma", "schema.prisma"), "utf8");
 const migration = readFileSync(join(root, "prisma", "migrations", "20260824150000_add_outgoing_media_metadata", "migration.sql"), "utf8");
 const routes = readFileSync(join(root, "src", "modules", "conversations", "conversations.routes.ts"), "utf8");
+const zapiRoutes = readFileSync(join(root, "src", "modules", "zapi", "zapi.routes.ts"), "utf8");
+const zapiController = readFileSync(join(root, "src", "modules", "zapi", "zapi.controller.ts"), "utf8");
+const zapiService = readFileSync(join(root, "src", "modules", "zapi", "zapi.service.ts"), "utf8");
 
 const id = "00000000-0000-4000-8000-000000000001";
 
@@ -60,4 +63,32 @@ test("contrato de saída usa endpoints específicos e migration somente aditiva"
   assert.match(schema, /clientMessageId\s+String\s+@unique/);
   assert.match(migration, /CREATE TABLE IF NOT EXISTS "gtf_outgoing_media"/);
   assert.doesNotMatch(migration, /DROP\s+(TABLE|COLUMN|TYPE)/i);
+});
+
+test("normaliza telefones privados formatados antes de enviar para a Z-API", () => {
+  assert.match(zapiService, /private number may arrive formatted/);
+  assert.match(zapiService, /\/\^\\d\{8,\}-\\d\+\$\/.test\(value\)/);
+  assert.match(zapiService, /return this\.formatPhone\(value\)/);
+});
+
+test("confirmação de entrega da Z-API atualiza falhas de mídia sem nova tabela", () => {
+  assert.match(zapiService, /update-webhook-delivery/);
+  assert.match(zapiService, /handleDeliveryWebhook/);
+  assert.match(zapiService, /markOutgoingMediaDeliveryFailed/);
+  assert.match(zapiRoutes, /webhooks\/z-api\/delivery/);
+  assert.match(zapiController, /ZApiDeliveryWebhookSchema/);
+  assert.match(zapiController, /Webhook de entrega Z-API processado/);
+});
+
+test("registra callbacks de status e de mensagens enviadas pela própria instância", () => {
+  assert.match(zapiService, /update-webhook-message-status/);
+  assert.match(zapiService, /update-notify-sent-by-me/);
+  assert.match(zapiRoutes, /webhooks\/z-api\/status/);
+  assert.match(zapiController, /ZApiMessageStatusWebhookSchema/);
+});
+
+test("normaliza URLs antigas de webhook antes de registrar os callbacks", () => {
+  assert.ok(zapiService.includes("Older deployments stored the receive callback"));
+  assert.ok(zapiService.includes("parsed.pathname = parsed.pathname.replace"));
+  assert.ok(zapiService.includes("/webhooks/z-api"));
 });
