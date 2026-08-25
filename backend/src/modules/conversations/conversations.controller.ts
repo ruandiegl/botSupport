@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { conversationsService } from "./conversations.service.js";
+import { MultipartError, readMultipartForm } from "../../shared/multipart.js";
+import { outboundMediaBodyLimit } from "./outgoing-media.js";
 import {
   ListConversationsQuerySchema,
   AssumeConversationBodySchema,
@@ -234,6 +236,66 @@ export class ConversationsController {
       case "OK":
         res.status(201).json(result.message);
         return;
+    }
+  }
+
+  async sendMedia(req: Request, res: Response): Promise<void> {
+    const id = getParam(req, "id");
+    res.setHeader("Cache-Control", "no-store");
+    let form: Awaited<ReturnType<typeof readMultipartForm>> | null = null;
+    try {
+      form = await readMultipartForm(req, outboundMediaBodyLimit());
+      const result = await conversationsService.sendMedia(id, {
+        file: form.file,
+        caption: form.fields.caption ?? "",
+        clientMessageId: form.fields.clientMessageId || String(req.headers["idempotency-key"] ?? ""),
+      }, (req as AuthenticatedRequest).user);
+      switch (result.kind) {
+        case "DISABLED":
+          res.status(503).json({ error: "Envio de mídias está desativado neste ambiente." });
+          return;
+        case "NOT_FOUND":
+          res.status(404).json({ error: "Conversa não encontrada ou sem acesso" });
+          return;
+        case "AGENT_UNAVAILABLE":
+          res.status(403).json({ error: "Seu usuário não está disponível para enviar mídias." });
+          return;
+        case "INVALID": {
+          const messages: Record<string, string> = {
+            FILE_REQUIRED: "Selecione um arquivo antes de enviar.",
+            TYPE_NOT_ALLOWED: "Este tipo de arquivo não é permitido.",
+            SIZE_LIMIT: "O arquivo excede o limite configurado.",
+            SIGNATURE_INVALID: "O conteúdo do arquivo não corresponde ao tipo informado.",
+            NAME_INVALID: "O nome do arquivo é inválido.",
+            CAPTION_INVALID: "A legenda excede o limite permitido.",
+            CLIENT_MESSAGE_INVALID: "Identificador de envio inválido.",
+          };
+          res.status(400).json({ error: messages[result.code] || "Arquivo inválido." });
+          return;
+        }
+        case "DUPLICATE":
+          res.status(409).json({ error: "Este arquivo já está sendo processado." });
+          return;
+        case "RATE_LIMIT":
+          res.status(429).json({ error: "Aguarde o envio de mídia atual terminar antes de enviar outro arquivo." });
+          return;
+        case "PROVIDER_ERROR":
+          res.status(502).json({ error: result.error });
+          return;
+        case "OK":
+          res.status(201).json(result.message);
+          return;
+      }
+    } catch (error) {
+      if (error instanceof MultipartError) {
+        const status = error.code === "TOO_LARGE" ? 413 : error.code === "CONTENT_TYPE" ? 415 : 400;
+        const message = error.code === "TOO_LARGE" ? "O arquivo excede o limite configurado." : "Não foi possível ler o arquivo enviado.";
+        res.status(status).json({ error: message });
+        return;
+      }
+      throw error;
+    } finally {
+      form?.cleanup();
     }
   }
 

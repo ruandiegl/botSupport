@@ -83,6 +83,42 @@ export function useAssumeConversation(id: string) {
   });
 }
 
+export type SendMediaInput = {
+  file: File;
+  caption?: string;
+  clientMessageId: string;
+};
+
+export function useSendMedia(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<Message, Error, SendMediaInput>({
+    mutationFn: ({ file, caption = "", clientMessageId }) => {
+      const form = new FormData();
+      form.append("file", file, file.name);
+      form.append("caption", caption);
+      form.append("clientMessageId", clientMessageId);
+      return apiFetch<Message>(`/conversations/${id}/media`, {
+        method: "POST",
+        body: form,
+        headers: { "Idempotency-Key": clientMessageId },
+      });
+    },
+    onSuccess: (message) => {
+      queryClient.setQueryData<Conversation>(["conversation", id], (current) => {
+        if (!current || current.messages.some((item) => item.id === message.id)) return current;
+        return {
+          ...current,
+          messages: [...current.messages, message],
+          lastMessage: message.content,
+          lastActivityAt: message.createdAt,
+          ...(current.status === "DRAFT" ? { status: "OPEN" as const, queuedAt: message.createdAt } : {}),
+        };
+      });
+      queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
+    },
+  });
+}
+
 export function useEligibleAssignees(id: string, enabled = true) {
   return useQuery<{ items: Agent[] }>({
     queryKey: ["conversation-assignees", id],

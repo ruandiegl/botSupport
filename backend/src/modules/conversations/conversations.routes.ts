@@ -17,6 +17,7 @@ router.post("/conversations/:id/delegate", authMiddleware, requirePermission("co
 router.post("/conversations/:id/delegation-response", authMiddleware, requirePermission("conversations", "view"), (req, res) => conversationsController.respondToDelegation(req as any, res));
 router.post("/conversations/:id/transfer", authMiddleware, requirePermission("conversations", "update"), (req, res) => conversationsController.transfer(req, res));
 router.post("/conversations/:id/close", authMiddleware, requirePermission("conversations", "close"), (req, res) => conversationsController.close(req, res));
+router.post("/conversations/:id/media", authMiddleware, requirePermission("conversations", "send_media"), (req, res) => conversationsController.sendMedia(req, res));
 router.post("/conversations/:id", authMiddleware, requirePermission("conversations", "send_message"), (req, res) => conversationsController.sendMessage(req, res));
 
 export default router;

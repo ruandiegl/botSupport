@@ -420,7 +420,7 @@ export class ConversationsRepository {
           ...(messageWhere ? { where: messageWhere } : {}),
           orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           ...(messageLimit ? { take: messageLimit + 1 } : {}),
-          include: { media: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
+          include: { media: true, outgoingMedia: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
         },
         assignments: {
           orderBy: { createdAt: "desc" },
@@ -476,7 +476,7 @@ export class ConversationsRepository {
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: options.limit + 1,
-      include: { media: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
+      include: { media: true, outgoingMedia: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
     });
     const hasPrevious = rows.length > options.limit;
     const items = rows.slice(0, options.limit).reverse();
@@ -518,6 +518,7 @@ export class ConversationsRepository {
     senderContactId?: string | null;
     senderNameSnapshot?: string | null;
     senderDepartmentSnapshot?: string | null;
+    messageType?: string;
     content: string;
   }) {
     const message = await prisma.message.create({
@@ -529,11 +530,82 @@ export class ConversationsRepository {
         senderContactId: data.senderContactId ?? null,
         senderNameSnapshot: data.senderNameSnapshot ?? null,
         senderDepartmentSnapshot: data.senderDepartmentSnapshot ?? null,
+        messageType: data.messageType ?? "TEXT",
         content: data.content,
       },
     });
     await prisma.conversation.update({ where: { id: data.conversationId }, data: { lastActivityAt: message.createdAt } });
     return message;
+  }
+
+  async findOutgoingMediaByClientMessageId(clientMessageId: string) {
+    return prisma.outgoingMedia.findUnique({
+      where: { clientMessageId },
+      include: { message: true },
+    });
+  }
+
+  async createOutgoingMediaPending(data: {
+    conversationId: string;
+    senderAgentId: string;
+    senderNameSnapshot: string;
+    senderDepartmentSnapshot?: string | null;
+    type: "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
+    mimeType: string;
+    fileName?: string | null;
+    caption?: string | null;
+    sizeBytes: number;
+    clientMessageId: string;
+    content: string;
+  }) {
+    return prisma.$transaction(async (tx) => {
+      const message = await tx.message.create({
+        data: {
+          conversationId: data.conversationId,
+          direction: "OUT",
+          senderType: "AGENT",
+          senderAgentId: data.senderAgentId,
+          senderNameSnapshot: data.senderNameSnapshot,
+          senderDepartmentSnapshot: data.senderDepartmentSnapshot ?? null,
+          messageType: data.type,
+          content: data.content,
+        },
+      });
+      const outgoingMedia = await tx.outgoingMedia.create({
+        data: {
+          messageId: message.id,
+          conversationId: data.conversationId,
+          type: data.type,
+          mimeType: data.mimeType,
+          fileName: data.fileName ?? null,
+          caption: data.caption ?? null,
+          sizeBytes: data.sizeBytes,
+          status: "PENDING",
+          clientMessageId: data.clientMessageId,
+        },
+      });
+      await tx.conversation.update({
+        where: { id: data.conversationId },
+        data: { lastActivityAt: message.createdAt },
+      });
+      return { message, outgoingMedia };
+    });
+  }
+
+  async updateOutgoingMedia(id: string, data: {
+    status: "SENDING" | "SENT" | "FAILED";
+    providerMessageId?: string | null;
+    failureCode?: string | null;
+  }) {
+    return prisma.outgoingMedia.update({
+      where: { id },
+      data,
+      include: { message: true },
+    });
+  }
+
+  async updateMessageExternalId(id: string, externalMessageId: string) {
+    return prisma.message.update({ where: { id }, data: { externalMessageId } });
   }
 
   /** Promote a manual draft only after the outbound transport accepted the message. */

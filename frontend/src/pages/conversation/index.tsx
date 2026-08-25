@@ -6,6 +6,7 @@ import {
   useGetConversation,
   useMarkConversationRead,
   useSendMessage,
+  useSendMedia,
   useAssumeConversation,
   useCloseConversation,
   useDelegateConversation,
@@ -33,6 +34,8 @@ import { SharedContactCard } from "./components/SharedContactCard";
 import { ContactFormDialog } from "./components/ContactFormDialog";
 import { ContactConversationsDialog } from "./components/ContactConversationsDialog";
 import { ContactProfileDialog } from "./components/ContactProfileDialog";
+import { MediaAttachmentPicker } from "./components/MediaAttachmentPicker";
+import { OutgoingMediaCard } from "./components/OutgoingMediaCard";
 import { NewConversationDialog } from "./components/NewConversationDialog";
 import { useContact, useCreateContact, useCreateConversation, useUpdateContact, type ContactDetail } from "./hooks/use-contacts";
 import { useListDepartments } from "../admin/departments/hooks/use-departments";
@@ -52,6 +55,7 @@ export default function ConversationPage() {
   const { id = "" } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const [message, setMessage] = useState("");
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
@@ -81,8 +85,10 @@ export default function ConversationPage() {
   const { data: availableShortcuts = [] } = useAvailableShortcuts(id, "", "ALL", can("shortcuts", "use"));
   const markAsRead = useMarkConversationRead(id);
   const sendMessage = useSendMessage(id);
+  const sendMedia = useSendMedia(id);
   const assume = useAssumeConversation(id);
   const close = useCloseConversation(id);
+  const canSendMedia = can("conversations", "send_media");
   const canDelegate = can("conversations", "delegate");
   const { data: assigneeData } = useEligibleAssignees(id, canDelegate);
   const delegate = useDelegateConversation(id);
@@ -202,6 +208,22 @@ export default function ConversationPage() {
     );
 
   const send = () => {
+    if (mediaFile) {
+      const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      sendMedia.mutate({ file: mediaFile, caption: message.trim(), clientMessageId }, {
+        onSuccess: () => {
+          setMessage("");
+          setMediaFile(null);
+          if (selectedShortcutId) {
+            registerShortcutUse.mutate({ id: selectedShortcutId, conversationId: id });
+            setSelectedShortcutId(null);
+          }
+        },
+      });
+      return;
+    }
     if (!message.trim()) return;
     const body = message.trim();
     sendMessage.mutate({ content: body }, {
@@ -436,7 +458,7 @@ export default function ConversationPage() {
                   align={item.direction === "OUT" ? "end" : "start"}
                   variant={item.direction === "OUT" ? "default" : "secondary"}
                 >
-                  <BubbleContent className="space-y-2">
+                  <BubbleContent className="flex flex-col gap-2">
                     {item.contactShare ? (
                       <SharedContactCard
                         share={item.contactShare}
@@ -447,6 +469,11 @@ export default function ConversationPage() {
                         onNewConversation={(phone) => openNewConversation(item.contactShare!, phone)}
                         onViewConversations={() => { setSelectedContactShare(item.contactShare!); setContactConversationsOpen(true); }}
                       />
+                    ) : item.outgoingMedia ? (
+                      <>
+                        {!item.content.startsWith("[") ? <p className="whitespace-pre-wrap">{item.content}</p> : null}
+                        <OutgoingMediaCard media={item.outgoingMedia} />
+                      </>
                     ) : item.content ? <p className="whitespace-pre-wrap">{item.content}</p> : null}
                     {item.media && (
                       <MessageMedia conversationId={id} messageId={item.id} media={item.media} />
@@ -462,8 +489,17 @@ export default function ConversationPage() {
         </div>
 
         <div className="composer">
-          {can("shortcuts", "use") && (
-            <div className="composer-toolbar">
+          <div className="composer-toolbar">
+            {canSendMedia ? (
+              <MediaAttachmentPicker
+                file={mediaFile}
+                onChange={setMediaFile}
+                caption={message}
+                onCaptionChange={setMessage}
+                disabled={sendMessage.isPending || sendMedia.isPending}
+              />
+            ) : null}
+            {can("shortcuts", "use") && (
               <ShortcutPicker 
                 conversationId={id} 
                 agentName={activeAgentName}
@@ -471,9 +507,9 @@ export default function ConversationPage() {
                 departmentName={activeAgentDeptName}
                 onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} 
               />
-              <span>Selecione uma mensagem pronta e ajuste antes de enviar.</span>
-            </div>
-          )}
+            )}
+            {can("shortcuts", "use") ? <span>Selecione uma mensagem pronta{canSendMedia ? " ou anexe um arquivo" : ""}.</span> : canSendMedia ? <span>Envie uma mídia temporária sem retenção local.</span> : null}
+          </div>
           <Textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
@@ -483,20 +519,20 @@ export default function ConversationPage() {
                 send();
               }
             }}
-            placeholder="Escreva uma resposta para o contato..."
+            placeholder={mediaFile ? "Adicione uma legenda (opcional)…" : "Escreva uma resposta para o contato..."}
             data-testid="textarea-message"
           />
           <div className="composer-foot">
             <div>
-              {sendMessage.isError ? (
-                <p className="text-sm text-destructive" role="alert">{sendMessage.error.message}</p>
+              {sendMessage.isError || sendMedia.isError ? (
+                <p className="text-sm text-destructive" role="alert">{(sendMessage.error || sendMedia.error)?.message}</p>
               ) : null}
             </div>
             <Button
               variant="default"
               size="lg"
               onClick={send}
-              disabled={!message.trim() || sendMessage.isPending}
+              disabled={(!message.trim() && !mediaFile) || sendMessage.isPending || sendMedia.isPending}
               data-testid="button-send-message"
             >
               <Send size={14} /> Enviar

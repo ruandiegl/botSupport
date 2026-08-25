@@ -6,6 +6,7 @@ import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { mediaService } from "../media/media.service.js";
 import { notificationsService } from "../notifications/notifications.service.js";
 import { contactsRepository } from "../contacts/contacts.repository.js";
+import { validateOutgoingMedia, type OutgoingMediaKind } from "./outgoing-media.js";
 
 const DEFAULT_MESSAGE_LIMIT = 50;
 
@@ -49,6 +50,31 @@ function createSearchSnippet(content: string, query: string, maxLength = 160): s
 type SearchMatchSource = "name" | "email" | "phone" | "group" | "message";
 
 export class ConversationsService {
+  private readonly outboundMediaInFlight = new Map<string, number>();
+  private readonly outboundMediaWindow = new Map<string, number[]>();
+
+  private acquireOutboundMediaSlot(agentId: string): boolean {
+    const now = Date.now();
+    const maxConcurrent = Math.max(1, Number(process.env.OUTBOUND_MEDIA_MAX_CONCURRENT_PER_AGENT ?? 1));
+    const maxPerMinute = Math.max(1, Number(process.env.OUTBOUND_MEDIA_RATE_LIMIT_PER_AGENT ?? 20));
+    const inFlight = this.outboundMediaInFlight.get(agentId) ?? 0;
+    const recent = (this.outboundMediaWindow.get(agentId) ?? []).filter((timestamp) => now - timestamp < 60_000);
+    if (inFlight >= maxConcurrent || recent.length >= maxPerMinute) {
+      this.outboundMediaWindow.set(agentId, recent);
+      return false;
+    }
+    this.outboundMediaInFlight.set(agentId, inFlight + 1);
+    recent.push(now);
+    this.outboundMediaWindow.set(agentId, recent);
+    return true;
+  }
+
+  private releaseOutboundMediaSlot(agentId: string) {
+    const inFlight = this.outboundMediaInFlight.get(agentId) ?? 0;
+    if (inFlight <= 1) this.outboundMediaInFlight.delete(agentId);
+    else this.outboundMediaInFlight.set(agentId, inFlight - 1);
+  }
+
   private canAccess(conversation: any, user?: AuthenticatedRequest["user"]): boolean {
     if (!user || user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
     if (user.role !== "AGENT") return true;
@@ -78,6 +104,19 @@ export class ConversationsService {
       content: message.content,
       createdAt: message.createdAt.toISOString(),
       media: message.media ? mediaService.toPublic(message.media) : null,
+      outgoingMedia: message.outgoingMedia
+        ? {
+            id: message.outgoingMedia.id,
+            type: message.outgoingMedia.type,
+            mimeType: message.outgoingMedia.mimeType,
+            fileName: message.outgoingMedia.fileName,
+            caption: message.outgoingMedia.caption,
+            sizeBytes: message.outgoingMedia.sizeBytes,
+            status: message.outgoingMedia.status,
+            providerMessageId: message.outgoingMedia.providerMessageId,
+            createdAt: message.outgoingMedia.createdAt.toISOString(),
+          }
+        : null,
       contactShare: message.contactShare
         ? {
             id: message.contactShare.id,
@@ -674,6 +713,130 @@ export class ConversationsService {
 
     conversationEvents.emit("conversation_updated", { conversationId: id, eventType: "MESSAGE_SENT", messageId: message.id });
 
+    return { kind: "OK" as const, message: formattedMsg };
+  }
+
+  async sendMedia(id: string, input: {
+    file: { fileName: string; mimeType: string; buffer: Buffer } | null;
+    caption: string;
+    clientMessageId: string;
+  }, user?: AuthenticatedRequest["user"]) {
+    if (process.env.OUTBOUND_MEDIA_ENABLED !== "true") return { kind: "DISABLED" as const };
+    const conversation = await conversationsRepository.findAccessById(id);
+    if (!conversation || !this.canAccess(conversation, user) || !user) return { kind: "NOT_FOUND" as const };
+
+    const agent = await conversationsRepository.findAgentById(user.id);
+    if (!agent || !agent.isActive) return { kind: "AGENT_UNAVAILABLE" as const };
+
+    let metadata: ReturnType<typeof validateOutgoingMedia>;
+    try {
+      metadata = validateOutgoingMedia(input.file as any, input.caption.trim(), input.clientMessageId);
+    } catch (error: any) {
+      return { kind: "INVALID" as const, code: error?.code || "INVALID_FILE" };
+    }
+
+    const existing = await conversationsRepository.findOutgoingMediaByClientMessageId(input.clientMessageId);
+    if (existing) {
+      if (existing.status === "SENT") {
+        const formatted = this.formatMessage({ ...existing.message, outgoingMedia: existing, media: null, contactShare: null, senderAgent: agent, senderContact: null }, conversation);
+        return { kind: "OK" as const, message: formatted, duplicate: true };
+      }
+      return { kind: "DUPLICATE" as const };
+    }
+    if (!this.acquireOutboundMediaSlot(agent.id)) return { kind: "RATE_LIMIT" as const };
+
+    const agentName = agent.name || "Atendente";
+    const departmentName = agent.department?.name || conversation.department?.name || "Suporte T.I.";
+    const caption = input.caption.trim();
+    const signedCaption = caption ? `*${agentName} - ${departmentName}:*\n\n${caption}` : "";
+    const contentLabel: Record<OutgoingMediaKind, string> = {
+      IMAGE: "[Imagem enviada]",
+      VIDEO: "[Vídeo enviado]",
+      AUDIO: "[Áudio enviado]",
+      DOCUMENT: `[Documento enviado${metadata.fileName ? `: ${metadata.fileName}` : ""}]`,
+    };
+    const content = signedCaption || contentLabel[metadata.type];
+
+    let pending;
+    try {
+      pending = await conversationsRepository.createOutgoingMediaPending({
+        conversationId: id,
+        senderAgentId: agent.id,
+        senderNameSnapshot: agentName,
+        senderDepartmentSnapshot: agent.department?.name ?? null,
+        type: metadata.type,
+        mimeType: metadata.mimeType,
+        fileName: metadata.fileName,
+        caption: caption || null,
+        sizeBytes: metadata.sizeBytes,
+        clientMessageId: input.clientMessageId,
+        content,
+      });
+    } catch (error) {
+      this.releaseOutboundMediaSlot(agent.id);
+      throw error;
+    }
+    await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "SENDING" });
+
+    const sendInput = {
+      phone: conversation.contact?.phone || "",
+      mimeType: metadata.mimeType,
+      buffer: input.file!.buffer,
+      fileName: metadata.fileName,
+      caption: signedCaption || null,
+      clientMessageId: input.clientMessageId,
+    };
+    let delivery;
+    try {
+      delivery = metadata.type === "IMAGE"
+        ? await zApiService.sendImage(sendInput)
+        : metadata.type === "VIDEO"
+        ? await zApiService.sendVideo(sendInput)
+        : metadata.type === "AUDIO"
+        ? await zApiService.sendAudio(sendInput)
+        : await zApiService.sendDocument(sendInput);
+    } finally {
+      this.releaseOutboundMediaSlot(agent.id);
+    }
+
+    if ("error" in delivery) {
+      await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "FAILED", failureCode: delivery.error.slice(0, 160) });
+      return { kind: "PROVIDER_ERROR" as const, error: delivery.error };
+    }
+
+    const providerMessageId = delivery.providerMessageId || null;
+    const storedMedia = await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "SENT", providerMessageId });
+    if (providerMessageId) {
+      await conversationsRepository.updateMessageExternalId(pending.message.id, providerMessageId).catch(() => undefined);
+    }
+
+    const wasDraft = conversation.status === "DRAFT";
+    if (wasDraft) {
+      const activated = await conversationsRepository.activateDraft(id);
+      if (activated) {
+        const current = await conversationsRepository.findAccessById(id);
+        conversationEvents.emit("conversation_updated", {
+          conversationId: id,
+          status: "OPEN",
+          eventType: "NEW_QUEUE",
+          departmentId: current?.departmentId ?? conversation.departmentId,
+          assignedAgentId: current?.assignedAgentId ?? conversation.assignedAgentId,
+          queuedAt: new Date(),
+        });
+      }
+    }
+
+    const formattedMsg = this.formatMessage({
+      ...pending.message,
+      externalMessageId: providerMessageId,
+      outgoingMedia: storedMedia,
+      media: null,
+      contactShare: null,
+      senderAgent: agent,
+      senderContact: null,
+    }, conversation);
+    socketEmitter.emitToConversation(id, "message:new", { conversationId: id, message: formattedMsg });
+    conversationEvents.emit("conversation_updated", { conversationId: id, eventType: "MESSAGE_SENT", messageId: pending.message.id });
     return { kind: "OK" as const, message: formattedMsg };
   }
 

@@ -70,6 +70,11 @@ export type ContactShare = $Result.DefaultSelection<Prisma.$ContactSharePayload>
  */
 export type ConversationAssignment = $Result.DefaultSelection<Prisma.$ConversationAssignmentPayload>
 /**
+ * Model OutgoingMedia
+ * 
+ */
+export type OutgoingMedia = $Result.DefaultSelection<Prisma.$OutgoingMediaPayload>
+/**
  * Model ConversationMedia
  * 
  */
@@ -164,14 +169,7 @@ export type NotificationPreference = $Result.DefaultSelection<Prisma.$Notificati
  * Enums
  */
 export namespace $Enums {
-  export const MediaProvider: {
-  ZAPI: 'ZAPI'
-};
-
-export type MediaProvider = (typeof MediaProvider)[keyof typeof MediaProvider]
-
-
-export const MediaType: {
+  export const MediaType: {
   IMAGE: 'IMAGE',
   AUDIO: 'AUDIO',
   VIDEO: 'VIDEO',
@@ -179,6 +177,23 @@ export const MediaType: {
 };
 
 export type MediaType = (typeof MediaType)[keyof typeof MediaType]
+
+
+export const OutgoingMediaStatus: {
+  PENDING: 'PENDING',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
+export type OutgoingMediaStatus = (typeof OutgoingMediaStatus)[keyof typeof OutgoingMediaStatus]
+
+
+export const MediaProvider: {
+  ZAPI: 'ZAPI'
+};
+
+export type MediaProvider = (typeof MediaProvider)[keyof typeof MediaProvider]
 
 
 export const MediaStatus: {
@@ -267,13 +282,17 @@ export type ShortcutScope = (typeof ShortcutScope)[keyof typeof ShortcutScope]
 
 }
 
-export type MediaProvider = $Enums.MediaProvider
-
-export const MediaProvider: typeof $Enums.MediaProvider
-
 export type MediaType = $Enums.MediaType
 
 export const MediaType: typeof $Enums.MediaType
+
+export type OutgoingMediaStatus = $Enums.OutgoingMediaStatus
+
+export const OutgoingMediaStatus: typeof $Enums.OutgoingMediaStatus
+
+export type MediaProvider = $Enums.MediaProvider
+
+export const MediaProvider: typeof $Enums.MediaProvider
 
 export type MediaStatus = $Enums.MediaStatus
 
@@ -543,6 +562,16 @@ export class PrismaClient<
     * ```
     */
   get conversationAssignment(): Prisma.ConversationAssignmentDelegate<ExtArgs>;
+
+  /**
+   * `prisma.outgoingMedia`: Exposes CRUD operations for the **OutgoingMedia** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OutgoingMedias
+    * const outgoingMedias = await prisma.outgoingMedia.findMany()
+    * ```
+    */
+  get outgoingMedia(): Prisma.OutgoingMediaDelegate<ExtArgs>;
 
   /**
    * `prisma.conversationMedia`: Exposes CRUD operations for the **ConversationMedia** model.
@@ -1175,6 +1204,7 @@ export namespace Prisma {
     Message: 'Message',
     ContactShare: 'ContactShare',
     ConversationAssignment: 'ConversationAssignment',
+    OutgoingMedia: 'OutgoingMedia',
     ConversationMedia: 'ConversationMedia',
     FlowDefinition: 'FlowDefinition',
     ZApiConfig: 'ZApiConfig',
@@ -1208,7 +1238,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "businessHoursPolicy" | "businessHoursInterval" | "businessHoursException" | "businessHoursNotice" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
+      modelProps: "department" | "procedure" | "agent" | "rolePermission" | "contact" | "contactPhone" | "botExclusion" | "conversation" | "message" | "contactShare" | "conversationAssignment" | "outgoingMedia" | "conversationMedia" | "flowDefinition" | "zApiConfig" | "businessHoursPolicy" | "businessHoursInterval" | "businessHoursException" | "businessHoursNotice" | "label" | "conversationLabel" | "groupMentionCooldown" | "flowRevision" | "flowNode" | "flowTransition" | "flowExecutionEvent" | "shortcut" | "shortcutAudit" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1979,6 +2009,76 @@ export namespace Prisma {
           count: {
             args: Prisma.ConversationAssignmentCountArgs<ExtArgs>
             result: $Utils.Optional<ConversationAssignmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      OutgoingMedia: {
+        payload: Prisma.$OutgoingMediaPayload<ExtArgs>
+        fields: Prisma.OutgoingMediaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OutgoingMediaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OutgoingMediaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          findFirst: {
+            args: Prisma.OutgoingMediaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OutgoingMediaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          findMany: {
+            args: Prisma.OutgoingMediaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>[]
+          }
+          create: {
+            args: Prisma.OutgoingMediaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          createMany: {
+            args: Prisma.OutgoingMediaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OutgoingMediaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>[]
+          }
+          delete: {
+            args: Prisma.OutgoingMediaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          update: {
+            args: Prisma.OutgoingMediaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          deleteMany: {
+            args: Prisma.OutgoingMediaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OutgoingMediaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.OutgoingMediaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutgoingMediaPayload>
+          }
+          aggregate: {
+            args: Prisma.OutgoingMediaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOutgoingMedia>
+          }
+          groupBy: {
+            args: Prisma.OutgoingMediaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OutgoingMediaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OutgoingMediaCountArgs<ExtArgs>
+            result: $Utils.Optional<OutgoingMediaCountAggregateOutputType> | number
           }
         }
       }
@@ -3699,6 +3799,7 @@ export namespace Prisma {
     notifications: number
     assignments: number
     media: number
+    outgoingMedia: number
     labels: number
     businessHoursNotices: number
   }
@@ -3709,6 +3810,7 @@ export namespace Prisma {
     notifications?: boolean | ConversationCountOutputTypeCountNotificationsArgs
     assignments?: boolean | ConversationCountOutputTypeCountAssignmentsArgs
     media?: boolean | ConversationCountOutputTypeCountMediaArgs
+    outgoingMedia?: boolean | ConversationCountOutputTypeCountOutgoingMediaArgs
     labels?: boolean | ConversationCountOutputTypeCountLabelsArgs
     businessHoursNotices?: boolean | ConversationCountOutputTypeCountBusinessHoursNoticesArgs
   }
@@ -3757,6 +3859,13 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ConversationMediaWhereInput
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountOutgoingMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OutgoingMediaWhereInput
   }
 
   /**
@@ -11742,6 +11851,7 @@ export namespace Prisma {
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
     assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
+    outgoingMedia?: boolean | Conversation$outgoingMediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
@@ -11803,6 +11913,7 @@ export namespace Prisma {
     notifications?: boolean | Conversation$notificationsArgs<ExtArgs>
     assignments?: boolean | Conversation$assignmentsArgs<ExtArgs>
     media?: boolean | Conversation$mediaArgs<ExtArgs>
+    outgoingMedia?: boolean | Conversation$outgoingMediaArgs<ExtArgs>
     labels?: boolean | Conversation$labelsArgs<ExtArgs>
     businessHoursNotices?: boolean | Conversation$businessHoursNoticesArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
@@ -11828,6 +11939,7 @@ export namespace Prisma {
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       assignments: Prisma.$ConversationAssignmentPayload<ExtArgs>[]
       media: Prisma.$ConversationMediaPayload<ExtArgs>[]
+      outgoingMedia: Prisma.$OutgoingMediaPayload<ExtArgs>[]
       labels: Prisma.$ConversationLabelPayload<ExtArgs>[]
       businessHoursNotices: Prisma.$BusinessHoursNoticePayload<ExtArgs>[]
     }
@@ -12223,6 +12335,7 @@ export namespace Prisma {
     notifications<T extends Conversation$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     assignments<T extends Conversation$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationAssignmentPayload<ExtArgs>, T, "findMany"> | Null>
     media<T extends Conversation$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findMany"> | Null>
+    outgoingMedia<T extends Conversation$outgoingMediaArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$outgoingMediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findMany"> | Null>
     labels<T extends Conversation$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationLabelPayload<ExtArgs>, T, "findMany"> | Null>
     businessHoursNotices<T extends Conversation$businessHoursNoticesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$businessHoursNoticesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessHoursNoticePayload<ExtArgs>, T, "findMany"> | Null>
     /**
@@ -12749,6 +12862,26 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.outgoingMedia
+   */
+  export type Conversation$outgoingMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    where?: OutgoingMediaWhereInput
+    orderBy?: OutgoingMediaOrderByWithRelationInput | OutgoingMediaOrderByWithRelationInput[]
+    cursor?: OutgoingMediaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OutgoingMediaScalarFieldEnum | OutgoingMediaScalarFieldEnum[]
+  }
+
+  /**
    * Conversation.labels
    */
   export type Conversation$labelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13035,6 +13168,7 @@ export namespace Prisma {
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
     senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
+    outgoingMedia?: boolean | Message$outgoingMediaArgs<ExtArgs>
     contactShare?: boolean | Message$contactShareArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
@@ -13078,6 +13212,7 @@ export namespace Prisma {
     senderAgent?: boolean | Message$senderAgentArgs<ExtArgs>
     senderContact?: boolean | Message$senderContactArgs<ExtArgs>
     media?: boolean | Message$mediaArgs<ExtArgs>
+    outgoingMedia?: boolean | Message$outgoingMediaArgs<ExtArgs>
     contactShare?: boolean | Message$contactShareArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13093,6 +13228,7 @@ export namespace Prisma {
       senderAgent: Prisma.$AgentPayload<ExtArgs> | null
       senderContact: Prisma.$ContactPayload<ExtArgs> | null
       media: Prisma.$ConversationMediaPayload<ExtArgs> | null
+      outgoingMedia: Prisma.$OutgoingMediaPayload<ExtArgs> | null
       contactShare: Prisma.$ContactSharePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -13477,6 +13613,7 @@ export namespace Prisma {
     senderAgent<T extends Message$senderAgentArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderAgentArgs<ExtArgs>>): Prisma__AgentClient<$Result.GetResult<Prisma.$AgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     senderContact<T extends Message$senderContactArgs<ExtArgs> = {}>(args?: Subset<T, Message$senderContactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     media<T extends Message$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Message$mediaArgs<ExtArgs>>): Prisma__ConversationMediaClient<$Result.GetResult<Prisma.$ConversationMediaPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    outgoingMedia<T extends Message$outgoingMediaArgs<ExtArgs> = {}>(args?: Subset<T, Message$outgoingMediaArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     contactShare<T extends Message$contactShareArgs<ExtArgs> = {}>(args?: Subset<T, Message$contactShareArgs<ExtArgs>>): Prisma__ContactShareClient<$Result.GetResult<Prisma.$ContactSharePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -13880,6 +14017,21 @@ export namespace Prisma {
      */
     include?: ConversationMediaInclude<ExtArgs> | null
     where?: ConversationMediaWhereInput
+  }
+
+  /**
+   * Message.outgoingMedia
+   */
+  export type Message$outgoingMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    where?: OutgoingMediaWhereInput
   }
 
   /**
@@ -15945,6 +16097,1087 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ConversationAssignmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OutgoingMedia
+   */
+
+  export type AggregateOutgoingMedia = {
+    _count: OutgoingMediaCountAggregateOutputType | null
+    _avg: OutgoingMediaAvgAggregateOutputType | null
+    _sum: OutgoingMediaSumAggregateOutputType | null
+    _min: OutgoingMediaMinAggregateOutputType | null
+    _max: OutgoingMediaMaxAggregateOutputType | null
+  }
+
+  export type OutgoingMediaAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type OutgoingMediaSumAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type OutgoingMediaMinAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    conversationId: string | null
+    type: $Enums.MediaType | null
+    mimeType: string | null
+    fileName: string | null
+    caption: string | null
+    sizeBytes: number | null
+    status: $Enums.OutgoingMediaStatus | null
+    providerMessageId: string | null
+    clientMessageId: string | null
+    failureCode: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OutgoingMediaMaxAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    conversationId: string | null
+    type: $Enums.MediaType | null
+    mimeType: string | null
+    fileName: string | null
+    caption: string | null
+    sizeBytes: number | null
+    status: $Enums.OutgoingMediaStatus | null
+    providerMessageId: string | null
+    clientMessageId: string | null
+    failureCode: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OutgoingMediaCountAggregateOutputType = {
+    id: number
+    messageId: number
+    conversationId: number
+    type: number
+    mimeType: number
+    fileName: number
+    caption: number
+    sizeBytes: number
+    status: number
+    providerMessageId: number
+    clientMessageId: number
+    failureCode: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OutgoingMediaAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type OutgoingMediaSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type OutgoingMediaMinAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    type?: true
+    mimeType?: true
+    fileName?: true
+    caption?: true
+    sizeBytes?: true
+    status?: true
+    providerMessageId?: true
+    clientMessageId?: true
+    failureCode?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OutgoingMediaMaxAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    type?: true
+    mimeType?: true
+    fileName?: true
+    caption?: true
+    sizeBytes?: true
+    status?: true
+    providerMessageId?: true
+    clientMessageId?: true
+    failureCode?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OutgoingMediaCountAggregateInputType = {
+    id?: true
+    messageId?: true
+    conversationId?: true
+    type?: true
+    mimeType?: true
+    fileName?: true
+    caption?: true
+    sizeBytes?: true
+    status?: true
+    providerMessageId?: true
+    clientMessageId?: true
+    failureCode?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OutgoingMediaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OutgoingMedia to aggregate.
+     */
+    where?: OutgoingMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutgoingMedias to fetch.
+     */
+    orderBy?: OutgoingMediaOrderByWithRelationInput | OutgoingMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OutgoingMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutgoingMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutgoingMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OutgoingMedias
+    **/
+    _count?: true | OutgoingMediaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OutgoingMediaAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OutgoingMediaSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OutgoingMediaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OutgoingMediaMaxAggregateInputType
+  }
+
+  export type GetOutgoingMediaAggregateType<T extends OutgoingMediaAggregateArgs> = {
+        [P in keyof T & keyof AggregateOutgoingMedia]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOutgoingMedia[P]>
+      : GetScalarType<T[P], AggregateOutgoingMedia[P]>
+  }
+
+
+
+
+  export type OutgoingMediaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OutgoingMediaWhereInput
+    orderBy?: OutgoingMediaOrderByWithAggregationInput | OutgoingMediaOrderByWithAggregationInput[]
+    by: OutgoingMediaScalarFieldEnum[] | OutgoingMediaScalarFieldEnum
+    having?: OutgoingMediaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OutgoingMediaCountAggregateInputType | true
+    _avg?: OutgoingMediaAvgAggregateInputType
+    _sum?: OutgoingMediaSumAggregateInputType
+    _min?: OutgoingMediaMinAggregateInputType
+    _max?: OutgoingMediaMaxAggregateInputType
+  }
+
+  export type OutgoingMediaGroupByOutputType = {
+    id: string
+    messageId: string
+    conversationId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName: string | null
+    caption: string | null
+    sizeBytes: number
+    status: $Enums.OutgoingMediaStatus
+    providerMessageId: string | null
+    clientMessageId: string
+    failureCode: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: OutgoingMediaCountAggregateOutputType | null
+    _avg: OutgoingMediaAvgAggregateOutputType | null
+    _sum: OutgoingMediaSumAggregateOutputType | null
+    _min: OutgoingMediaMinAggregateOutputType | null
+    _max: OutgoingMediaMaxAggregateOutputType | null
+  }
+
+  type GetOutgoingMediaGroupByPayload<T extends OutgoingMediaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OutgoingMediaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OutgoingMediaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OutgoingMediaGroupByOutputType[P]>
+            : GetScalarType<T[P], OutgoingMediaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OutgoingMediaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    type?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    caption?: boolean
+    sizeBytes?: boolean
+    status?: boolean
+    providerMessageId?: boolean
+    clientMessageId?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["outgoingMedia"]>
+
+  export type OutgoingMediaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    type?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    caption?: boolean
+    sizeBytes?: boolean
+    status?: boolean
+    providerMessageId?: boolean
+    clientMessageId?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["outgoingMedia"]>
+
+  export type OutgoingMediaSelectScalar = {
+    id?: boolean
+    messageId?: boolean
+    conversationId?: boolean
+    type?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    caption?: boolean
+    sizeBytes?: boolean
+    status?: boolean
+    providerMessageId?: boolean
+    clientMessageId?: boolean
+    failureCode?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OutgoingMediaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type OutgoingMediaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessageDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+
+  export type $OutgoingMediaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OutgoingMedia"
+    objects: {
+      message: Prisma.$MessagePayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      messageId: string
+      conversationId: string
+      type: $Enums.MediaType
+      mimeType: string
+      fileName: string | null
+      caption: string | null
+      sizeBytes: number
+      status: $Enums.OutgoingMediaStatus
+      providerMessageId: string | null
+      clientMessageId: string
+      failureCode: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["outgoingMedia"]>
+    composites: {}
+  }
+
+  type OutgoingMediaGetPayload<S extends boolean | null | undefined | OutgoingMediaDefaultArgs> = $Result.GetResult<Prisma.$OutgoingMediaPayload, S>
+
+  type OutgoingMediaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<OutgoingMediaFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: OutgoingMediaCountAggregateInputType | true
+    }
+
+  export interface OutgoingMediaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OutgoingMedia'], meta: { name: 'OutgoingMedia' } }
+    /**
+     * Find zero or one OutgoingMedia that matches the filter.
+     * @param {OutgoingMediaFindUniqueArgs} args - Arguments to find a OutgoingMedia
+     * @example
+     * // Get one OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OutgoingMediaFindUniqueArgs>(args: SelectSubset<T, OutgoingMediaFindUniqueArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one OutgoingMedia that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {OutgoingMediaFindUniqueOrThrowArgs} args - Arguments to find a OutgoingMedia
+     * @example
+     * // Get one OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OutgoingMediaFindUniqueOrThrowArgs>(args: SelectSubset<T, OutgoingMediaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first OutgoingMedia that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaFindFirstArgs} args - Arguments to find a OutgoingMedia
+     * @example
+     * // Get one OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OutgoingMediaFindFirstArgs>(args?: SelectSubset<T, OutgoingMediaFindFirstArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first OutgoingMedia that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaFindFirstOrThrowArgs} args - Arguments to find a OutgoingMedia
+     * @example
+     * // Get one OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OutgoingMediaFindFirstOrThrowArgs>(args?: SelectSubset<T, OutgoingMediaFindFirstOrThrowArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more OutgoingMedias that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OutgoingMedias
+     * const outgoingMedias = await prisma.outgoingMedia.findMany()
+     * 
+     * // Get first 10 OutgoingMedias
+     * const outgoingMedias = await prisma.outgoingMedia.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const outgoingMediaWithIdOnly = await prisma.outgoingMedia.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OutgoingMediaFindManyArgs>(args?: SelectSubset<T, OutgoingMediaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a OutgoingMedia.
+     * @param {OutgoingMediaCreateArgs} args - Arguments to create a OutgoingMedia.
+     * @example
+     * // Create one OutgoingMedia
+     * const OutgoingMedia = await prisma.outgoingMedia.create({
+     *   data: {
+     *     // ... data to create a OutgoingMedia
+     *   }
+     * })
+     * 
+     */
+    create<T extends OutgoingMediaCreateArgs>(args: SelectSubset<T, OutgoingMediaCreateArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many OutgoingMedias.
+     * @param {OutgoingMediaCreateManyArgs} args - Arguments to create many OutgoingMedias.
+     * @example
+     * // Create many OutgoingMedias
+     * const outgoingMedia = await prisma.outgoingMedia.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OutgoingMediaCreateManyArgs>(args?: SelectSubset<T, OutgoingMediaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OutgoingMedias and returns the data saved in the database.
+     * @param {OutgoingMediaCreateManyAndReturnArgs} args - Arguments to create many OutgoingMedias.
+     * @example
+     * // Create many OutgoingMedias
+     * const outgoingMedia = await prisma.outgoingMedia.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OutgoingMedias and only return the `id`
+     * const outgoingMediaWithIdOnly = await prisma.outgoingMedia.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OutgoingMediaCreateManyAndReturnArgs>(args?: SelectSubset<T, OutgoingMediaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a OutgoingMedia.
+     * @param {OutgoingMediaDeleteArgs} args - Arguments to delete one OutgoingMedia.
+     * @example
+     * // Delete one OutgoingMedia
+     * const OutgoingMedia = await prisma.outgoingMedia.delete({
+     *   where: {
+     *     // ... filter to delete one OutgoingMedia
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OutgoingMediaDeleteArgs>(args: SelectSubset<T, OutgoingMediaDeleteArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one OutgoingMedia.
+     * @param {OutgoingMediaUpdateArgs} args - Arguments to update one OutgoingMedia.
+     * @example
+     * // Update one OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OutgoingMediaUpdateArgs>(args: SelectSubset<T, OutgoingMediaUpdateArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more OutgoingMedias.
+     * @param {OutgoingMediaDeleteManyArgs} args - Arguments to filter OutgoingMedias to delete.
+     * @example
+     * // Delete a few OutgoingMedias
+     * const { count } = await prisma.outgoingMedia.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OutgoingMediaDeleteManyArgs>(args?: SelectSubset<T, OutgoingMediaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OutgoingMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OutgoingMedias
+     * const outgoingMedia = await prisma.outgoingMedia.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OutgoingMediaUpdateManyArgs>(args: SelectSubset<T, OutgoingMediaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one OutgoingMedia.
+     * @param {OutgoingMediaUpsertArgs} args - Arguments to update or create a OutgoingMedia.
+     * @example
+     * // Update or create a OutgoingMedia
+     * const outgoingMedia = await prisma.outgoingMedia.upsert({
+     *   create: {
+     *     // ... data to create a OutgoingMedia
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OutgoingMedia we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OutgoingMediaUpsertArgs>(args: SelectSubset<T, OutgoingMediaUpsertArgs<ExtArgs>>): Prisma__OutgoingMediaClient<$Result.GetResult<Prisma.$OutgoingMediaPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of OutgoingMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaCountArgs} args - Arguments to filter OutgoingMedias to count.
+     * @example
+     * // Count the number of OutgoingMedias
+     * const count = await prisma.outgoingMedia.count({
+     *   where: {
+     *     // ... the filter for the OutgoingMedias we want to count
+     *   }
+     * })
+    **/
+    count<T extends OutgoingMediaCountArgs>(
+      args?: Subset<T, OutgoingMediaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OutgoingMediaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OutgoingMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OutgoingMediaAggregateArgs>(args: Subset<T, OutgoingMediaAggregateArgs>): Prisma.PrismaPromise<GetOutgoingMediaAggregateType<T>>
+
+    /**
+     * Group by OutgoingMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutgoingMediaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OutgoingMediaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OutgoingMediaGroupByArgs['orderBy'] }
+        : { orderBy?: OutgoingMediaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OutgoingMediaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOutgoingMediaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OutgoingMedia model
+   */
+  readonly fields: OutgoingMediaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OutgoingMedia.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OutgoingMediaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    message<T extends MessageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MessageDefaultArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OutgoingMedia model
+   */ 
+  interface OutgoingMediaFieldRefs {
+    readonly id: FieldRef<"OutgoingMedia", 'String'>
+    readonly messageId: FieldRef<"OutgoingMedia", 'String'>
+    readonly conversationId: FieldRef<"OutgoingMedia", 'String'>
+    readonly type: FieldRef<"OutgoingMedia", 'MediaType'>
+    readonly mimeType: FieldRef<"OutgoingMedia", 'String'>
+    readonly fileName: FieldRef<"OutgoingMedia", 'String'>
+    readonly caption: FieldRef<"OutgoingMedia", 'String'>
+    readonly sizeBytes: FieldRef<"OutgoingMedia", 'Int'>
+    readonly status: FieldRef<"OutgoingMedia", 'OutgoingMediaStatus'>
+    readonly providerMessageId: FieldRef<"OutgoingMedia", 'String'>
+    readonly clientMessageId: FieldRef<"OutgoingMedia", 'String'>
+    readonly failureCode: FieldRef<"OutgoingMedia", 'String'>
+    readonly createdAt: FieldRef<"OutgoingMedia", 'DateTime'>
+    readonly updatedAt: FieldRef<"OutgoingMedia", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OutgoingMedia findUnique
+   */
+  export type OutgoingMediaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which OutgoingMedia to fetch.
+     */
+    where: OutgoingMediaWhereUniqueInput
+  }
+
+  /**
+   * OutgoingMedia findUniqueOrThrow
+   */
+  export type OutgoingMediaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which OutgoingMedia to fetch.
+     */
+    where: OutgoingMediaWhereUniqueInput
+  }
+
+  /**
+   * OutgoingMedia findFirst
+   */
+  export type OutgoingMediaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which OutgoingMedia to fetch.
+     */
+    where?: OutgoingMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutgoingMedias to fetch.
+     */
+    orderBy?: OutgoingMediaOrderByWithRelationInput | OutgoingMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OutgoingMedias.
+     */
+    cursor?: OutgoingMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutgoingMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutgoingMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OutgoingMedias.
+     */
+    distinct?: OutgoingMediaScalarFieldEnum | OutgoingMediaScalarFieldEnum[]
+  }
+
+  /**
+   * OutgoingMedia findFirstOrThrow
+   */
+  export type OutgoingMediaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which OutgoingMedia to fetch.
+     */
+    where?: OutgoingMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutgoingMedias to fetch.
+     */
+    orderBy?: OutgoingMediaOrderByWithRelationInput | OutgoingMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OutgoingMedias.
+     */
+    cursor?: OutgoingMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutgoingMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutgoingMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OutgoingMedias.
+     */
+    distinct?: OutgoingMediaScalarFieldEnum | OutgoingMediaScalarFieldEnum[]
+  }
+
+  /**
+   * OutgoingMedia findMany
+   */
+  export type OutgoingMediaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which OutgoingMedias to fetch.
+     */
+    where?: OutgoingMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutgoingMedias to fetch.
+     */
+    orderBy?: OutgoingMediaOrderByWithRelationInput | OutgoingMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OutgoingMedias.
+     */
+    cursor?: OutgoingMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutgoingMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutgoingMedias.
+     */
+    skip?: number
+    distinct?: OutgoingMediaScalarFieldEnum | OutgoingMediaScalarFieldEnum[]
+  }
+
+  /**
+   * OutgoingMedia create
+   */
+  export type OutgoingMediaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OutgoingMedia.
+     */
+    data: XOR<OutgoingMediaCreateInput, OutgoingMediaUncheckedCreateInput>
+  }
+
+  /**
+   * OutgoingMedia createMany
+   */
+  export type OutgoingMediaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OutgoingMedias.
+     */
+    data: OutgoingMediaCreateManyInput | OutgoingMediaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OutgoingMedia createManyAndReturn
+   */
+  export type OutgoingMediaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many OutgoingMedias.
+     */
+    data: OutgoingMediaCreateManyInput | OutgoingMediaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OutgoingMedia update
+   */
+  export type OutgoingMediaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OutgoingMedia.
+     */
+    data: XOR<OutgoingMediaUpdateInput, OutgoingMediaUncheckedUpdateInput>
+    /**
+     * Choose, which OutgoingMedia to update.
+     */
+    where: OutgoingMediaWhereUniqueInput
+  }
+
+  /**
+   * OutgoingMedia updateMany
+   */
+  export type OutgoingMediaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OutgoingMedias.
+     */
+    data: XOR<OutgoingMediaUpdateManyMutationInput, OutgoingMediaUncheckedUpdateManyInput>
+    /**
+     * Filter which OutgoingMedias to update
+     */
+    where?: OutgoingMediaWhereInput
+  }
+
+  /**
+   * OutgoingMedia upsert
+   */
+  export type OutgoingMediaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OutgoingMedia to update in case it exists.
+     */
+    where: OutgoingMediaWhereUniqueInput
+    /**
+     * In case the OutgoingMedia found by the `where` argument doesn't exist, create a new OutgoingMedia with this data.
+     */
+    create: XOR<OutgoingMediaCreateInput, OutgoingMediaUncheckedCreateInput>
+    /**
+     * In case the OutgoingMedia was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OutgoingMediaUpdateInput, OutgoingMediaUncheckedUpdateInput>
+  }
+
+  /**
+   * OutgoingMedia delete
+   */
+  export type OutgoingMediaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
+    /**
+     * Filter which OutgoingMedia to delete.
+     */
+    where: OutgoingMediaWhereUniqueInput
+  }
+
+  /**
+   * OutgoingMedia deleteMany
+   */
+  export type OutgoingMediaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OutgoingMedias to delete
+     */
+    where?: OutgoingMediaWhereInput
+  }
+
+  /**
+   * OutgoingMedia without action
+   */
+  export type OutgoingMediaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutgoingMedia
+     */
+    select?: OutgoingMediaSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutgoingMediaInclude<ExtArgs> | null
   }
 
 
@@ -34816,6 +36049,26 @@ export namespace Prisma {
   export type ConversationAssignmentScalarFieldEnum = (typeof ConversationAssignmentScalarFieldEnum)[keyof typeof ConversationAssignmentScalarFieldEnum]
 
 
+  export const OutgoingMediaScalarFieldEnum: {
+    id: 'id',
+    messageId: 'messageId',
+    conversationId: 'conversationId',
+    type: 'type',
+    mimeType: 'mimeType',
+    fileName: 'fileName',
+    caption: 'caption',
+    sizeBytes: 'sizeBytes',
+    status: 'status',
+    providerMessageId: 'providerMessageId',
+    clientMessageId: 'clientMessageId',
+    failureCode: 'failureCode',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OutgoingMediaScalarFieldEnum = (typeof OutgoingMediaScalarFieldEnum)[keyof typeof OutgoingMediaScalarFieldEnum]
+
+
   export const ConversationMediaScalarFieldEnum: {
     id: 'id',
     messageId: 'messageId',
@@ -35210,20 +36463,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'MediaProvider'
-   */
-  export type EnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider'>
-    
-
-
-  /**
-   * Reference to a field of type 'MediaProvider[]'
-   */
-  export type ListEnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider[]'>
-    
-
-
-  /**
    * Reference to a field of type 'MediaType'
    */
   export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
@@ -35234,6 +36473,34 @@ export namespace Prisma {
    * Reference to a field of type 'MediaType[]'
    */
   export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'OutgoingMediaStatus'
+   */
+  export type EnumOutgoingMediaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutgoingMediaStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OutgoingMediaStatus[]'
+   */
+  export type ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutgoingMediaStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaProvider'
+   */
+  export type EnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider'>
+    
+
+
+  /**
+   * Reference to a field of type 'MediaProvider[]'
+   */
+  export type ListEnumMediaProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaProvider[]'>
     
 
 
@@ -35969,6 +37236,7 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
+    outgoingMedia?: OutgoingMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
     businessHoursNotices?: BusinessHoursNoticeListRelationFilter
   }
@@ -36001,6 +37269,7 @@ export namespace Prisma {
     notifications?: NotificationOrderByRelationAggregateInput
     assignments?: ConversationAssignmentOrderByRelationAggregateInput
     media?: ConversationMediaOrderByRelationAggregateInput
+    outgoingMedia?: OutgoingMediaOrderByRelationAggregateInput
     labels?: ConversationLabelOrderByRelationAggregateInput
     businessHoursNotices?: BusinessHoursNoticeOrderByRelationAggregateInput
   }
@@ -36036,6 +37305,7 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     assignments?: ConversationAssignmentListRelationFilter
     media?: ConversationMediaListRelationFilter
+    outgoingMedia?: OutgoingMediaListRelationFilter
     labels?: ConversationLabelListRelationFilter
     businessHoursNotices?: BusinessHoursNoticeListRelationFilter
   }, "id">
@@ -36107,6 +37377,7 @@ export namespace Prisma {
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
+    outgoingMedia?: XOR<OutgoingMediaNullableRelationFilter, OutgoingMediaWhereInput> | null
     contactShare?: XOR<ContactShareNullableRelationFilter, ContactShareWhereInput> | null
   }
 
@@ -36128,6 +37399,7 @@ export namespace Prisma {
     senderAgent?: AgentOrderByWithRelationInput
     senderContact?: ContactOrderByWithRelationInput
     media?: ConversationMediaOrderByWithRelationInput
+    outgoingMedia?: OutgoingMediaOrderByWithRelationInput
     contactShare?: ContactShareOrderByWithRelationInput
   }
 
@@ -36152,6 +37424,7 @@ export namespace Prisma {
     senderAgent?: XOR<AgentNullableRelationFilter, AgentWhereInput> | null
     senderContact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
     media?: XOR<ConversationMediaNullableRelationFilter, ConversationMediaWhereInput> | null
+    outgoingMedia?: XOR<OutgoingMediaNullableRelationFilter, OutgoingMediaWhereInput> | null
     contactShare?: XOR<ContactShareNullableRelationFilter, ContactShareWhereInput> | null
   }, "id" | "externalMessageId">
 
@@ -36363,6 +37636,111 @@ export namespace Prisma {
     response?: StringNullableWithAggregatesFilter<"ConversationAssignment"> | string | null
     respondedAt?: DateTimeNullableWithAggregatesFilter<"ConversationAssignment"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ConversationAssignment"> | Date | string
+  }
+
+  export type OutgoingMediaWhereInput = {
+    AND?: OutgoingMediaWhereInput | OutgoingMediaWhereInput[]
+    OR?: OutgoingMediaWhereInput[]
+    NOT?: OutgoingMediaWhereInput | OutgoingMediaWhereInput[]
+    id?: StringFilter<"OutgoingMedia"> | string
+    messageId?: StringFilter<"OutgoingMedia"> | string
+    conversationId?: StringFilter<"OutgoingMedia"> | string
+    type?: EnumMediaTypeFilter<"OutgoingMedia"> | $Enums.MediaType
+    mimeType?: StringFilter<"OutgoingMedia"> | string
+    fileName?: StringNullableFilter<"OutgoingMedia"> | string | null
+    caption?: StringNullableFilter<"OutgoingMedia"> | string | null
+    sizeBytes?: IntFilter<"OutgoingMedia"> | number
+    status?: EnumOutgoingMediaStatusFilter<"OutgoingMedia"> | $Enums.OutgoingMediaStatus
+    providerMessageId?: StringNullableFilter<"OutgoingMedia"> | string | null
+    clientMessageId?: StringFilter<"OutgoingMedia"> | string
+    failureCode?: StringNullableFilter<"OutgoingMedia"> | string | null
+    createdAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+  }
+
+  export type OutgoingMediaOrderByWithRelationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    type?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrder
+    status?: SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    clientMessageId?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    message?: MessageOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
+  }
+
+  export type OutgoingMediaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    messageId?: string
+    clientMessageId?: string
+    AND?: OutgoingMediaWhereInput | OutgoingMediaWhereInput[]
+    OR?: OutgoingMediaWhereInput[]
+    NOT?: OutgoingMediaWhereInput | OutgoingMediaWhereInput[]
+    conversationId?: StringFilter<"OutgoingMedia"> | string
+    type?: EnumMediaTypeFilter<"OutgoingMedia"> | $Enums.MediaType
+    mimeType?: StringFilter<"OutgoingMedia"> | string
+    fileName?: StringNullableFilter<"OutgoingMedia"> | string | null
+    caption?: StringNullableFilter<"OutgoingMedia"> | string | null
+    sizeBytes?: IntFilter<"OutgoingMedia"> | number
+    status?: EnumOutgoingMediaStatusFilter<"OutgoingMedia"> | $Enums.OutgoingMediaStatus
+    providerMessageId?: StringNullableFilter<"OutgoingMedia"> | string | null
+    failureCode?: StringNullableFilter<"OutgoingMedia"> | string | null
+    createdAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+    message?: XOR<MessageRelationFilter, MessageWhereInput>
+    conversation?: XOR<ConversationRelationFilter, ConversationWhereInput>
+  }, "id" | "messageId" | "clientMessageId">
+
+  export type OutgoingMediaOrderByWithAggregationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    type?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrder
+    status?: SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    clientMessageId?: SortOrder
+    failureCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OutgoingMediaCountOrderByAggregateInput
+    _avg?: OutgoingMediaAvgOrderByAggregateInput
+    _max?: OutgoingMediaMaxOrderByAggregateInput
+    _min?: OutgoingMediaMinOrderByAggregateInput
+    _sum?: OutgoingMediaSumOrderByAggregateInput
+  }
+
+  export type OutgoingMediaScalarWhereWithAggregatesInput = {
+    AND?: OutgoingMediaScalarWhereWithAggregatesInput | OutgoingMediaScalarWhereWithAggregatesInput[]
+    OR?: OutgoingMediaScalarWhereWithAggregatesInput[]
+    NOT?: OutgoingMediaScalarWhereWithAggregatesInput | OutgoingMediaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OutgoingMedia"> | string
+    messageId?: StringWithAggregatesFilter<"OutgoingMedia"> | string
+    conversationId?: StringWithAggregatesFilter<"OutgoingMedia"> | string
+    type?: EnumMediaTypeWithAggregatesFilter<"OutgoingMedia"> | $Enums.MediaType
+    mimeType?: StringWithAggregatesFilter<"OutgoingMedia"> | string
+    fileName?: StringNullableWithAggregatesFilter<"OutgoingMedia"> | string | null
+    caption?: StringNullableWithAggregatesFilter<"OutgoingMedia"> | string | null
+    sizeBytes?: IntWithAggregatesFilter<"OutgoingMedia"> | number
+    status?: EnumOutgoingMediaStatusWithAggregatesFilter<"OutgoingMedia"> | $Enums.OutgoingMediaStatus
+    providerMessageId?: StringNullableWithAggregatesFilter<"OutgoingMedia"> | string | null
+    clientMessageId?: StringWithAggregatesFilter<"OutgoingMedia"> | string
+    failureCode?: StringNullableWithAggregatesFilter<"OutgoingMedia"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"OutgoingMedia"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"OutgoingMedia"> | Date | string
   }
 
   export type ConversationMediaWhereInput = {
@@ -38539,6 +39917,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -38566,6 +39945,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -38593,6 +39973,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -38620,6 +40001,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -38694,6 +40076,7 @@ export namespace Prisma {
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
@@ -38712,6 +40095,7 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
@@ -38730,6 +40114,7 @@ export namespace Prisma {
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
@@ -38748,6 +40133,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
@@ -38970,6 +40356,123 @@ export namespace Prisma {
     response?: NullableStringFieldUpdateOperationsInput | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OutgoingMediaCreateInput = {
+    id?: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    message: MessageCreateNestedOneWithoutOutgoingMediaInput
+    conversation: ConversationCreateNestedOneWithoutOutgoingMediaInput
+  }
+
+  export type OutgoingMediaUncheckedCreateInput = {
+    id?: string
+    messageId: string
+    conversationId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OutgoingMediaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutOutgoingMediaNestedInput
+    conversation?: ConversationUpdateOneRequiredWithoutOutgoingMediaNestedInput
+  }
+
+  export type OutgoingMediaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OutgoingMediaCreateManyInput = {
+    id?: string
+    messageId: string
+    conversationId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OutgoingMediaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OutgoingMediaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ConversationMediaCreateInput = {
@@ -41236,6 +42739,12 @@ export namespace Prisma {
     none?: ConversationMediaWhereInput
   }
 
+  export type OutgoingMediaListRelationFilter = {
+    every?: OutgoingMediaWhereInput
+    some?: OutgoingMediaWhereInput
+    none?: OutgoingMediaWhereInput
+  }
+
   export type BusinessHoursNoticeListRelationFilter = {
     every?: BusinessHoursNoticeWhereInput
     some?: BusinessHoursNoticeWhereInput
@@ -41247,6 +42756,10 @@ export namespace Prisma {
   }
 
   export type ConversationMediaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OutgoingMediaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -41350,6 +42863,11 @@ export namespace Prisma {
   export type ConversationMediaNullableRelationFilter = {
     is?: ConversationMediaWhereInput | null
     isNot?: ConversationMediaWhereInput | null
+  }
+
+  export type OutgoingMediaNullableRelationFilter = {
+    is?: OutgoingMediaWhereInput | null
+    isNot?: OutgoingMediaWhereInput | null
   }
 
   export type ContactShareNullableRelationFilter = {
@@ -41538,18 +43056,104 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type EnumMediaProviderFilter<$PrismaModel = never> = {
-    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
-    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
-    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
-  }
-
   export type EnumMediaTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
     in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumMediaTypeFilter<$PrismaModel> | $Enums.MediaType
+  }
+
+  export type EnumOutgoingMediaStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutgoingMediaStatus | EnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel> | $Enums.OutgoingMediaStatus
+  }
+
+  export type OutgoingMediaCountOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    type?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    caption?: SortOrder
+    sizeBytes?: SortOrder
+    status?: SortOrder
+    providerMessageId?: SortOrder
+    clientMessageId?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OutgoingMediaAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type OutgoingMediaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    type?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    caption?: SortOrder
+    sizeBytes?: SortOrder
+    status?: SortOrder
+    providerMessageId?: SortOrder
+    clientMessageId?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OutgoingMediaMinOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    conversationId?: SortOrder
+    type?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    caption?: SortOrder
+    sizeBytes?: SortOrder
+    status?: SortOrder
+    providerMessageId?: SortOrder
+    clientMessageId?: SortOrder
+    failureCode?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OutgoingMediaSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type EnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
+    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
+  }
+
+  export type EnumOutgoingMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutgoingMediaStatus | EnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutgoingMediaStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutgoingMediaStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel>
+  }
+
+  export type EnumMediaProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
   }
 
   export type EnumMediaStatusFilter<$PrismaModel = never> = {
@@ -41689,16 +43293,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMediaProviderFilter<$PrismaModel>
     _max?: NestedEnumMediaProviderFilter<$PrismaModel>
-  }
-
-  export type EnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
-    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
   }
 
   export type EnumMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -43930,6 +45524,13 @@ export namespace Prisma {
     connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
   }
 
+  export type OutgoingMediaCreateNestedManyWithoutConversationInput = {
+    create?: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput> | OutgoingMediaCreateWithoutConversationInput[] | OutgoingMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutConversationInput | OutgoingMediaCreateOrConnectWithoutConversationInput[]
+    createMany?: OutgoingMediaCreateManyConversationInputEnvelope
+    connect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+  }
+
   export type ConversationLabelCreateNestedManyWithoutConversationInput = {
     create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
@@ -43977,6 +45578,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutConversationInput | ConversationMediaCreateOrConnectWithoutConversationInput[]
     createMany?: ConversationMediaCreateManyConversationInputEnvelope
     connect?: ConversationMediaWhereUniqueInput | ConversationMediaWhereUniqueInput[]
+  }
+
+  export type OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput> | OutgoingMediaCreateWithoutConversationInput[] | OutgoingMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutConversationInput | OutgoingMediaCreateOrConnectWithoutConversationInput[]
+    createMany?: OutgoingMediaCreateManyConversationInputEnvelope
+    connect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
   }
 
   export type ConversationLabelUncheckedCreateNestedManyWithoutConversationInput = {
@@ -44111,6 +45719,20 @@ export namespace Prisma {
     deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
   }
 
+  export type OutgoingMediaUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput> | OutgoingMediaCreateWithoutConversationInput[] | OutgoingMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutConversationInput | OutgoingMediaCreateOrConnectWithoutConversationInput[]
+    upsert?: OutgoingMediaUpsertWithWhereUniqueWithoutConversationInput | OutgoingMediaUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: OutgoingMediaCreateManyConversationInputEnvelope
+    set?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    disconnect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    delete?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    connect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    update?: OutgoingMediaUpdateWithWhereUniqueWithoutConversationInput | OutgoingMediaUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: OutgoingMediaUpdateManyWithWhereWithoutConversationInput | OutgoingMediaUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: OutgoingMediaScalarWhereInput | OutgoingMediaScalarWhereInput[]
+  }
+
   export type ConversationLabelUpdateManyWithoutConversationNestedInput = {
     create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
@@ -44209,6 +45831,20 @@ export namespace Prisma {
     deleteMany?: ConversationMediaScalarWhereInput | ConversationMediaScalarWhereInput[]
   }
 
+  export type OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput> | OutgoingMediaCreateWithoutConversationInput[] | OutgoingMediaUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutConversationInput | OutgoingMediaCreateOrConnectWithoutConversationInput[]
+    upsert?: OutgoingMediaUpsertWithWhereUniqueWithoutConversationInput | OutgoingMediaUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: OutgoingMediaCreateManyConversationInputEnvelope
+    set?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    disconnect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    delete?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    connect?: OutgoingMediaWhereUniqueInput | OutgoingMediaWhereUniqueInput[]
+    update?: OutgoingMediaUpdateWithWhereUniqueWithoutConversationInput | OutgoingMediaUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: OutgoingMediaUpdateManyWithWhereWithoutConversationInput | OutgoingMediaUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: OutgoingMediaScalarWhereInput | OutgoingMediaScalarWhereInput[]
+  }
+
   export type ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<ConversationLabelCreateWithoutConversationInput, ConversationLabelUncheckedCreateWithoutConversationInput> | ConversationLabelCreateWithoutConversationInput[] | ConversationLabelUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: ConversationLabelCreateOrConnectWithoutConversationInput | ConversationLabelCreateOrConnectWithoutConversationInput[]
@@ -44261,6 +45897,12 @@ export namespace Prisma {
     connect?: ConversationMediaWhereUniqueInput
   }
 
+  export type OutgoingMediaCreateNestedOneWithoutMessageInput = {
+    create?: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutMessageInput
+    connect?: OutgoingMediaWhereUniqueInput
+  }
+
   export type ContactShareCreateNestedOneWithoutMessageInput = {
     create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
@@ -44271,6 +45913,12 @@ export namespace Prisma {
     create?: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ConversationMediaCreateOrConnectWithoutMessageInput
     connect?: ConversationMediaWhereUniqueInput
+  }
+
+  export type OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput = {
+    create?: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutMessageInput
+    connect?: OutgoingMediaWhereUniqueInput
   }
 
   export type ContactShareUncheckedCreateNestedOneWithoutMessageInput = {
@@ -44317,6 +45965,16 @@ export namespace Prisma {
     update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
   }
 
+  export type OutgoingMediaUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutMessageInput
+    upsert?: OutgoingMediaUpsertWithoutMessageInput
+    disconnect?: OutgoingMediaWhereInput | boolean
+    delete?: OutgoingMediaWhereInput | boolean
+    connect?: OutgoingMediaWhereUniqueInput
+    update?: XOR<XOR<OutgoingMediaUpdateToOneWithWhereWithoutMessageInput, OutgoingMediaUpdateWithoutMessageInput>, OutgoingMediaUncheckedUpdateWithoutMessageInput>
+  }
+
   export type ContactShareUpdateOneWithoutMessageNestedInput = {
     create?: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
     connectOrCreate?: ContactShareCreateOrConnectWithoutMessageInput
@@ -44335,6 +45993,16 @@ export namespace Prisma {
     delete?: ConversationMediaWhereInput | boolean
     connect?: ConversationMediaWhereUniqueInput
     update?: XOR<XOR<ConversationMediaUpdateToOneWithWhereWithoutMessageInput, ConversationMediaUpdateWithoutMessageInput>, ConversationMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput = {
+    create?: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: OutgoingMediaCreateOrConnectWithoutMessageInput
+    upsert?: OutgoingMediaUpsertWithoutMessageInput
+    disconnect?: OutgoingMediaWhereInput | boolean
+    delete?: OutgoingMediaWhereInput | boolean
+    connect?: OutgoingMediaWhereUniqueInput
+    update?: XOR<XOR<OutgoingMediaUpdateToOneWithWhereWithoutMessageInput, OutgoingMediaUpdateWithoutMessageInput>, OutgoingMediaUncheckedUpdateWithoutMessageInput>
   }
 
   export type ContactShareUncheckedUpdateOneWithoutMessageNestedInput = {
@@ -44435,6 +46103,42 @@ export namespace Prisma {
     update?: XOR<XOR<AgentUpdateToOneWithWhereWithoutAssignmentActorInput, AgentUpdateWithoutAssignmentActorInput>, AgentUncheckedUpdateWithoutAssignmentActorInput>
   }
 
+  export type MessageCreateNestedOneWithoutOutgoingMediaInput = {
+    create?: XOR<MessageCreateWithoutOutgoingMediaInput, MessageUncheckedCreateWithoutOutgoingMediaInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutOutgoingMediaInput
+    connect?: MessageWhereUniqueInput
+  }
+
+  export type ConversationCreateNestedOneWithoutOutgoingMediaInput = {
+    create?: XOR<ConversationCreateWithoutOutgoingMediaInput, ConversationUncheckedCreateWithoutOutgoingMediaInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutOutgoingMediaInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type EnumMediaTypeFieldUpdateOperationsInput = {
+    set?: $Enums.MediaType
+  }
+
+  export type EnumOutgoingMediaStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OutgoingMediaStatus
+  }
+
+  export type MessageUpdateOneRequiredWithoutOutgoingMediaNestedInput = {
+    create?: XOR<MessageCreateWithoutOutgoingMediaInput, MessageUncheckedCreateWithoutOutgoingMediaInput>
+    connectOrCreate?: MessageCreateOrConnectWithoutOutgoingMediaInput
+    upsert?: MessageUpsertWithoutOutgoingMediaInput
+    connect?: MessageWhereUniqueInput
+    update?: XOR<XOR<MessageUpdateToOneWithWhereWithoutOutgoingMediaInput, MessageUpdateWithoutOutgoingMediaInput>, MessageUncheckedUpdateWithoutOutgoingMediaInput>
+  }
+
+  export type ConversationUpdateOneRequiredWithoutOutgoingMediaNestedInput = {
+    create?: XOR<ConversationCreateWithoutOutgoingMediaInput, ConversationUncheckedCreateWithoutOutgoingMediaInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutOutgoingMediaInput
+    upsert?: ConversationUpsertWithoutOutgoingMediaInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutOutgoingMediaInput, ConversationUpdateWithoutOutgoingMediaInput>, ConversationUncheckedUpdateWithoutOutgoingMediaInput>
+  }
+
   export type MessageCreateNestedOneWithoutMediaInput = {
     create?: XOR<MessageCreateWithoutMediaInput, MessageUncheckedCreateWithoutMediaInput>
     connectOrCreate?: MessageCreateOrConnectWithoutMediaInput
@@ -44449,10 +46153,6 @@ export namespace Prisma {
 
   export type EnumMediaProviderFieldUpdateOperationsInput = {
     set?: $Enums.MediaProvider
-  }
-
-  export type EnumMediaTypeFieldUpdateOperationsInput = {
-    set?: $Enums.MediaType
   }
 
   export type EnumMediaStatusFieldUpdateOperationsInput = {
@@ -45779,18 +47479,45 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedEnumMediaProviderFilter<$PrismaModel = never> = {
-    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
-    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
-    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
-  }
-
   export type NestedEnumMediaTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
     in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumMediaTypeFilter<$PrismaModel> | $Enums.MediaType
+  }
+
+  export type NestedEnumOutgoingMediaStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutgoingMediaStatus | EnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel> | $Enums.OutgoingMediaStatus
+  }
+
+  export type NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
+    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOutgoingMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutgoingMediaStatus | EnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutgoingMediaStatus[] | ListEnumOutgoingMediaStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutgoingMediaStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutgoingMediaStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutgoingMediaStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMediaProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.MediaProvider | EnumMediaProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MediaProvider[] | ListEnumMediaProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumMediaProviderFilter<$PrismaModel> | $Enums.MediaProvider
   }
 
   export type NestedEnumMediaStatusFilter<$PrismaModel = never> = {
@@ -45813,16 +47540,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMediaProviderFilter<$PrismaModel>
     _max?: NestedEnumMediaProviderFilter<$PrismaModel>
-  }
-
-  export type NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MediaType | EnumMediaTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MediaType[] | ListEnumMediaTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMediaTypeWithAggregatesFilter<$PrismaModel> | $Enums.MediaType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMediaTypeFilter<$PrismaModel>
-    _max?: NestedEnumMediaTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumMediaStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -46116,6 +47833,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -46142,6 +47860,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -46603,6 +48322,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -46629,6 +48349,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -46657,6 +48378,7 @@ export namespace Prisma {
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
@@ -46674,6 +48396,7 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
@@ -47621,6 +49344,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -47647,6 +49371,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -47675,6 +49400,7 @@ export namespace Prisma {
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
@@ -47692,6 +49418,7 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
@@ -48469,6 +50196,7 @@ export namespace Prisma {
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
@@ -48486,6 +50214,7 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
@@ -48738,6 +50467,48 @@ export namespace Prisma {
 
   export type ConversationMediaCreateManyConversationInputEnvelope = {
     data: ConversationMediaCreateManyConversationInput | ConversationMediaCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OutgoingMediaCreateWithoutConversationInput = {
+    id?: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    message: MessageCreateNestedOneWithoutOutgoingMediaInput
+  }
+
+  export type OutgoingMediaUncheckedCreateWithoutConversationInput = {
+    id?: string
+    messageId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OutgoingMediaCreateOrConnectWithoutConversationInput = {
+    where: OutgoingMediaWhereUniqueInput
+    create: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput>
+  }
+
+  export type OutgoingMediaCreateManyConversationInputEnvelope = {
+    data: OutgoingMediaCreateManyConversationInput | OutgoingMediaCreateManyConversationInput[]
     skipDuplicates?: boolean
   }
 
@@ -49161,6 +50932,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ConversationMedia"> | Date | string
   }
 
+  export type OutgoingMediaUpsertWithWhereUniqueWithoutConversationInput = {
+    where: OutgoingMediaWhereUniqueInput
+    update: XOR<OutgoingMediaUpdateWithoutConversationInput, OutgoingMediaUncheckedUpdateWithoutConversationInput>
+    create: XOR<OutgoingMediaCreateWithoutConversationInput, OutgoingMediaUncheckedCreateWithoutConversationInput>
+  }
+
+  export type OutgoingMediaUpdateWithWhereUniqueWithoutConversationInput = {
+    where: OutgoingMediaWhereUniqueInput
+    data: XOR<OutgoingMediaUpdateWithoutConversationInput, OutgoingMediaUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type OutgoingMediaUpdateManyWithWhereWithoutConversationInput = {
+    where: OutgoingMediaScalarWhereInput
+    data: XOR<OutgoingMediaUpdateManyMutationInput, OutgoingMediaUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type OutgoingMediaScalarWhereInput = {
+    AND?: OutgoingMediaScalarWhereInput | OutgoingMediaScalarWhereInput[]
+    OR?: OutgoingMediaScalarWhereInput[]
+    NOT?: OutgoingMediaScalarWhereInput | OutgoingMediaScalarWhereInput[]
+    id?: StringFilter<"OutgoingMedia"> | string
+    messageId?: StringFilter<"OutgoingMedia"> | string
+    conversationId?: StringFilter<"OutgoingMedia"> | string
+    type?: EnumMediaTypeFilter<"OutgoingMedia"> | $Enums.MediaType
+    mimeType?: StringFilter<"OutgoingMedia"> | string
+    fileName?: StringNullableFilter<"OutgoingMedia"> | string | null
+    caption?: StringNullableFilter<"OutgoingMedia"> | string | null
+    sizeBytes?: IntFilter<"OutgoingMedia"> | number
+    status?: EnumOutgoingMediaStatusFilter<"OutgoingMedia"> | $Enums.OutgoingMediaStatus
+    providerMessageId?: StringNullableFilter<"OutgoingMedia"> | string | null
+    clientMessageId?: StringFilter<"OutgoingMedia"> | string
+    failureCode?: StringNullableFilter<"OutgoingMedia"> | string | null
+    createdAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+    updatedAt?: DateTimeFilter<"OutgoingMedia"> | Date | string
+  }
+
   export type ConversationLabelUpsertWithWhereUniqueWithoutConversationInput = {
     where: ConversationLabelWhereUniqueInput
     update: XOR<ConversationLabelUpdateWithoutConversationInput, ConversationLabelUncheckedUpdateWithoutConversationInput>
@@ -49232,6 +51039,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -49258,6 +51066,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -49432,6 +51241,43 @@ export namespace Prisma {
     create: XOR<ConversationMediaCreateWithoutMessageInput, ConversationMediaUncheckedCreateWithoutMessageInput>
   }
 
+  export type OutgoingMediaCreateWithoutMessageInput = {
+    id?: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutOutgoingMediaInput
+  }
+
+  export type OutgoingMediaUncheckedCreateWithoutMessageInput = {
+    id?: string
+    conversationId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OutgoingMediaCreateOrConnectWithoutMessageInput = {
+    where: OutgoingMediaWhereUniqueInput
+    create: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+  }
+
   export type ContactShareCreateWithoutMessageInput = {
     id?: string
     displayName: string
@@ -49494,6 +51340,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -49520,6 +51367,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -49707,6 +51555,49 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OutgoingMediaUpsertWithoutMessageInput = {
+    update: XOR<OutgoingMediaUpdateWithoutMessageInput, OutgoingMediaUncheckedUpdateWithoutMessageInput>
+    create: XOR<OutgoingMediaCreateWithoutMessageInput, OutgoingMediaUncheckedCreateWithoutMessageInput>
+    where?: OutgoingMediaWhereInput
+  }
+
+  export type OutgoingMediaUpdateToOneWithWhereWithoutMessageInput = {
+    where?: OutgoingMediaWhereInput
+    data: XOR<OutgoingMediaUpdateWithoutMessageInput, OutgoingMediaUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type OutgoingMediaUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutOutgoingMediaNestedInput
+  }
+
+  export type OutgoingMediaUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ContactShareUpsertWithoutMessageInput = {
     update: XOR<ContactShareUpdateWithoutMessageInput, ContactShareUncheckedUpdateWithoutMessageInput>
     create: XOR<ContactShareCreateWithoutMessageInput, ContactShareUncheckedCreateWithoutMessageInput>
@@ -49757,6 +51648,7 @@ export namespace Prisma {
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
     media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
   }
 
   export type MessageUncheckedCreateWithoutContactShareInput = {
@@ -49774,6 +51666,7 @@ export namespace Prisma {
     createdAt?: Date | string
     readAt?: Date | string | null
     media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
   }
 
   export type MessageCreateOrConnectWithoutContactShareInput = {
@@ -49850,6 +51743,7 @@ export namespace Prisma {
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutContactShareInput = {
@@ -49867,6 +51761,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
   }
 
   export type ContactUpsertWithoutSharedCardsInput = {
@@ -49940,6 +51835,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -49966,6 +51862,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -50185,6 +52082,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -50211,6 +52109,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -50410,6 +52309,218 @@ export namespace Prisma {
     botExclusionsDisabled?: BotExclusionUncheckedUpdateManyWithoutDisabledByAgentNestedInput
   }
 
+  export type MessageCreateWithoutOutgoingMediaInput = {
+    id?: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    messageType?: string
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+    senderAgent?: AgentCreateNestedOneWithoutMessagesInput
+    senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
+    media?: ConversationMediaCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateWithoutOutgoingMediaInput = {
+    id?: string
+    conversationId: string
+    externalMessageId?: string | null
+    direction: string
+    senderType: string
+    senderAgentId?: string | null
+    senderContactId?: string | null
+    senderNameSnapshot?: string | null
+    senderDepartmentSnapshot?: string | null
+    messageType?: string
+    content: string
+    createdAt?: Date | string
+    readAt?: Date | string | null
+    media?: ConversationMediaUncheckedCreateNestedOneWithoutMessageInput
+    contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageCreateOrConnectWithoutOutgoingMediaInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutOutgoingMediaInput, MessageUncheckedCreateWithoutOutgoingMediaInput>
+  }
+
+  export type ConversationCreateWithoutOutgoingMediaInput = {
+    id?: string
+    status?: string
+    currentStep?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    contact: ContactCreateNestedOneWithoutConversationsInput
+    department?: DepartmentCreateNestedOneWithoutConversationsInput
+    assignedAgent?: AgentCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    flowRevision?: FlowRevisionCreateNestedOneWithoutConversationsInput
+    currentFlowNode?: FlowNodeCreateNestedOneWithoutConversationsInput
+    flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
+    notifications?: NotificationCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutOutgoingMediaInput = {
+    id?: string
+    contactId: string
+    status?: string
+    departmentId?: string | null
+    assignedAgentId?: string | null
+    currentStep?: string | null
+    flowRevisionId?: string | null
+    currentFlowNodeId?: string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    queuedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    closedAt?: Date | string | null
+    warningSentAt?: Date | string | null
+    closeReason?: string | null
+    groupChatName?: string | null
+    groupParticipant?: string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
+    assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
+    media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutOutgoingMediaInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutOutgoingMediaInput, ConversationUncheckedCreateWithoutOutgoingMediaInput>
+  }
+
+  export type MessageUpsertWithoutOutgoingMediaInput = {
+    update: XOR<MessageUpdateWithoutOutgoingMediaInput, MessageUncheckedUpdateWithoutOutgoingMediaInput>
+    create: XOR<MessageCreateWithoutOutgoingMediaInput, MessageUncheckedCreateWithoutOutgoingMediaInput>
+    where?: MessageWhereInput
+  }
+
+  export type MessageUpdateToOneWithWhereWithoutOutgoingMediaInput = {
+    where?: MessageWhereInput
+    data: XOR<MessageUpdateWithoutOutgoingMediaInput, MessageUncheckedUpdateWithoutOutgoingMediaInput>
+  }
+
+  export type MessageUpdateWithoutOutgoingMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
+    senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
+    media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutOutgoingMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    externalMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: StringFieldUpdateOperationsInput | string
+    senderType?: StringFieldUpdateOperationsInput | string
+    senderAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderContactId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderNameSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    senderDepartmentSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    messageType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
+  }
+
+  export type ConversationUpsertWithoutOutgoingMediaInput = {
+    update: XOR<ConversationUpdateWithoutOutgoingMediaInput, ConversationUncheckedUpdateWithoutOutgoingMediaInput>
+    create: XOR<ConversationCreateWithoutOutgoingMediaInput, ConversationUncheckedCreateWithoutOutgoingMediaInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutOutgoingMediaInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutOutgoingMediaInput, ConversationUncheckedUpdateWithoutOutgoingMediaInput>
+  }
+
+  export type ConversationUpdateWithoutOutgoingMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    contact?: ContactUpdateOneRequiredWithoutConversationsNestedInput
+    department?: DepartmentUpdateOneWithoutConversationsNestedInput
+    assignedAgent?: AgentUpdateOneWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    flowRevision?: FlowRevisionUpdateOneWithoutConversationsNestedInput
+    currentFlowNode?: FlowNodeUpdateOneWithoutConversationsNestedInput
+    flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutOutgoingMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAgentId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentStep?: NullableStringFieldUpdateOperationsInput | string | null
+    flowRevisionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentFlowNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    flowContext?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    queuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    warningSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closeReason?: NullableStringFieldUpdateOperationsInput | string | null
+    groupChatName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupParticipant?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
+    assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
+    media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
+    businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
   export type MessageCreateWithoutMediaInput = {
     id?: string
     externalMessageId?: string | null
@@ -50424,6 +52535,7 @@ export namespace Prisma {
     conversation: ConversationCreateNestedOneWithoutMessagesInput
     senderAgent?: AgentCreateNestedOneWithoutMessagesInput
     senderContact?: ContactCreateNestedOneWithoutMessageSendersInput
+    outgoingMedia?: OutgoingMediaCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareCreateNestedOneWithoutMessageInput
   }
 
@@ -50441,6 +52553,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     readAt?: Date | string | null
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedOneWithoutMessageInput
     contactShare?: ContactShareUncheckedCreateNestedOneWithoutMessageInput
   }
 
@@ -50471,6 +52584,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -50497,6 +52611,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -50531,6 +52646,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
@@ -50548,6 +52664,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
@@ -50584,6 +52701,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -50610,6 +52728,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -51257,6 +53376,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
   }
 
@@ -51283,6 +53403,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
   }
 
@@ -51368,6 +53489,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
   }
 
@@ -51394,6 +53516,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
   }
 
@@ -51509,6 +53632,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
 
@@ -51535,6 +53659,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
 
@@ -51661,6 +53786,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
 
@@ -51687,6 +53813,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
@@ -51958,6 +54085,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -51984,6 +54112,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -52343,6 +54472,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -52369,6 +54499,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -52809,6 +54940,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -52835,6 +54967,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -52949,6 +55082,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -52975,6 +55109,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -53830,6 +55965,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentCreateNestedManyWithoutConversationInput
     media?: ConversationMediaCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeCreateNestedManyWithoutConversationInput
   }
@@ -53856,6 +55992,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedCreateNestedManyWithoutConversationInput
     assignments?: ConversationAssignmentUncheckedCreateNestedManyWithoutConversationInput
     media?: ConversationMediaUncheckedCreateNestedManyWithoutConversationInput
+    outgoingMedia?: OutgoingMediaUncheckedCreateNestedManyWithoutConversationInput
     labels?: ConversationLabelUncheckedCreateNestedManyWithoutConversationInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedCreateNestedManyWithoutConversationInput
   }
@@ -53963,6 +56100,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -53989,6 +56127,7 @@ export namespace Prisma {
     flowEvents?: FlowExecutionEventUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -54305,6 +56444,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -54331,6 +56471,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -54719,6 +56860,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -54745,6 +56887,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -54782,6 +56925,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
@@ -54799,6 +56943,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
@@ -55400,6 +57545,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -55426,6 +57572,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -55463,6 +57610,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
@@ -55480,6 +57628,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
@@ -55641,6 +57790,22 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type OutgoingMediaCreateManyConversationInput = {
+    id?: string
+    messageId: string
+    type: $Enums.MediaType
+    mimeType: string
+    fileName?: string | null
+    caption?: string | null
+    sizeBytes: number
+    status?: $Enums.OutgoingMediaStatus
+    providerMessageId?: string | null
+    clientMessageId: string
+    failureCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ConversationLabelCreateManyConversationInput = {
     id?: string
     labelId: string
@@ -55675,6 +57840,7 @@ export namespace Prisma {
     senderAgent?: AgentUpdateOneWithoutMessagesNestedInput
     senderContact?: ContactUpdateOneWithoutMessageSendersNestedInput
     media?: ConversationMediaUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUpdateOneWithoutMessageNestedInput
   }
 
@@ -55692,6 +57858,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     media?: ConversationMediaUncheckedUpdateOneWithoutMessageNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateOneWithoutMessageNestedInput
     contactShare?: ContactShareUncheckedUpdateOneWithoutMessageNestedInput
   }
 
@@ -55901,6 +58068,54 @@ export namespace Prisma {
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     lastAccessErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
     lastAccessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OutgoingMediaUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessageUpdateOneRequiredWithoutOutgoingMediaNestedInput
+  }
+
+  export type OutgoingMediaUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OutgoingMediaUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    type?: EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    status?: EnumOutgoingMediaStatusFieldUpdateOperationsInput | $Enums.OutgoingMediaStatus
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientMessageId?: StringFieldUpdateOperationsInput | string
+    failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56382,6 +58597,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -56408,6 +58624,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -56584,6 +58801,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUpdateManyWithoutConversationNestedInput
   }
@@ -56610,6 +58828,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutConversationNestedInput
     assignments?: ConversationAssignmentUncheckedUpdateManyWithoutConversationNestedInput
     media?: ConversationMediaUncheckedUpdateManyWithoutConversationNestedInput
+    outgoingMedia?: OutgoingMediaUncheckedUpdateManyWithoutConversationNestedInput
     labels?: ConversationLabelUncheckedUpdateManyWithoutConversationNestedInput
     businessHoursNotices?: BusinessHoursNoticeUncheckedUpdateManyWithoutConversationNestedInput
   }
@@ -56788,6 +59007,10 @@ export namespace Prisma {
      * @deprecated Use ConversationAssignmentDefaultArgs instead
      */
     export type ConversationAssignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ConversationAssignmentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use OutgoingMediaDefaultArgs instead
+     */
+    export type OutgoingMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OutgoingMediaDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ConversationMediaDefaultArgs instead
      */

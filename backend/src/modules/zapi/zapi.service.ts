@@ -50,6 +50,18 @@ export type BotOption = {
   procedureMessage?: string;
 };
 
+export type ZApiOutgoingMediaType = "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";
+
+export type ZApiOutgoingMediaInput = {
+  phone: string;
+  type: ZApiOutgoingMediaType;
+  mimeType: string;
+  buffer: Buffer;
+  fileName?: string | null;
+  caption?: string | null;
+  clientMessageId?: string;
+};
+
 export type ParsedIncomingMessage = {
   phone: string;
   senderName: string;
@@ -918,6 +930,97 @@ export class ZApiService {
       logger.error({ err }, "Erro ao enviar mensagem Z-API");
       return { error: err.message || "Falha na requisição Z-API" };
     }
+  }
+
+  private async sendOutgoingMedia(input: ZApiOutgoingMediaInput) {
+    if (process.env.OUTBOUND_MEDIA_ENABLED !== "true") {
+      return { error: "Envio de mídias está desativado neste ambiente." };
+    }
+
+    const config = await this.getConfig();
+    if (!config.isActive || !config.instanceId || !config.token) {
+      return { error: "Z-API desativada ou sem credenciais configuradas." };
+    }
+
+    const mimeType = input.mimeType.toLowerCase().split(";")[0].trim();
+    let dataUrl = `data:${mimeType};base64,${input.buffer.toString("base64")}`;
+    const formattedPhone = this.formatPhone(input.phone);
+    const timeoutMs = Math.min(120_000, Math.max(5_000, Number(process.env.OUTBOUND_MEDIA_REQUEST_TIMEOUT_MS ?? 30_000)));
+    const headers = {
+      "Content-Type": "application/json",
+      ...(config.clientToken ? { "Client-Token": config.clientToken } : {}),
+    };
+    const common = {
+      phone: formattedPhone,
+      ...(input.caption?.trim() ? { caption: input.caption.trim() } : {}),
+      ...(input.clientMessageId ? { messageId: input.clientMessageId } : {}),
+    };
+
+    let endpoint = "";
+    let payload: Record<string, unknown>;
+    switch (input.type) {
+      case "IMAGE":
+        endpoint = "send-image";
+        payload = { ...common, image: dataUrl };
+        break;
+      case "VIDEO":
+        endpoint = "send-video";
+        payload = { ...common, video: dataUrl };
+        break;
+      case "AUDIO":
+        endpoint = "send-audio";
+        payload = { phone: formattedPhone, audio: dataUrl, ...(input.clientMessageId ? { messageId: input.clientMessageId } : {}) };
+        break;
+      case "DOCUMENT": {
+        const extension = (input.fileName?.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8) || "bin";
+        endpoint = `send-document/${extension}`;
+        payload = { ...common, document: dataUrl, fileName: input.fileName || `arquivo.${extension}` };
+        break;
+      }
+    }
+
+    const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      const data = (await response.json().catch(() => ({}))) as any;
+      if (!response.ok) {
+        const errorMsg = parseZApiError(response.status, data);
+        logger.error({ type: input.type, sizeBytes: input.buffer.length, status: response.status, errorMsg }, "Erro da Z-API ao enviar mídia");
+        return { error: errorMsg };
+      }
+      const providerMessageId = String(data?.messageId || data?.zaapId || data?.id || "").trim() || null;
+      logger.info({ type: input.type, sizeBytes: input.buffer.length, status: response.status }, "Mídia Z-API enviada com sucesso");
+      return { data, providerMessageId };
+    } catch (err: any) {
+      const message = err?.name === "TimeoutError" ? "Tempo limite excedido ao enviar a mídia para a Z-API." : (err?.message || "Falha na requisição Z-API");
+      logger.error({ type: input.type, sizeBytes: input.buffer.length, message }, "Erro de transporte ao enviar mídia Z-API");
+      return { error: message };
+    } finally {
+      // Drop the largest temporary representation as soon as fetch resolves.
+      payload = {};
+      dataUrl = "";
+    }
+  }
+
+  async sendImage(input: Omit<ZApiOutgoingMediaInput, "type">) {
+    return this.sendOutgoingMedia({ ...input, type: "IMAGE" });
+  }
+
+  async sendVideo(input: Omit<ZApiOutgoingMediaInput, "type">) {
+    return this.sendOutgoingMedia({ ...input, type: "VIDEO" });
+  }
+
+  async sendAudio(input: Omit<ZApiOutgoingMediaInput, "type">) {
+    return this.sendOutgoingMedia({ ...input, type: "AUDIO" });
+  }
+
+  async sendDocument(input: Omit<ZApiOutgoingMediaInput, "type">) {
+    return this.sendOutgoingMedia({ ...input, type: "DOCUMENT" });
   }
 
   /**

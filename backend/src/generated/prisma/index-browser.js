@@ -259,6 +259,23 @@ exports.Prisma.ConversationAssignmentScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.OutgoingMediaScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  conversationId: 'conversationId',
+  type: 'type',
+  mimeType: 'mimeType',
+  fileName: 'fileName',
+  caption: 'caption',
+  sizeBytes: 'sizeBytes',
+  status: 'status',
+  providerMessageId: 'providerMessageId',
+  clientMessageId: 'clientMessageId',
+  failureCode: 'failureCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ConversationMediaScalarFieldEnum = {
   id: 'id',
   messageId: 'messageId',
@@ -518,15 +535,22 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-exports.MediaProvider = exports.$Enums.MediaProvider = {
-  ZAPI: 'ZAPI'
-};
-
 exports.MediaType = exports.$Enums.MediaType = {
   IMAGE: 'IMAGE',
   AUDIO: 'AUDIO',
   VIDEO: 'VIDEO',
   DOCUMENT: 'DOCUMENT'
+};
+
+exports.OutgoingMediaStatus = exports.$Enums.OutgoingMediaStatus = {
+  PENDING: 'PENDING',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
+exports.MediaProvider = exports.$Enums.MediaProvider = {
+  ZAPI: 'ZAPI'
 };
 
 exports.MediaStatus = exports.$Enums.MediaStatus = {
@@ -599,6 +623,7 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   ContactShare: 'ContactShare',
   ConversationAssignment: 'ConversationAssignment',
+  OutgoingMedia: 'OutgoingMedia',
   ConversationMedia: 'ConversationMedia',
   FlowDefinition: 'FlowDefinition',
   ZApiConfig: 'ZApiConfig',

@@ -131,6 +131,19 @@ Envia uma nova mensagem para a conversa como atendente.
 }
 ```
 
+### `POST /conversations/:id/media`
+Envia uma imagem, vídeo, áudio ou documento como atendente. Requer `conversations:send_media` e recebe `multipart/form-data` com:
+
+- `file` (obrigatório): um arquivo dentro dos limites configurados;
+- `caption` (opcional): legenda para imagem, vídeo ou documento;
+- `clientMessageId` (obrigatório): UUID usado para impedir reenvio duplicado.
+
+O cliente também envia `Idempotency-Key: clientMessageId`; o backend aceita o valor do header como fallback para clientes que não incluírem o campo multipart.
+
+O backend valida MIME, extensão e assinatura do arquivo, converte o conteúdo para Data URL/Base64 somente em memória e encaminha ao endpoint correspondente da Z‑API. Não grava o binário em disco, banco, R2, cache persistente ou resposta de histórico. O histórico mantém somente metadados (`type`, `mimeType`, `fileName`, `sizeBytes`, status e IDs do provedor); após recarregar a conversa não existe download da mídia enviada.
+
+Respostas: `201` com a mensagem criada; `400` arquivo inválido; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. A funcionalidade é habilitada explicitamente por `OUTBOUND_MEDIA_ENABLED=true`.
+
 ---
 
 ## 3. Notificações (`/notifications`)

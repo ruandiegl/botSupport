@@ -56,10 +56,25 @@ export interface Message {
   senderDepartmentName?: string | null;
   senderContactId?: string | null;
   content: string;
-  messageType?: "TEXT" | "CONTACT" | string;
+  messageType?: "TEXT" | "CONTACT" | "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT" | string;
   contactShare?: ContactShare | null;
   createdAt: string;
   media?: ConversationMedia | null;
+  outgoingMedia?: OutgoingMedia | null;
+}
+
+export type OutgoingMediaStatus = "PENDING" | "SENDING" | "SENT" | "FAILED";
+
+export interface OutgoingMedia {
+  id: string;
+  type: ConversationMediaType;
+  mimeType: string;
+  fileName?: string | null;
+  caption?: string | null;
+  sizeBytes: number;
+  status: OutgoingMediaStatus;
+  providerMessageId?: string | null;
+  createdAt: string;
 }
 
 export type ConversationMediaType = "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT";

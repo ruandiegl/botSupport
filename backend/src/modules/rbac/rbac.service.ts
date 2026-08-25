@@ -1,20 +1,20 @@
 import { rbacRepository } from "./rbac.repository.js";
 
 export const RBAC_RESOURCES = ["conversations", "queue", "agents", "departments", "shortcuts", "labels", "flow", "zapi", "rbac", "reports", "bot_exclusions", "contacts", "business_hours"] as const;
-export const RBAC_ACTIONS = ["view", "assume", "delegate", "close", "send_message", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
+export const RBAC_ACTIONS = ["view", "assume", "delegate", "close", "send_message", "send_media", "view_all", "view_own", "create", "update", "delete", "publish", "use", "edit", "configure", "manage"] as const;
 
 type PermissionMap = Record<string, string[]>;
 
 const defaults: Record<string, PermissionMap> = {
   ADMIN: {
-    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
+    conversations: ["view", "assume", "delegate", "close", "send_message", "send_media"], queue: ["view_all", "view_own"], agents: ["view", "create", "update", "delete"],
     departments: ["view", "create", "update", "delete"], shortcuts: ["view", "create", "update", "delete", "publish", "use"], labels: ["view", "create", "update", "delete"], flow: ["view", "edit", "publish"], zapi: ["view", "configure"], rbac: ["view", "manage"], reports: ["view"], bot_exclusions: ["view", "create", "update", "delete"], contacts: ["view", "create", "update", "delete"], business_hours: ["view", "configure"],
   },
   SUPERVISOR: {
-    conversations: ["view", "assume", "delegate", "close", "send_message"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: ["view"],
+    conversations: ["view", "assume", "delegate", "close", "send_message", "send_media"], queue: ["view_all", "view_own"], agents: ["view"], departments: ["view"], shortcuts: ["view", "create", "update", "use"], labels: ["view", "update"], reports: ["view"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: ["view"],
   },
   AGENT: {
-    conversations: ["view", "assume", "close", "send_message"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: [],
+    conversations: ["view", "assume", "close", "send_message", "send_media"], queue: ["view_own"], shortcuts: ["view", "create", "update", "delete", "use"], labels: ["view", "update"], bot_exclusions: [], contacts: ["view", "create", "update"], business_hours: [],
   },
 };
 
@@ -34,11 +34,11 @@ export class RbacService {
       ...Object.entries(roleDefaults)
         .filter(([resource, actions]) => {
           const existing = current.find((item) => item.resource === resource);
-          return Boolean(existing && actions.includes("delegate") && !existing.actions.includes("delegate"));
+          return Boolean(existing && ["delegate", "send_media"].some((action) => actions.includes(action) && !existing.actions.includes(action)));
         })
         .map(([resource, actions]) => {
           const existing = current.find((item) => item.resource === resource)!;
-          return rbacRepository.upsert(role, resource, [...new Set([...existing.actions, ...actions.filter((action) => action === "delegate")])]);
+          return rbacRepository.upsert(role, resource, [...new Set([...existing.actions, ...actions.filter((action) => action === "delegate" || action === "send_media")])]);
         }),
       ...screens
         .filter((path) => !existingResources.has(screenResource(path)))
