@@ -66,6 +66,7 @@ export function initSocketIO(httpServer: HTTPServer): SocketIOServer {
 
     socket.join("queue");
     socket.join("agents");
+    socket.join("groups");
     socket.join(`agent:${user.id}`);
 
     try {
@@ -111,6 +112,42 @@ export function initSocketIO(httpServer: HTTPServer): SocketIOServer {
       const room = `conversation:${data.conversationId}`;
       socket.leave(room);
       logger.debug({ userId: user.id, conversationId: data.conversationId }, "Socket saiu da conversa");
+    });
+
+    socket.on("group:join", async (data: { groupId: string }) => {
+      if (!data?.groupId) return;
+      const group = await prisma.groupChat.findFirst({ where: { id: data.groupId, isActive: true }, select: { id: true } }).catch((error) => {
+        logger.error({ error, userId: user.id, groupId: data.groupId }, "Falha ao validar acesso à sala do grupo");
+        return null;
+      });
+      if (!group) return;
+      socket.join(`group:${data.groupId}`);
+      logger.debug({ userId: user.id, groupId: data.groupId }, "Socket entrou no grupo");
+    });
+
+    socket.on("group:leave", (data: { groupId: string }) => {
+      if (!data?.groupId) return;
+      socket.leave(`group:${data.groupId}`);
+    });
+
+    socket.on("group:typing:start", (data: { groupId: string }) => {
+      if (!data?.groupId) return;
+      socket.to(`group:${data.groupId}`).emit("group:typing", {
+        groupId: data.groupId,
+        agentId: user.id,
+        agentName: user.name,
+        isTyping: true,
+      });
+    });
+
+    socket.on("group:typing:stop", (data: { groupId: string }) => {
+      if (!data?.groupId) return;
+      socket.to(`group:${data.groupId}`).emit("group:typing", {
+        groupId: data.groupId,
+        agentId: user.id,
+        agentName: user.name,
+        isTyping: false,
+      });
     });
 
     socket.on("typing:start", (data: { conversationId: string }) => {
@@ -184,6 +221,12 @@ export const socketEmitter = {
   emitToConversation(conversationId: string, event: string, payload: any) {
     if (io) {
       io.to(`conversation:${conversationId}`).emit(event, payload);
+    }
+  },
+
+  emitToGroup(groupId: string, event: string, payload: any) {
+    if (io) {
+      io.to(`group:${groupId}`).emit(event, payload);
     }
   },
 

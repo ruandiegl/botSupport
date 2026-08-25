@@ -261,27 +261,114 @@ export class ZApiRepository {
       }),
       prisma.groupOutboundMessage.findMany({ where: { groupChatId }, orderBy: { createdAt: "desc" }, take: 100, include: { agent: { select: { name: true } } } }),
     ]);
+    const externalIds = incoming.map((message) => message.externalMessageId).filter((id): id is string => Boolean(id));
+    const linkedMessages = externalIds.length
+      ? await prisma.message.findMany({
+          where: { externalMessageId: { in: externalIds } },
+          select: {
+            id: true,
+            conversationId: true,
+            externalMessageId: true,
+            media: true,
+          },
+        })
+      : [];
+    const linkedByExternalId = new Map(linkedMessages.map((message) => [message.externalMessageId, message]));
+    const publicMedia = (media: any) => media ? {
+      id: media.id,
+      type: media.type,
+      status: media.status,
+      mimeType: media.mimeType,
+      caption: media.caption,
+      fileName: media.originalFileName,
+      title: media.title,
+      ptt: media.ptt,
+      seconds: media.seconds,
+      width: media.width,
+      height: media.height,
+      pageCount: media.pageCount,
+      viewOnce: media.viewOnce,
+      hasThumbnail: Boolean(media.thumbnailUrlCiphertext),
+      expiresAt: media.expiresAt.toISOString(),
+      available: media.status === "AVAILABLE" && !media.viewOnce && media.expiresAt.getTime() > Date.now(),
+    } : null;
     return [
-      ...incoming.map((message) => ({ id: message.id, direction: message.direction, content: message.content, messageType: message.messageType, senderName: message.senderNameSnapshot || message.senderContact?.name || "Participante", status: "RECEIVED", createdAt: message.createdAt.toISOString() })),
-      ...outgoing.map((message) => ({ id: message.id, direction: "OUT", content: message.content, messageType: "TEXT", senderName: message.agent.name, status: message.status, createdAt: message.createdAt.toISOString() })),
+      ...incoming.map((message) => {
+        const linked = message.externalMessageId ? linkedByExternalId.get(message.externalMessageId) : null;
+        return {
+          id: message.id,
+          direction: message.direction,
+          content: message.content,
+          messageType: message.messageType,
+          senderName: message.senderNameSnapshot || message.senderContact?.name || "Participante",
+          status: "RECEIVED",
+          createdAt: message.createdAt.toISOString(),
+          conversationId: linked?.conversationId ?? message.conversationId ?? null,
+          linkedMessageId: linked?.id ?? null,
+          media: publicMedia(linked?.media),
+          outgoingMedia: null,
+        };
+      }),
+      ...outgoing.map((message) => ({
+        id: message.id,
+        direction: "OUT",
+        content: message.content,
+        messageType: message.messageType,
+        senderName: message.agent.name,
+        status: message.status,
+        createdAt: message.createdAt.toISOString(),
+        conversationId: null,
+        linkedMessageId: null,
+        media: null,
+        outgoingMedia: message.messageType === "TEXT" ? null : {
+          id: message.id,
+          type: message.messageType,
+          mimeType: message.mimeType || "application/octet-stream",
+          fileName: message.fileName,
+          caption: message.caption,
+          sizeBytes: message.sizeBytes || 0,
+          status: message.status,
+          providerMessageId: message.providerMessageId,
+          createdAt: message.createdAt.toISOString(),
+        },
+      })),
     ].sort((a, b) => a.createdAt.localeCompare(b.createdAt)).slice(-100);
   }
 
-  async findGroupOutboundByClientMessageId(clientMessageId: string) {
-    return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId } });
+  async markGroupRead(groupChatId: string) {
+    const now = new Date();
+    await prisma.$transaction([
+      prisma.groupMessage.updateMany({ where: { groupChatId, readAt: null }, data: { readAt: now } }),
+      prisma.groupChat.update({ where: { id: groupChatId }, data: { unreadCount: 0 } }),
+    ]);
+    return { groupChatId, readAt: now.toISOString() };
   }
 
-  async createGroupOutboundMessage(data: { groupChatId: string; agentId: string; clientMessageId: string; content: string }) {
+  async findGroupOutboundByClientMessageId(clientMessageId: string) {
+    return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId }, include: { agent: { select: { name: true } } } });
+  }
+
+  async createGroupOutboundMessage(data: {
+    groupChatId: string;
+    agentId: string;
+    clientMessageId: string;
+    content: string;
+    messageType?: string;
+    mimeType?: string | null;
+    fileName?: string | null;
+    sizeBytes?: number | null;
+    caption?: string | null;
+  }) {
     try {
-      return await prisma.groupOutboundMessage.create({ data });
+      return await prisma.groupOutboundMessage.create({ data, include: { agent: { select: { name: true } } } });
     } catch (error: any) {
-      if (error?.code === "P2002") return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId: data.clientMessageId } });
+      if (error?.code === "P2002") return prisma.groupOutboundMessage.findUnique({ where: { clientMessageId: data.clientMessageId }, include: { agent: { select: { name: true } } } });
       throw error;
     }
   }
 
   async updateGroupOutboundMessage(id: string, data: { status: string; providerMessageId?: string | null; failureCode?: string | null }) {
-    return prisma.groupOutboundMessage.update({
+    const updated = await prisma.groupOutboundMessage.update({
       where: { id },
       data: {
         status: data.status,
@@ -289,7 +376,16 @@ export class ZApiRepository {
         failureCode: data.failureCode ?? undefined,
         ...(data.status === "SENT" ? { sentAt: new Date() } : {}),
       },
+      include: { agent: { select: { name: true } } },
     });
+    if (data.status === "SENT") {
+      await prisma.groupChat.update({ where: { id: updated.groupChatId }, data: { lastMessageAt: updated.sentAt ?? updated.createdAt } });
+    }
+    return updated;
+  }
+
+  async findAgentById(id: string) {
+    return prisma.agent.findUnique({ where: { id }, select: { id: true, name: true, isActive: true, department: { select: { name: true } } } });
   }
 
   async findContactByAnyPhone(phones: string[]) {

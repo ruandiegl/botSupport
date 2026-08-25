@@ -3,6 +3,8 @@ import { logger } from "../../shared/logger.js";
 import { zApiService } from "./zapi.service.js";
 import { UpdateZApiConfigSchema, TestZApiConnectionSchema, ZApiReceivedWebhookSchema, SendGroupMessageSchema } from "./zapi.schemas.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
+import { MultipartError, readMultipartForm } from "../../shared/multipart.js";
+import { outboundMediaBodyLimit } from "../conversations/outgoing-media.js";
 
 function toPublicConfig(config: any) {
   const { token, clientToken, instancePhone, instanceLid, ...publicConfig } = config;
@@ -62,6 +64,65 @@ export class ZApiController {
       res.json({ items: await zApiService.listGroupHistory(String(req.params.groupId)) });
     } catch (err: any) {
       res.status(404).json({ error: err?.message || "Grupo não encontrado." });
+    }
+  }
+
+  async markGroupRead(req: Request, res: Response): Promise<void> {
+    try {
+      res.json(await zApiService.markGroupRead(String(req.params.groupId)));
+    } catch (err: any) {
+      res.status(404).json({ error: err?.message || "Grupo não encontrado." });
+    }
+  }
+
+  async sendGroupMedia(req: AuthenticatedRequest, res: Response): Promise<void> {
+    res.setHeader("Cache-Control", "no-store");
+    let form: Awaited<ReturnType<typeof readMultipartForm>> | null = null;
+    try {
+      if (!req.user?.id) {
+        res.status(401).json({ error: "Usuário não autenticado." });
+        return;
+      }
+      form = await readMultipartForm(req, outboundMediaBodyLimit());
+      const result = await zApiService.sendDirectGroupMedia(String(req.params.groupId), req.user.id, {
+        file: form.file,
+        caption: form.fields.caption ?? "",
+        clientMessageId: form.fields.clientMessageId || String(req.headers["idempotency-key"] ?? ""),
+      });
+      switch (result.kind) {
+        case "DISABLED": res.status(503).json({ error: "Envio de mídias está desativado neste ambiente." }); return;
+        case "NOT_FOUND": res.status(404).json({ error: "Grupo não encontrado ou indisponível." }); return;
+        case "AGENT_UNAVAILABLE": res.status(403).json({ error: "Seu usuário não está disponível para enviar mídias." }); return;
+        case "DUPLICATE": res.status(409).json({ error: "Este arquivo já está sendo processado." }); return;
+        case "PROVIDER_ERROR": res.status(502).json({ error: result.error }); return;
+        case "INVALID": {
+          const messages: Record<string, string> = {
+            FILE_REQUIRED: "Selecione um arquivo antes de enviar.",
+            TYPE_NOT_ALLOWED: "Este tipo de arquivo não é permitido.",
+            SIZE_LIMIT: "O arquivo é grande demais. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB.",
+            SIGNATURE_INVALID: "Não conseguimos confirmar o formato deste arquivo.",
+            NAME_INVALID: "O nome do arquivo é inválido.",
+            CAPTION_INVALID: "A legenda excede o limite permitido.",
+            CLIENT_MESSAGE_INVALID: "Identificador de envio inválido.",
+          };
+          res.status(400).json({ error: messages[result.code] || "Arquivo inválido." });
+          return;
+        }
+        case "OK": res.status(result.duplicate ? 200 : 201).json(result.message); return;
+      }
+    } catch (error) {
+      if (error instanceof MultipartError) {
+        const status = error.code === "TOO_LARGE" ? 413 : error.code === "CONTENT_TYPE" ? 415 : 400;
+        res.status(status).json({
+          error: error.code === "TOO_LARGE"
+            ? "O arquivo é grande demais. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB."
+            : "Não foi possível ler o arquivo enviado. Selecione-o novamente.",
+        });
+        return;
+      }
+      throw error;
+    } finally {
+      form?.cleanup();
     }
   }
 

@@ -21,7 +21,7 @@ export function ShortcutPicker({
   departmentName,
   onSelect,
 }: {
-  conversationId: string;
+  conversationId?: string;
   agentName?: string;
   contactName?: string;
   departmentName?: string;

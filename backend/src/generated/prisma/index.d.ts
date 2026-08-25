@@ -5682,13 +5682,13 @@ export namespace Prisma {
     _count?: true | ProcedureCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: ProcedureAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: ProcedureSumAggregateInputType
@@ -15542,8 +15542,18 @@ export namespace Prisma {
 
   export type AggregateGroupOutboundMessage = {
     _count: GroupOutboundMessageCountAggregateOutputType | null
+    _avg: GroupOutboundMessageAvgAggregateOutputType | null
+    _sum: GroupOutboundMessageSumAggregateOutputType | null
     _min: GroupOutboundMessageMinAggregateOutputType | null
     _max: GroupOutboundMessageMaxAggregateOutputType | null
+  }
+
+  export type GroupOutboundMessageAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type GroupOutboundMessageSumAggregateOutputType = {
+    sizeBytes: number | null
   }
 
   export type GroupOutboundMessageMinAggregateOutputType = {
@@ -15553,6 +15563,11 @@ export namespace Prisma {
     clientMessageId: string | null
     providerMessageId: string | null
     content: string | null
+    messageType: string | null
+    mimeType: string | null
+    fileName: string | null
+    sizeBytes: number | null
+    caption: string | null
     status: string | null
     failureCode: string | null
     createdAt: Date | null
@@ -15566,6 +15581,11 @@ export namespace Prisma {
     clientMessageId: string | null
     providerMessageId: string | null
     content: string | null
+    messageType: string | null
+    mimeType: string | null
+    fileName: string | null
+    sizeBytes: number | null
+    caption: string | null
     status: string | null
     failureCode: string | null
     createdAt: Date | null
@@ -15579,6 +15599,11 @@ export namespace Prisma {
     clientMessageId: number
     providerMessageId: number
     content: number
+    messageType: number
+    mimeType: number
+    fileName: number
+    sizeBytes: number
+    caption: number
     status: number
     failureCode: number
     createdAt: number
@@ -15587,6 +15612,14 @@ export namespace Prisma {
   }
 
 
+  export type GroupOutboundMessageAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type GroupOutboundMessageSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
   export type GroupOutboundMessageMinAggregateInputType = {
     id?: true
     groupChatId?: true
@@ -15594,6 +15627,11 @@ export namespace Prisma {
     clientMessageId?: true
     providerMessageId?: true
     content?: true
+    messageType?: true
+    mimeType?: true
+    fileName?: true
+    sizeBytes?: true
+    caption?: true
     status?: true
     failureCode?: true
     createdAt?: true
@@ -15607,6 +15645,11 @@ export namespace Prisma {
     clientMessageId?: true
     providerMessageId?: true
     content?: true
+    messageType?: true
+    mimeType?: true
+    fileName?: true
+    sizeBytes?: true
+    caption?: true
     status?: true
     failureCode?: true
     createdAt?: true
@@ -15620,6 +15663,11 @@ export namespace Prisma {
     clientMessageId?: true
     providerMessageId?: true
     content?: true
+    messageType?: true
+    mimeType?: true
+    fileName?: true
+    sizeBytes?: true
+    caption?: true
     status?: true
     failureCode?: true
     createdAt?: true
@@ -15664,6 +15712,18 @@ export namespace Prisma {
     _count?: true | GroupOutboundMessageCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: GroupOutboundMessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: GroupOutboundMessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
@@ -15695,6 +15755,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: GroupOutboundMessageCountAggregateInputType | true
+    _avg?: GroupOutboundMessageAvgAggregateInputType
+    _sum?: GroupOutboundMessageSumAggregateInputType
     _min?: GroupOutboundMessageMinAggregateInputType
     _max?: GroupOutboundMessageMaxAggregateInputType
   }
@@ -15706,11 +15768,18 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId: string | null
     content: string
+    messageType: string
+    mimeType: string | null
+    fileName: string | null
+    sizeBytes: number | null
+    caption: string | null
     status: string
     failureCode: string | null
     createdAt: Date
     sentAt: Date | null
     _count: GroupOutboundMessageCountAggregateOutputType | null
+    _avg: GroupOutboundMessageAvgAggregateOutputType | null
+    _sum: GroupOutboundMessageSumAggregateOutputType | null
     _min: GroupOutboundMessageMinAggregateOutputType | null
     _max: GroupOutboundMessageMaxAggregateOutputType | null
   }
@@ -15736,6 +15805,11 @@ export namespace Prisma {
     clientMessageId?: boolean
     providerMessageId?: boolean
     content?: boolean
+    messageType?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    sizeBytes?: boolean
+    caption?: boolean
     status?: boolean
     failureCode?: boolean
     createdAt?: boolean
@@ -15751,6 +15825,11 @@ export namespace Prisma {
     clientMessageId?: boolean
     providerMessageId?: boolean
     content?: boolean
+    messageType?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    sizeBytes?: boolean
+    caption?: boolean
     status?: boolean
     failureCode?: boolean
     createdAt?: boolean
@@ -15766,6 +15845,11 @@ export namespace Prisma {
     clientMessageId?: boolean
     providerMessageId?: boolean
     content?: boolean
+    messageType?: boolean
+    mimeType?: boolean
+    fileName?: boolean
+    sizeBytes?: boolean
+    caption?: boolean
     status?: boolean
     failureCode?: boolean
     createdAt?: boolean
@@ -15794,6 +15878,11 @@ export namespace Prisma {
       clientMessageId: string
       providerMessageId: string | null
       content: string
+      messageType: string
+      mimeType: string | null
+      fileName: string | null
+      sizeBytes: number | null
+      caption: string | null
       status: string
       failureCode: string | null
       createdAt: Date
@@ -16199,6 +16288,11 @@ export namespace Prisma {
     readonly clientMessageId: FieldRef<"GroupOutboundMessage", 'String'>
     readonly providerMessageId: FieldRef<"GroupOutboundMessage", 'String'>
     readonly content: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly messageType: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly mimeType: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly fileName: FieldRef<"GroupOutboundMessage", 'String'>
+    readonly sizeBytes: FieldRef<"GroupOutboundMessage", 'Int'>
+    readonly caption: FieldRef<"GroupOutboundMessage", 'String'>
     readonly status: FieldRef<"GroupOutboundMessage", 'String'>
     readonly failureCode: FieldRef<"GroupOutboundMessage", 'String'>
     readonly createdAt: FieldRef<"GroupOutboundMessage", 'DateTime'>
@@ -39664,6 +39758,11 @@ export namespace Prisma {
     clientMessageId: 'clientMessageId',
     providerMessageId: 'providerMessageId',
     content: 'content',
+    messageType: 'messageType',
+    mimeType: 'mimeType',
+    fileName: 'fileName',
+    sizeBytes: 'sizeBytes',
+    caption: 'caption',
     status: 'status',
     failureCode: 'failureCode',
     createdAt: 'createdAt',
@@ -41249,6 +41348,11 @@ export namespace Prisma {
     clientMessageId?: StringFilter<"GroupOutboundMessage"> | string
     providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     content?: StringFilter<"GroupOutboundMessage"> | string
+    messageType?: StringFilter<"GroupOutboundMessage"> | string
+    mimeType?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    fileName?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    sizeBytes?: IntNullableFilter<"GroupOutboundMessage"> | number | null
+    caption?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     status?: StringFilter<"GroupOutboundMessage"> | string
     failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
@@ -41264,6 +41368,11 @@ export namespace Prisma {
     clientMessageId?: SortOrder
     providerMessageId?: SortOrderInput | SortOrder
     content?: SortOrder
+    messageType?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
     status?: SortOrder
     failureCode?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -41282,6 +41391,11 @@ export namespace Prisma {
     agentId?: StringFilter<"GroupOutboundMessage"> | string
     providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     content?: StringFilter<"GroupOutboundMessage"> | string
+    messageType?: StringFilter<"GroupOutboundMessage"> | string
+    mimeType?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    fileName?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    sizeBytes?: IntNullableFilter<"GroupOutboundMessage"> | number | null
+    caption?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     status?: StringFilter<"GroupOutboundMessage"> | string
     failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
@@ -41297,13 +41411,20 @@ export namespace Prisma {
     clientMessageId?: SortOrder
     providerMessageId?: SortOrderInput | SortOrder
     content?: SortOrder
+    messageType?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
     status?: SortOrder
     failureCode?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     sentAt?: SortOrderInput | SortOrder
     _count?: GroupOutboundMessageCountOrderByAggregateInput
+    _avg?: GroupOutboundMessageAvgOrderByAggregateInput
     _max?: GroupOutboundMessageMaxOrderByAggregateInput
     _min?: GroupOutboundMessageMinOrderByAggregateInput
+    _sum?: GroupOutboundMessageSumOrderByAggregateInput
   }
 
   export type GroupOutboundMessageScalarWhereWithAggregatesInput = {
@@ -41316,6 +41437,11 @@ export namespace Prisma {
     clientMessageId?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
     providerMessageId?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
     content?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    messageType?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
+    mimeType?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
+    fileName?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
+    sizeBytes?: IntNullableWithAggregatesFilter<"GroupOutboundMessage"> | number | null
+    caption?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
     status?: StringWithAggregatesFilter<"GroupOutboundMessage"> | string
     failureCode?: StringNullableWithAggregatesFilter<"GroupOutboundMessage"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"GroupOutboundMessage"> | Date | string
@@ -44272,6 +44398,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -44287,6 +44418,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -44298,6 +44434,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44313,6 +44454,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44326,6 +44472,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -44337,6 +44488,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44350,6 +44506,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47297,6 +47458,17 @@ export namespace Prisma {
     readAt?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type AgentRelationFilter = {
     is?: AgentWhereInput
     isNot?: AgentWhereInput
@@ -47309,10 +47481,19 @@ export namespace Prisma {
     clientMessageId?: SortOrder
     providerMessageId?: SortOrder
     content?: SortOrder
+    messageType?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    sizeBytes?: SortOrder
+    caption?: SortOrder
     status?: SortOrder
     failureCode?: SortOrder
     createdAt?: SortOrder
     sentAt?: SortOrder
+  }
+
+  export type GroupOutboundMessageAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
   }
 
   export type GroupOutboundMessageMaxOrderByAggregateInput = {
@@ -47322,6 +47503,11 @@ export namespace Prisma {
     clientMessageId?: SortOrder
     providerMessageId?: SortOrder
     content?: SortOrder
+    messageType?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    sizeBytes?: SortOrder
+    caption?: SortOrder
     status?: SortOrder
     failureCode?: SortOrder
     createdAt?: SortOrder
@@ -47335,10 +47521,35 @@ export namespace Prisma {
     clientMessageId?: SortOrder
     providerMessageId?: SortOrder
     content?: SortOrder
+    messageType?: SortOrder
+    mimeType?: SortOrder
+    fileName?: SortOrder
+    sizeBytes?: SortOrder
+    caption?: SortOrder
     status?: SortOrder
     failureCode?: SortOrder
     createdAt?: SortOrder
     sentAt?: SortOrder
+  }
+
+  export type GroupOutboundMessageSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type ConversationRelationFilter = {
@@ -47649,17 +47860,6 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type ConversationMediaCountOrderByAggregateInput = {
     id?: SortOrder
     messageId?: SortOrder
@@ -47792,22 +47992,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type FlowDefinitionCountOrderByAggregateInput = {
@@ -50681,6 +50865,14 @@ export namespace Prisma {
     connect?: AgentWhereUniqueInput
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type GroupChatUpdateOneRequiredWithoutOutboundMessagesNestedInput = {
     create?: XOR<GroupChatCreateWithoutOutboundMessagesInput, GroupChatUncheckedCreateWithoutOutboundMessagesInput>
     connectOrCreate?: GroupChatCreateOrConnectWithoutOutboundMessagesInput
@@ -50985,14 +51177,6 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type MessageUpdateOneRequiredWithoutMediaNestedInput = {
@@ -52280,6 +52464,33 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type NestedJsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -52382,33 +52593,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumBusinessHoursModeFilter<$PrismaModel = never> = {
@@ -53260,6 +53444,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -53273,6 +53462,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -53898,6 +54092,11 @@ export namespace Prisma {
     clientMessageId?: StringFilter<"GroupOutboundMessage"> | string
     providerMessageId?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     content?: StringFilter<"GroupOutboundMessage"> | string
+    messageType?: StringFilter<"GroupOutboundMessage"> | string
+    mimeType?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    fileName?: StringNullableFilter<"GroupOutboundMessage"> | string | null
+    sizeBytes?: IntNullableFilter<"GroupOutboundMessage"> | number | null
+    caption?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     status?: StringFilter<"GroupOutboundMessage"> | string
     failureCode?: StringNullableFilter<"GroupOutboundMessage"> | string | null
     createdAt?: DateTimeFilter<"GroupOutboundMessage"> | Date | string
@@ -56276,6 +56475,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -56289,6 +56493,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -62743,6 +62952,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -63053,6 +63267,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63066,6 +63285,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63078,6 +63302,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64479,6 +64708,11 @@ export namespace Prisma {
     clientMessageId: string
     providerMessageId?: string | null
     content: string
+    messageType?: string
+    mimeType?: string | null
+    fileName?: string | null
+    sizeBytes?: number | null
+    caption?: string | null
     status?: string
     failureCode?: string | null
     createdAt?: Date | string
@@ -64619,6 +64853,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64632,6 +64871,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64644,6 +64888,11 @@ export namespace Prisma {
     clientMessageId?: StringFieldUpdateOperationsInput | string
     providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
+    messageType?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     failureCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -14,7 +14,7 @@ export const ShortcutListQuerySchema = z.object({
 });
 
 export const AvailableShortcutsQuerySchema = z.object({
-  conversationId: z.string().uuid(),
+  conversationId: z.string().uuid().optional(),
   q: z.string().trim().max(120).optional(),
   type: ShortcutTypeSchema.optional(),
 });

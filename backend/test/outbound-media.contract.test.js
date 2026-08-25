@@ -50,6 +50,10 @@ test("contrato de saída usa endpoints específicos e migration somente aditiva"
   assert.match(source, /send-audio/);
   assert.match(source, /send-document/);
   assert.match(source, /data:\$\{mimeType\};base64/);
+  assert.match(source, /replyToMessageId/);
+  assert.doesNotMatch(source, /messageId:\s*clientMessageId/);
+  assert.doesNotMatch(source, /messageId:\s*input\.clientMessageId/);
+  assert.match(source, /Z-API não confirmou o envio da mídia/);
   assert.match(routes, /conversations\/:id\/media/);
   assert.match(routes, /conversations", "send_media/);
   assert.match(schema, /model OutgoingMedia/);

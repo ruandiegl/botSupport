@@ -10,6 +10,8 @@ import { createHash } from "node:crypto";
 import { labelsService } from "../labels/labels.service.js";
 import { botExclusionsService } from "../bot-exclusions/bot-exclusions.service.js";
 import { businessHoursService } from "../business-hours/business-hours.service.js";
+import { validateOutgoingMedia } from "../conversations/outgoing-media.js";
+import type { MultipartFile } from "../../shared/multipart.js";
 
 const DEFAULT_BOT_REPLY_COOLDOWN_MINUTES = 15;
 const MAX_BOT_REPLY_COOLDOWN_MINUTES = 24 * 60;
@@ -79,6 +81,9 @@ export type ZApiOutgoingMediaInput = {
   buffer: Buffer;
   fileName?: string | null;
   caption?: string | null;
+  /** Z-API message id to reply to, when a real inbound message is being quoted. */
+  replyToMessageId?: string | null;
+  /** Local idempotency key. It must never be sent as Z-API's messageId. */
   clientMessageId?: string;
 };
 
@@ -828,6 +833,14 @@ export class ZApiService {
     return zApiRepository.listGroupHistory(groupChatId);
   }
 
+  async markGroupRead(groupChatId: string) {
+    const group = await zApiRepository.findGroupChatById(groupChatId);
+    if (!group) throw new Error("Grupo não encontrado ou indisponível.");
+    const result = await zApiRepository.markGroupRead(groupChatId);
+    socketEmitter.emitToRoom("groups", "group:updated", { groupId: groupChatId, unread: 0 });
+    return result;
+  }
+
   async sendDirectGroupMessage(groupChatId: string, agentId: string, clientMessageId: string, content: string) {
     const group = await zApiRepository.findGroupChatById(groupChatId);
     if (!group) throw new Error("Grupo não encontrado ou indisponível.");
@@ -843,7 +856,122 @@ export class ZApiService {
     }
     const providerMessageId = typeof result?.messageId === "string" ? result.messageId : typeof result?.id === "string" ? result.id : null;
     const sent = await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "SENT", providerMessageId });
+    const message = {
+      id: sent.id,
+      direction: "OUT",
+      content: sent.content,
+      messageType: "TEXT",
+      senderName: sent.agent.name,
+      status: sent.status,
+      createdAt: sent.createdAt.toISOString(),
+      conversationId: null,
+      linkedMessageId: null,
+      media: null,
+      outgoingMedia: null,
+    };
+    socketEmitter.emitToGroup(groupChatId, "group:message", { groupId: groupChatId, message });
+    socketEmitter.emitToRoom("groups", "group:updated", { groupId: groupChatId, lastMessageAt: sent.createdAt.toISOString() });
     return { ...sent, duplicate: Boolean(existing) };
+  }
+
+  async sendDirectGroupMedia(groupChatId: string, agentId: string, input: {
+    file: MultipartFile | null;
+    caption: string;
+    clientMessageId: string;
+  }) {
+    if (process.env.OUTBOUND_MEDIA_ENABLED?.toLowerCase() === "false") return { kind: "DISABLED" as const };
+    const [group, agent] = await Promise.all([
+      zApiRepository.findGroupChatById(groupChatId),
+      zApiRepository.findAgentById(agentId),
+    ]);
+    if (!group) return { kind: "NOT_FOUND" as const };
+    if (!agent?.isActive) return { kind: "AGENT_UNAVAILABLE" as const };
+
+    let metadata: ReturnType<typeof validateOutgoingMedia>;
+    try {
+      metadata = validateOutgoingMedia(input.file, input.caption.trim(), input.clientMessageId);
+    } catch (error: any) {
+      return { kind: "INVALID" as const, code: error?.code || "INVALID_FILE" };
+    }
+
+    const existing = await zApiRepository.findGroupOutboundByClientMessageId(input.clientMessageId);
+    if (existing) {
+      if (existing.status === "SENT") return { kind: "OK" as const, message: existing, duplicate: true };
+      return { kind: "DUPLICATE" as const };
+    }
+
+    const caption = input.caption.trim();
+    const signedCaption = caption
+      ? `*${agent.name} - ${agent.department?.name || "Atendimento"}:*\n\n${caption}`
+      : "";
+    const labels: Record<string, string> = {
+      IMAGE: "[Imagem enviada]",
+      VIDEO: "[Vídeo enviado]",
+      AUDIO: "[Áudio enviado]",
+      DOCUMENT: `[Documento enviado: ${metadata.fileName}]`,
+    };
+    const audit = await zApiRepository.createGroupOutboundMessage({
+      groupChatId,
+      agentId,
+      clientMessageId: input.clientMessageId,
+      content: signedCaption || labels[metadata.type],
+      messageType: metadata.type,
+      mimeType: metadata.mimeType,
+      fileName: metadata.fileName,
+      sizeBytes: metadata.sizeBytes,
+      caption: caption || null,
+    });
+    if (!audit) throw new Error("Não foi possível registrar o envio da mídia.");
+
+    const deliveryInput = {
+      phone: group.remoteChatId,
+      mimeType: metadata.mimeType,
+      buffer: input.file!.buffer,
+      fileName: metadata.fileName,
+      caption: signedCaption || null,
+      clientMessageId: input.clientMessageId,
+    };
+    const delivery = metadata.type === "IMAGE"
+      ? await this.sendImage(deliveryInput)
+      : metadata.type === "VIDEO"
+      ? await this.sendVideo(deliveryInput)
+      : metadata.type === "AUDIO"
+      ? await this.sendAudio(deliveryInput)
+      : await this.sendDocument(deliveryInput);
+
+    if ("error" in delivery) {
+      await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "FAILED", failureCode: delivery.error.slice(0, 500) });
+      return { kind: "PROVIDER_ERROR" as const, error: delivery.error };
+    }
+
+    const sent = await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "SENT", providerMessageId: delivery.providerMessageId });
+    const outgoingMedia = {
+      id: sent.id,
+      type: metadata.type,
+      mimeType: metadata.mimeType,
+      fileName: metadata.fileName,
+      caption: caption || null,
+      sizeBytes: metadata.sizeBytes,
+      status: sent.status,
+      providerMessageId: sent.providerMessageId,
+      createdAt: sent.createdAt.toISOString(),
+    };
+    const message = {
+      id: sent.id,
+      direction: "OUT",
+      content: sent.content,
+      messageType: metadata.type,
+      senderName: sent.agent.name,
+      status: sent.status,
+      createdAt: sent.createdAt.toISOString(),
+      conversationId: null,
+      linkedMessageId: null,
+      media: null,
+      outgoingMedia,
+    };
+    socketEmitter.emitToGroup(groupChatId, "group:message", { groupId: groupChatId, message });
+    socketEmitter.emitToRoom("groups", "group:updated", { groupId: groupChatId, lastMessageAt: sent.createdAt.toISOString() });
+    return { kind: "OK" as const, message, duplicate: false };
   }
 
   async checkStatus(overrideInstanceId?: string, overrideToken?: string) {
@@ -978,7 +1106,7 @@ export class ZApiService {
     }
   }
 
-  async sendText(phone: string, text: string, clientMessageId?: string) {
+  async sendText(phone: string, text: string, clientMessageId?: string, replyToMessageId?: string | null) {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) {
       logger.warn("Z-API desativada ou sem credenciais. Mensagem não enviada.");
@@ -998,7 +1126,9 @@ export class ZApiService {
         body: JSON.stringify({
           phone: formattedPhone,
           message: text,
-          ...(clientMessageId ? { messageId: clientMessageId } : {}),
+          ...(replyToMessageId ? { messageId: replyToMessageId } : {}),
+          // clientMessageId is only our local idempotency key. Z-API's
+          // messageId is reserved for quoting/replying to an inbound message.
         }),
       });
 
@@ -1041,7 +1171,7 @@ export class ZApiService {
     const common = {
       phone: formattedPhone,
       ...(input.caption?.trim() ? { caption: input.caption.trim() } : {}),
-      ...(input.clientMessageId ? { messageId: input.clientMessageId } : {}),
+      ...(input.replyToMessageId ? { messageId: input.replyToMessageId } : {}),
     };
 
     let endpoint = "";
@@ -1057,7 +1187,11 @@ export class ZApiService {
         break;
       case "AUDIO":
         endpoint = "send-audio";
-        payload = { phone: formattedPhone, audio: dataUrl, ...(input.clientMessageId ? { messageId: input.clientMessageId } : {}) };
+        payload = {
+          phone: formattedPhone,
+          audio: dataUrl,
+          ...(input.replyToMessageId ? { messageId: input.replyToMessageId } : {}),
+        };
         break;
       case "DOCUMENT": {
         const extension = (input.fileName?.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8) || "bin";
@@ -1082,7 +1216,20 @@ export class ZApiService {
         return { error: errorMsg };
       }
       const providerMessageId = String(data?.messageId || data?.zaapId || data?.id || "").trim() || null;
-      logger.info({ type: input.type, sizeBytes: input.buffer.length, status: response.status }, "Mídia Z-API enviada com sucesso");
+      if (data?.error || data?.success === false || !providerMessageId) {
+        const errorMsg = data?.error || data?.message || data?.reason
+          ? parseZApiError(response.status, data)
+          : "A Z-API não confirmou o envio da mídia. Tente novamente em instantes.";
+        logger.error(
+          { type: input.type, sizeBytes: input.buffer.length, status: response.status, hasProviderMessageId: Boolean(providerMessageId), errorMsg },
+          "Z-API não confirmou o envio da mídia",
+        );
+        return { error: errorMsg || "A Z-API não confirmou o envio da mídia." };
+      }
+      logger.info(
+        { type: input.type, sizeBytes: input.buffer.length, status: response.status, hasProviderMessageId: true },
+        "Mídia Z-API enviada com sucesso",
+      );
       return { data, providerMessageId };
     } catch (err: any) {
       const message = err?.name === "TimeoutError" ? "Tempo limite excedido ao enviar a mídia para a Z-API." : (err?.message || "Falha na requisição Z-API");
@@ -1287,7 +1434,35 @@ export class ZApiService {
       if (!preloadedContact) preloadedContact = await zApiRepository.createContact(senderPhone, incoming.senderName);
       const mentions = collectMentionValues(payload);
       if (payload.broadcast === true || hasBroadcastMention(mentions)) {
-        await zApiRepository.addGroupMessage({ groupChatId: groupChat.id, externalMessageId: incoming.externalEventId, content: incoming.content, messageType: incoming.messageType, senderNameSnapshot: incoming.senderName, isMention: false });
+        const broadcastAudit = await zApiRepository.addGroupMessage({
+          groupChatId: groupChat.id,
+          externalMessageId: incoming.externalEventId,
+          content: incoming.content,
+          messageType: incoming.messageType,
+          senderContactId: preloadedContact.id,
+          senderNameSnapshot: incoming.senderName,
+          isMention: false,
+        });
+        if (!broadcastAudit.duplicate) {
+          const message = {
+            id: broadcastAudit.message.id,
+            direction: "IN",
+            content: broadcastAudit.message.content,
+            messageType: broadcastAudit.message.messageType,
+            senderName: broadcastAudit.message.senderNameSnapshot || incoming.senderName || "Participante",
+            status: "RECEIVED",
+            createdAt: broadcastAudit.message.createdAt.toISOString(),
+            conversationId: broadcastAudit.message.conversationId ?? null,
+            linkedMessageId: null,
+            media: null,
+            outgoingMedia: null,
+          };
+          socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message });
+          socketEmitter.emitToRoom("groups", "group:updated", {
+            groupId: groupChat.id,
+            lastMessageAt: broadcastAudit.message.createdAt.toISOString(),
+          });
+        }
         return { status: "ignored_broadcast_mention" };
       }
       const instancePhone = canonicalJid(payload.connectedPhone || config.instancePhone || "");
@@ -1308,6 +1483,24 @@ export class ZApiService {
         isMention: groupMentioned,
       });
       if (groupAudit.duplicate) return { status: "duplicate_event" };
+      const liveGroupMessage = {
+        id: groupAudit.message.id,
+        direction: "IN",
+        content: groupAudit.message.content,
+        messageType: groupAudit.message.messageType,
+        senderName: groupAudit.message.senderNameSnapshot || incoming.senderName || "Participante",
+        status: "RECEIVED",
+        createdAt: groupAudit.message.createdAt.toISOString(),
+        conversationId: groupAudit.message.conversationId ?? null,
+        linkedMessageId: null,
+        media: null,
+        outgoingMedia: null,
+      };
+      socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message: liveGroupMessage });
+      socketEmitter.emitToRoom("groups", "group:updated", {
+        groupId: groupChat.id,
+        lastMessageAt: groupAudit.message.createdAt.toISOString(),
+      });
       if (activeGroupConversation && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
         const origin = this.formatPhone(activeGroupConversation.groupParticipant || "");
         const sender = this.formatPhone(incoming.phone);

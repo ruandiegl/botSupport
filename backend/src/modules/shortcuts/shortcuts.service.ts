@@ -63,15 +63,17 @@ export class ShortcutsService {
     return { items: result.items.map(formatShortcut), total: result.total, page: query.page, limit: query.limit };
   }
 
-  async available(actor: ShortcutActor, conversationId: string, q?: string, type?: ShortcutType) {
-    const conversation = await shortcutsRepository.getConversation(conversationId);
-    if (!conversation) throw new ShortcutError("Conversa não encontrada.", 404);
+  async available(actor: ShortcutActor, conversationId?: string, q?: string, type?: ShortcutType) {
+    const conversation = conversationId ? await shortcutsRepository.getConversation(conversationId) : null;
+    if (conversationId && !conversation) throw new ShortcutError("Conversa não encontrada.", 404);
     const where: Prisma.ShortcutWhereInput = {
       archivedAt: null,
       isActive: true,
       OR: [
         { scope: "GLOBAL" },
-        ...(conversation.departmentId ? [{ scope: "DEPARTMENT" as const, departmentId: conversation.departmentId }] : []),
+        ...(conversation?.departmentId || actor.departmentId
+          ? [{ scope: "DEPARTMENT" as const, departmentId: conversation?.departmentId || actor.departmentId }]
+          : []),
         { scope: "PERSONAL", ownerId: actor.id },
       ],
     };

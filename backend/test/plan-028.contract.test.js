@@ -30,8 +30,31 @@ test("runtime preserva JID do grupo e usa o participante para exclusões", async
 test("API e tela de grupos possuem catálogo, histórico e envio protegido", async () => {
   const routes = await read("src/modules/zapi/zapi.routes.ts");
   const page = await read("../frontend/src/pages/groups/index.tsx");
+  const socket = await read("src/shared/socket.ts");
+  const scroller = await read("../frontend/src/components/ui/chat-scroller.tsx");
   assert.match(routes, /router\.get\("\/zapi\/groups/);
   assert.match(routes, /router\.post\("\/zapi\/groups\/:groupId\/messages/);
+  assert.match(routes, /router\.post\("\/zapi\/groups\/:groupId\/media/);
+  assert.match(routes, /router\.post\("\/zapi\/groups\/:groupId\/read/);
+  assert.match(socket, /group:join/);
+  assert.match(socket, /group:typing:start/);
   assert.match(page, /\/zapi\/groups/);
   assert.match(page, /Enviar no grupo/);
+  assert.match(page, /MediaAttachmentPicker/);
+  assert.match(page, /ShortcutPicker/);
+  assert.match(page, /MessageMedia/);
+  assert.match(page, /ChatScroller/);
+  assert.match(scroller, /Ir para a mensagem mais recente/);
+});
+
+test("mídias enviadas em grupos mantêm apenas metadados de auditoria", async () => {
+  const schema = await read("prisma/schema.prisma");
+  const migration = await read("prisma/migrations/20260825190000_group_chat_media/migration.sql");
+  const service = await read("src/modules/zapi/zapi.service.ts");
+  assert.match(schema, /messageType\s+String\s+@default\("TEXT"\)/);
+  assert.match(schema, /mimeType\s+String\?/);
+  assert.match(schema, /sizeBytes\s+Int\?/);
+  assert.match(migration, /ADD COLUMN "message_type"/);
+  assert.match(service, /sendDirectGroupMedia/);
+  assert.match(service, /validateOutgoingMedia/);
 });

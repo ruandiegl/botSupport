@@ -10,6 +10,10 @@ interface SocketContextType {
   leaveConversation: (conversationId: string) => void;
   startTyping: (conversationId: string) => void;
   stopTyping: (conversationId: string) => void;
+  joinGroup: (groupId: string) => void;
+  leaveGroup: (groupId: string) => void;
+  startGroupTyping: (groupId: string) => void;
+  stopGroupTyping: (groupId: string) => void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -109,6 +113,34 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
+  const joinGroup = useCallback((groupId: string) => {
+    if (socketRef.current?.connected) socketRef.current.emit("group:join", { groupId });
+  }, []);
+
+  const leaveGroup = useCallback((groupId: string) => {
+    if (socketRef.current?.connected) socketRef.current.emit("group:leave", { groupId });
+  }, []);
+
+  const startGroupTyping = useCallback((groupId: string) => {
+    if (!socketRef.current?.connected) return;
+    socketRef.current.emit("group:typing:start", { groupId });
+    const key = `group:${groupId}`;
+    if (typingTimerRef.current[key]) clearTimeout(typingTimerRef.current[key]);
+    typingTimerRef.current[key] = setTimeout(() => {
+      socketRef.current?.emit("group:typing:stop", { groupId });
+      delete typingTimerRef.current[key];
+    }, 3000);
+  }, []);
+
+  const stopGroupTyping = useCallback((groupId: string) => {
+    const key = `group:${groupId}`;
+    if (typingTimerRef.current[key]) {
+      clearTimeout(typingTimerRef.current[key]);
+      delete typingTimerRef.current[key];
+    }
+    socketRef.current?.emit("group:typing:stop", { groupId });
+  }, []);
+
   return (
     <SocketContext.Provider
       value={{
@@ -118,6 +150,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         leaveConversation,
         startTyping,
         stopTyping,
+        joinGroup,
+        leaveGroup,
+        startGroupTyping,
+        stopGroupTyping,
       }}
     >
       {children}

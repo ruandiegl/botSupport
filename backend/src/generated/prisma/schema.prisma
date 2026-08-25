@@ -234,6 +234,11 @@ model GroupOutboundMessage {
   clientMessageId   String    @unique @map("client_message_id")
   providerMessageId String?   @map("provider_message_id")
   content           String
+  messageType       String    @default("TEXT") @map("message_type")
+  mimeType          String?   @map("mime_type")
+  fileName          String?   @map("file_name")
+  sizeBytes         Int?      @map("size_bytes")
+  caption           String?
   status            String    @default("PENDING")
   failureCode       String?   @map("failure_code")
   createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
