@@ -264,8 +264,8 @@ export class ConversationsController {
           const messages: Record<string, string> = {
             FILE_REQUIRED: "Selecione um arquivo antes de enviar.",
             TYPE_NOT_ALLOWED: "Este tipo de arquivo não é permitido.",
-            SIZE_LIMIT: "O arquivo excede o limite configurado.",
-            SIGNATURE_INVALID: "O conteúdo do arquivo não corresponde ao tipo informado.",
+            SIZE_LIMIT: "O arquivo é grande demais para envio. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB.",
+            SIGNATURE_INVALID: "Não conseguimos confirmar o formato deste arquivo. Selecione um arquivo válido e tente novamente.",
             NAME_INVALID: "O nome do arquivo é inválido.",
             CAPTION_INVALID: "A legenda excede o limite permitido.",
             CLIENT_MESSAGE_INVALID: "Identificador de envio inválido.",
@@ -289,7 +289,9 @@ export class ConversationsController {
     } catch (error) {
       if (error instanceof MultipartError) {
         const status = error.code === "TOO_LARGE" ? 413 : error.code === "CONTENT_TYPE" ? 415 : 400;
-        const message = error.code === "TOO_LARGE" ? "O arquivo excede o limite configurado." : "Não foi possível ler o arquivo enviado.";
+        const message = error.code === "TOO_LARGE"
+          ? "O arquivo é grande demais para envio. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB."
+          : "Não foi possível ler o arquivo enviado. Selecione o arquivo novamente e tente outra vez.";
         res.status(status).json({ error: message });
         return;
       }

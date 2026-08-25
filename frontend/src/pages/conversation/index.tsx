@@ -51,12 +51,35 @@ const dateLabel = (date?: string) =>
     ? new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")
     : "";
 
+function friendlyMediaError(error: unknown, file: File | null) {
+  const raw = error instanceof Error ? error.message : String(error || "");
+  const normalized = raw.toLowerCase();
+  const isVideo = file?.type.startsWith("video/") === true;
+  if (/413|payload too large|grande demais|excede|size_limit|limite configurado/.test(normalized)) {
+    return isVideo
+      ? "Este vídeo é grande demais para enviar. O limite é 64 MB. Corte ou comprima o vídeo e tente novamente."
+      : "Este arquivo é grande demais para enviar. Reduza o tamanho e tente novamente.";
+  }
+  if (/signature|conteúdo.*tipo|formato/.test(normalized)) {
+    return isVideo
+      ? "Não conseguimos reconhecer este vídeo. Use um arquivo MP4 ou WebM válido e tente novamente."
+      : "Não conseguimos reconhecer o formato deste arquivo. Selecione-o novamente e tente outra vez.";
+  }
+  if (/type_not_allowed|tipo.*permitido/.test(normalized)) {
+    return "Este formato não é aceito. Envie uma imagem, vídeo, áudio ou documento compatível.";
+  }
+  return raw || "Não foi possível enviar a mídia. Tente novamente.";
+}
+
 export default function ConversationPage() {
   const { id = "" } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const [message, setMessage] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaValidationError, setMediaValidationError] = useState<string | null>(null);
   const [mediaUploadProgress, setMediaUploadProgress] = useState<number | null>(null);
+  const mediaUploadAbortRef = useRef<AbortController | null>(null);
+  const mediaUploadCancelledRef = useRef(false);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
@@ -213,23 +236,31 @@ export default function ConversationPage() {
       const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      const uploadController = new AbortController();
+      mediaUploadAbortRef.current = uploadController;
+      mediaUploadCancelledRef.current = false;
       setMediaUploadProgress(0);
       sendMedia.mutate({
         file: mediaFile,
         caption: message.trim(),
         clientMessageId,
         onProgress: (progress) => setMediaUploadProgress(progress),
+        signal: uploadController.signal,
       }, {
         onSuccess: () => {
           setMessage("");
           setMediaFile(null);
           setMediaUploadProgress(null);
+          mediaUploadAbortRef.current = null;
           if (selectedShortcutId) {
             registerShortcutUse.mutate({ id: selectedShortcutId, conversationId: id });
             setSelectedShortcutId(null);
           }
         },
-        onError: () => setMediaUploadProgress(null),
+        onError: () => {
+          if (!mediaUploadCancelledRef.current) setMediaUploadProgress(null);
+          mediaUploadAbortRef.current = null;
+        },
       });
       return;
     }
@@ -245,6 +276,22 @@ export default function ConversationPage() {
       },
     });
   };
+
+  const cancelMediaUpload = () => {
+    mediaUploadCancelledRef.current = true;
+    mediaUploadAbortRef.current?.abort();
+    mediaUploadAbortRef.current = null;
+    setMediaUploadProgress(null);
+  };
+
+  const handleMediaChange = (file: File | null) => {
+    setMediaValidationError(null);
+    setMediaFile(file);
+  };
+
+  const mediaError = sendMedia.isError && !mediaUploadCancelledRef.current
+    ? friendlyMediaError(sendMedia.error, mediaFile)
+    : null;
 
   const handleAssume = () => {
     setAssumeConfirmOpen(false);
@@ -502,10 +549,12 @@ export default function ConversationPage() {
             {canSendMedia ? (
               <MediaAttachmentPicker
                 file={mediaFile}
-                onChange={setMediaFile}
+                onChange={handleMediaChange}
                 caption={message}
                 onCaptionChange={setMessage}
                 uploadProgress={sendMedia.isPending ? mediaUploadProgress : null}
+                onCancelUpload={cancelMediaUpload}
+                onValidationError={setMediaValidationError}
                 disabled={sendMessage.isPending || sendMedia.isPending}
               />
             ) : null}
@@ -534,8 +583,10 @@ export default function ConversationPage() {
           />
           <div className="composer-foot">
             <div>
-              {sendMessage.isError || sendMedia.isError ? (
-                <p className="text-sm text-destructive" role="alert">{(sendMessage.error || sendMedia.error)?.message}</p>
+              {mediaValidationError || sendMessage.isError || mediaError ? (
+                <p className="text-sm text-destructive" role="alert">
+                  {mediaValidationError || (sendMessage.error ? sendMessage.error.message : mediaError)}
+                </p>
               ) : null}
             </div>
             <Button

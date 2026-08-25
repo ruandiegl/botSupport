@@ -24,6 +24,8 @@ const ACCEPT = [
   "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "text/plain",
 ].join(",");
 
+const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
+
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -44,9 +46,11 @@ type Props = {
   onCaptionChange?: (caption: string) => void;
   disabled?: boolean;
   uploadProgress?: number | null;
+  onCancelUpload?: () => void;
+  onValidationError?: (message: string | null) => void;
 };
 
-export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null }: Props) {
+export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null, onCancelUpload, onValidationError }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -94,6 +98,12 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
         className="sr-only"
         onChange={(event) => {
           const nextFile = event.target.files?.[0] ?? null;
+          onValidationError?.(null);
+          if (nextFile?.type.startsWith("video/") && nextFile.size > MAX_VIDEO_BYTES) {
+            onValidationError?.(`Este vídeo é grande demais para enviar (${formatBytes(nextFile.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
+            event.currentTarget.value = "";
+            return;
+          }
           if (nextFile?.type.startsWith("image/")) {
             openEditor(nextFile);
           } else if (nextFile?.type.startsWith("video/")) {
@@ -133,19 +143,33 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
           </AttachmentContent>
           <AttachmentActions>
             <Badge variant="secondary">{isUploading ? "Enviando" : "Pronto"}</Badge>
-            {file.type.startsWith("image/") ? (
+            {isUploading ? (
+              <AttachmentAction
+                type="button"
+                size="icon-xs"
+                aria-label="Cancelar envio"
+                title="Cancelar envio"
+                onClick={onCancelUpload}
+                disabled={!onCancelUpload}
+              >
+                <X />
+              </AttachmentAction>
+            ) : null}
+            {!isUploading && file.type.startsWith("image/") ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Editar imagem" onClick={() => openEditor(file)} disabled={disabled}>
                 <Edit3 />
               </AttachmentAction>
             ) : null}
-            {file.type.startsWith("video/") ? (
+            {!isUploading && file.type.startsWith("video/") ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Editar vídeo" onClick={() => openVideoEditor(file)} disabled={disabled}>
                 <Edit3 />
               </AttachmentAction>
             ) : null}
-            <AttachmentAction type="button" size="icon-xs" aria-label="Remover arquivo" onClick={() => onChange(null)} disabled={disabled}>
-              <X />
-            </AttachmentAction>
+            {!isUploading ? (
+              <AttachmentAction type="button" size="icon-xs" aria-label="Remover arquivo" onClick={() => onChange(null)} disabled={disabled}>
+                <X />
+              </AttachmentAction>
+            ) : null}
           </AttachmentActions>
         </Attachment>
       ) : null}

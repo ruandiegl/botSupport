@@ -88,12 +88,13 @@ export type SendMediaInput = {
   caption?: string;
   clientMessageId: string;
   onProgress?: (progress: number) => void;
+  signal?: AbortSignal;
 };
 
 export function useSendMedia(id: string) {
   const queryClient = useQueryClient();
   return useMutation<Message, Error, SendMediaInput>({
-    mutationFn: ({ file, caption = "", clientMessageId, onProgress }) => {
+    mutationFn: ({ file, caption = "", clientMessageId, onProgress, signal }) => {
       const form = new FormData();
       form.append("file", file, file.name);
       form.append("caption", caption);
@@ -103,6 +104,7 @@ export function useSendMedia(id: string) {
         body: form,
         headers: { "Idempotency-Key": clientMessageId },
         onUploadProgress: onProgress,
+        signal,
       });
     },
     onSuccess: (message) => {
