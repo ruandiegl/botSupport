@@ -205,7 +205,8 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
     setText("");
 
     return () => {
-      URL.revokeObjectURL(url);
+      // Aguarda a animação de fechamento do Dialog antes de revogar a URL.
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
   }, [file]);
 

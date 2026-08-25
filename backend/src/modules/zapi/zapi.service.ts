@@ -933,7 +933,9 @@ export class ZApiService {
   }
 
   private async sendOutgoingMedia(input: ZApiOutgoingMediaInput) {
-    if (process.env.OUTBOUND_MEDIA_ENABLED !== "true") {
+    // O envio fica ativo por padrão quando a API está configurada. Defina
+    // OUTBOUND_MEDIA_ENABLED=false para desabilitar o recurso durante um rollback.
+    if (process.env.OUTBOUND_MEDIA_ENABLED?.toLowerCase() === "false") {
       return { error: "Envio de mídias está desativado neste ambiente." };
     }
 

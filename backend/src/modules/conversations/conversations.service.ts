@@ -721,7 +721,9 @@ export class ConversationsService {
     caption: string;
     clientMessageId: string;
   }, user?: AuthenticatedRequest["user"]) {
-    if (process.env.OUTBOUND_MEDIA_ENABLED !== "true") return { kind: "DISABLED" as const };
+    // O envio fica ativo por padrão quando a API está configurada. Defina
+    // OUTBOUND_MEDIA_ENABLED=false para desabilitar o recurso durante um rollback.
+    if (process.env.OUTBOUND_MEDIA_ENABLED?.toLowerCase() === "false") return { kind: "DISABLED" as const };
     const conversation = await conversationsRepository.findAccessById(id);
     if (!conversation || !this.canAccess(conversation, user) || !user) return { kind: "NOT_FOUND" as const };
 

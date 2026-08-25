@@ -24,6 +24,16 @@ ZAPI_CLIENT_TOKEN=<segredo>
 ZAPI_WEBHOOK_URL=https://<dominio-publico-da-api>/api/webhooks/z-api
 ZAPI_INTERACTIVE_MODE=auto
 ZAPI_GROUPED_MENU_TRANSPORT=flat
+# O envio de imagem, vídeo, áudio e documento fica habilitado por padrão.
+# Use false apenas para rollback ou manutenção.
+OUTBOUND_MEDIA_ENABLED=true
+OUTBOUND_MEDIA_BODY_LIMIT_BYTES=26214400
+OUTBOUND_MEDIA_MAX_IMAGE_BYTES=8388608
+OUTBOUND_MEDIA_MAX_VIDEO_BYTES=16777216
+OUTBOUND_MEDIA_MAX_AUDIO_BYTES=8388608
+OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES=16777216
+OUTBOUND_MEDIA_MAX_CONCURRENT_PER_AGENT=1
+OUTBOUND_MEDIA_REQUEST_TIMEOUT_MS=30000
 ```
 
 `flat` usa o formato público documentado pela Z-API. Para decisões hierárquicas,

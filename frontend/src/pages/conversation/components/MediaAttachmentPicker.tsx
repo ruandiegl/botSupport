@@ -59,7 +59,9 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
     }
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
+    return () => {
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
   }, [file]);
 
   const chooseFile = () => {
