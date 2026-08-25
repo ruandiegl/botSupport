@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/attachment";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { ImageEditorDialog } from "./ImageEditorDialog";
 import { VideoEditorDialog } from "./VideoEditorDialog";
 
@@ -42,9 +43,10 @@ type Props = {
   caption?: string;
   onCaptionChange?: (caption: string) => void;
   disabled?: boolean;
+  uploadProgress?: number | null;
 };
 
-export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false }: Props) {
+export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -80,6 +82,9 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
     setVideoEditorOpen(true);
   };
 
+  const isUploading = uploadProgress !== null && uploadProgress !== undefined;
+  const progressValue = Math.min(100, Math.max(0, uploadProgress ?? 0));
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <input
@@ -105,16 +110,29 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
         <Paperclip data-icon="inline-start" /> Anexar arquivo
       </Button>
       {file ? (
-        <Attachment state="done" size="sm" orientation="horizontal" className="max-w-[min(100%,360px)]">
+        <Attachment
+          state={isUploading ? (progressValue >= 100 ? "processing" : "uploading") : "done"}
+          size="sm"
+          orientation="horizontal"
+          className="max-w-[min(100%,380px)]"
+        >
           <AttachmentMedia variant={previewUrl ? "image" : "icon"}>
             {previewUrl && file.type.startsWith("image/") ? <img src={previewUrl} alt="Prévia do arquivo" /> : previewUrl && file.type.startsWith("video/") ? <video src={previewUrl} muted playsInline preload="metadata" aria-label="Prévia do vídeo" /> : file.type.startsWith("image/") ? <ImageIcon /> : <FileText />}
           </AttachmentMedia>
           <AttachmentContent>
             <AttachmentTitle title={file.name}>{file.name}</AttachmentTitle>
             <AttachmentDescription>{mediaLabel(file)} · {formatBytes(file.size)}</AttachmentDescription>
+            {isUploading ? (
+              <div className="mt-1.5 flex min-w-32 flex-col gap-1" aria-live="polite">
+                <Progress value={progressValue} aria-label={`Enviando ${mediaLabel(file).toLowerCase()}: ${progressValue}%`} />
+                <span className="text-[11px] text-muted-foreground">
+                  {progressValue >= 100 ? "Processando mídia…" : `${progressValue}% enviado`}
+                </span>
+              </div>
+            ) : null}
           </AttachmentContent>
           <AttachmentActions>
-            <Badge variant="secondary">Pronto</Badge>
+            <Badge variant="secondary">{isUploading ? "Enviando" : "Pronto"}</Badge>
             {file.type.startsWith("image/") ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Editar imagem" onClick={() => openEditor(file)} disabled={disabled}>
                 <Edit3 />

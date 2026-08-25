@@ -56,6 +56,7 @@ export default function ConversationPage() {
   const [, setLocation] = useLocation();
   const [message, setMessage] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaUploadProgress, setMediaUploadProgress] = useState<number | null>(null);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [assumeConfirmOpen, setAssumeConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
@@ -212,15 +213,23 @@ export default function ConversationPage() {
       const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      sendMedia.mutate({ file: mediaFile, caption: message.trim(), clientMessageId }, {
+      setMediaUploadProgress(0);
+      sendMedia.mutate({
+        file: mediaFile,
+        caption: message.trim(),
+        clientMessageId,
+        onProgress: (progress) => setMediaUploadProgress(progress),
+      }, {
         onSuccess: () => {
           setMessage("");
           setMediaFile(null);
+          setMediaUploadProgress(null);
           if (selectedShortcutId) {
             registerShortcutUse.mutate({ id: selectedShortcutId, conversationId: id });
             setSelectedShortcutId(null);
           }
         },
+        onError: () => setMediaUploadProgress(null),
       });
       return;
     }
@@ -496,6 +505,7 @@ export default function ConversationPage() {
                 onChange={setMediaFile}
                 caption={message}
                 onCaptionChange={setMessage}
+                uploadProgress={sendMedia.isPending ? mediaUploadProgress : null}
                 disabled={sendMessage.isPending || sendMedia.isPending}
               />
             ) : null}
