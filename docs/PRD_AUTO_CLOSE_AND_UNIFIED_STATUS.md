@@ -65,18 +65,18 @@ O sistema executará um worker periódico em segundo plano para monitorar o temp
    - Contagem baseada na data/hora da última mensagem do cliente (`lastClientMessageAt`).
 
 2. **Fase 1 — Aviso de Inatividade (Warning Notice)**:
-   - Limite configurável (Padrão: **30 minutos** sem resposta do cliente).
+   - Limite configurável (Padrão: **90 minutos / 1h30** sem resposta do cliente).
    - O sistema dispara uma mensagem no WhatsApp do cliente via Z-API:
-     > ⚠️ *"Aviso de Inatividade: Olá! Notamos que você não respondeu à nossa última mensagem no chamado #{id}. Caso não haja interação nos próximos 15 minutos, este atendimento será encerrado automaticamente."*
+     > ⚠️ *"Aviso de inatividade: Olá! Ainda não recebemos uma resposta sua no chamado #{id}. Se você precisar continuar o atendimento, responda esta mensagem nos próximos 30 minutos. Depois desse prazo, o atendimento será encerrado automaticamente por falta de interação."*
    - O chamado recebe a flag `warningSentAt = Data/Hora Atual`.
 
 3. **Fase 2 — Encerramento Automático (Auto-Close Execution)**:
-   - Limite configurável (Padrão: **15 minutos** após o envio do aviso sem nova resposta do cliente).
+   - Limite configurável (Padrão: **30 minutos** após o envio do aviso sem nova resposta do cliente, totalizando 2 horas de inatividade).
    - O sistema realiza o encerramento do chamado:
      - Altera status para `CLOSED`.
      - Grava `closedAt = Data/Hora Atual` e `closeReason = "AUTO_TIMEOUT"`.
      - Envia mensagem final no WhatsApp via Z-API:
-       > ℹ️ *"Atendimento Encerrado: O seu chamado #{id} foi encerrado automaticamente por inatividade. Se ainda precisar de suporte, basta enviar uma nova mensagem!"*
+       > ℹ️ *"Atendimento encerrado: O chamado #{id} foi encerrado automaticamente após 2 horas sem interação. Se ainda precisar de ajuda, envie uma nova mensagem para iniciar um novo atendimento."*
      - Registra mensagem de sistema no histórico interno do chamado.
 
 4. **Cancelamento do Timeout se o Cliente Responder**:
@@ -89,8 +89,8 @@ O sistema executará um worker periódico em segundo plano para monitorar o temp
 No painel de administração (`/admin/flow` ou `/admin/settings`), o Administrador poderá configurar:
 
 - `autoCloseEnabled`: Ativar/Desativar rotina de encerramento automático.
-- `inactivityWarningMinutes`: Minutos de inatividade para envio do aviso (ex: 30 min).
-- `autoCloseDelayMinutes`: Minutos após o aviso para encerrar o chamado (ex: 15 min).
+- `inactivityWarningMinutes`: Minutos de inatividade para envio do aviso (padrão: 90 min / 1h30).
+- `autoCloseDelayMinutes`: Minutos após o aviso para encerrar o chamado (padrão: 30 min; total de 2h).
 - Mensagens personalizadas do aviso e do encerramento.
 
 ---

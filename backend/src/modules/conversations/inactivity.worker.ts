@@ -18,29 +18,31 @@ import { socketEmitter } from "../../shared/socket.js";
 import { logger } from "../../shared/logger.js";
 
 // ─── Configuration (env-overridable) ─────────────────────────────────────────
-const INACTIVITY_WARNING_MINUTES = Number(process.env.INACTIVITY_WARNING_MINUTES ?? 30);
-const INACTIVITY_CLOSE_MINUTES = Number(process.env.INACTIVITY_CLOSE_MINUTES ?? 15);
+// Default policy: warn after 1h30 of inactivity and close 30 minutes later (2h total).
+const INACTIVITY_WARNING_MINUTES = Number(process.env.INACTIVITY_WARNING_MINUTES ?? 90);
+const INACTIVITY_CLOSE_MINUTES = Number(process.env.INACTIVITY_CLOSE_MINUTES ?? 30);
 const CHECK_INTERVAL_MS = Number(process.env.INACTIVITY_CHECK_INTERVAL_MS ?? 5 * 60 * 1000); // 5 min
 
 // ─── Message Templates ────────────────────────────────────────────────────────
 function buildWarningMessage(conversationId: string): string {
   const shortId = conversationId.slice(0, 8).toUpperCase();
   return (
-    `⚠️ *Aviso de Inatividade*\n\n` +
-    `Olá! Notamos que você não respondeu no chamado *#${shortId}*.\n\n` +
-    `Caso não haja resposta em *${INACTIVITY_CLOSE_MINUTES} minutos*, ` +
-    `este atendimento será encerrado automaticamente.\n\n` +
-    `_Se ainda precisar de ajuda, basta responder esta mensagem!_ 😊`
+    `⚠️ *Aviso de inatividade*\n\n` +
+    `Olá! Ainda não recebemos uma resposta sua no chamado *#${shortId}*.\n\n` +
+    `Se você precisar continuar o atendimento, responda esta mensagem nos próximos ` +
+    `*${INACTIVITY_CLOSE_MINUTES} minutos*. Depois desse prazo, o atendimento será ` +
+    `encerrado automaticamente por falta de interação.\n\n` +
+    `_Estamos à disposição para ajudar!_ 😊`
   );
 }
 
 function buildCloseMessage(conversationId: string): string {
   const shortId = conversationId.slice(0, 8).toUpperCase();
   return (
-    `ℹ️ *Atendimento Encerrado*\n\n` +
-    `O seu chamado *#${shortId}* foi encerrado automaticamente por falta de resposta.\n\n` +
-    `Quando precisar de ajuda novamente, basta nos enviar uma mensagem! ` +
-    `Estamos sempre aqui para ajudar. 🤝`
+    `ℹ️ *Atendimento encerrado*\n\n` +
+    `O chamado *#${shortId}* foi encerrado automaticamente após 2 horas sem interação.\n\n` +
+    `Se ainda precisar de ajuda, envie uma nova mensagem para iniciar um novo atendimento. ` +
+    `Estamos à disposição! 🤝`
   );
 }
 

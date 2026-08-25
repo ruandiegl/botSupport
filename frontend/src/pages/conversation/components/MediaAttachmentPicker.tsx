@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ImageEditorDialog } from "./ImageEditorDialog";
 import { VideoEditorDialog } from "./VideoEditorDialog";
+import type { VideoEdit } from "./video-processing";
 
 const ACCEPT = [
   "image/jpeg", "image/png", "image/webp", "image/gif",
@@ -39,16 +40,18 @@ function mediaLabel(file: File) {
 
 type Props = {
   file: File | null;
-  onChange: (file: File | null) => void;
+  onChange: (file: File | null, edit?: VideoEdit | null) => void;
   caption?: string;
   onCaptionChange?: (caption: string) => void;
   disabled?: boolean;
   uploadProgress?: number | null;
+  processing?: boolean;
+  processingProgress?: number | null;
   onCancelUpload?: () => void;
   onValidationError?: (message: string | null) => void;
 };
 
-export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null, onCancelUpload, onValidationError }: Props) {
+export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null, processing = false, processingProgress = null, onCancelUpload, onValidationError }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -85,7 +88,9 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
   };
 
   const isUploading = uploadProgress !== null && uploadProgress !== undefined;
-  const progressValue = Math.min(100, Math.max(0, uploadProgress ?? 0));
+  const isProcessing = processing;
+  const isBusy = isUploading || isProcessing;
+  const progressValue = Math.min(100, Math.max(0, isProcessing ? (processingProgress ?? 0) : (uploadProgress ?? 0)));
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -114,7 +119,7 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
       </Button>
       {file ? (
         <Attachment
-          state={isUploading ? (progressValue >= 100 ? "processing" : "uploading") : "done"}
+          state={isBusy ? (progressValue >= 100 ? "processing" : "uploading") : "done"}
           size="sm"
           orientation="horizontal"
           className="max-w-[min(100%,380px)]"
@@ -125,18 +130,18 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
           <AttachmentContent>
             <AttachmentTitle title={file.name}>{file.name}</AttachmentTitle>
             <AttachmentDescription>{mediaLabel(file)} · {formatBytes(file.size)}</AttachmentDescription>
-            {isUploading ? (
+            {isBusy ? (
               <div className="mt-1.5 flex min-w-32 flex-col gap-1" aria-live="polite">
-                <Progress value={progressValue} aria-label={`Enviando ${mediaLabel(file).toLowerCase()}: ${progressValue}%`} />
+                <Progress value={progressValue} aria-label={`${isProcessing ? "Processando" : "Enviando"} ${mediaLabel(file).toLowerCase()}: ${progressValue}%`} />
                 <span className="text-[11px] text-muted-foreground">
-                  {progressValue >= 100 ? "Processando mídia…" : `${progressValue}% enviado`}
+                  {isProcessing ? `Preparando vídeo… ${progressValue}%` : progressValue >= 100 ? "Processando mídia…" : `${progressValue}% enviado`}
                 </span>
               </div>
             ) : null}
           </AttachmentContent>
           <AttachmentActions>
-            <Badge variant="secondary">{isUploading ? "Enviando" : "Pronto"}</Badge>
-            {isUploading ? (
+            <Badge variant="secondary">{isProcessing ? "Preparando" : isUploading ? "Enviando" : "Pronto"}</Badge>
+            {isBusy ? (
               <AttachmentAction
                 type="button"
                 size="icon-xs"
@@ -148,17 +153,17 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
                 <X />
               </AttachmentAction>
             ) : null}
-            {!isUploading && file.type.startsWith("image/") ? (
+            {!isBusy && file.type.startsWith("image/") ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Editar imagem" onClick={() => openEditor(file)} disabled={disabled}>
                 <Edit3 />
               </AttachmentAction>
             ) : null}
-            {!isUploading && file.type.startsWith("video/") ? (
+            {!isBusy && file.type.startsWith("video/") ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Editar vídeo" onClick={() => openVideoEditor(file)} disabled={disabled}>
                 <Edit3 />
               </AttachmentAction>
             ) : null}
-            {!isUploading ? (
+            {!isBusy ? (
               <AttachmentAction type="button" size="icon-xs" aria-label="Remover arquivo" onClick={() => onChange(null)} disabled={disabled}>
                 <X />
               </AttachmentAction>
@@ -189,8 +194,8 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
           setVideoEditorOpen(open);
           if (!open) setVideoEditorFile(null);
         }}
-        onApply={(editedFile) => {
-          onChange(editedFile);
+        onApply={(editedFile, edit) => {
+          onChange(editedFile, edit);
           setVideoEditorFile(null);
         }}
       />

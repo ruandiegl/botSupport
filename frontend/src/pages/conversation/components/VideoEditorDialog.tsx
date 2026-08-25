@@ -12,12 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import type { VideoEdit } from "./video-processing";
 
 type VideoEditorDialogProps = {
   file: File | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onApply: (file: File) => void;
+  onApply: (file: File, edit: VideoEdit | null) => void;
   caption?: string;
   onCaptionChange?: (caption: string) => void;
 };
@@ -161,7 +162,6 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [textLayers, setTextLayers] = useState<TextLayer[]>([]);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const renderOverlay = useCallback(() => {
@@ -367,24 +367,18 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
     return new File([result], outputName(inputFile), { type: mimeType, lastModified: Date.now() });
   };
 
-  const apply = async () => {
-    if (!file || !isReady || isExporting) return;
+  const apply = () => {
+    if (!file || !isReady) return;
     const hasEdits = startTime > 0.01 || endTime < duration - 0.01 || muteAudio || strokes.length > 0 || textLayers.length > 0;
-    if (!hasEdits) {
-      onApply(file);
-      onOpenChange(false);
-      return;
-    }
-    setIsExporting(true);
-    setLoadError(null);
-    try {
-      onApply(await exportVideo());
-      onOpenChange(false);
-    } catch (error) {
-      setLoadError(error instanceof Error ? error.message : "Não foi possível preparar o vídeo editado.");
-    } finally {
-      setIsExporting(false);
-    }
+    onApply(file, hasEdits ? {
+      startTime,
+      endTime: endTime || duration,
+      duration,
+      muteAudio,
+      strokes,
+      textLayers,
+    } : null);
+    onOpenChange(false);
   };
 
   const selectedTextLayer = textLayers.find((layer) => layer.id === selectedTextId) || null;
@@ -414,7 +408,7 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
             </Button>
             <div className="min-w-0">
               <DialogTitle className="flex items-center gap-2 text-base font-semibold"><Film data-icon="inline-start" /> Editar vídeo</DialogTitle>
-              <DialogDescription className="hidden truncate text-xs sm:block">Assista, corte, remova o áudio ou adicione anotações antes de enviar.</DialogDescription>
+              <DialogDescription className="hidden truncate text-xs sm:block">Assista, corte, remova o áudio ou adicione anotações. A preparação final acontece ao enviar.</DialogDescription>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-1" role="toolbar" aria-label="Ferramentas de edição de vídeo">
@@ -505,7 +499,7 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
             <label htmlFor="video-editor-caption" className="sr-only">Adicionar uma legenda</label>
             <Input id="video-editor-caption" value={caption} onChange={(event) => onCaptionChange?.(event.target.value)} placeholder="Adicionar uma legenda…" className="h-7 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0" />
           </div>
-          <div className="flex shrink-0 items-center justify-end gap-2"><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button><Button type="button" onClick={() => void apply()} disabled={!isReady || isExporting}><Check data-icon="inline-start" /> {isExporting ? "Processando vídeo…" : "Aplicar edição"}</Button></div>
+          <div className="flex shrink-0 items-center justify-end gap-2"><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button><Button type="button" onClick={apply} disabled={!isReady}><Check data-icon="inline-start" /> Aplicar edição</Button></div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

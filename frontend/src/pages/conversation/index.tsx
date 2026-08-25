@@ -37,6 +37,7 @@ import { ContactProfileDialog } from "./components/ContactProfileDialog";
 import { MediaAttachmentPicker } from "./components/MediaAttachmentPicker";
 import { OutgoingMediaCard } from "./components/OutgoingMediaCard";
 import { NewConversationDialog } from "./components/NewConversationDialog";
+import { renderEditedVideo, type VideoEdit } from "./components/video-processing";
 import { useContact, useCreateContact, useCreateConversation, useUpdateContact, type ContactDetail } from "./hooks/use-contacts";
 import { useListDepartments } from "../admin/departments/hooks/use-departments";
 import type { ContactShare } from "@/types";
@@ -82,8 +83,11 @@ export default function ConversationPage() {
   const [, setLocation] = useLocation();
   const [message, setMessage] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaEdit, setMediaEdit] = useState<VideoEdit | null>(null);
   const [mediaValidationError, setMediaValidationError] = useState<string | null>(null);
   const [mediaUploadProgress, setMediaUploadProgress] = useState<number | null>(null);
+  const [mediaProcessing, setMediaProcessing] = useState(false);
+  const [mediaProcessingProgress, setMediaProcessingProgress] = useState<number | null>(null);
   const mediaUploadAbortRef = useRef<AbortController | null>(null);
   const mediaUploadCancelledRef = useRef(false);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
@@ -237,22 +241,51 @@ export default function ConversationPage() {
       </div>
     );
 
-  const send = () => {
+  const send = async () => {
+    if (mediaProcessing || sendMedia.isPending || sendMessage.isPending) return;
     if (mediaFile) {
-      if (mediaFile.type.startsWith("video/") && mediaFile.size > MAX_VIDEO_BYTES) {
-        setMediaValidationError(`Este vídeo é grande demais para enviar (${formatFileSize(mediaFile.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
-        return;
-      }
-      setMediaValidationError(null);
+      const selectedFile = mediaFile;
+      const selectedEdit = mediaEdit;
       const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       const uploadController = new AbortController();
       mediaUploadAbortRef.current = uploadController;
       mediaUploadCancelledRef.current = false;
+      setMediaValidationError(null);
+      setMediaUploadProgress(null);
+
+      let fileToSend = selectedFile;
+      if (selectedEdit) {
+        setMediaProcessing(true);
+        setMediaProcessingProgress(0);
+        try {
+          fileToSend = await renderEditedVideo(selectedFile, selectedEdit, {
+            signal: uploadController.signal,
+            onProgress: (progress) => setMediaProcessingProgress(progress),
+          });
+        } catch (error) {
+          if (!uploadController.signal.aborted) {
+            setMediaValidationError(error instanceof Error ? error.message : "Não foi possível preparar o vídeo editado. Tente novamente.");
+          }
+          mediaUploadAbortRef.current = null;
+          return;
+        } finally {
+          setMediaProcessing(false);
+          setMediaProcessingProgress(null);
+        }
+      }
+
+      if (uploadController.signal.aborted) return;
+      if (fileToSend.type.startsWith("video/") && fileToSend.size > MAX_VIDEO_BYTES) {
+        setMediaValidationError(`Este vídeo é grande demais para enviar (${formatFileSize(fileToSend.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
+        mediaUploadAbortRef.current = null;
+        return;
+      }
+
       setMediaUploadProgress(0);
       sendMedia.mutate({
-        file: mediaFile,
+        file: fileToSend,
         caption: message.trim(),
         clientMessageId,
         onProgress: (progress) => setMediaUploadProgress(progress),
@@ -261,6 +294,7 @@ export default function ConversationPage() {
         onSuccess: () => {
           setMessage("");
           setMediaFile(null);
+          setMediaEdit(null);
           setMediaUploadProgress(null);
           mediaUploadAbortRef.current = null;
           if (selectedShortcutId) {
@@ -292,12 +326,15 @@ export default function ConversationPage() {
     mediaUploadCancelledRef.current = true;
     mediaUploadAbortRef.current?.abort();
     mediaUploadAbortRef.current = null;
+    setMediaProcessing(false);
+    setMediaProcessingProgress(null);
     setMediaUploadProgress(null);
   };
 
-  const handleMediaChange = (file: File | null) => {
+  const handleMediaChange = (file: File | null, edit: VideoEdit | null = null) => {
     setMediaValidationError(null);
     setMediaFile(file);
+    setMediaEdit(file ? edit : null);
   };
 
   const mediaError = sendMedia.isError && !mediaUploadCancelledRef.current
@@ -564,9 +601,11 @@ export default function ConversationPage() {
                 caption={message}
                 onCaptionChange={setMessage}
                 uploadProgress={sendMedia.isPending ? mediaUploadProgress : null}
+                processing={mediaProcessing}
+                processingProgress={mediaProcessingProgress}
                 onCancelUpload={cancelMediaUpload}
                 onValidationError={setMediaValidationError}
-                disabled={sendMessage.isPending || sendMedia.isPending}
+                disabled={sendMessage.isPending || sendMedia.isPending || mediaProcessing}
               />
             ) : null}
             {can("shortcuts", "use") && (
@@ -604,7 +643,7 @@ export default function ConversationPage() {
               variant="default"
               size="lg"
               onClick={send}
-              disabled={(!message.trim() && !mediaFile) || sendMessage.isPending || sendMedia.isPending}
+              disabled={(!message.trim() && !mediaFile) || sendMessage.isPending || sendMedia.isPending || mediaProcessing}
               data-testid="button-send-message"
             >
               <Send size={14} /> Enviar

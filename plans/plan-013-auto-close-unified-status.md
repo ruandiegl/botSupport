@@ -10,8 +10,8 @@
 
 1. Unificar os status `BOT` e `QUEUED` em um único status `OPEN` ("Em Aberto") — eliminando a confusão de ter dois status que representam o mesmo estado de espera.
 2. Implementar um worker de background que:
-   - Envia aviso automático no WhatsApp após 30 min de inatividade do cliente.
-   - Encerra automaticamente o chamado após mais 15 min sem resposta.
+   - Envia aviso automático no WhatsApp após 1h30 (90 min) de inatividade do cliente.
+   - Encerra automaticamente o chamado após mais 30 min sem resposta (2h no total).
    - Reseta o aviso se o cliente responder.
 
 ---
