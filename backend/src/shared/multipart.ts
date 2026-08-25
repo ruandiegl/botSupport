@@ -20,6 +20,28 @@ export class MultipartError extends Error {
   }
 }
 
+/**
+ * Consume the rest of an oversized request before the controller writes the
+ * response. Closing an HTTP/2 response while the browser is still uploading
+ * the multipart body can surface as ERR_HTTP2_PROTOCOL_ERROR instead of the
+ * intended 413 response.
+ */
+async function drainRequest(request: IncomingMessage): Promise<void> {
+  if (request.readableEnded || request.destroyed) return;
+  await new Promise<void>((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    request.once("end", finish);
+    request.once("close", finish);
+    request.once("error", finish);
+    request.resume();
+  });
+}
+
 function dispositionValue(header: string, key: string): string | null {
   const match = header.match(new RegExp(`${key}="([^"]*)"`, "i"));
   return match?.[1] ?? null;
@@ -46,15 +68,16 @@ export async function readMultipartForm(
 
   const declaredLength = Number(request.headers["content-length"] ?? 0);
   if (declaredLength > maxBytes) {
-    // Drain the request before returning so keep-alive connections are not
-    // poisoned by an unread body after an early 413 response.
-    request.resume();
+    // Drain the request before returning so keep-alive/HTTP2 connections are
+    // not poisoned by an unread body after an early 413 response.
+    await drainRequest(request);
     throw new MultipartError("TOO_LARGE");
   }
 
   const chunks: Buffer[] = [];
   let received = 0;
   let settled = false;
+  let tooLarge = false;
   const body = await new Promise<Buffer>((resolve, reject) => {
     const fail = (error: MultipartError) => {
       if (settled) return;
@@ -62,18 +85,24 @@ export async function readMultipartForm(
       reject(error);
     };
     request.on("data", (chunk: Buffer | string) => {
-      if (settled) return;
+      if (settled || tooLarge) return;
       const value = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
       received += value.length;
       if (received > maxBytes) {
+        tooLarge = true;
+        chunks.length = 0;
         request.resume();
-        fail(new MultipartError("TOO_LARGE"));
         return;
       }
       chunks.push(value);
     });
     request.once("end", () => {
       if (settled) return;
+      if (tooLarge) {
+        settled = true;
+        reject(new MultipartError("TOO_LARGE"));
+        return;
+      }
       settled = true;
       resolve(Buffer.concat(chunks, received));
     });

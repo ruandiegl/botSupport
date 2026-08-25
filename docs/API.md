@@ -142,7 +142,7 @@ O cliente também envia `Idempotency-Key: clientMessageId`; o backend aceita o v
 
 O backend valida MIME, extensão e assinatura do arquivo, converte o conteúdo para Data URL/Base64 somente em memória e encaminha ao endpoint correspondente da Z‑API. Não grava o binário em disco, banco, R2, cache persistente ou resposta de histórico. O histórico mantém somente metadados (`type`, `mimeType`, `fileName`, `sizeBytes`, status e IDs do provedor); após recarregar a conversa não existe download da mídia enviada.
 
-Respostas: `201` com a mensagem criada; `400` arquivo inválido; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. O envio fica habilitado por padrão quando a API está configurada; defina `OUTBOUND_MEDIA_ENABLED=false` para desativar ou fazer rollback.
+Respostas: `201` com a mensagem criada; `400` arquivo inválido; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. O envio fica habilitado por padrão quando a API está configurada; defina `OUTBOUND_MEDIA_ENABLED=false` para desativar ou fazer rollback. O limite padrão para vídeo é 64 MiB (ajustável até o limite de 100 MB documentado pela Z‑API) e o leitor multipart drena uploads acima do limite antes de responder, evitando reset de conexão no navegador.
 
 ---
 

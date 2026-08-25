@@ -45,7 +45,11 @@ function envLimit(name: string, fallback: number): number {
 export function outboundMediaBodyLimit(): number {
   const limits = [
     envLimit("OUTBOUND_MEDIA_MAX_IMAGE_BYTES", 8 * 1024 * 1024),
-    envLimit("OUTBOUND_MEDIA_MAX_VIDEO_BYTES", 16 * 1024 * 1024),
+    // Z-API accepts videos up to 100 MB. Keep a 64 MB default so a single
+    // upload remains bounded in memory (multipart buffer + Base64 payload),
+    // while installations that need the provider maximum can opt in through
+    // OUTBOUND_MEDIA_MAX_VIDEO_BYTES.
+    envLimit("OUTBOUND_MEDIA_MAX_VIDEO_BYTES", 64 * 1024 * 1024),
     envLimit("OUTBOUND_MEDIA_MAX_AUDIO_BYTES", 8 * 1024 * 1024),
     envLimit("OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES", 16 * 1024 * 1024),
   ];
@@ -114,7 +118,7 @@ export function validateOutgoingMedia(file: MultipartFile | null, caption: strin
   if (!kind) throw new OutgoingMediaValidationError("TYPE_NOT_ALLOWED");
 
   const limitName = `OUTBOUND_MEDIA_MAX_${kind}_BYTES`;
-  const fallback = kind === "VIDEO" || kind === "DOCUMENT" ? 16 * 1024 * 1024 : 8 * 1024 * 1024;
+  const fallback = kind === "VIDEO" ? 64 * 1024 * 1024 : kind === "DOCUMENT" ? 16 * 1024 * 1024 : 8 * 1024 * 1024;
   if (file.buffer.length > envLimit(limitName, fallback)) throw new OutgoingMediaValidationError("SIZE_LIMIT");
   if (!validSignature(kind, mimeType, file.buffer)) throw new OutgoingMediaValidationError("SIGNATURE_INVALID");
   if (caption.length > 2000) throw new OutgoingMediaValidationError("CAPTION_INVALID");

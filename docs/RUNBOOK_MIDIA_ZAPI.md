@@ -12,7 +12,7 @@
 ### Envio de mídia (saída)
 
 1. Mantenha `OUTBOUND_MEDIA_ENABLED=false` durante migration e smoke tests.
-2. Defina limites por tipo, timeout e concorrência (`OUTBOUND_MEDIA_MAX_*`, `OUTBOUND_MEDIA_REQUEST_TIMEOUT_MS` e `OUTBOUND_MEDIA_MAX_CONCURRENT_PER_AGENT`).
+2. Defina limites por tipo, timeout e concorrência (`OUTBOUND_MEDIA_MAX_*`, `OUTBOUND_MEDIA_REQUEST_TIMEOUT_MS` e `OUTBOUND_MEDIA_MAX_CONCURRENT_PER_AGENT`). O vídeo usa 64 MiB por padrão; pode ser elevado até 100 MB, limite indicado pela Z‑API, se a infraestrutura comportar o pico de memória da conversão Base64.
 3. Ative a flag apenas para homologação. O backend envia Data URL/Base64 diretamente à Z‑API e não cria arquivo temporário, URL pública ou objeto R2.
 4. Confirme que os logs exibem somente tipo, tamanho, duração e status; nunca Base64, legenda completa ou payload.
 5. Após o envio, somente metadados ficam em `gtf_outgoing_media`. Não há rota de download para mídia enviada após recarregar a conversa.
