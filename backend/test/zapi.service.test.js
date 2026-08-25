@@ -5,6 +5,7 @@ import {
   buildOptionListPayload,
   findSelectedOption,
   parseIncomingMessage,
+  parseZApiTimestamp,
 } from "../dist/modules/zapi/zapi.service.js";
 
 const options = [
@@ -12,6 +13,12 @@ const options = [
   { label: "Rede / Internet", departmentId: "network" },
   { label: "Áudio / Vídeo", departmentId: "av" },
 ];
+
+test("normaliza timestamps numéricos retornados pela lista de grupos da Z-API", () => {
+  assert.equal(parseZApiTimestamp("1730918668000")?.getTime(), 1730918668000);
+  assert.equal(parseZApiTimestamp(1730918668)?.getTime(), 1730918668000);
+  assert.equal(parseZApiTimestamp("not-a-date"), null);
+});
 
 test("interpreta mensagem de texto recebida da Z-API", () => {
   const message = parseIncomingMessage({

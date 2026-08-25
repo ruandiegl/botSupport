@@ -41,6 +41,26 @@ function parseZApiError(status: number, data: any): string {
   return `Erro HTTP ${status} ao comunicar com a Z-API.`;
 }
 
+/**
+ * Z-API returns group lastMessageTime as a string containing epoch
+ * milliseconds (and older payloads may use epoch seconds or ISO text).
+ * `new Date("1730918668000")` is invalid in Node, so normalize it before the
+ * value reaches Prisma/cache persistence.
+ */
+export function parseZApiTimestamp(value: unknown): Date | null {
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value === "number" || (typeof value === "string" && /^\d+(?:\.\d+)?$/.test(value.trim()))) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return null;
+    const milliseconds = Math.abs(numeric) < 1_000_000_000_000 ? numeric * 1_000 : numeric;
+    const parsed = new Date(milliseconds);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  if (typeof value !== "string" || !value.trim()) return null;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export type BotOption = {
   optionKey?: string;
   label: string;
@@ -773,7 +793,12 @@ export class ZApiService {
 
   async listGroups(query?: string) {
     const config = await this.getConfig();
-    if (!config.isActive || !config.instanceId || !config.token) return [];
+    if (!config.isActive) {
+      throw new Error("A instância Z-API está desativada. Ative a conexão antes de sincronizar os grupos.");
+    }
+    if (!config.instanceId || !config.token) {
+      throw new Error("As credenciais da Z-API não estão configuradas. Informe o ID e o token da instância na tela de conexão.");
+    }
     const headers = { "Content-Type": "application/json", ...(config.clientToken ? { "Client-Token": config.clientToken } : {}) };
     const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/groups`, { headers, signal: AbortSignal.timeout(10_000) });
     const data = await response.json().catch(() => ({}));
@@ -783,11 +808,11 @@ export class ZApiService {
       id: String(item.phone || item.id || "").trim(),
       name: String(item.name || item.subject || "Grupo do WhatsApp").trim().slice(0, 300),
       isGroup: true as const,
-      lastMessageAt: item.lastMessageTime || item.lastMessageAt || null,
+      lastMessageAt: parseZApiTimestamp(item.lastMessageTime ?? item.lastMessageAt)?.toISOString() ?? null,
       unread: Number(item.unreadCount ?? item.unread ?? 0) || 0,
     })).filter((item: any) => item.id);
     const filtered = query?.trim() ? normalized.filter((item: any) => item.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) : normalized;
-    await Promise.all(filtered.map((item: any) => zApiRepository.upsertGroupChat(item.id, item.name, item.lastMessageAt ? new Date(item.lastMessageAt) : new Date()).catch(() => undefined)));
+    await Promise.all(filtered.map((item: any) => zApiRepository.upsertGroupChat(item.id, item.name, parseZApiTimestamp(item.lastMessageAt) ?? new Date()).catch(() => undefined)));
     const cached = await zApiRepository.listGroupChats(query);
     return cached.map((row) => ({ id: row.id, name: row.name, isGroup: true as const, lastMessageAt: row.lastMessageAt?.toISOString() ?? null, unread: row.unreadCount, activeConversation: row.conversations[0] ?? null }));
   }

@@ -630,5 +630,7 @@ O incremento MVP foi aplicado de forma aditiva e sem backfill destrutivo:
 - RBAC recebeu o recurso `groups`, com tela `/groups` para listar grupos, consultar histórico e enviar texto ao grupo;
 - a tela Z-API recebeu os modos de destino e de participantes, mantendo `PRIVATE_LEGACY` como padrão para rollout seguro;
 - a migration de auditoria foi mantida separada da migration já aplicada, e a nova migration de saída foi aplicada sem alterar dados existentes.
+- a sincronização do catálogo passou a normalizar `lastMessageTime` numérico da Z-API antes de persistir; sem isso, o cache falhava silenciosamente e a tela podia exibir zero grupos;
+- a API agora diferencia instância desativada/sem credenciais de uma lista realmente vazia, exibindo uma orientação acionável no painel.
 
 Pendências para homologação antes de ativar em produção: validar um grupo real da instância, confirmar o comportamento de menus interativos na conta utilizada e executar o canário descrito na seção 17. Até essa validação, manter `groupsEnabled=false` ou `PRIVATE_LEGACY`.
