@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { requestMediaAccess, resolveMediaUrl, useMediaAccess } from "../hooks/use-media-access";
+import { VideoPlayerDialog } from "./VideoPlayerDialog";
 
 type Props = {
   conversationId: string;
@@ -59,6 +60,7 @@ function MediaUnavailable({ media }: { media: ConversationMedia }) {
 
 export function MessageMedia({ conversationId, messageId, media }: Props) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
@@ -137,21 +139,28 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
     setDragging(false);
   };
 
+  const download = async () => {
+    setDownloading(true);
+    setDownloadError(null);
+    try {
+      const result = await requestMediaAccess(conversationId, messageId, "download");
+      const anchor = document.createElement("a");
+      anchor.href = resolveMediaUrl(result.url);
+      anchor.download = media.fileName || `${media.type.toLowerCase()}-${messageId}`;
+      anchor.rel = "noreferrer";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : `Não foi possível baixar ${mediaLabel(media).toLowerCase()}.`);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   if (!media.available) return <MediaUnavailable media={media} />;
 
   if (media.type === "DOCUMENT") {
-    const download = async () => {
-      setDownloading(true);
-      setDownloadError(null);
-      try {
-        const result = await requestMediaAccess(conversationId, messageId, "download");
-        window.location.assign(resolveMediaUrl(result.url));
-      } catch (error) {
-        setDownloadError(error instanceof Error ? error.message : "Não foi possível baixar o documento.");
-      } finally {
-        setDownloading(false);
-      }
-    };
     return (
       <Attachment className="w-full">
         <AttachmentMedia><FileText data-icon="inline-start" /></AttachmentMedia>
@@ -186,17 +195,32 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
 
   if (media.type === "VIDEO") {
     return (
-      <Attachment orientation="vertical" className="w-72 max-w-full">
-        <AttachmentMedia variant="image" className="aspect-video w-full">
-          <video className="aspect-video w-full object-cover" controls preload="metadata" src={source}>
-            Seu navegador não reproduz vídeo.
-          </video>
-        </AttachmentMedia>
-        <AttachmentContent>
-          <AttachmentTitle className="flex items-center gap-2"><Video data-icon="inline-start" /> Vídeo</AttachmentTitle>
-          <AttachmentDescription>{metaLabel(media)}</AttachmentDescription>
-        </AttachmentContent>
-      </Attachment>
+      <>
+        <Attachment orientation="vertical" className="w-72 max-w-full">
+          <AttachmentMedia variant="image" className="relative aspect-video w-full bg-black">
+            <video className="aspect-video w-full object-cover" muted playsInline preload="metadata" src={source} aria-label="Prévia do vídeo recebido" />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/15">
+              <span className="flex size-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg">
+                <Video className="size-5" aria-hidden="true" />
+              </span>
+            </span>
+          </AttachmentMedia>
+          <AttachmentContent>
+            <AttachmentTitle className="flex items-center gap-2"><Video data-icon="inline-start" /> Vídeo</AttachmentTitle>
+            <AttachmentDescription>{metaLabel(media)}</AttachmentDescription>
+          </AttachmentContent>
+          <AttachmentTrigger aria-label="Abrir player de vídeo" onClick={() => setVideoOpen(true)} />
+        </Attachment>
+        <VideoPlayerDialog
+          open={videoOpen}
+          onOpenChange={setVideoOpen}
+          source={source}
+          media={media}
+          onDownload={download}
+          downloading={downloading}
+          downloadError={downloadError}
+        />
+      </>
     );
   }
 

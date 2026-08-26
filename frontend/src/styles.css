@@ -170,6 +170,11 @@ h3 { font:700 14px var(--app-font-display); color: #f8fafc; }
 .group-message-sender-out { color: hsl(var(--primary-foreground) / .86); }
 .group-message-meta { display: inline-flex; align-self: flex-end; align-items: center; gap: 3px; color: hsl(var(--muted-foreground)); font-size: 10px; line-height: 1; }
 .conversation-main { min-width:0; }
+.conversation-status-row { margin-top: 7px; min-width: 0; height: 22px; display: flex; align-items: center; gap: 7px; overflow: hidden; white-space: nowrap; }
+.conversation-department { min-width: 0; overflow: hidden; color: hsl(var(--muted-foreground)); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.conversation-labels-inline { min-width: 0; max-width: min(38%, 180px); display: inline-flex; align-items: center; gap: 4px; overflow: hidden; }
+.conversation-labels-inline [data-slot="badge"] { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.conversation-label-more { flex: 0 0 auto; color: hsl(var(--muted-foreground)); font-size: 10px; }
 .conversation-meta { display:flex;align-items:center;gap:8px;min-width:0; }
 .conversation-name { font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; color: #f8fafc; }
 .conversation-phone { color:hsl(var(--muted-foreground));font:10px var(--app-font-mono); }

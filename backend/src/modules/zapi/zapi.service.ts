@@ -11,6 +11,14 @@ import { labelsService } from "../labels/labels.service.js";
 import { botExclusionsService } from "../bot-exclusions/bot-exclusions.service.js";
 import { businessHoursService } from "../business-hours/business-hours.service.js";
 import { validateOutgoingMedia } from "../conversations/outgoing-media.js";
+import { conversationsRepository } from "../conversations/conversations.repository.js";
+import {
+  INACTIVITY_CONTINUE_ACTION,
+  INACTIVITY_FINALIZE_ACTION,
+  buildInactivityCloseMessage,
+  buildInactivityContinueMessage,
+  resolveInactivityAction,
+} from "../conversations/inactivity.messages.js";
 import type { MultipartFile } from "../../shared/multipart.js";
 
 const DEFAULT_BOT_REPLY_COOLDOWN_MINUTES = 15;
@@ -41,6 +49,30 @@ function parseZApiError(status: number, data: any): string {
     return `Z-API: ${rawMsg} (HTTP ${status})`;
   }
   return `Erro HTTP ${status} ao comunicar com a Z-API.`;
+}
+
+function deliverySucceeded(delivery: any): boolean {
+  return Boolean(delivery && !delivery.error && !delivery.blocked);
+}
+
+function publishStoredBotMessage(
+  conversationId: string,
+  stored: { id: string; content: string; messageType: string; createdAt: Date },
+) {
+  conversationEvents.emit("message_received", {
+    conversationId,
+    messageId: stored.id,
+    message: {
+      id: stored.id,
+      direction: "OUT",
+      senderType: "BOT",
+      senderName: "GTF-Bot",
+      content: stored.content,
+      messageType: stored.messageType,
+      createdAt: stored.createdAt.toISOString(),
+      media: null,
+    },
+  });
 }
 
 /**
@@ -1187,7 +1219,10 @@ export class ZApiService {
 
       const data = (await response.json().catch(() => ({}))) as any;
 
-      if (!response.ok) {
+      // A Z-API pode devolver HTTP 2xx com um erro de negócio no corpo.
+      // Trate ambos os casos como falha para que o atendimento não mostre
+      // uma mensagem como enviada quando ela não chegou ao WhatsApp.
+      if (!response.ok || data?.error || data?.success === false) {
         const errorMsg = parseZApiError(response.status, data);
         logger.error({ status: response.status, errorMsg }, "Erro retornado pela Z-API ao enviar texto");
         return { error: errorMsg };
@@ -1366,7 +1401,9 @@ export class ZApiService {
         body: JSON.stringify({ phone: this.formatTarget(target), message: text }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) return { error: parseZApiError(response.status, data) };
+      if (!response.ok || data?.error || data?.success === false) {
+        return { error: parseZApiError(response.status, data) };
+      }
       return data;
     } catch (error: any) {
       return { error: error?.message || "Falha na requisição Z-API" };
@@ -1547,6 +1584,91 @@ export class ZApiService {
     }
   }
 
+  /**
+   * Handles the two actions attached to an inactivity warning. The action is
+   * accepted only when the conversation still has an active warning marker;
+   * ordinary messages and stale button callbacks therefore continue through
+   * the regular flow without changing the ticket state.
+   */
+  private async handleInactivityAction(input: {
+    conversationId: string;
+    action: typeof INACTIVITY_FINALIZE_ACTION | typeof INACTIVITY_CONTINUE_ACTION;
+    deliveryTarget: string;
+    exclusionPhone: string;
+    triggerMessageId: string;
+  }) {
+    const context = await zApiRepository.getConversationContext(input.conversationId);
+    if (!context || context.status === "CLOSED") return { status: "inactivity_action_ignored" as const };
+
+    if (input.action === INACTIVITY_FINALIZE_ACTION) {
+      await conversationsRepository.close(input.conversationId, "AUTO_TIMEOUT");
+      const content = buildInactivityCloseMessage(input.conversationId);
+      const storedMessage = await zApiRepository.addMessage({
+        conversationId: input.conversationId,
+        direction: "OUT",
+        senderType: "BOT",
+        messageType: "INACTIVITY_CLOSED",
+        content,
+      });
+      const delivery = await this.sendBotText(input.deliveryTarget, content, input.exclusionPhone);
+      if (!deliverySucceeded(delivery)) {
+        await zApiRepository.deleteMessage(storedMessage.id);
+        logger.error(
+          { conversationId: input.conversationId, error: delivery?.error || "integration_inactive" },
+          "Falha ao enviar encerramento após ação de inatividade",
+        );
+      } else {
+        publishStoredBotMessage(input.conversationId, storedMessage);
+      }
+
+      conversationEvents.emit("conversation_updated", {
+        conversationId: input.conversationId,
+        status: "CLOSED",
+        eventType: "AUTO_CLOSED",
+        messageId: storedMessage.id,
+      });
+      socketEmitter.emitToConversation(input.conversationId, "conversation:auto_closed", {
+        conversationId: input.conversationId,
+        reason: "AUTO_TIMEOUT",
+      });
+      return { status: "inactivity_finalized" as const };
+    }
+
+    await zApiRepository.resetInactivityWarning(input.conversationId);
+    const content = buildInactivityContinueMessage();
+    const storedMessage = await zApiRepository.addMessage({
+      conversationId: input.conversationId,
+      direction: "OUT",
+      senderType: "BOT",
+      messageType: "INACTIVITY_CONTINUED",
+      content,
+    });
+    const delivery = await this.sendBotText(input.deliveryTarget, content, input.exclusionPhone);
+    if (!deliverySucceeded(delivery)) {
+      await zApiRepository.deleteMessage(storedMessage.id);
+      logger.error(
+        { conversationId: input.conversationId, error: delivery?.error || "integration_inactive" },
+        "Falha ao enviar confirmação de retomada após ação de inatividade",
+      );
+      return { status: "inactivity_continue_delivery_failed" as const };
+    }
+
+    publishStoredBotMessage(input.conversationId, storedMessage);
+    conversationEvents.emit("conversation_updated", {
+      conversationId: input.conversationId,
+      status: context.status,
+      eventType: "INACTIVITY_CONTINUED",
+      messageId: input.triggerMessageId,
+      departmentId: context.departmentId,
+      assignedAgentId: context.assignedAgentId,
+      queuedAt: context.queuedAt,
+    });
+    socketEmitter.emitToConversation(input.conversationId, "conversation:inactivity_continued", {
+      conversationId: input.conversationId,
+    });
+    return { status: "inactivity_continued" as const };
+  }
+
   async handleIncomingWebhook(payload: ZApiReceivedWebhook) {
     logger.info({ callbackType: payload?.type, externalEventId: payload?.messageId || payload?.id }, "Webhook recebido da Z-API");
 
@@ -1558,6 +1680,12 @@ export class ZApiService {
     let groupChat: Awaited<ReturnType<typeof zApiRepository.upsertGroupChat>> | null = null;
     let preloadedContact: Awaited<ReturnType<typeof zApiRepository.findContactByPhone>> | null = null;
     let activeGroupConversation: Awaited<ReturnType<typeof zApiRepository.findActiveConversationByGroup>> | null = null;
+    // Keep the audit id so the unified group stream can use the same item id
+    // as the group history while linking the protected media to the canonical
+    // conversation message created below.
+    let groupAuditMessageId: string | null = null;
+    let groupAuditCreatedAt: Date | null = null;
+    let skipGroupAutomation = false;
     if (isGroup) {
       if (!config.groupsEnabled) return { status: "ignored_groups_disabled" };
       const participant = payload.participantPhone || payload.participant;
@@ -1573,7 +1701,9 @@ export class ZApiService {
       preloadedContact = await zApiRepository.findContactByPhone(senderPhone);
       if (!preloadedContact) preloadedContact = await zApiRepository.createContact(senderPhone, incoming.senderName);
       const mentions = collectMentionValues(payload);
-      if (payload.broadcast === true || hasBroadcastMention(mentions)) {
+      const isBroadcastMessage = payload.broadcast === true || hasBroadcastMention(mentions);
+      if (isBroadcastMessage) {
+        skipGroupAutomation = true;
         const broadcastAudit = await zApiRepository.addGroupMessage({
           groupChatId: groupChat.id,
           externalMessageId: incoming.externalEventId,
@@ -1584,6 +1714,8 @@ export class ZApiService {
           isMention: false,
         });
         if (!broadcastAudit.duplicate) {
+          groupAuditMessageId = broadcastAudit.message.id;
+          groupAuditCreatedAt = broadcastAudit.message.createdAt;
           const message = {
             id: broadcastAudit.message.id,
             direction: "IN",
@@ -1597,13 +1729,15 @@ export class ZApiService {
             media: null,
             outgoingMedia: null,
           };
-          socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message });
+          if (config.groupConversationMode !== "IN_GROUP") {
+            socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message });
+          }
           socketEmitter.emitToRoom("groups", "group:updated", {
             groupId: groupChat.id,
             lastMessageAt: broadcastAudit.message.createdAt.toISOString(),
           });
         }
-        return { status: "ignored_broadcast_mention" };
+        if (config.groupConversationMode !== "IN_GROUP") return { status: "ignored_broadcast_mention" };
       }
       const instancePhone = canonicalJid(payload.connectedPhone || config.instancePhone || "");
       const mentionIdentity = await this.getGroupMentionIdentity(
@@ -1613,33 +1747,45 @@ export class ZApiService {
       );
       const identityAvailable = Boolean(instancePhone || mentionIdentity.lids.length || mentionIdentity.aliases.length);
       groupMentioned = identityAvailable && isInstanceMentioned(payload, instancePhone, mentionIdentity.aliases, mentionIdentity.lids);
-      const groupAudit = await zApiRepository.addGroupMessage({
-        groupChatId: groupChat.id,
-        externalMessageId: incoming.externalEventId,
-        content: incoming.content,
-        messageType: incoming.messageType,
-        senderContactId: preloadedContact.id,
-        senderNameSnapshot: incoming.senderName,
-        isMention: groupMentioned,
-      });
-      if (groupAudit.duplicate) return { status: "duplicate_event" };
-      const liveGroupMessage = {
-        id: groupAudit.message.id,
-        direction: "IN",
-        content: groupAudit.message.content,
-        messageType: groupAudit.message.messageType,
-        senderName: groupAudit.message.senderNameSnapshot || incoming.senderName || "Participante",
-        status: "RECEIVED",
-        createdAt: groupAudit.message.createdAt.toISOString(),
-        conversationId: groupAudit.message.conversationId ?? null,
-        linkedMessageId: null,
-        media: null,
-        outgoingMedia: null,
-      };
-      socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message: liveGroupMessage });
+      if (!isBroadcastMessage) {
+        const groupAudit = await zApiRepository.addGroupMessage({
+          groupChatId: groupChat.id,
+          externalMessageId: incoming.externalEventId,
+          content: incoming.content,
+          messageType: incoming.messageType,
+          senderContactId: preloadedContact.id,
+          senderNameSnapshot: incoming.senderName,
+          isMention: groupMentioned,
+        });
+        if (groupAudit.duplicate) return { status: "duplicate_event" };
+        groupAuditMessageId = groupAudit.message.id;
+        groupAuditCreatedAt = groupAudit.message.createdAt;
+        const liveGroupMessage = {
+          id: groupAudit.message.id,
+          direction: "IN",
+          content: groupAudit.message.content,
+          messageType: groupAudit.message.messageType,
+          senderName: groupAudit.message.senderNameSnapshot || incoming.senderName || "Participante",
+          status: "RECEIVED",
+          createdAt: groupAudit.message.createdAt.toISOString(),
+          conversationId: groupAudit.message.conversationId ?? null,
+          linkedMessageId: null,
+          media: null,
+          outgoingMedia: null,
+        };
+        // In the unified in-group mode the canonical conversation message is
+        // persisted below (including its protected media metadata). Emit the
+        // realtime group item after that persistence so the group chat receives
+        // the same media renderer as private conversations. Legacy mode still
+        // needs this immediate audit event because it intentionally does not
+        // create a conversation for messages without a mention.
+        if (config.groupConversationMode !== "IN_GROUP") {
+          socketEmitter.emitToGroup(groupChat.id, "group:message", { groupId: groupChat.id, message: liveGroupMessage });
+        }
+      }
       socketEmitter.emitToRoom("groups", "group:updated", {
         groupId: groupChat.id,
-        lastMessageAt: groupAudit.message.createdAt.toISOString(),
+        lastMessageAt: (groupAuditCreatedAt ?? new Date()).toISOString(),
       });
       const isGroupMonitor = activeGroupConversation?.status === "DRAFT" && activeGroupConversation.currentStep === "GROUP_MONITOR";
       if (activeGroupConversation && !isGroupMonitor && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
@@ -1693,6 +1839,11 @@ export class ZApiService {
       ? activeGroupConversation
       : await zApiRepository.findActiveConversationByContact(contact.id);
     const isNewConversation = !activeConversation;
+    // Capture this before the inbound button/message is persisted. The
+    // warning marker is cleared as part of the action, so the original state
+    // is the guard that prevents stale or unrelated messages from triggering
+    // an inactivity command.
+    const inactivityWarningWasActive = Boolean(activeConversation?.warningSentAt);
     if (!activeConversation) {
       activeConversation = await zApiRepository.createConversation(
         contact.id,
@@ -1827,14 +1978,57 @@ export class ZApiService {
       },
     });
 
+    if (incoming.group && groupChat && config.groupConversationMode === "IN_GROUP") {
+      socketEmitter.emitToGroup(groupChat.id, "group:message", {
+        groupId: groupChat.id,
+        message: {
+          id: groupAuditMessageId || savedMsg.id,
+          direction: savedMsg.direction,
+          senderType: savedMsg.senderType,
+          senderName: savedMsg.senderNameSnapshot || incoming.senderName || "Participante",
+          senderContactId: savedMsg.senderContactId,
+          content: savedMsg.content,
+          messageType: savedMsg.messageType,
+          status: "RECEIVED",
+          createdAt: savedMsg.createdAt.toISOString(),
+          conversationId,
+          linkedMessageId: savedMsg.id,
+          media: savedMsg.media ? mediaService.toPublic(savedMsg.media) : null,
+          outgoingMedia: null,
+        },
+      });
+    }
+
+    const inactivityAction = inactivityWarningWasActive
+      ? resolveInactivityAction(incoming.content, incoming.selectedOptionId)
+      : null;
+
+    // An inactivity button is a control action, not a regular customer
+    // message.  Suppress the generic NEW_MESSAGE notification here so the
+    // agent receives only the action-specific alert after the continuation
+    // is delivered successfully (or no alert when the ticket is finalized).
     conversationEvents.emit("conversation_updated", {
       conversationId,
       status: activeConversation.status,
-      eventType: "MESSAGE_RECEIVED",
+      eventType: inactivityAction ? "INACTIVITY_ACTION" : "MESSAGE_RECEIVED",
       messageId: savedMsg.id,
       departmentId: activeConversation.departmentId,
       assignedAgentId: activeConversation.assignedAgentId,
     });
+
+    // Broadcast mentions are recorded in the unified group transcript, but
+    // must remain passive: they never advance the bot flow or send a reply.
+    if (skipGroupAutomation) return { status: "ignored_broadcast_mention" };
+
+    if (inactivityAction) {
+      return this.handleInactivityAction({
+        conversationId,
+        action: inactivityAction,
+        deliveryTarget,
+        exclusionPhone: phone,
+        triggerMessageId: savedMsg.id,
+      });
+    }
 
     // Reset inactivity warning whenever the client sends a new message
     if (activeConversation.warningSentAt) {

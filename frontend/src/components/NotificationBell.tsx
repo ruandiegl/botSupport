@@ -14,6 +14,7 @@ const notificationTypeLabel: Record<string, string> = {
   ASSIGNED_CONVERSATION: "Atendimento assumido",
   CONVERSATION_DELEGATED: "Chamado delegado para você",
   DELEGATION_RESPONSE: "Resposta da delegação",
+  INACTIVITY_CONTINUED: "Chamado retomado pelo cliente",
   UNRESOLVED_REMINDER: "Chamado aguardando atenção",
 };
 

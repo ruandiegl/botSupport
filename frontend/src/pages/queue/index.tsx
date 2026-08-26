@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, MessageSquarePlus, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useActiveAgent } from "@/app/Shell";
@@ -18,7 +18,7 @@ import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
 import { StartConversationDialog } from "@/pages/contacts/components/StartConversationDialog";
 import { GlobalConversationSearch } from "./components/GlobalConversationSearch";
 
-const CONVERSATIONS_PER_PAGE = 5;
+const CONVERSATIONS_PER_PAGE = 6;
 
 function QueryState({ loading, error, empty, children, retry }: { loading?: boolean; error?: boolean; empty?: boolean; children?: React.ReactNode; retry?: () => void }) {
   if (loading) return <div className="panel loading"><div className="skeleton short" /><div className="skeleton" /><div className="skeleton" /></div>;
@@ -49,6 +49,49 @@ const defaultDateRange: DateRangeValue = { preset: "ALL", dateField: "lastActivi
 // query and required a second interaction to reach the expected list.
 type MetricFilter = "OPEN" | "IN_PROGRESS" | "ALL" | "CLOSED";
 
+const QUEUE_RETURN_STATE_KEY = "gtfbot.queue.return-state.v1";
+
+type PersistedQueueState = {
+  onlyMine: boolean;
+  status: string;
+  metricFilter: MetricFilter | null;
+  channel: "ALL" | "PRIVATE" | "GROUP";
+  department: string;
+  search: string;
+  dateRange: DateRangeValue;
+  currentPage: number;
+  labelIds: string[];
+};
+
+function loadPersistedQueueState(onlyMine: boolean): PersistedQueueState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(QUEUE_RETURN_STATE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<PersistedQueueState>;
+    if (parsed.onlyMine !== onlyMine) return null;
+    if (!parsed.dateRange || !Array.isArray(parsed.labelIds)) return null;
+    if (!["ALL", "PRIVATE", "GROUP"].includes(parsed.channel ?? "")) return null;
+    if (typeof parsed.status !== "string" || typeof parsed.department !== "string" || typeof parsed.search !== "string") return null;
+    if (typeof parsed.currentPage !== "number" || parsed.currentPage < 1) return null;
+    return {
+      onlyMine,
+      status: parsed.status,
+      metricFilter: parsed.metricFilter === null || ["OPEN", "IN_PROGRESS", "ALL", "CLOSED"].includes(parsed.metricFilter ?? "")
+        ? (parsed.metricFilter ?? null)
+        : null,
+      channel: parsed.channel as PersistedQueueState["channel"],
+      department: parsed.department,
+      search: parsed.search,
+      dateRange: parsed.dateRange,
+      currentPage: Math.floor(parsed.currentPage),
+      labelIds: parsed.labelIds.filter((id): id is string => typeof id === "string"),
+    };
+  } catch {
+    return null;
+  }
+}
+
 type GroupCatalogSummary = {
   items?: Array<{ id: string }>;
 };
@@ -58,18 +101,20 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const { activeAgent } = useActiveAgent();
   const { can } = useAuth();
   const currentAgentId = activeAgent?.id || "";
+  const [restoredState] = useState(() => loadPersistedQueueState(onlyMine));
   // The initial operational view excludes CLOSED conversations.  The status
   // select can still opt into the complete history explicitly.
-  const [status, setStatus] = useState("ALL");
-  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(onlyMine ? null : "ALL");
-  const [channel, setChannel] = useState<"ALL" | "PRIVATE" | "GROUP">("ALL");
-  const [department, setDepartment] = useState("ALL");
-  const [search, setSearch] = useState("");
-  const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [labelIds, setLabelIds] = useState<string[]>([]);
+  const [status, setStatus] = useState(restoredState?.status ?? "ALL");
+  const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(restoredState ? restoredState.metricFilter : (onlyMine ? null : "ALL"));
+  const [channel, setChannel] = useState<"ALL" | "PRIVATE" | "GROUP">(restoredState?.channel ?? "ALL");
+  const [department, setDepartment] = useState(restoredState?.department ?? "ALL");
+  const [search, setSearch] = useState(restoredState?.search ?? "");
+  const [dateRange, setDateRange] = useState<DateRangeValue>(restoredState?.dateRange ?? defaultDateRange);
+  const [currentPage, setCurrentPage] = useState(restoredState?.currentPage ?? 1);
+  const [labelIds, setLabelIds] = useState<string[]>(restoredState?.labelIds ?? []);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const isGlobalSearch = search.trim().length > 0;
+  const skipInitialPageReset = useRef(true);
 
   const queryStatus = metricFilter === "ALL"
     ? "ALL"
@@ -132,8 +177,38 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const firstVisible = total ? (currentPage - 1) * CONVERSATIONS_PER_PAGE + 1 : 0;
   const lastVisible = Math.min(currentPage * CONVERSATIONS_PER_PAGE, total);
 
-  useEffect(() => { setCurrentPage(1); }, [status, channel, department, search, onlyMine, currentAgentId, dateRange, metricFilter, labelIds]);
+  useEffect(() => {
+    if (skipInitialPageReset.current) {
+      skipInitialPageReset.current = false;
+      return;
+    }
+    setCurrentPage(1);
+  }, [status, channel, department, search, onlyMine, currentAgentId, dateRange, metricFilter, labelIds]);
   useEffect(() => { setCurrentPage((page) => Math.min(page, totalPages)); }, [totalPages]);
+  useEffect(() => {
+    if (!restoredState || typeof window === "undefined") return;
+    window.sessionStorage.removeItem(QUEUE_RETURN_STATE_KEY);
+  }, [restoredState]);
+
+  const preserveQueueState = () => {
+    if (typeof window === "undefined") return;
+    try {
+      const state: PersistedQueueState = {
+        onlyMine,
+        status,
+        metricFilter,
+        channel,
+        department,
+        search,
+        dateRange,
+        currentPage,
+        labelIds,
+      };
+      window.sessionStorage.setItem(QUEUE_RETURN_STATE_KEY, JSON.stringify(state));
+    } catch {
+      // Storage can be unavailable in private browsing; navigation still works.
+    }
+  };
 
   const activateMetric = (next: MetricFilter) => {
     // Metric cards select the operational scope.  Clear the channel filter so
@@ -174,7 +249,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       return matches.map((match) => ({ ...item, searchMatch: match }));
     })
     : [];
-  const renderRows = (items: typeof visibleConversations) => items.map((item, index) => <ConversationRow key={`${item.id}-${item.searchMatch?.messageId ?? item.searchMatch?.source ?? index}`} conversation={item} searchQuery={isGlobalSearch ? search : undefined} />);
+  const renderRows = (items: typeof visibleConversations) => items.map((item, index) => <ConversationRow key={`${item.id}-${item.searchMatch?.messageId ?? item.searchMatch?.source ?? index}`} conversation={item} searchQuery={isGlobalSearch ? search : undefined} onOpen={preserveQueueState} />);
 
   return (
     <div className="content queue-page">

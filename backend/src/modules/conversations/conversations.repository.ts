@@ -165,8 +165,15 @@ export class ConversationsRepository {
         )`);
       }
       const whereSql = Prisma.join(conditions, " AND ");
+      // Group conversations are a continuous monitor of the WhatsApp group,
+      // so their position must follow the group's latest message rather than
+      // the unread counter (which changes when an agent opens the queue).
+      // Keep the existing operational ordering for private conversations.
+      const latestGroupActivity = Prisma.sql`COALESCE(gc."last_message_at", c."last_activity_at")`;
       const orderSql = sort === "oldest"
         ? Prisma.sql`c."started_at" ASC, c."id" ASC`
+        : filters.channel === "GROUP"
+        ? Prisma.sql`${latestGroupActivity} DESC, c."id" ASC`
         : sort === "recent"
         ? Prisma.sql`c."last_activity_at" DESC, c."id" ASC`
         : Prisma.sql`CASE c."status" WHEN 'OPEN' THEN 0 WHEN 'IN_PROGRESS' THEN 1 WHEN 'CLOSED' THEN 2 ELSE 9 END ASC, (SELECT COUNT(*) FROM "gtf_messages" um WHERE um."conversation_id" = c."id" AND um."direction" = 'IN' AND um."read_at" IS NULL) DESC, CASE WHEN c."status" = 'OPEN' THEN COALESCE(c."queued_at", c."started_at") END ASC NULLS LAST, c."last_activity_at" DESC, c."id" ASC`;
@@ -174,6 +181,9 @@ export class ConversationsRepository {
       const idRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
         SELECT c."id" FROM "gtf_conversations" c
         LEFT JOIN "gtf_contacts" ct ON ct."id" = c."contact_id"
+        LEFT JOIN "gtf_group_chats" gc
+          ON gc."id" = c."group_chat_id"
+          OR gc."remote_chat_id" = c."remote_chat_id"
         WHERE ${whereSql}
         ORDER BY ${orderSql}
         LIMIT ${limit} OFFSET ${offset}

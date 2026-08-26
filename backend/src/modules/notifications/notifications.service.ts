@@ -78,6 +78,8 @@ export class NotificationsService {
       ? "CONVERSATION_DELEGATED"
       : event.eventType === "ASSIGNED" && effectiveAssignedAgentId
       ? "ASSIGNED_CONVERSATION"
+      : event.eventType === "INACTIVITY_CONTINUED"
+      ? "INACTIVITY_CONTINUED"
       : event.eventType === "MESSAGE_RECEIVED" || event.eventType === "NEW_MESSAGE"
       ? "NEW_MESSAGE"
       : effectiveStatus === "QUEUED" && event.eventType !== "READ"
@@ -85,7 +87,7 @@ export class NotificationsService {
       : null;
     if (!type) return [];
 
-    const occurrence = type === "NEW_MESSAGE"
+    const occurrence = type === "NEW_MESSAGE" || type === "INACTIVITY_CONTINUED"
       ? event.messageId || String(effectiveQueuedAt || Date.now())
       : type === "CONVERSATION_DELEGATED"
       ? event.assignmentId || String(Date.now())
@@ -97,8 +99,24 @@ export class NotificationsService {
     const created = await notificationsRepository.createManyIdempotent(agents.map(({ id }) => ({
       agentId: id,
       type,
-      title: type === "NEW_MESSAGE" ? "Nova mensagem recebida" : type === "CONVERSATION_DELEGATED" ? "Chamado delegado para você" : type === "ASSIGNED_CONVERSATION" ? "Atendimento assumido" : "Novo chamado na fila",
-      body: type === "NEW_MESSAGE" ? "Uma conversa recebeu uma nova mensagem." : type === "CONVERSATION_DELEGATED" ? `${event.actorName || "Um gestor"} delegou um atendimento para você.${event.reason ? ` Motivo: ${event.reason}` : ""}` : type === "ASSIGNED_CONVERSATION" ? "Um atendimento foi atribuído a você." : "Uma nova conversa aguarda atendimento.",
+      title: type === "NEW_MESSAGE"
+        ? "Nova mensagem recebida"
+        : type === "INACTIVITY_CONTINUED"
+        ? "Chamado retomado pelo cliente"
+        : type === "CONVERSATION_DELEGATED"
+        ? "Chamado delegado para você"
+        : type === "ASSIGNED_CONVERSATION"
+        ? "Atendimento assumido"
+        : "Novo chamado na fila",
+      body: type === "NEW_MESSAGE"
+        ? "Uma conversa recebeu uma nova mensagem."
+        : type === "INACTIVITY_CONTINUED"
+        ? "O cliente escolheu continuar o atendimento. Verifique a conversa e dê prosseguimento."
+        : type === "CONVERSATION_DELEGATED"
+        ? `${event.actorName || "Um gestor"} delegou um atendimento para você.${event.reason ? ` Motivo: ${event.reason}` : ""}`
+        : type === "ASSIGNED_CONVERSATION"
+        ? "Um atendimento foi atribuído a você."
+        : "Uma nova conversa aguarda atendimento.",
       conversationId: event.conversationId,
       departmentId: effectiveDepartmentId ?? null,
       dedupeKey: `${type}:${event.conversationId}:${occurrence}`,

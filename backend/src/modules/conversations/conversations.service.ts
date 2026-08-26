@@ -78,8 +78,20 @@ export class ConversationsService {
    * back to the participant contact number for a group conversation.
    */
   private groupRemoteChatId(conversation: any): string | null {
-    const value = conversation?.remoteChatId ?? conversation?.groupChat?.remoteChatId;
-    return typeof value === "string" && value.trim() ? value.trim() : null;
+    // The conversation's remoteChatId is not reliable for older group
+    // tickets: it may contain the participant's private phone number. The
+    // GroupChat relation is the source of truth for the group JID.
+    const related = conversation?.groupChat?.remoteChatId;
+    if (typeof related === "string" && related.trim()) return related.trim();
+
+    const direct = conversation?.remoteChatId;
+    if (typeof direct !== "string" || !direct.trim()) return null;
+    const normalized = direct.trim();
+    // Only accept values that are unambiguously WhatsApp group identifiers.
+    // Never treat a participant phone as a group destination.
+    return normalized.includes("@g.us") || /^\d{8,}-\d+$/.test(normalized)
+      ? normalized
+      : null;
   }
 
   private acquireOutboundMediaSlot(agentId: string): boolean {
@@ -743,10 +755,11 @@ export class ConversationsService {
       content,
     });
 
-    // Disparar via Z-API no WhatsApp real
-    const deliveryTarget = isGroup && this.groupRemoteChatId(conversation)
-      ? this.groupRemoteChatId(conversation)
-      : conversation.contact?.phone;
+    // Disparar via Z-API no WhatsApp real. Groups must always use their own
+    // JID; falling back to the participant phone would silently send the
+    // message to a private chat instead of the group.
+    const groupTarget = isGroup ? this.groupRemoteChatId(conversation) : null;
+    const deliveryTarget = isGroup ? groupTarget : conversation.contact?.phone;
     const delivery = deliveryTarget ? await zApiService.sendText(deliveryTarget, content) : null;
     if (!delivery || (typeof delivery === "object" && "error" in delivery && delivery.error)) {
       // Keep the local message for auditability, but report the provider
@@ -755,6 +768,8 @@ export class ConversationsService {
         kind: "PROVIDER_ERROR" as const,
         error: delivery && typeof delivery === "object" && "error" in delivery
           ? String(delivery.error)
+          : isGroup
+          ? "Não foi possível enviar para o grupo porque o identificador do grupo não está disponível. Sincronize os grupos da Z-API e tente novamente."
           : "Não foi possível entregar a mensagem pela integração Z-API.",
       };
     }
@@ -824,6 +839,14 @@ export class ConversationsService {
       }
       return { kind: "DUPLICATE" as const };
     }
+    const isGroup = this.isGroupConversation(conversation);
+    const groupTarget = isGroup ? this.groupRemoteChatId(conversation) : null;
+    if (isGroup && !groupTarget) {
+      return {
+        kind: "PROVIDER_ERROR" as const,
+        error: "Não foi possível enviar para o grupo porque o identificador do grupo não está disponível. Sincronize os grupos da Z-API e tente novamente.",
+      };
+    }
     if (!this.acquireOutboundMediaSlot(agent.id)) return { kind: "RATE_LIMIT" as const };
 
     const agentName = agent.name || "Atendente";
@@ -859,9 +882,8 @@ export class ConversationsService {
     }
     await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "SENDING" });
 
-    const isGroup = this.isGroupConversation(conversation);
     const sendInput = {
-      phone: isGroup ? (this.groupRemoteChatId(conversation) || "") : (conversation.contact?.phone || ""),
+      phone: isGroup ? groupTarget! : (conversation.contact?.phone || ""),
       mimeType: metadata.mimeType,
       buffer: input.file!.buffer,
       fileName: metadata.fileName,

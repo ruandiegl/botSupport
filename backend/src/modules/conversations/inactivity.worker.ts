@@ -16,35 +16,17 @@ import { zApiRepository } from "../zapi/zapi.repository.js";
 import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import { logger } from "../../shared/logger.js";
+import {
+  buildInactivityCloseMessage,
+  buildInactivityWarningMessage,
+  inactivityActionOptions,
+} from "./inactivity.messages.js";
 
 // ─── Configuration (env-overridable) ─────────────────────────────────────────
 // Default policy: warn after 1h30 of inactivity and close 30 minutes later (2h total).
 const INACTIVITY_WARNING_MINUTES = Number(process.env.INACTIVITY_WARNING_MINUTES ?? 90);
 const INACTIVITY_CLOSE_MINUTES = Number(process.env.INACTIVITY_CLOSE_MINUTES ?? 30);
 const CHECK_INTERVAL_MS = Number(process.env.INACTIVITY_CHECK_INTERVAL_MS ?? 5 * 60 * 1000); // 5 min
-
-// ─── Message Templates ────────────────────────────────────────────────────────
-function buildWarningMessage(conversationId: string): string {
-  const shortId = conversationId.slice(0, 8).toUpperCase();
-  return (
-    `⚠️ *Aviso de inatividade*\n\n` +
-    `Olá! Ainda não recebemos uma resposta sua no chamado *#${shortId}*.\n\n` +
-    `Se você precisar continuar o atendimento, responda esta mensagem nos próximos ` +
-    `*${INACTIVITY_CLOSE_MINUTES} minutos*. Depois desse prazo, o atendimento será ` +
-    `encerrado automaticamente por falta de interação.\n\n` +
-    `_Estamos à disposição para ajudar!_ 😊`
-  );
-}
-
-function buildCloseMessage(conversationId: string): string {
-  const shortId = conversationId.slice(0, 8).toUpperCase();
-  return (
-    `ℹ️ *Atendimento encerrado*\n\n` +
-    `O chamado *#${shortId}* foi encerrado automaticamente após 2 horas sem interação.\n\n` +
-    `Se ainda precisar de ajuda, envie uma nova mensagem para iniciar um novo atendimento. ` +
-    `Estamos à disposição! 🤝`
-  );
-}
 
 function deliverySucceeded(delivery: any): boolean {
   return Boolean(delivery && !delivery.error && !delivery.blocked);
@@ -102,7 +84,7 @@ export class InactivityWorker {
       const phone = conv.contact?.phone;
       if (!phone) continue;
 
-      const message = buildWarningMessage(conv.id);
+      const message = buildInactivityWarningMessage(conv.id, INACTIVITY_CLOSE_MINUTES);
       let storedMessage: Awaited<ReturnType<typeof zApiRepository.addMessage>> | null = null;
       try {
         // Keep the message in the ticket history as soon as the delivery
@@ -111,10 +93,15 @@ export class InactivityWorker {
           conversationId: conv.id,
           direction: "OUT",
           senderType: "BOT",
-          messageType: "TEXT",
+          messageType: "INACTIVITY_WARNING",
           content: message,
         });
-        const delivery = await zApiService.sendBotText(phone, message);
+        const delivery = await zApiService.sendBotButtonList(
+          phone,
+          message,
+          inactivityActionOptions.map((option) => ({ ...option, departmentId: "" })),
+          phone,
+        );
         if (delivery && "blocked" in delivery && delivery.blocked) {
           await zApiRepository.deleteMessage(storedMessage.id);
           logger.info({ conversationId: conv.id }, "inactivity-worker: warning suppressed by bot exclusion");
@@ -154,7 +141,7 @@ export class InactivityWorker {
       try {
         await conversationsRepository.close(conv.id, "AUTO_TIMEOUT");
 
-        const message = buildCloseMessage(conv.id);
+        const message = buildInactivityCloseMessage(conv.id);
         const storedMessage = await zApiRepository.addMessage({
           conversationId: conv.id,
           direction: "OUT",

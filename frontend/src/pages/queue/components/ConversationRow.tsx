@@ -59,16 +59,19 @@ export function ConversationRow({
   conversation,
   selected,
   searchQuery,
+  onOpen,
 }: {
   conversation: Conversation;
   selected?: boolean;
   searchQuery?: string;
+  onOpen?: () => void;
 }) {
   const isGroup = conversation.channel === "GROUP" || Boolean(conversation.groupChatName);
   const displayName = isGroup ? (conversation.groupChatName || "Grupo do WhatsApp") : conversation.contact.name;
   return (
     <Link
       href={`/conversation/${conversation.id}`}
+      onClick={onOpen}
       className={`conversation-row ${selected ? "selected" : ""}`}
       data-testid={`row-conversation-${conversation.id}`}
     >
@@ -85,14 +88,19 @@ export function ConversationRow({
           {conversation.searchMatch ? <><span className="search-match-source">{searchSourceLabel[conversation.searchMatch.source] || "Busca"}:</span> <HighlightedText text={conversation.searchMatch.snippet} query={conversation.searchMatch.source === "message" ? searchQuery : undefined} /></> : (conversation.lastMessage || "Sem mensagens recentes")}
         </div>
         {conversation.searchMatch?.source === "message" && conversation.searchMatch.senderDisplayName ? <div className="search-match-sender">Mensagem de {conversation.searchMatch.senderDisplayName}</div> : null}
-        <div style={{ marginTop: 7, display: "flex", gap: 7, alignItems: "center" }}>
+        <div className="conversation-status-row">
           <Status status={conversation.status} />
-          <span style={{ color: "hsl(var(--muted-foreground))", fontSize: 10 }}>
+          <span className="conversation-department">
             {conversation.departmentName || "Sem departamento"}
           </span>
           {conversation.status !== "CLOSED" ? <span className="conversation-age"><Clock3 /> {conversation.status === "OPEN" ? "aguardando" : "atividade"} {ageLabel(conversation)}</span> : null}
+          {conversation.labels?.length ? (
+            <span className="conversation-labels-inline" title={conversation.labels.map((label) => label.name).join(", ")}>
+              <ConversationLabelBadge label={conversation.labels[0]} />
+              {conversation.labels.length > 1 ? <span className="conversation-label-more">+{conversation.labels.length - 1}</span> : null}
+            </span>
+          ) : null}
         </div>
-        {conversation.labels?.length ? <div className="mt-2 flex flex-wrap gap-1">{conversation.labels.slice(0, 3).map((label) => <ConversationLabelBadge key={label.id} label={label} />)}</div> : null}
       </div>
       <div className="row-side">
         <span className="time">{timeLabel(conversation.searchMatch?.source === "message" ? conversation.searchMatch.createdAt : conversation.startedAt)}</span>

@@ -9,6 +9,8 @@ export class MediaRepository {
           select: {
             id: true,
             status: true,
+            channel: true,
+            currentStep: true,
             departmentId: true,
             assignedAgentId: true,
           },
@@ -25,6 +27,8 @@ export class MediaRepository {
           select: {
             id: true,
             status: true,
+            channel: true,
+            currentStep: true,
             departmentId: true,
             assignedAgentId: true,
           },

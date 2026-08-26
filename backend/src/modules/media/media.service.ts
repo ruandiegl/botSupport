@@ -44,6 +44,11 @@ function hasUnsafeActivePrefix(chunk: Buffer): boolean {
 function canAccess(conversation: any, user?: AuthenticatedRequest["user"]): boolean {
   if (!user) return false;
   if (user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
+  // Group monitor conversations are intentionally kept as DRAFT so they can
+  // collect the complete group transcript without opening a ticket. Their
+  // messages (including protected media) are still shared with attendants who
+  // can view groups, so do not apply the private-ticket assignment gate here.
+  if (conversation.channel === "GROUP" && conversation.currentStep === "GROUP_MONITOR") return true;
   if (user.role !== "AGENT") return true;
   if (conversation.assignedAgentId === user.id) return true;
   return Boolean(

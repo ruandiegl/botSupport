@@ -200,6 +200,7 @@ export type NotificationType =
   | "UNRESOLVED_REMINDER"
   | "CONVERSATION_DELEGATED"
   | "DELEGATION_RESPONSE"
+  | "INACTIVITY_CONTINUED"
   | (string & {});
 
 export interface AgentNotification {
