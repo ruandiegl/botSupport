@@ -368,11 +368,11 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
                 ) : renderedHistory.length ? renderedHistory.map(({ item, showDay }) => <div key={item.id}>
                   {showDay ? <div className="my-4 flex justify-center"><Badge variant="secondary" className="font-normal">{dayLabel(item.createdAt)}</Badge></div> : null}
                   <Message align={item.direction === "OUT" ? "end" : "start"}><MessageContent className="max-w-[88%] sm:max-w-[72%]">
-                    <Bubble align={item.direction === "OUT" ? "end" : "start"} variant={item.direction === "OUT" ? "default" : "secondary"}><BubbleContent className="min-w-32 space-y-2">
-                      {item.direction === "IN" ? <strong className="block text-xs text-primary">{item.senderName}</strong> : null}
+                    <Bubble align={item.direction === "OUT" ? "end" : "start"} variant={item.direction === "OUT" ? "default" : "secondary"}><BubbleContent className="group-message-content min-w-32">
+                      <strong className={`group-message-sender${item.direction === "OUT" ? " group-message-sender-out" : ""}`}>{item.senderName || (item.direction === "OUT" ? user?.name : "Participante") || "Participante"}</strong>
                       {item.media && item.conversationId && item.linkedMessageId ? <MessageMedia conversationId={item.conversationId} messageId={item.linkedMessageId} media={item.media} /> : item.outgoingMedia ? <OutgoingMediaCard media={item.outgoingMedia} /> : ["IMAGE", "VIDEO", "AUDIO", "DOCUMENT"].includes(item.messageType) ? <MediaPlaceholder type={item.messageType} content={item.content} /> : <p className="whitespace-pre-wrap break-words">{item.content}</p>}
+                      <span className="group-message-meta">{timeLabel(item.createdAt)}{item.direction === "OUT" ? <CheckCheck className={`size-3.5 ${item.status === "FAILED" ? "text-destructive" : "text-muted-foreground"}`} /> : null}</span>
                     </BubbleContent></Bubble>
-                    <MessageFooter className={item.direction === "OUT" ? "justify-end" : undefined}><span>{item.direction === "OUT" ? item.senderName : timeLabel(item.createdAt)}</span>{item.direction === "OUT" ? <span className="inline-flex items-center gap-1">· {timeLabel(item.createdAt)} <CheckCheck className={`size-3.5 ${item.status === "FAILED" ? "text-destructive" : "text-muted-foreground"}`} /></span> : null}{item.status === "FAILED" ? <span className="text-destructive">Falha no envio</span> : null}</MessageFooter>
                   </MessageContent></Message>
                 </div>) : <Empty className="my-auto border bg-card/90"><EmptyHeader><EmptyMedia variant="icon"><MessageCircle /></EmptyMedia><EmptyTitle>Nenhuma mensagem no grupo</EmptyTitle><EmptyDescription>Quando alguém enviar uma mensagem, ela aparecerá aqui em tempo real.</EmptyDescription></EmptyHeader></Empty>}
               </div>

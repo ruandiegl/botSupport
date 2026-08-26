@@ -165,6 +165,10 @@ h3 { font:700 14px var(--app-font-display); color: #f8fafc; }
 .conversation-row:last-child { border-bottom:0; }
 .conversation-row:hover { background:rgba(255,255,255,.03); }
 .conversation-row.selected { background:rgba(0, 240, 255, 0.06);box-shadow:inset 3px 0 #00f0ff; }
+.group-message-content { display:flex; flex-direction:column; gap:4px !important; padding-bottom:7px !important; }
+.group-message-sender { display: block; color: #2c9d7b; font-size: 11px; font-weight: 700; line-height: 1.25; }
+.group-message-sender-out { color: hsl(var(--primary-foreground) / .86); }
+.group-message-meta { display: inline-flex; align-self: flex-end; align-items: center; gap: 3px; color: hsl(var(--muted-foreground)); font-size: 10px; line-height: 1; }
 .conversation-main { min-width:0; }
 .conversation-meta { display:flex;align-items:center;gap:8px;min-width:0; }
 .conversation-name { font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; color: #f8fafc; }

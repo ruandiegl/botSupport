@@ -588,7 +588,12 @@ export default function ConversationPage() {
                   align={item.direction === "OUT" ? "end" : "start"}
                   variant={item.direction === "OUT" ? "default" : "secondary"}
                 >
-                  <BubbleContent className="flex flex-col gap-2">
+                  <BubbleContent className={isGroupConversation ? "group-message-content" : "flex flex-col gap-2"}>
+                    {isGroupConversation ? (
+                      <strong className={`group-message-sender${item.direction === "OUT" ? " group-message-sender-out" : ""}`}>
+                        {item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : "Participante")}
+                      </strong>
+                    ) : null}
                     {item.contactShare ? (
                       <SharedContactCard
                         share={item.contactShare}
@@ -608,11 +613,19 @@ export default function ConversationPage() {
                     {item.media && (
                       <MessageMedia conversationId={id} messageId={item.id} media={item.media} />
                     )}
+                    {isGroupConversation ? (
+                      <span className="group-message-meta">
+                        {timeLabel(item.createdAt)}
+                        {item.direction === "OUT" ? <Check className="size-3" aria-hidden="true" /> : null}
+                      </span>
+                    ) : null}
                   </BubbleContent>
                 </Bubble>
-                <MessageFooter>
-                  {`${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : isGroupConversation ? "Participante" : conversation.contact.name)}${item.senderDepartmentName ? ` · ${item.senderDepartmentName}` : ""} · ${timeLabel(item.createdAt)}`}
-                </MessageFooter>
+                {!isGroupConversation ? (
+                  <MessageFooter>
+                    {`${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)}${item.senderDepartmentName ? ` · ${item.senderDepartmentName}` : ""} · ${timeLabel(item.createdAt)}`}
+                  </MessageFooter>
+                ) : null}
               </MessageContent>
             </Message>
           ))}
