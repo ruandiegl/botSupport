@@ -48,6 +48,7 @@ type GroupMessage = {
 };
 type GroupHistoryResponse = { items: GroupMessage[] };
 type GroupSocketMessage = { groupId: string; message: GroupMessage };
+type GroupUpdated = { groupId: string; lastMessageAt?: string; unread?: number; unreadIncrement?: number; activeConversation?: GroupItem["activeConversation"] };
 
 const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
 
@@ -109,7 +110,12 @@ function MediaPlaceholder({ type, content }: { type: string; content: string }) 
   );
 }
 
-export default function GroupsPage() {
+type GroupsPageProps = {
+  /** Render the group workspace inside the unified attendance queue. */
+  embedded?: boolean;
+};
+
+export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
   const { can, user } = useAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
@@ -181,13 +187,14 @@ export default function GroupsPage() {
     if (payload.groupId === selectedId && payload.message.direction === "IN") markRead.mutate(payload.groupId);
   }, [selectedId]));
 
-  useSocketEvent<{ groupId: string; lastMessageAt?: string; unread?: number; unreadIncrement?: number }>("group:updated", useCallback((payload) => {
+  useSocketEvent<GroupUpdated>("group:updated", useCallback((payload) => {
     queryClient.setQueriesData<GroupResponse>({ queryKey: ["groups"] }, (current) => current ? {
       ...current,
       items: current.items.map((item) => item.id === payload.groupId ? {
         ...item,
         lastMessageAt: payload.lastMessageAt ?? item.lastMessageAt,
         unread: payload.groupId === selectedId ? 0 : payload.unread ?? (item.unread ?? 0) + (payload.unreadIncrement ?? 0),
+        activeConversation: payload.activeConversation ?? item.activeConversation,
       } : item),
     } : current);
   }, [selectedId]));
@@ -317,14 +324,14 @@ export default function GroupsPage() {
   if (!can("groups", "view")) return <div className="content"><Empty className="border"><EmptyHeader><EmptyTitle>Acesso restrito</EmptyTitle><EmptyDescription>Você não possui permissão para visualizar os grupos.</EmptyDescription></EmptyHeader></Empty></div>;
 
   return (
-    <div className="content flex min-h-0 flex-col">
-      <header className="page-heading shrink-0">
+    <div className={embedded ? "group-workspace-embedded flex min-h-0 flex-col" : "content flex min-h-0 flex-col"}>
+      {!embedded ? <header className="page-heading shrink-0">
         <div><div className="eyebrow">MENSAGENS / GRUPOS</div><h1>Grupos do WhatsApp</h1><p className="subtle">Acompanhe o histórico e converse com os participantes em tempo real.</p></div>
         <Button variant="outline" onClick={() => void groups.refetch()} disabled={groups.isFetching}><RefreshCw data-icon="inline-start" className={groups.isFetching ? "animate-spin" : undefined} />Atualizar</Button>
-      </header>
+      </header> : null}
       {groups.data?.stale && groups.data.warning ? <div className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">{groups.data.warning}</div> : null}
 
-      <div className="grid min-h-[620px] flex-1 overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-10rem)] lg:grid-cols-[340px_minmax(0,1fr)]">
+      <div className={`grid min-h-[620px] flex-1 overflow-hidden rounded-xl border bg-card shadow-sm lg:grid-cols-[340px_minmax(0,1fr)] ${embedded ? "lg:h-[calc(100dvh-22rem)]" : "lg:h-[calc(100dvh-10rem)]"}`}>
         <section className={`${mobileThreadOpen ? "hidden" : "flex"} min-h-0 flex-col border-r lg:flex`} aria-label="Lista de grupos">
           <div className="border-b p-4">
             <div className="mb-3 flex items-center justify-between gap-3">

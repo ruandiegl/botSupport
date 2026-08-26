@@ -242,7 +242,6 @@ export class ZApiRepository {
     return prisma.groupChat.findMany({
       where: { isActive: true, ...(query?.trim() ? { name: { contains: query.trim(), mode: "insensitive" } } : {}) },
       orderBy: [{ lastMessageAt: "desc" }, { name: "asc" }],
-      take: 100,
       include: { conversations: { where: { status: { notIn: ["CLOSED", "DRAFT"] } }, select: { id: true, status: true, assignedAgentId: true }, take: 1 } },
     });
   }
@@ -256,10 +255,9 @@ export class ZApiRepository {
       prisma.groupMessage.findMany({
         where: { groupChatId },
         orderBy: { createdAt: "desc" },
-        take: 100,
         include: { senderContact: { select: { name: true, phone: true } } },
       }),
-      prisma.groupOutboundMessage.findMany({ where: { groupChatId }, orderBy: { createdAt: "desc" }, take: 100, include: { agent: { select: { name: true } } } }),
+      prisma.groupOutboundMessage.findMany({ where: { groupChatId }, orderBy: { createdAt: "desc" }, include: { agent: { select: { name: true } } } }),
     ]);
     const externalIds = incoming.map((message) => message.externalMessageId).filter((id): id is string => Boolean(id));
     const linkedMessages = externalIds.length
@@ -333,7 +331,7 @@ export class ZApiRepository {
           createdAt: message.createdAt.toISOString(),
         },
       })),
-    ].sort((a, b) => a.createdAt.localeCompare(b.createdAt)).slice(-100);
+    ].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
   async markGroupRead(groupChatId: string) {

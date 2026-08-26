@@ -20,7 +20,6 @@ import ShortcutsAdmin from "@/pages/admin/shortcuts";
 import LabelsAdmin from "@/pages/admin/labels";
 import BotExclusionsAdmin from "@/pages/admin/bot-exclusions";
 import BusinessHoursAdmin from "@/pages/admin/business-hours";
-import GroupsPage from "@/pages/groups";
 import "@/styles.css";
 
 function NotFoundPage() {
@@ -81,6 +80,13 @@ function ProtectedRoute({ component: Component, screen }: { component: React.Com
   return <Component />;
 }
 
+/** Keep old bookmarks working while the standalone groups screen is retired. */
+function GroupsRedirect() {
+  const [, setLocation] = useLocation();
+  React.useEffect(() => setLocation("/"), [setLocation]);
+  return null;
+}
+
 function Router() {
   const { isLoading } = useAuth();
 
@@ -113,7 +119,7 @@ function Router() {
                 {() => <ProtectedRoute component={ContactsPage} screen="/contacts" />}
               </Route>
               <Route path="/groups">
-                {() => <ProtectedRoute component={GroupsPage} screen="/groups" />}
+                {() => <ProtectedRoute component={GroupsRedirect} />}
               </Route>
               <Route path="/admin/departments">
                 {() => <ProtectedRoute component={DepartmentAdmin} screen="/admin/departments" />}

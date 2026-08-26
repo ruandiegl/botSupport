@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, MessageSquarePlus, RefreshCw, SlidersHorizontal } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useActiveAgent } from "@/app/Shell";
 import { useAuth } from "@/lib/auth-context";
+import { apiFetch } from "@/lib/api-client";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ import { LabelFilter } from "./components/LabelFilter";
 import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
 import { StartConversationDialog } from "@/pages/contacts/components/StartConversationDialog";
 import { GlobalConversationSearch } from "./components/GlobalConversationSearch";
+import GroupsPage from "@/pages/groups";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -46,6 +49,10 @@ const defaultDateRange: DateRangeValue = { preset: "ALL", dateField: "lastActivi
 // current agent; sharing the MINE key made the first click apply the wrong
 // query and required a second interaction to reach the expected list.
 type MetricFilter = "OPEN" | "IN_PROGRESS" | "ALL" | "CLOSED";
+
+type GroupCatalogSummary = {
+  items?: Array<{ id: string }>;
+};
 
 export default function QueuePage(props?: { onlyMine?: boolean } & Record<string, unknown>) {
   const onlyMine = props?.onlyMine ?? false;
@@ -96,6 +103,15 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   };
   const { data: result, isLoading, isError, refetch } = useListConversations(filters);
   const { data: departments } = useListDepartments();
+  const { data: groupCatalog } = useQuery<GroupCatalogSummary>({
+    // Share the catalog cache with the embedded group workspace so selecting
+    // the card does not trigger a second Z-API synchronization request.
+    queryKey: ["groups", ""],
+    queryFn: () => apiFetch<GroupCatalogSummary>("/zapi/groups"),
+    enabled: !onlyMine && can("groups", "view"),
+    staleTime: 15_000,
+    refetchInterval: 30_000,
+  });
 
   const all = result?.items ?? [];
   const locallyFiltered = useMemo(() => all.filter((item) => {
@@ -131,7 +147,16 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     setMetricFilter(selected);
     setStatus(selected === "OPEN" ? "OPEN" : selected === "IN_PROGRESS" ? "IN_PROGRESS" : selected === "CLOSED" ? "CLOSED" : "ALL");
   };
+  const activateGroups = () => {
+    setChannel("GROUP");
+    setMetricFilter("ALL");
+    setStatus("ALL");
+    setDepartment("ALL");
+    setLabelIds([]);
+    setCurrentPage(1);
+  };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
+  const groupCount = groupCatalog?.items?.length ?? 0;
   const allConversationCount = metricCounts.open + metricCounts.inProgress;
   const channelLabel = isGlobalSearch ? "Busca global" : channelLabels[channel];
   const departmentLabel = isGlobalSearch ? "Busca global" : department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
@@ -164,6 +189,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         <MetricCard label="Em atendimento" value={metricCounts.inProgress} note="atendimentos em curso" tone="success" onClick={() => activateMetric("IN_PROGRESS")} selected={metricFilter === "IN_PROGRESS" || (!metricFilter && queryStatus === "IN_PROGRESS")} ariaLabel="Filtrar atendimentos em curso" testId="metric-in-progress" />
         {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="em aberto e em atendimento" tone="info" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL"} ariaLabel="Mostrar todas as conversas em andamento" testId="metric-all" /> : null}
         {!onlyMine ? <MetricCard label="Encerradas" value={metricCounts.closed} note="atendimentos finalizados" tone="primary" onClick={() => activateMetric("CLOSED")} selected={metricFilter === "CLOSED" || (!metricFilter && queryStatus === "CLOSED")} ariaLabel="Filtrar conversas encerradas" testId="metric-closed" /> : null}
+        {!onlyMine && can("groups", "view") ? <MetricCard label="Grupos" value={groupCount} note="mensagens contínuas por grupo" tone="success" onClick={activateGroups} selected={!isGlobalSearch && channel === "GROUP"} ariaLabel="Filtrar grupos do WhatsApp" testId="metric-groups" /> : null}
       </div>
 
       <div className="toolbar queue-toolbar">
@@ -188,7 +214,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         <div className="queue-sort-hint"><SlidersHorizontal /> Ordenado por urgência</div>
       </div>
 
-      <div className="split-layout">
+      {!isGlobalSearch && channel === "GROUP" && can("groups", "view") ? <GroupsPage embedded /> : <div className="split-layout">
         <div className="panel conversation-list">
           <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : channel === "GROUP" ? "Grupos" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
@@ -206,7 +232,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
           </QueryState>
         </div>
         <div className="right-stack"><AgentWorkloadCard enabled={can("queue", "view_all")} /><QueueCard conversations={all} fixedCounts={metricCounts} /></div>
-      </div>
+      </div>}
       <StartConversationDialog open={newConversationOpen} onOpenChange={setNewConversationOpen} />
     </div>
   );

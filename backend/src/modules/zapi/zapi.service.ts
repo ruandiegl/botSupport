@@ -1665,6 +1665,20 @@ export class ZApiService {
 
     const conversationId = activeConversation.id;
     if (incoming.group) await zApiRepository.linkGroupMessageToConversation(incoming.externalEventId, conversationId);
+    // Keep the unified queue aware that a group mention opened (or reused) an
+    // in-group ticket. The catalog remains the source for the full history,
+    // while this lightweight event updates the active-ticket affordance
+    // without requiring a page refresh.
+    if (incoming.group && groupChat && activeConversation.channel === "GROUP") {
+      socketEmitter.emitToRoom("groups", "group:updated", {
+        groupId: groupChat.id,
+        activeConversation: {
+          id: activeConversation.id,
+          status: activeConversation.status,
+          assignedAgentId: activeConversation.assignedAgentId,
+        },
+      });
+    }
     const deliveryTarget = incoming.group && config.groupConversationMode === "IN_GROUP" ? incoming.group.jid : phone;
     // Z-API examples may represent `momment` in Unix seconds or milliseconds.
     const rawMoment = Number(payload.momment);
