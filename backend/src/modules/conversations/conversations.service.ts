@@ -349,7 +349,11 @@ export class ConversationsService {
       departmentId: user?.role === "AGENT" ? user.departmentId : undefined,
       agentId: user?.id,
       accessible: user?.role !== "AGENT" || Boolean(user.departmentId),
-      channel: filters.channel,
+      // Metric cards are a stable operational summary, independent of the
+      // currently selected channel.  In particular, selecting "Grupos"
+      // must not make the private conversation counters appear as zero.
+      // The channel is still applied to `findMany` above for the list itself.
+      channel: undefined,
       dateField: filters.dateField,
       from: filters.from,
       to: filters.to,

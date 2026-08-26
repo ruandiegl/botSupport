@@ -136,6 +136,9 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   useEffect(() => { setCurrentPage((page) => Math.min(page, totalPages)); }, [totalPages]);
 
   const activateMetric = (next: MetricFilter) => {
+    // Metric cards select the operational scope.  Clear the channel filter so
+    // a previous click on "Grupos" never traps the user in the group list.
+    setChannel("ALL");
     if (next === "ALL") {
       setMetricFilter("ALL");
       setStatus("ALL");
@@ -147,11 +150,10 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     setStatus(selected === "OPEN" ? "OPEN" : selected === "IN_PROGRESS" ? "IN_PROGRESS" : selected === "CLOSED" ? "CLOSED" : "ALL");
   };
   const activateGroups = () => {
+    // Groups is only a channel filter.  Keep the status/date/department
+    // choices intact so the user can return to the private queue without the
+    // other cards being reset.
     setChannel("GROUP");
-    setMetricFilter("ALL");
-    setStatus("ALL");
-    setDepartment("ALL");
-    setLabelIds([]);
     setCurrentPage(1);
   };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
@@ -186,7 +188,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       <div className="stats">
         <MetricCard label="Em aberto" value={metricCounts.open} note="aguardando atendimento" tone="warning" onClick={() => activateMetric("OPEN")} selected={metricFilter === "OPEN" || (!metricFilter && queryStatus === "OPEN")} ariaLabel="Filtrar conversas em aberto" testId="metric-open" />
         <MetricCard label="Em atendimento" value={metricCounts.inProgress} note="atendimentos em curso" tone="success" onClick={() => activateMetric("IN_PROGRESS")} selected={metricFilter === "IN_PROGRESS" || (!metricFilter && queryStatus === "IN_PROGRESS")} ariaLabel="Filtrar atendimentos em curso" testId="metric-in-progress" />
-        {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="em aberto e em atendimento" tone="info" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL"} ariaLabel="Mostrar todas as conversas em andamento" testId="metric-all" /> : null}
+        {!onlyMine ? <MetricCard label="Todas as conversas" value={allConversationCount} note="em aberto e em atendimento" tone="info" onClick={() => activateMetric("ALL")} selected={metricFilter === "ALL" && channel !== "GROUP"} ariaLabel="Mostrar todas as conversas em andamento" testId="metric-all" /> : null}
         {!onlyMine ? <MetricCard label="Encerradas" value={metricCounts.closed} note="atendimentos finalizados" tone="primary" onClick={() => activateMetric("CLOSED")} selected={metricFilter === "CLOSED" || (!metricFilter && queryStatus === "CLOSED")} ariaLabel="Filtrar conversas encerradas" testId="metric-closed" /> : null}
         {!onlyMine && can("groups", "view") ? <MetricCard label="Grupos" value={groupCount} note="mensagens contínuas por grupo" tone="success" onClick={activateGroups} selected={!isGlobalSearch && channel === "GROUP"} ariaLabel="Filtrar grupos do WhatsApp" testId="metric-groups" /> : null}
       </div>
@@ -214,7 +216,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
       </div>
 
       <div className="split-layout">
-        <div className="panel conversation-list">
+        <div className={`panel conversation-list${channel === "GROUP" ? " conversation-list-groups" : ""}`}>
           <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : channel === "GROUP" ? "Grupos" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
             {isGlobalSearch ? <div className="search-results-stack">

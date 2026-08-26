@@ -160,6 +160,7 @@ h3 { font:700 14px var(--app-font-display); color: #f8fafc; }
 /* Conversation List & Rows */
 .split-layout { display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px; }
 .conversation-list { padding:0; }
+.conversation-list-groups { align-self: start; }
 .conversation-row { display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid hsl(var(--border));transition:background .16s ease; }
 .conversation-row:last-child { border-bottom:0; }
 .conversation-row:hover { background:rgba(255,255,255,.03); }
