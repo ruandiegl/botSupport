@@ -39,14 +39,18 @@ export class ConversationsController {
       return;
     }
 
-    if (req.user?.role === "AGENT" && parsed.data.departmentId && parsed.data.departmentId !== "ALL" && parsed.data.departmentId !== req.user.departmentId) {
+    const isGroupQuery = parsed.data.channel === "GROUP";
+    if (req.user?.role === "AGENT" && !isGroupQuery && parsed.data.departmentId && parsed.data.departmentId !== "ALL" && parsed.data.departmentId !== req.user.departmentId) {
       res.status(403).json({ error: "Você não pode consultar outro departamento." });
       return;
     }
     const filters = {
       ...parsed.data,
       ...(parsed.data.assignedAgentId === "me" ? { assignedAgentId: req.user?.id } : {}),
-      ...(req.user?.role === "AGENT" && req.user.departmentId ? { departmentId: req.user.departmentId } : {}),
+      // Groups are shared workspaces. Their monitor rows intentionally have
+      // no department, so do not hide them behind the agent's department
+      // scope when the queue is explicitly filtered to groups.
+      ...(req.user?.role === "AGENT" && req.user.departmentId && !isGroupQuery ? { departmentId: req.user.departmentId } : {}),
       ...(req.user?.role === "AGENT" && parsed.data.assignedAgentId && parsed.data.assignedAgentId !== "me" ? { assignedAgentId: req.user.id } : {}),
     };
     const conversations = await conversationsService.list(filters, req.user);
@@ -232,6 +236,9 @@ export class ConversationsController {
         return;
       case "EMPTY":
         res.status(400).json({ error: "Digite uma mensagem antes de enviar." });
+        return;
+      case "PROVIDER_ERROR":
+        res.status(502).json({ error: result.error });
         return;
       case "OK":
         res.status(201).json(result.message);

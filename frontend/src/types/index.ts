@@ -107,6 +107,10 @@ export interface Conversation {
    * originating participant in `contact` while publishing to the group JID. */
   channel?: "PRIVATE" | "GROUP" | string;
   status: ConversationStatus;
+  /** A persistent group monitor is exposed as OPEN in the UI but is not yet
+   * an operational ticket until the bot is mentioned. */
+  isGroupMonitor?: boolean;
+  groupChatId?: string | null;
   departmentId: string | null;
   departmentName: string | null;
   assignedAgentId: string | null;

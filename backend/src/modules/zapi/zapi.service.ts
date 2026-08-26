@@ -229,6 +229,16 @@ function mediaFallback(media: ParsedIncomingMedia): string {
   return media.originalFileName ? `[Documento recebido: ${media.originalFileName}]` : "[Documento recebido]";
 }
 
+/**
+ * Some Z-API versions omit `isGroup` while still sending the canonical
+ * WhatsApp group JID in `phone` (or `chatId`). Treat that JID as the source
+ * of truth so those callbacks enter the same unified group conversation path.
+ */
+function isGroupPayload(payload: any): boolean {
+  const chatId = String(payload?.phone || payload?.chatId || "").trim();
+  return payload?.isGroup === true || /@g\.us$/i.test(chatId);
+}
+
 export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null {
   if (
     payload?.type !== "ReceivedCallback" ||
@@ -242,10 +252,11 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
 
   // A Z-API usa participantPhone/participantLid nos callbacks atuais; `participant`
   // continua aceito para compatibilidade com versões antigas e fixtures legados.
+  const groupPayload = isGroupPayload(payload);
   const participant = String(
     payload.participantPhone || payload.participant || payload.senderPhone || "",
   );
-  const phone = String(payload.isGroup === true ? participant : (payload.phone || payload.senderPhone || payload.chatId || "")).replace(/\D/g, "");
+  const phone = String(groupPayload ? participant : (payload.phone || payload.senderPhone || payload.chatId || "")).replace(/\D/g, "");
   if (!phone) return null;
 
   const buttonResponse = payload.buttonsResponseMessage;
@@ -274,7 +285,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   const referenceMessageId = String(payload.referenceMessageId || buttonResponse?.referenceMessageId || listResponse?.referenceMessageId || "").trim() || undefined;
   return {
     phone,
-    ...(payload.isGroup === true ? { targetPhone: String(payload.phone || payload.chatId || "").trim() } : {}),
+    ...(groupPayload ? { targetPhone: String(payload.phone || payload.chatId || "").trim() } : {}),
     senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
     content,
     ...(contactShare ? { messageType: "CONTACT" as const, contactShare } : {}),
@@ -282,7 +293,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
     ...(referenceMessageId ? { referenceMessageId } : {}),
     ...(externalEventId ? { externalEventId } : {}),
     ...(media ? { media } : {}),
-    ...(payload.isGroup === true ? { group: { jid: String(payload.phone || payload.chatId || "").trim(), name: String(payload.chatName || "Grupo do WhatsApp"), participant, ...(payload.participantLid ? { participantLid: String(payload.participantLid) } : {}) } } : {}),
+    ...(groupPayload ? { group: { jid: String(payload.phone || payload.chatId || "").trim(), name: String(payload.chatName || "Grupo do WhatsApp"), participant, ...(payload.participantLid ? { participantLid: String(payload.participantLid) } : {}) } } : {}),
   };
 }
 
@@ -803,7 +814,15 @@ export class ZApiService {
       // rows. The admin toggle remains the source of truth when this flag is
       // absent; the environment flag is intentionally opt-in.
       groupsEnabled: Boolean(dbConfig.groupsEnabled || envGroupsEnabled),
-      groupConversationMode: dbConfig.groupConversationMode || "PRIVATE_LEGACY",
+      // Once group monitoring is enabled, the group itself is the canonical
+      // conversation target.  Keeping the legacy private mode here would
+      // create a second contact conversation and make the queue row use a
+      // different composer from the group transcript.  We intentionally do
+      // not mutate the persisted setting, so disabling groups restores the
+      // previous behaviour without touching existing data.
+      groupConversationMode: (dbConfig.groupsEnabled || envGroupsEnabled)
+        ? "IN_GROUP"
+        : (dbConfig.groupConversationMode || "PRIVATE_LEGACY"),
       groupResponseMode: dbConfig.groupResponseMode || "ANY_PARTICIPANT",
     };
   }
@@ -829,13 +848,30 @@ export class ZApiService {
       unread: Number(item.unreadCount ?? item.unread ?? 0) || 0,
     })).filter((item: any) => item.id);
     const filtered = query?.trim() ? normalized.filter((item: any) => item.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) : normalized;
-    await Promise.all(filtered.map((item: any) => zApiRepository.upsertGroupChat(item.id, item.name, parseZApiTimestamp(item.lastMessageAt) ?? new Date()).catch(() => undefined)));
+    await Promise.all(filtered.map(async (item: any) => {
+      const group = await zApiRepository.upsertGroupChat(item.id, item.name, parseZApiTimestamp(item.lastMessageAt) ?? new Date()).catch(() => undefined);
+      if (group && config.groupConversationMode === "IN_GROUP") {
+        await zApiRepository.ensureGroupMonitorConversation(group).catch((error) => {
+          logger.warn({ groupId: group.id, error }, "Não foi possível preparar a conversa unificada do grupo");
+        });
+      }
+    }));
     const cached = await zApiRepository.listGroupChats(query);
     return cached.map((row) => ({ id: row.id, name: row.name, isGroup: true as const, lastMessageAt: row.lastMessageAt?.toISOString() ?? null, unread: row.unreadCount, activeConversation: row.conversations[0] ?? null }));
   }
 
   async listCachedGroups(query?: string) {
-    const rows = await zApiRepository.listGroupChats(query);
+    let rows = await zApiRepository.listGroupChats(query);
+    const config = await this.getConfig();
+    if (config.groupsEnabled && config.groupConversationMode === "IN_GROUP") {
+      await Promise.all(rows.map((row) => zApiRepository.ensureGroupMonitorConversation(row).catch((error) => {
+        logger.warn({ groupId: row.id, error }, "Não foi possível preparar a conversa unificada do grupo em cache");
+      })));
+      // The monitor creation also backfills any historical group messages;
+      // read the catalog again so its activeConversation points at the same
+      // conversation used by the normal queue.
+      rows = await zApiRepository.listGroupChats(query);
+    }
     return rows.map((row) => ({ id: row.id, name: row.name, isGroup: true as const, lastMessageAt: row.lastMessageAt?.toISOString() ?? null, unread: row.unreadCount, activeConversation: row.conversations[0] ?? null }));
   }
 
@@ -851,6 +887,11 @@ export class ZApiService {
     const result = await zApiRepository.markGroupRead(groupChatId);
     socketEmitter.emitToRoom("groups", "group:updated", { groupId: groupChatId, unread: 0 });
     return result;
+  }
+
+  /** Resolves the persisted group record for the unified conversation reader. */
+  async findGroupChatByRemoteChatId(remoteChatId: string) {
+    return zApiRepository.findGroupChatByRemoteChatId(remoteChatId);
   }
 
   async sendDirectGroupMessage(groupChatId: string, agentId: string, clientMessageId: string, content: string) {
@@ -1510,7 +1551,7 @@ export class ZApiService {
     logger.info({ callbackType: payload?.type, externalEventId: payload?.messageId || payload?.id }, "Webhook recebido da Z-API");
 
     const config = await this.getConfig();
-    const isGroup = payload.isGroup === true;
+    const isGroup = isGroupPayload(payload);
     const incoming = parseIncomingMessage(payload);
     if (!incoming) return { status: "ignored" };
     let groupMentioned = false;
@@ -1523,6 +1564,9 @@ export class ZApiService {
       if (!participant || !payload.phone) return { status: "ignored_invalid_group_context" };
       groupChat = await zApiRepository.upsertGroupChat(incoming.group?.jid || String(payload.phone), incoming.group?.name || String(payload.chatName || "Grupo do WhatsApp"));
       if (config.groupConversationMode === "IN_GROUP" && incoming.group?.jid) {
+        await zApiRepository.ensureGroupMonitorConversation(groupChat).catch((error) => {
+          logger.warn({ groupId: groupChat?.id, error }, "Não foi possível preparar a conversa unificada do grupo recebido");
+        });
         activeGroupConversation = await zApiRepository.findActiveConversationByGroup(incoming.group.jid);
       }
       const senderPhone = this.formatPhone(incoming.phone);
@@ -1597,7 +1641,8 @@ export class ZApiService {
         groupId: groupChat.id,
         lastMessageAt: groupAudit.message.createdAt.toISOString(),
       });
-      if (activeGroupConversation && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
+      const isGroupMonitor = activeGroupConversation?.status === "DRAFT" && activeGroupConversation.currentStep === "GROUP_MONITOR";
+      if (activeGroupConversation && !isGroupMonitor && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
         const origin = this.formatPhone(activeGroupConversation.groupParticipant || "");
         const sender = this.formatPhone(incoming.phone);
         if (!origin || !sender || origin !== sender) return { status: "group_message_logged_non_origin" };
@@ -1661,6 +1706,20 @@ export class ZApiService {
       );
     } else if (incoming.group) {
       await zApiRepository.updateGroupContext(activeConversation.id, incoming.group.name, phone);
+    }
+
+    // The monitor is intentionally stored as DRAFT so it does not create a
+    // ticket or trigger automation before a mention. The first valid mention
+    // promotes that same record to the normal OPEN ticket, preserving the
+    // complete group transcript and keeping the existing conversation UI.
+    const isGroupMonitor = incoming.group
+      && activeConversation.status === "DRAFT"
+      && activeConversation.currentStep === "GROUP_MONITOR";
+    if (groupMentioned && isGroupMonitor) {
+      const activated = await zApiRepository.activateGroupMonitorConversation(activeConversation.id);
+      if (activated) {
+        activeConversation = { ...activeConversation, status: "OPEN", currentStep: "AWAITING_TEAM", queuedAt: new Date() };
+      }
     }
 
     const conversationId = activeConversation.id;

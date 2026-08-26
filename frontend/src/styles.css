@@ -1220,6 +1220,49 @@ body { letter-spacing: 0; }
   .queue-page .right-stack { display: flex; }
 }
 
+/* Workspace de grupos: a página permanece ancorada no viewport e somente o
+ * histórico da conversa recebe rolagem. Isso mantém cabeçalho, lista de
+ * grupos e compositor visíveis mesmo com históricos longos. */
+.group-workspace-standalone,
+.queue-page-groups {
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: hidden;
+}
+.group-workspace-standalone {
+  height: calc(100dvh - 64px);
+}
+.group-workspace-embedded {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.queue-page-groups {
+  height: calc(100dvh - 64px);
+  display: flex;
+  flex-direction: column;
+}
+.queue-page-groups .group-workspace-embedded {
+  min-height: 0;
+}
+.group-workspace-grid {
+  min-height: 0;
+}
+.group-workspace-grid > section {
+  min-height: 0;
+  overflow: hidden;
+}
+.group-workspace-grid [data-slot="chat-scroller"] {
+  min-height: 0;
+}
+
+@media (max-width: 760px) {
+  .group-workspace-standalone,
+  .queue-page-groups {
+    height: calc(100dvh - 62px);
+  }
+}
+
 /* Team presence and assigned workload ------------------------------------- */
 :root { --success: #2c9d7b; --success-foreground: #ffffff; --offline: #d75b52; }
 .agent-workload-card { --card-spacing: 16px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); }

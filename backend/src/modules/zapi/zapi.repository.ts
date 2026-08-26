@@ -3,6 +3,118 @@ import { Prisma } from "../../generated/prisma/index.js";
 import { prisma } from "../../shared/prisma.js";
 
 export class ZApiRepository {
+  private async mirrorUnlinkedGroupMessages(groupChatId: string, conversationId: string) {
+    const pending = await prisma.groupMessage.findMany({
+      where: { groupChatId, conversationId: null },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: {
+        id: true,
+        externalMessageId: true,
+        direction: true,
+        senderType: true,
+        senderContactId: true,
+        senderNameSnapshot: true,
+        messageType: true,
+        content: true,
+        createdAt: true,
+      },
+    });
+    if (pending.length) {
+      for (const groupMessage of pending) {
+        let message;
+        try {
+          message = await prisma.message.create({
+            data: {
+              conversationId,
+              externalMessageId: groupMessage.externalMessageId,
+              direction: groupMessage.direction,
+              senderType: groupMessage.senderType,
+              senderContactId: groupMessage.senderContactId,
+              senderNameSnapshot: groupMessage.senderNameSnapshot,
+              messageType: groupMessage.messageType,
+              content: groupMessage.content,
+              createdAt: groupMessage.createdAt,
+            },
+          });
+        } catch (error: any) {
+          // A webhook may have created the normal message before the group
+          // audit row was linked. Reuse that message instead of duplicating it.
+          if (error?.code !== "P2002" || !groupMessage.externalMessageId) throw error;
+          message = await prisma.message.findUnique({ where: { externalMessageId: groupMessage.externalMessageId } });
+        }
+        if (!message) continue;
+        await prisma.groupMessage.updateMany({
+          where: { id: groupMessage.id, conversationId: null },
+          data: { conversationId },
+        });
+      }
+
+      const latest = pending.at(-1)?.createdAt;
+      if (latest) {
+        await prisma.conversation.updateMany({
+          where: { id: conversationId, lastActivityAt: { lt: latest } },
+          data: { lastActivityAt: latest },
+        });
+      }
+    }
+
+    // Messages created by the legacy group composer lived in
+    // GroupOutboundMessage and were not visible to the normal conversation
+    // reader. Copy their audit metadata into the canonical Message stream as
+    // well, keeping the old rows intact for backwards compatibility.
+    const outbound = await prisma.groupOutboundMessage.findMany({
+      where: { groupChatId },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: {
+        id: true,
+        providerMessageId: true,
+        agentId: true,
+        content: true,
+        messageType: true,
+        createdAt: true,
+        agent: { select: { name: true, department: { select: { name: true } } } },
+      },
+    });
+    if (!outbound.length) return;
+
+    for (const groupMessage of outbound) {
+      let existing = groupMessage.providerMessageId
+        ? await prisma.message.findUnique({ where: { externalMessageId: groupMessage.providerMessageId } })
+        : null;
+      if (!existing) {
+        existing = await prisma.message.findFirst({
+          where: {
+            conversationId,
+            direction: "OUT",
+            senderAgentId: groupMessage.agentId,
+            content: groupMessage.content,
+            createdAt: groupMessage.createdAt,
+          },
+        });
+      }
+      if (existing) continue;
+
+      try {
+        await prisma.message.create({
+          data: {
+            conversationId,
+            ...(groupMessage.providerMessageId ? { externalMessageId: groupMessage.providerMessageId } : {}),
+            direction: "OUT",
+            senderType: "AGENT",
+            senderAgentId: groupMessage.agentId,
+            senderNameSnapshot: groupMessage.agent.name,
+            senderDepartmentSnapshot: groupMessage.agent.department?.name ?? null,
+            messageType: groupMessage.messageType,
+            content: groupMessage.content,
+            createdAt: groupMessage.createdAt,
+          },
+        });
+      } catch (error: any) {
+        if (error?.code !== "P2002") throw error;
+      }
+    }
+  }
+
   async claimExternalEvent(conversationId: string, externalEventId: string) {
     const conversation = await prisma.conversation.findUnique({ where: { id: conversationId }, select: { flowRevisionId: true } });
     const revisionId = conversation?.flowRevisionId ?? (await prisma.flowRevision.findFirst({ where: { status: "PUBLISHED" }, select: { id: true }, orderBy: [{ publishedAt: "desc" }, { updatedAt: "desc" }] }))?.id;
@@ -108,11 +220,131 @@ export class ZApiRepository {
   }
 
   async findActiveConversationByGroup(remoteChatId: string) {
-    return prisma.conversation.findFirst({
-      where: { channel: "GROUP", remoteChatId, status: { notIn: ["CLOSED", "DRAFT"] } },
+    // Prefer a real ticket, but keep the persistent group monitor (DRAFT)
+    // available so messages received before a mention are also mirrored into
+    // the unified conversation view without triggering the bot.
+    const active = await prisma.conversation.findFirst({
+      // Group JIDs are unique in remoteChatId. Older rows may predate the
+      // GROUP channel value, so the JID is the compatibility key here.
+      where: { remoteChatId, status: { notIn: ["CLOSED", "DRAFT"] } },
       include: { contact: true, department: true, assignedAgent: true, groupChat: true },
       orderBy: { startedAt: "desc" },
     });
+    if (active) return active;
+    return prisma.conversation.findFirst({
+      where: { remoteChatId, status: "DRAFT", currentStep: "GROUP_MONITOR" },
+      include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+      orderBy: { startedAt: "desc" },
+    });
+  }
+
+  async ensureGroupMonitorConversation(groupChat: { id: string; remoteChatId: string; name: string }) {
+    // A group has one canonical conversation in the unified queue. If a
+    // mention already promoted the monitor to a real ticket, reuse that
+    // ticket instead of creating a second monitor row for the same group.
+    const activeTicket = await prisma.conversation.findFirst({
+      where: {
+        status: { notIn: ["CLOSED", "DRAFT"] },
+        OR: [
+          { groupChatId: groupChat.id },
+          { remoteChatId: groupChat.remoteChatId },
+        ],
+      },
+      include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+      orderBy: { startedAt: "desc" },
+    });
+    if (activeTicket) {
+      await this.mirrorUnlinkedGroupMessages(groupChat.id, activeTicket.id);
+      return activeTicket;
+    }
+
+    const existing = await prisma.conversation.findFirst({
+      where: {
+        status: "DRAFT",
+        currentStep: "GROUP_MONITOR",
+        OR: [{ groupChatId: groupChat.id }, { remoteChatId: groupChat.remoteChatId }],
+      },
+      include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+      orderBy: { startedAt: "desc" },
+    });
+    if (existing) {
+      await this.mirrorUnlinkedGroupMessages(groupChat.id, existing.id);
+      return existing;
+    }
+
+    const latest = await prisma.groupMessage.findFirst({
+      where: { groupChatId: groupChat.id, senderContactId: { not: null } },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      select: { senderContactId: true },
+    });
+    let contactId = latest?.senderContactId ?? null;
+    if (!contactId) {
+      const syntheticPhone = groupChat.remoteChatId;
+      const contact = await prisma.contact.findFirst({ where: { phone: syntheticPhone }, select: { id: true } });
+      if (contact) {
+        contactId = contact.id;
+      } else {
+        try {
+          const created = await prisma.contact.create({
+            data: { phone: syntheticPhone, name: groupChat.name, isRegistered: false },
+            select: { id: true },
+          });
+          contactId = created.id;
+        } catch (error: any) {
+          if (error?.code !== "P2002") throw error;
+          contactId = (await prisma.contact.findFirst({ where: { phone: syntheticPhone }, select: { id: true } }))?.id ?? null;
+        }
+      }
+    }
+    if (!contactId) return null;
+
+    let monitor;
+    try {
+      monitor = await prisma.conversation.create({
+        data: {
+          contactId,
+          channel: "GROUP",
+          remoteChatId: groupChat.remoteChatId,
+          groupChatId: groupChat.id,
+          groupChatName: groupChat.name,
+          currentStep: "GROUP_MONITOR",
+          status: "DRAFT",
+          lastActivityAt: new Date(),
+        },
+        include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+      });
+    } catch (error: any) {
+      // A webhook and a manual group sync can arrive at the same time. If a
+      // deployment enforces uniqueness for group monitors, reuse the winner.
+      if (error?.code !== "P2002") throw error;
+      monitor = await prisma.conversation.findFirst({
+        where: {
+          status: "DRAFT",
+          currentStep: "GROUP_MONITOR",
+          OR: [{ groupChatId: groupChat.id }, { remoteChatId: groupChat.remoteChatId }],
+        },
+        include: { contact: true, department: true, assignedAgent: true, groupChat: true },
+        orderBy: { startedAt: "desc" },
+      });
+      if (!monitor) throw error;
+    }
+    await this.mirrorUnlinkedGroupMessages(groupChat.id, monitor.id);
+    return monitor;
+  }
+
+  async findGroupChatByRemoteChatId(remoteChatId: string) {
+    return prisma.groupChat.findFirst({ where: { remoteChatId, isActive: true }, select: { id: true } });
+  }
+
+  async activateGroupMonitorConversation(id: string) {
+    const now = new Date();
+    const result = await prisma.conversation.updateMany({
+      // Keep old monitor rows activatable even when their channel was stored
+      // before the unified GROUP value existed.
+      where: { id, status: "DRAFT", currentStep: "GROUP_MONITOR" },
+      data: { status: "OPEN", queuedAt: now, lastActivityAt: now, currentStep: "AWAITING_TEAM" },
+    });
+    return result.count > 0;
   }
 
   async createConversation(contactId: string, status = "OPEN", currentStep = "AWAITING_TEAM", group?: { chatName?: string | null; participant?: string | null; remoteChatId?: string | null; groupChatId?: string | null; channel?: "GROUP" | "PRIVATE" }) {
@@ -242,7 +474,19 @@ export class ZApiRepository {
     return prisma.groupChat.findMany({
       where: { isActive: true, ...(query?.trim() ? { name: { contains: query.trim(), mode: "insensitive" } } : {}) },
       orderBy: [{ lastMessageAt: "desc" }, { name: "asc" }],
-      include: { conversations: { where: { status: { notIn: ["CLOSED", "DRAFT"] } }, select: { id: true, status: true, assignedAgentId: true }, take: 1 } },
+      include: {
+        conversations: {
+          where: {
+            OR: [
+              { status: { notIn: ["CLOSED", "DRAFT"] } },
+              { status: "DRAFT", currentStep: "GROUP_MONITOR" },
+            ],
+          },
+          select: { id: true, status: true, assignedAgentId: true, currentStep: true },
+          orderBy: [{ status: "asc" }, { lastActivityAt: "desc" }],
+          take: 1,
+        },
+      },
     });
   }
 

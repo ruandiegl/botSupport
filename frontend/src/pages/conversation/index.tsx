@@ -250,7 +250,10 @@ export default function ConversationPage() {
       </div>
     );
 
-  const isGroupConversation = conversation.channel === "GROUP";
+  // Keep legacy group tickets in the same conversation workspace even when
+  // their channel column predates the unified GROUP value.
+  const isGroupConversation = conversation.channel === "GROUP"
+    || Boolean(conversation.groupChatId || conversation.groupChatName);
   const conversationTitle = isGroupConversation ? (conversation.groupChatName || "Grupo do WhatsApp") : conversation.contact.name;
   const conversationSubtitle = isGroupConversation
     ? `Grupo · iniciado por ${conversation.contact.name} · ${conversation.contact.phone}`

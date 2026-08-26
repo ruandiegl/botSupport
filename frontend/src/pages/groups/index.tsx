@@ -324,14 +324,14 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
   if (!can("groups", "view")) return <div className="content"><Empty className="border"><EmptyHeader><EmptyTitle>Acesso restrito</EmptyTitle><EmptyDescription>Você não possui permissão para visualizar os grupos.</EmptyDescription></EmptyHeader></Empty></div>;
 
   return (
-    <div className={embedded ? "group-workspace-embedded flex min-h-0 flex-col" : "content flex min-h-0 flex-col"}>
+    <div className={embedded ? "group-workspace-embedded flex min-h-0 flex-col" : "content group-workspace-standalone flex min-h-0 flex-col"}>
       {!embedded ? <header className="page-heading shrink-0">
         <div><div className="eyebrow">MENSAGENS / GRUPOS</div><h1>Grupos do WhatsApp</h1><p className="subtle">Acompanhe o histórico e converse com os participantes em tempo real.</p></div>
         <Button variant="outline" onClick={() => void groups.refetch()} disabled={groups.isFetching}><RefreshCw data-icon="inline-start" className={groups.isFetching ? "animate-spin" : undefined} />Atualizar</Button>
       </header> : null}
       {groups.data?.stale && groups.data.warning ? <div className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">{groups.data.warning}</div> : null}
 
-      <div className={`grid min-h-[620px] flex-1 overflow-hidden rounded-xl border bg-card shadow-sm lg:grid-cols-[340px_minmax(0,1fr)] ${embedded ? "lg:h-[calc(100dvh-22rem)]" : "lg:h-[calc(100dvh-10rem)]"}`}>
+      <div className={`group-workspace-grid grid min-h-0 flex-1 overflow-hidden rounded-xl border bg-card shadow-sm lg:grid-cols-[340px_minmax(0,1fr)]`}>
         <section className={`${mobileThreadOpen ? "hidden" : "flex"} min-h-0 flex-col border-r lg:flex`} aria-label="Lista de grupos">
           <div className="border-b p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
@@ -361,7 +361,7 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
               {selected.activeConversation ? <Button variant="outline" size="sm" onClick={() => setLocation(`/conversation/${selected.activeConversation!.id}`)}><TicketCheck data-icon="inline-start" />Ver chamado</Button> : <Badge variant="secondary">Sem chamado ativo</Badge>}
             </header>
 
-            <ChatScroller ref={scrollerRef} followKey={history.data?.items.length ?? 0} resetKey={selected.id} className="bg-muted/20">
+            <ChatScroller data-slot="chat-scroller" ref={scrollerRef} followKey={history.data?.items.length ?? 0} resetKey={selected.id} className="bg-muted/20">
               <div className="mx-auto flex min-h-full w-full max-w-5xl flex-col justify-end gap-1 px-4 py-5 sm:px-6">
                 {history.isLoading ? <div className="space-y-3"><Skeleton className="h-16 w-2/3" /><Skeleton className="ml-auto h-20 w-3/5" /><Skeleton className="h-14 w-1/2" /></div> : history.isError ? (
                   <Empty className="my-auto border bg-card"><EmptyHeader><EmptyTitle>Não foi possível carregar o histórico</EmptyTitle><EmptyDescription>Atualize a conversa para tentar novamente.</EmptyDescription></EmptyHeader><EmptyContent><Button variant="outline" onClick={() => void history.refetch()}><RefreshCw data-icon="inline-start" />Atualizar histórico</Button></EmptyContent></Empty>

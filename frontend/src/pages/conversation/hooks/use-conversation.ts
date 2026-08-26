@@ -60,7 +60,9 @@ export function useSendMessage(id: string) {
           messages: [...current.messages, message],
           lastMessage: message.content,
           lastActivityAt: message.createdAt,
-          ...(current.status === "DRAFT" ? { status: "OPEN" as const, queuedAt: message.createdAt } : {}),
+          ...(current.status === "DRAFT" && !current.isGroupMonitor
+            ? { status: "OPEN" as const, queuedAt: message.createdAt }
+            : {}),
         };
       });
       queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });
@@ -115,7 +117,9 @@ export function useSendMedia(id: string) {
           messages: [...current.messages, message],
           lastMessage: message.content,
           lastActivityAt: message.createdAt,
-          ...(current.status === "DRAFT" ? { status: "OPEN" as const, queuedAt: message.createdAt } : {}),
+          ...(current.status === "DRAFT" && !current.isGroupMonitor
+            ? { status: "OPEN" as const, queuedAt: message.createdAt }
+            : {}),
         };
       });
       queryClient.invalidateQueries({ queryKey: ["conversations"], refetchType: "none" });

@@ -43,13 +43,33 @@ export class ConversationsRepository {
     limit?: number;
   }) {
     const where: any = {};
+    // Group monitor conversations are persisted as DRAFT so they never count
+    // as an open ticket until a mention (or an agent message) promotes them.
+    // They are nevertheless real conversation records and must be visible
+    // whenever the queue is filtered to groups.
+    const includeGroupMonitors = filters.channel === "GROUP" && (!filters.status || filters.status === "ALL");
     if (filters.status && filters.status !== "ALL") {
       // Map legacy statuses for backward compatibility
       const statusValue = filters.status;
       where.status = statusValue;
     }
     if (filters.channel && filters.channel !== "ALL") {
-      where.channel = filters.channel;
+      if (filters.channel === "GROUP") {
+        // Rows created before the unified queue may still have PRIVATE in
+        // channel. The relation/JID identifies them as groups reliably.
+        where.AND = [
+          ...(where.AND ?? []),
+          {
+            OR: [
+              { channel: "GROUP" },
+              { groupChatId: { not: null } },
+              { remoteChatId: { contains: "@g.us", mode: "insensitive" } },
+            ],
+          },
+        ];
+      } else {
+        where.channel = filters.channel;
+      }
     }
     if (filters.departmentId && filters.departmentId !== "ALL") {
       where.departmentId = filters.departmentId;
@@ -60,10 +80,19 @@ export class ConversationsRepository {
     }
 
     if (filters.openOnly && !where.status) {
-      where.status = { notIn: ["CLOSED", "DRAFT"] };
+      if (includeGroupMonitors) {
+        where.status = { not: "CLOSED" };
+        where.AND = [{ OR: [{ status: { not: "DRAFT" } }, { status: "DRAFT", currentStep: "GROUP_MONITOR" }] }];
+      } else {
+        where.status = { notIn: ["CLOSED", "DRAFT"] };
+      }
     } else if (!where.status) {
-      // DRAFT conversations are private composer sessions, not tickets.
-      where.status = { not: "DRAFT" };
+      if (includeGroupMonitors) {
+        where.AND = [{ OR: [{ status: { not: "DRAFT" } }, { status: "DRAFT", currentStep: "GROUP_MONITOR" }] }];
+      } else {
+        // DRAFT conversations are private composer sessions, not tickets.
+        where.status = { not: "DRAFT" };
+      }
     }
     if (filters.unreadOnly) {
       where.messages = { some: { direction: "IN", readAt: null } };
@@ -101,10 +130,18 @@ export class ConversationsRepository {
     // large queue is ranked correctly before LIMIT/OFFSET (Prisma's lexical
     // status ordering would put BOT before QUEUED).
     if (isPaged) {
-      // Never expose a composer draft through operational list endpoints.
-      const conditions: Prisma.Sql[] = [Prisma.sql`c."status" <> 'DRAFT'`];
+      // Never expose a private composer draft. Group monitor drafts are the
+      // exception: when the group channel is selected they are the canonical
+      // conversation row for the always-on group history.
+      const groupChannelCondition = Prisma.sql`(c."channel" = 'GROUP' OR c."group_chat_id" IS NOT NULL OR c."remote_chat_id" ILIKE '%@g.us')`;
+      const conditions: Prisma.Sql[] = [
+        includeGroupMonitors
+          ? Prisma.sql`(c."status" <> 'DRAFT' OR (c."status" = 'DRAFT' AND c."current_step" = 'GROUP_MONITOR' AND ${groupChannelCondition}))`
+          : Prisma.sql`c."status" <> 'DRAFT'`,
+      ];
       if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
-      if (filters.channel && filters.channel !== "ALL") conditions.push(Prisma.sql`c."channel" = ${filters.channel}`);
+      if (filters.channel === "GROUP") conditions.push(groupChannelCondition);
+      else if (filters.channel && filters.channel !== "ALL") conditions.push(Prisma.sql`c."channel" = ${filters.channel}`);
       if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
       if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
       if (filters.openOnly) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
@@ -164,6 +201,8 @@ export class ConversationsRepository {
               lastActivityAt: true,
               startedAt: true,
               closedAt: true,
+              currentStep: true,
+              groupChatId: true,
               groupChatName: true,
               contact: { select: { name: true, phone: true, email: true, isRegistered: true, phoneNumbers: { select: { phone: true } } } },
               department: { select: { name: true } },
@@ -320,14 +359,16 @@ export class ConversationsRepository {
         id: true,
         channel: true,
         remoteChatId: true,
+        groupChatId: true,
+        groupChatName: true,
         status: true,
+        currentStep: true,
         departmentId: true,
         assignedAgentId: true,
         queuedAt: true,
         lastActivityAt: true,
         startedAt: true,
         closedAt: true,
-        groupChatName: true,
         contact: { select: { id: true, name: true, phone: true, isRegistered: true } },
         department: { select: { id: true, name: true } },
         assignedAgent: { select: { id: true, name: true } },
@@ -458,9 +499,11 @@ export class ConversationsRepository {
         channel: true,
         remoteChatId: true,
         status: true,
+        currentStep: true,
         departmentId: true,
         assignedAgentId: true,
         contact: { select: { name: true, phone: true } },
+        groupChat: { select: { id: true, remoteChatId: true, name: true } },
         department: { select: { name: true } },
         assignedAgent: { select: { id: true, name: true, department: { select: { name: true } } } },
         assignments: {

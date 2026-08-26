@@ -134,7 +134,11 @@ export function useListConversations(filters: ConversationFilters) {
         // The fallback still asks for the operational status and applies the remainder locally.
         const legacyParams = new URLSearchParams();
         if (effectiveFilters.status && effectiveFilters.status !== "ALL") legacyParams.set("status", effectiveFilters.status);
+        if (effectiveFilters.channel && effectiveFilters.channel !== "ALL") legacyParams.set("channel", effectiveFilters.channel);
         if (effectiveFilters.departmentId && effectiveFilters.departmentId !== "ALL") legacyParams.set("departmentId", effectiveFilters.departmentId);
+        if (effectiveFilters.openOnly) legacyParams.set("openOnly", "true");
+        if (effectiveFilters.unreadOnly) legacyParams.set("unreadOnly", "true");
+        if (effectiveFilters.labelIds?.length) legacyParams.set("labelIds", effectiveFilters.labelIds.join(","));
         const payload = await apiFetch<Conversation[]>(`/conversations${legacyParams.toString() ? `?${legacyParams}` : ""}`, { signal });
         if (!Array.isArray(payload)) throw error;
 

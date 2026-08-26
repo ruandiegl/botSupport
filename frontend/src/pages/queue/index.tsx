@@ -17,7 +17,6 @@ import { LabelFilter } from "./components/LabelFilter";
 import { AgentWorkloadCard } from "./components/AgentWorkloadCard";
 import { StartConversationDialog } from "@/pages/contacts/components/StartConversationDialog";
 import { GlobalConversationSearch } from "./components/GlobalConversationSearch";
-import GroupsPage from "@/pages/groups";
 
 const CONVERSATIONS_PER_PAGE = 5;
 
@@ -214,7 +213,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
         <div className="queue-sort-hint"><SlidersHorizontal /> Ordenado por urgência</div>
       </div>
 
-      {!isGlobalSearch && channel === "GROUP" && can("groups", "view") ? <GroupsPage embedded /> : <div className="split-layout">
+      <div className="split-layout">
         <div className="panel conversation-list">
           <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : channel === "GROUP" ? "Grupos" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
@@ -232,7 +231,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
           </QueryState>
         </div>
         <div className="right-stack"><AgentWorkloadCard enabled={can("queue", "view_all")} /><QueueCard conversations={all} fixedCounts={metricCounts} /></div>
-      </div>}
+      </div>
       <StartConversationDialog open={newConversationOpen} onOpenChange={setNewConversationOpen} />
     </div>
   );

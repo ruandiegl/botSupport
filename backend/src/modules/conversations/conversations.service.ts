@@ -53,6 +53,35 @@ export class ConversationsService {
   private readonly outboundMediaInFlight = new Map<string, number>();
   private readonly outboundMediaWindow = new Map<string, number[]>();
 
+  /**
+   * Group conversations created before the unified queue was introduced may
+   * not have the GROUP channel persisted yet.  The group relation/name/JID is
+   * still authoritative in those rows, so all conversation actions must use
+   * this single discriminator instead of checking only `channel`.
+   */
+  private isGroupConversation(conversation: any): boolean {
+    return conversation?.channel === "GROUP"
+      || Boolean(conversation?.groupChatId || conversation?.groupChatName)
+      || (typeof conversation?.remoteChatId === "string" && /@g\.us$/i.test(conversation.remoteChatId));
+  }
+
+  private isGroupMonitor(conversation: any): boolean {
+    return this.isGroupConversation(conversation)
+      && conversation?.status === "DRAFT"
+      && conversation?.currentStep === "GROUP_MONITOR";
+  }
+
+  /**
+   * Older group tickets may only retain the GroupChat relation while newer
+   * records also denormalize the JID on the conversation. Keep delivery and
+   * read acknowledgements on the group target in either shape; never fall
+   * back to the participant contact number for a group conversation.
+   */
+  private groupRemoteChatId(conversation: any): string | null {
+    const value = conversation?.remoteChatId ?? conversation?.groupChat?.remoteChatId;
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  }
+
   private acquireOutboundMediaSlot(agentId: string): boolean {
     const now = Date.now();
     const maxConcurrent = Math.max(1, Number(process.env.OUTBOUND_MEDIA_MAX_CONCURRENT_PER_AGENT ?? 1));
@@ -78,6 +107,15 @@ export class ConversationsService {
   private canAccess(conversation: any, user?: AuthenticatedRequest["user"]): boolean {
     if (!user || user.role === "ADMIN" || user.role === "SUPERVISOR") return true;
     if (user.role !== "AGENT") return true;
+    const isGroup = this.isGroupConversation(conversation);
+    // A group monitor is a shared, unassigned conversation that keeps the
+    // group visible before a mention opens a ticket. Agents may view and
+    // answer it just like any other queue conversation.
+    if (isGroup && this.isGroupMonitor(conversation)) return true;
+    // Group tickets without an assigned attendant are shared queue work. They
+    // must remain open to every agent so anyone can open the same chat and
+    // assume it, regardless of the synthetic monitor contact's department.
+    if (isGroup && !conversation.assignedAgentId && conversation.status !== "CLOSED") return true;
     if (conversation.assignedAgentId === user.id) return true;
     // Collaboration is allowed for agents in the ticket department even after
     // another agent assumed it. Assignment still controls ownership and queue
@@ -183,6 +221,8 @@ export class ConversationsService {
       }
     }
 
+    const isGroup = this.isGroupConversation(summary);
+    const isGroupMonitor = this.isGroupMonitor(summary);
     return {
       id: summary.id,
       contact: {
@@ -193,14 +233,16 @@ export class ConversationsService {
         isRegistered: summary.contact?.isRegistered ?? false,
         initials: getInitials(contactName),
       },
-      status: summary.status,
-      channel: summary.channel ?? "PRIVATE",
+      status: isGroupMonitor ? "OPEN" : summary.status,
+      isGroupMonitor,
+      channel: isGroup ? "GROUP" : (summary.channel ?? "PRIVATE"),
       departmentId: summary.departmentId,
       departmentName: summary.department?.name ?? null,
       assignedAgentId: summary.assignedAgentId,
       assignedAgentName: summary.assignedAgent?.name ?? null,
       labels: (summary.labels || []).map((item: any) => item.label),
       groupChatName: summary.groupChatName ?? null,
+      groupChatId: summary.groupChatId ?? null,
       unreadCount: summary._count?.messages ?? 0,
       lastMessage: latest?.content ?? "Nenhuma mensagem ainda",
       searchMatch,
@@ -237,6 +279,8 @@ export class ConversationsService {
     const lastMessage = messages.at(-1)?.content ?? "Nenhuma mensagem ainda";
     const unreadCount = conversation._count?.messages ?? messages.filter((m) => m.direction === "IN" && !m.readAt).length;
 
+    const isGroup = this.isGroupConversation(conversation);
+    const isGroupMonitor = this.isGroupMonitor(conversation);
     return {
       id: conversation.id,
       contact: {
@@ -246,14 +290,16 @@ export class ConversationsService {
         isRegistered: conversation.contact?.isRegistered ?? false,
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
-      status: conversation.status,
-      channel: conversation.channel ?? "PRIVATE",
+      status: isGroupMonitor ? "OPEN" : conversation.status,
+      isGroupMonitor,
+      channel: isGroup ? "GROUP" : (conversation.channel ?? "PRIVATE"),
       departmentId: conversation.departmentId,
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
       assignedAgentName: conversation.assignedAgent?.name ?? null,
       labels: (conversation.labels || []).map((item: any) => item.label),
       groupChatName: conversation.groupChatName ?? null,
+      groupChatId: conversation.groupChatId ?? null,
       assignments: (conversation.assignments || []).map((assignment: any) => ({
         id: assignment.id,
         action: assignment.action,
@@ -457,6 +503,8 @@ export class ConversationsService {
     const messages = messageLimit ? fetchedMessages.slice(0, messageLimit).reverse() : fetchedMessages.slice().reverse();
     const lastMessage = messages.at(-1)?.content ?? "Nenhuma mensagem ainda";
     const unreadCount = conversation._count?.messages ?? messages.filter((m: any) => m.direction === "IN" && !m.readAt).length;
+    const isGroup = this.isGroupConversation(conversation);
+    const isGroupMonitor = this.isGroupMonitor(conversation);
     return {
       id: conversation.id,
       contact: {
@@ -466,14 +514,16 @@ export class ConversationsService {
         isRegistered: conversation.contact?.isRegistered ?? false,
         initials: getInitials(conversation.contact?.name ?? "CS"),
       },
-      status: conversation.status,
-      channel: conversation.channel ?? "PRIVATE",
+      status: isGroupMonitor ? "OPEN" : conversation.status,
+      isGroupMonitor,
+      channel: isGroup ? "GROUP" : (conversation.channel ?? "PRIVATE"),
       departmentId: conversation.departmentId,
       departmentName: conversation.department?.name ?? null,
       assignedAgentId: conversation.assignedAgentId,
       assignedAgentName: conversation.assignedAgent?.name ?? null,
       labels: (conversation.labels || []).map((item: any) => item.label),
       groupChatName: conversation.groupChatName ?? null,
+      groupChatId: conversation.groupChatId ?? null,
       assignments: (conversation.assignments || []).map((assignment: any) => ({
         id: assignment.id,
         action: assignment.action,
@@ -524,6 +574,11 @@ export class ConversationsService {
     if (!this.canAccess(conversation, user)) return null;
 
     await conversationsRepository.markIncomingMessagesAsRead(id);
+    const groupRemoteChatId = this.groupRemoteChatId(conversation);
+    if (this.isGroupConversation(conversation) && groupRemoteChatId) {
+      const group = await zApiService.findGroupChatByRemoteChatId(groupRemoteChatId);
+      if (group) await zApiService.markGroupRead(group.id);
+    }
     conversationEvents.emit("conversation_updated", { conversationId: id, unreadCount: 0, eventType: "READ" });
 
     return this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
@@ -670,7 +725,9 @@ export class ConversationsService {
     const unsignedContent = cleanContent.replace(/^\*[^*\n]{1,200}:\*\s*/u, "").trim();
     if (!unsignedContent) return { kind: "EMPTY" as const };
     const content = `*${agentName} - ${deptName}:*\n\n${unsignedContent}`;
-    const wasDraft = conversation.status === "DRAFT";
+    const isGroup = this.isGroupConversation(conversation);
+    const isGroupMonitor = this.isGroupMonitor(conversation);
+    const wasDraft = conversation.status === "DRAFT" && !isGroupMonitor;
 
     const message = await conversationsRepository.addMessage({
       conversationId: id,
@@ -683,11 +740,19 @@ export class ConversationsService {
     });
 
     // Disparar via Z-API no WhatsApp real
-    const deliveryTarget = conversation.channel === "GROUP" && conversation.remoteChatId
-      ? conversation.remoteChatId
+    const deliveryTarget = isGroup && this.groupRemoteChatId(conversation)
+      ? this.groupRemoteChatId(conversation)
       : conversation.contact?.phone;
-    if (deliveryTarget) {
-      await zApiService.sendText(deliveryTarget, content);
+    const delivery = deliveryTarget ? await zApiService.sendText(deliveryTarget, content) : null;
+    if (!delivery || (typeof delivery === "object" && "error" in delivery && delivery.error)) {
+      // Keep the local message for auditability, but report the provider
+      // failure instead of presenting an unsent group message as delivered.
+      return {
+        kind: "PROVIDER_ERROR" as const,
+        error: delivery && typeof delivery === "object" && "error" in delivery
+          ? String(delivery.error)
+          : "Não foi possível entregar a mensagem pela integração Z-API.",
+      };
     }
 
     if (wasDraft) {
@@ -790,8 +855,9 @@ export class ConversationsService {
     }
     await conversationsRepository.updateOutgoingMedia(pending.outgoingMedia.id, { status: "SENDING" });
 
+    const isGroup = this.isGroupConversation(conversation);
     const sendInput = {
-      phone: conversation.channel === "GROUP" && conversation.remoteChatId ? conversation.remoteChatId : conversation.contact?.phone || "",
+      phone: isGroup ? (this.groupRemoteChatId(conversation) || "") : (conversation.contact?.phone || ""),
       mimeType: metadata.mimeType,
       buffer: input.file!.buffer,
       fileName: metadata.fileName,
@@ -822,7 +888,8 @@ export class ConversationsService {
       await conversationsRepository.updateMessageExternalId(pending.message.id, providerMessageId).catch(() => undefined);
     }
 
-    const wasDraft = conversation.status === "DRAFT";
+    const isGroupMonitor = this.isGroupMonitor(conversation);
+    const wasDraft = conversation.status === "DRAFT" && !isGroupMonitor;
     if (wasDraft) {
       const activated = await conversationsRepository.activateDraft(id);
       if (activated) {
