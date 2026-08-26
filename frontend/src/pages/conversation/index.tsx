@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck, MessageCircleOff } from "lucide-react";
+import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck, MessageCircleOff, Users } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
 import {
   useGetConversation,
@@ -250,6 +250,12 @@ export default function ConversationPage() {
       </div>
     );
 
+  const isGroupConversation = conversation.channel === "GROUP";
+  const conversationTitle = isGroupConversation ? (conversation.groupChatName || "Grupo do WhatsApp") : conversation.contact.name;
+  const conversationSubtitle = isGroupConversation
+    ? `Grupo · iniciado por ${conversation.contact.name} · ${conversation.contact.phone}`
+    : `${conversation.contact.phone} · iniciou ${dateLabel(conversation.startedAt)}`;
+
   const send = async () => {
     if (mediaProcessing || sendMedia.isPending || sendMessage.isPending) return;
     if (mediaFile) {
@@ -360,7 +366,7 @@ export default function ConversationPage() {
         if (greetingShortcut) {
           const formatted = formatShortcutMessage(greetingShortcut.message, {
             agentName: activeAgentName,
-            contactName: conversation.contact.name,
+            contactName: conversationTitle,
             departmentName: activeAgentDeptName,
           });
           setMessage(formatted);
@@ -398,7 +404,7 @@ export default function ConversationPage() {
       : "Olá, {contactName}! Seu atendimento foi encerrado. Caso precise de algo mais, envie uma nova mensagem. Obrigado!";
     const closingMessage = formatShortcutMessage(closingShortcut?.message || fallback, {
       agentName: activeAgentName,
-      contactName: conversation.contact.name,
+      contactName: conversationTitle,
       departmentName: activeAgentDeptName,
     });
 
@@ -490,20 +496,28 @@ export default function ConversationPage() {
             >
               <ArrowLeft size={16} />
             </Button>
-            <button
-              type="button"
-              className="group flex min-w-0 items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={() => setContactProfileOpen(true)}
-              aria-label="Abrir perfil do contato"
-            >
-              <div className="avatar coral">{conversation.contact.initials}</div>
-              <span className="min-w-0">
-                <span className="block truncate text-[19px] font-semibold leading-tight group-hover:text-primary">{conversation.contact.name}</span>
-                <span className="mt-1 block truncate font-mono text-[10px] text-muted-foreground">
-                  {conversation.contact.phone} · iniciou {dateLabel(conversation.startedAt)}
+            {isGroupConversation ? (
+              <div className="flex min-w-0 items-center gap-3 rounded-lg px-2 py-1.5 text-left">
+                <div className="avatar coral" aria-hidden="true"><Users size={17} /></div>
+                <span className="min-w-0">
+                  <span className="block truncate text-[19px] font-semibold leading-tight">{conversationTitle}</span>
+                  <span className="mt-1 block truncate text-[10px] text-muted-foreground">{conversationSubtitle}</span>
                 </span>
-              </span>
-            </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="group flex min-w-0 items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => setContactProfileOpen(true)}
+                aria-label="Abrir perfil do contato"
+              >
+                <div className="avatar coral">{conversation.contact.initials}</div>
+                <span className="min-w-0">
+                  <span className="block truncate text-[19px] font-semibold leading-tight group-hover:text-primary">{conversation.contact.name}</span>
+                  <span className="mt-1 block truncate font-mono text-[10px] text-muted-foreground">{conversationSubtitle}</span>
+                </span>
+              </button>
+            )}
 
           </div>
 
@@ -594,7 +608,7 @@ export default function ConversationPage() {
                   </BubbleContent>
                 </Bubble>
                 <MessageFooter>
-                  {`${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : conversation.contact.name)}${item.senderDepartmentName ? ` · ${item.senderDepartmentName}` : ""} · ${timeLabel(item.createdAt)}`}
+                  {`${item.senderName || (item.senderType === "BOT" ? "GTF-Bot" : isGroupConversation ? "Participante" : conversation.contact.name)}${item.senderDepartmentName ? ` · ${item.senderDepartmentName}` : ""} · ${timeLabel(item.createdAt)}`}
                 </MessageFooter>
               </MessageContent>
             </Message>

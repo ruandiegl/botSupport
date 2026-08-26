@@ -284,6 +284,7 @@ export class ConversationsService {
 
   async list(filters: {
     status?: string;
+    channel?: "ALL" | "PRIVATE" | "GROUP";
     departmentId?: string;
     assignedAgentId?: string;
     openOnly?: boolean;
@@ -302,6 +303,7 @@ export class ConversationsService {
       departmentId: user?.role === "AGENT" ? user.departmentId : undefined,
       agentId: user?.id,
       accessible: user?.role !== "AGENT" || Boolean(user.departmentId),
+      channel: filters.channel,
       dateField: filters.dateField,
       from: filters.from,
       to: filters.to,
@@ -319,6 +321,7 @@ export class ConversationsService {
       counts,
       appliedFilters: {
         status: filters.status ?? "ALL",
+        channel: filters.channel ?? "ALL",
         departmentId: filters.departmentId ?? null,
         assignedAgentId: filters.assignedAgentId ?? null,
         openOnly: filters.openOnly ?? false,

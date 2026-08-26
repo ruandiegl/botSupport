@@ -28,6 +28,7 @@ export class ConversationsRepository {
 
   async findMany(filters: {
     status?: string;
+    channel?: "ALL" | "PRIVATE" | "GROUP";
     departmentId?: string;
     assignedAgentId?: string;
     openOnly?: boolean;
@@ -46,6 +47,9 @@ export class ConversationsRepository {
       // Map legacy statuses for backward compatibility
       const statusValue = filters.status;
       where.status = statusValue;
+    }
+    if (filters.channel && filters.channel !== "ALL") {
+      where.channel = filters.channel;
     }
     if (filters.departmentId && filters.departmentId !== "ALL") {
       where.departmentId = filters.departmentId;
@@ -100,6 +104,7 @@ export class ConversationsRepository {
       // Never expose a composer draft through operational list endpoints.
       const conditions: Prisma.Sql[] = [Prisma.sql`c."status" <> 'DRAFT'`];
       if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
+      if (filters.channel && filters.channel !== "ALL") conditions.push(Prisma.sql`c."channel" = ${filters.channel}`);
       if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
       if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
       if (filters.openOnly) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
@@ -360,6 +365,7 @@ export class ConversationsRepository {
     departmentId?: string | null;
     agentId?: string | null;
     accessible?: boolean;
+    channel?: "ALL" | "PRIVATE" | "GROUP";
     dateField?: "lastActivityAt" | "createdAt";
     from?: string;
     to?: string;
@@ -368,7 +374,10 @@ export class ConversationsRepository {
       return { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
     }
 
-    const baseWhere = scope.departmentId ? { departmentId: scope.departmentId } : {};
+    const baseWhere = {
+      ...(scope.departmentId ? { departmentId: scope.departmentId } : {}),
+      ...(scope.channel && scope.channel !== "ALL" ? { channel: scope.channel } : {}),
+    };
     const dateField = scope.dateField === "createdAt" ? "startedAt" : "lastActivityAt";
     const dateWhere = scope.from || scope.to
       ? {

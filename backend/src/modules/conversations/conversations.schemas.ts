@@ -15,6 +15,8 @@ const labelIds = z.string().trim().max(1500).transform((value, ctx) => {
 
 export const ListConversationsQuerySchema = z.object({
   status: z.enum(["ALL", "OPEN", "IN_PROGRESS", "CLOSED"]).optional(),
+  /** Delivery channel. GROUP conversations are the public WhatsApp group tickets. */
+  channel: z.enum(["ALL", "PRIVATE", "GROUP"]).optional(),
   departmentId: z.union([z.literal("ALL"), z.string().uuid()]).optional(),
   assignedAgentId: z.union([z.literal("me"), z.string().uuid()]).optional(),
   openOnly: queryBoolean,

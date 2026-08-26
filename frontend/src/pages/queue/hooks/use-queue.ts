@@ -5,6 +5,8 @@ import type { Agent, Conversation, Department } from "@/types";
 
 export interface ConversationFilters {
   status: string;
+  /** Limits operational queue results to private or public WhatsApp conversations. */
+  channel?: "ALL" | "PRIVATE" | "GROUP";
   departmentId: string;
   search: string;
   dateField: "lastActivityAt" | "createdAt";
@@ -101,6 +103,7 @@ function normalizeResponse(payload: ConversationEnvelope, filters: ConversationF
 function buildQuery(filters: ConversationFilters) {
   const params = new URLSearchParams();
   if (filters.status && filters.status !== "ALL") params.set("status", filters.status);
+  if (filters.channel && filters.channel !== "ALL") params.set("channel", filters.channel);
   if (filters.departmentId && filters.departmentId !== "ALL") params.set("departmentId", filters.departmentId);
   if (filters.search.trim()) params.set("q", filters.search.trim());
   if (filters.dateField) params.set("dateField", filters.dateField);
@@ -137,6 +140,7 @@ export function useListConversations(filters: ConversationFilters) {
 
         const filtered = payload
           .filter((item) => !effectiveFilters.search.trim() || `${item.contact.name} ${item.contact.phone} ${item.contact.email ?? ""} ${item.groupChatName ?? ""} ${item.lastMessage} ${item.searchMatch?.snippet ?? ""}`.toLowerCase().includes(effectiveFilters.search.trim().toLowerCase()))
+          .filter((item) => !effectiveFilters.channel || effectiveFilters.channel === "ALL" || (item.channel ?? "PRIVATE") === effectiveFilters.channel)
           .filter((item) => !effectiveFilters.assignedAgentId || !effectiveFilters.fallbackAssignedAgentId || item.assignedAgentId === effectiveFilters.fallbackAssignedAgentId)
           .filter((item) => !effectiveFilters.openOnly || item.status !== "CLOSED")
           .filter((item) => !effectiveFilters.unreadOnly || item.unreadCount > 0)

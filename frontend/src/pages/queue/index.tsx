@@ -34,6 +34,12 @@ const statusLabels: Record<string, string> = {
   ALL: "Todos os status", OPEN: "Em aberto", IN_PROGRESS: "Em atendimento", CLOSED: "Encerradas",
 };
 
+const channelLabels: Record<"ALL" | "PRIVATE" | "GROUP", string> = {
+  ALL: "Todos os canais",
+  PRIVATE: "Conversas privadas",
+  GROUP: "Grupos",
+};
+
 const defaultDateRange: DateRangeValue = { preset: "ALL", dateField: "lastActivityAt", from: "", to: "" };
 // Keep each metric as a distinct filter.  "Em atendimento" is the global
 // IN_PROGRESS view, while "Com você" is the same status scoped to the
@@ -50,6 +56,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   // select can still opt into the complete history explicitly.
   const [status, setStatus] = useState("ALL");
   const [metricFilter, setMetricFilter] = useState<MetricFilter | null>(onlyMine ? null : "ALL");
+  const [channel, setChannel] = useState<"ALL" | "PRIVATE" | "GROUP">("ALL");
   const [department, setDepartment] = useState("ALL");
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<DateRangeValue>(defaultDateRange);
@@ -73,6 +80,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     // toolbar filters: it always searches every conversation the server
     // permits the current user to see, including closed conversations.
     status: isGlobalSearch ? "ALL" : queryStatus,
+    channel: isGlobalSearch ? "ALL" : channel,
     departmentId: isGlobalSearch ? "ALL" : department,
     search,
     dateField: dateRange.dateField,
@@ -92,6 +100,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const all = result?.items ?? [];
   const locallyFiltered = useMemo(() => all.filter((item) => {
     const matchesMine = isGlobalSearch || !queryMine || item.assignedAgentId === currentAgentId;
+    const matchesChannel = isGlobalSearch || channel === "ALL" || (item.channel ?? "PRIVATE") === channel;
     const matchesDepartment = isGlobalSearch || department === "ALL" || item.departmentId === department;
     const searchText = `${item.contact.name} ${item.contact.phone} ${item.contact.email ?? ""} ${item.groupChatName ?? ""} ${item.lastMessage} ${item.searchMatch?.snippet ?? ""}`.toLowerCase();
     const matchesSearch = !search.trim() || searchText.includes(search.trim().toLowerCase());
@@ -99,8 +108,8 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     const matchesDate = isGlobalSearch || ((!dateRange.from || timestamp >= dateRange.from) && (!dateRange.to || timestamp < dateRange.to));
     const matchesOpen = isGlobalSearch || metricFilter !== "ALL" || item.status !== "CLOSED";
     const matchesStatus = isGlobalSearch || metricFilter !== "CLOSED" || item.status === "CLOSED";
-    return matchesMine && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
-  }), [all, currentAgentId, dateRange, department, metricFilter, onlyMine, queryMine, search]);
+    return matchesMine && matchesChannel && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
+  }), [all, channel, currentAgentId, dateRange, department, metricFilter, onlyMine, queryMine, search]);
 
   const visibleConversations = result?.legacy ? locallyFiltered.slice((currentPage - 1) * CONVERSATIONS_PER_PAGE, currentPage * CONVERSATIONS_PER_PAGE) : locallyFiltered;
   const total = result?.legacy ? locallyFiltered.length : result?.total ?? locallyFiltered.length;
@@ -108,7 +117,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const firstVisible = total ? (currentPage - 1) * CONVERSATIONS_PER_PAGE + 1 : 0;
   const lastVisible = Math.min(currentPage * CONVERSATIONS_PER_PAGE, total);
 
-  useEffect(() => { setCurrentPage(1); }, [status, department, search, onlyMine, currentAgentId, dateRange, metricFilter, labelIds]);
+  useEffect(() => { setCurrentPage(1); }, [status, channel, department, search, onlyMine, currentAgentId, dateRange, metricFilter, labelIds]);
   useEffect(() => { setCurrentPage((page) => Math.min(page, totalPages)); }, [totalPages]);
 
   const activateMetric = (next: MetricFilter) => {
@@ -124,6 +133,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   };
   const metricCounts = result?.counts ?? { all: 0, open: 0, inProgress: 0, closed: 0, mine: 0, unread: 0 };
   const allConversationCount = metricCounts.open + metricCounts.inProgress;
+  const channelLabel = isGlobalSearch ? "Busca global" : channelLabels[channel];
   const departmentLabel = isGlobalSearch ? "Busca global" : department === "ALL" ? "Todos os departamentos" : departments?.find((item) => item.id === department)?.name || "Departamento";
   const conversationMatches = isGlobalSearch
     ? visibleConversations
@@ -169,6 +179,10 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
           <SelectTrigger className="select" data-testid="select-department-filter"><SelectValue>{departmentLabel}</SelectValue></SelectTrigger>
           <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup><SelectItem value="ALL">Todos os departamentos</SelectItem>{(departments || []).map((item) => <SelectItem value={item.id} key={item.id}>{item.name}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
+        <Select value={isGlobalSearch ? "ALL" : channel} onValueChange={(value) => setChannel((value as "ALL" | "PRIVATE" | "GROUP") || "ALL")} disabled={isGlobalSearch}>
+          <SelectTrigger className="select" data-testid="select-channel-filter"><SelectValue>{channelLabel}</SelectValue></SelectTrigger>
+          <SelectContent side="bottom" align="start" alignItemWithTrigger={false}><SelectGroup>{Object.entries(channelLabels).map(([key, label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+        </Select>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
         <LabelFilter value={labelIds} onChange={setLabelIds} />
         <div className="queue-sort-hint"><SlidersHorizontal /> Ordenado por urgência</div>
@@ -176,7 +190,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
 
       <div className="split-layout">
         <div className="panel conversation-list">
-          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
+          <div className="panel-header"><div className="panel-title"><MessageCircle size={17} /><h2>{isGlobalSearch ? "Resultados da busca" : onlyMine ? "Conversas assumidas" : channel === "GROUP" ? "Grupos" : queryStatus === "OPEN" ? "Em aberto" : queryStatus === "IN_PROGRESS" ? "Em atendimento" : queryStatus === "CLOSED" ? "Encerradas" : "Todas as conversas"}</h2></div><span className="subtle">{total} registros</span></div>
           <QueryState loading={isLoading} error={isError} empty={!visibleConversations.length} retry={() => refetch()}>
             {isGlobalSearch ? <div className="search-results-stack">
               <section className="search-results-section" aria-labelledby="search-conversations-heading">
