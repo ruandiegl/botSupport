@@ -675,6 +675,10 @@ export class ConversationsRepository {
     return prisma.message.update({ where: { id }, data: { externalMessageId } });
   }
 
+  async updateMessageType(id: string, messageType: string) {
+    return prisma.message.update({ where: { id }, data: { messageType } });
+  }
+
   /** Promote a manual draft only after the outbound transport accepted the message. */
   async activateDraft(id: string) {
     const now = new Date();

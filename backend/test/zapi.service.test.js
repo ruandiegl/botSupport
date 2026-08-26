@@ -4,6 +4,7 @@ import {
   buildButtonListPayload,
   buildOptionListPayload,
   findSelectedOption,
+  normalizeZApiTarget,
   parseIncomingMessage,
   parseZApiTimestamp,
 } from "../dist/modules/zapi/zapi.service.js";
@@ -19,6 +20,13 @@ test("normaliza timestamps numéricos retornados pela lista de grupos da Z-API",
   assert.equal(parseZApiTimestamp("1730918668000")?.getTime(), 1730918668000);
   assert.equal(parseZApiTimestamp(1730918668)?.getTime(), 1730918668000);
   assert.equal(parseZApiTimestamp("not-a-date"), null);
+});
+
+test("normaliza destinos de grupo para o formato aceito pela Z-API", () => {
+  assert.equal(normalizeZApiTarget("120363019502650977-group@g.us"), "120363019502650977-group");
+  assert.equal(normalizeZApiTarget("5511999999999-1623275280@g.us"), "5511999999999-1623275280");
+  assert.equal(normalizeZApiTarget("120363019502650977-group"), "120363019502650977-group");
+  assert.equal(normalizeZApiTarget("99999999999@lid"), "99999999999@lid");
 });
 
 test("interpreta mensagem de texto recebida da Z-API", () => {

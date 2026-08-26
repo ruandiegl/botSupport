@@ -616,7 +616,7 @@ export default function ConversationPage() {
                     {isGroupConversation ? (
                       <span className="group-message-meta">
                         {timeLabel(item.createdAt)}
-                        {item.direction === "OUT" ? <Check className="size-3" aria-hidden="true" /> : null}
+                        {item.direction === "OUT" && item.externalMessageId ? <Check className="size-3" aria-hidden="true" /> : item.direction === "OUT" && item.messageType === "TEXT_FAILED" ? <span className="text-destructive">Falha no envio</span> : null}
                       </span>
                     ) : null}
                   </BubbleContent>

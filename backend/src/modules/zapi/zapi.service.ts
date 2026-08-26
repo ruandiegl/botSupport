@@ -95,6 +95,18 @@ export function parseZApiTimestamp(value: unknown): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+/**
+ * Normalizes a destination before it is sent to Z-API.
+ *
+ * Webhooks and older persisted rows may expose a WhatsApp group JID with the
+ * `@g.us` suffix, while Z-API's send endpoints expect the group id itself
+ * (`120363...-group` or `551199...-timestamp`). Keep private JIDs untouched;
+ * only the group suffix is removed.
+ */
+export function normalizeZApiTarget(target: string): string {
+  return String(target ?? "").trim().replace(/@g\.us$/i, "");
+}
+
 export type BotOption = {
   optionKey?: string;
   label: string;
@@ -728,12 +740,12 @@ export class ZApiService {
   }
 
   private formatTarget(target: string): string {
-    const value = String(target || "").trim();
+    const value = normalizeZApiTarget(target);
     // A private number may arrive formatted as "+55 (24) 99256-6342". Do
     // not mistake its hyphen for a group separator: Z-API requires private
-    // recipients as digits only. Preserve only explicit WhatsApp JIDs (or
-    // the un-suffixed group-id form returned by get/chats).
-    if (value.includes("@") || /^\d{8,}-\d+$/.test(value)) return value;
+    // recipients as digits only. Preserve explicit WhatsApp JIDs and both
+    // documented group-id formats returned by get/chats.
+    if (value.includes("@") || /^\d{8,}-(?:\d+|group)$/i.test(value)) return value;
     return this.formatPhone(value);
   }
 
@@ -939,7 +951,7 @@ export class ZApiService {
       await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "FAILED", failureCode: failure.slice(0, 500) });
       throw new Error(failure);
     }
-    const providerMessageId = typeof result?.messageId === "string" ? result.messageId : typeof result?.id === "string" ? result.id : null;
+    const providerMessageId = String(result?.messageId || result?.zaapId || result?.id || "").trim() || null;
     const sent = await zApiRepository.updateGroupOutboundMessage(audit.id, { status: "SENT", providerMessageId });
     const message = {
       id: sent.id,
@@ -1199,6 +1211,7 @@ export class ZApiService {
     }
 
     const formattedPhone = this.formatTarget(phone);
+    const isGroupTarget = /^\d{8,}-(?:\d+|group)$/i.test(formattedPhone);
     const url = `https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-text`;
 
     try {
@@ -1222,13 +1235,22 @@ export class ZApiService {
       // A Z-API pode devolver HTTP 2xx com um erro de negócio no corpo.
       // Trate ambos os casos como falha para que o atendimento não mostre
       // uma mensagem como enviada quando ela não chegou ao WhatsApp.
-      if (!response.ok || data?.error || data?.success === false) {
-        const errorMsg = parseZApiError(response.status, data);
-        logger.error({ status: response.status, errorMsg }, "Erro retornado pela Z-API ao enviar texto");
+      const providerMessageId = String(data?.messageId || data?.zaapId || data?.id || "").trim() || null;
+      if (!response.ok || data?.error || data?.success === false || !providerMessageId) {
+        const errorMsg = !providerMessageId && response.ok
+          ? "A Z-API recebeu a requisição, mas não confirmou o envio da mensagem. Tente novamente em instantes."
+          : parseZApiError(response.status, data);
+        logger.error(
+          { status: response.status, targetType: isGroupTarget ? "group" : "private", targetHash: hashIdentifier(formattedPhone), hasProviderMessageId: Boolean(providerMessageId), errorMsg },
+          "Z-API não confirmou o envio do texto",
+        );
         return { error: errorMsg };
       }
 
-      logger.info({ status: response.status }, "Mensagem Z-API enviada com sucesso");
+      logger.info(
+        { status: response.status, targetType: isGroupTarget ? "group" : "private", targetHash: hashIdentifier(formattedPhone), hasProviderMessageId: true },
+        "Mensagem Z-API enviada com sucesso",
+      );
       return data;
     } catch (err: any) {
       logger.error({ err }, "Erro ao enviar mensagem Z-API");
@@ -1395,14 +1417,20 @@ export class ZApiService {
     const config = await this.getConfig();
     if (!config.isActive || !config.instanceId || !config.token) return null;
     try {
+      const formattedTarget = this.formatTarget(target);
       const response = await fetch(`https://api.z-api.io/instances/${config.instanceId}/token/${config.token}/send-text`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(config.clientToken ? { "Client-Token": config.clientToken } : {}) },
-        body: JSON.stringify({ phone: this.formatTarget(target), message: text }),
+        body: JSON.stringify({ phone: formattedTarget, message: text }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok || data?.error || data?.success === false) {
-        return { error: parseZApiError(response.status, data) };
+      const providerMessageId = String(data?.messageId || data?.zaapId || data?.id || "").trim() || null;
+      if (!response.ok || data?.error || data?.success === false || !providerMessageId) {
+        return {
+          error: !providerMessageId && response.ok
+            ? "A Z-API recebeu a requisição, mas não confirmou o envio da mensagem."
+            : parseZApiError(response.status, data),
+        };
       }
       return data;
     } catch (error: any) {

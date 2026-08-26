@@ -1,5 +1,6 @@
 import { conversationsRepository } from "./conversations.repository.js";
 import { zApiService } from "../zapi/zapi.service.js";
+import { logger } from "../../shared/logger.js";
 import { conversationEvents } from "../../shared/events.js";
 import { socketEmitter } from "../../shared/socket.js";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
@@ -89,7 +90,7 @@ export class ConversationsService {
     const normalized = direct.trim();
     // Only accept values that are unambiguously WhatsApp group identifiers.
     // Never treat a participant phone as a group destination.
-    return normalized.includes("@g.us") || /^\d{8,}-\d+$/.test(normalized)
+    return normalized.includes("@g.us") || /^\d{8,}-(?:\d+|group)$/i.test(normalized)
       ? normalized
       : null;
   }
@@ -150,6 +151,7 @@ export class ConversationsService {
         ? message.senderDepartmentSnapshot ?? message.senderAgent?.department?.name ?? null
         : null,
       senderContactId: message.senderContactId ?? null,
+      externalMessageId: message.externalMessageId ?? null,
       messageType: message.messageType ?? "TEXT",
       content: message.content,
       createdAt: message.createdAt.toISOString(),
@@ -764,6 +766,9 @@ export class ConversationsService {
     if (!delivery || (typeof delivery === "object" && "error" in delivery && delivery.error)) {
       // Keep the local message for auditability, but report the provider
       // failure instead of presenting an unsent group message as delivered.
+      await conversationsRepository.updateMessageType(message.id, "TEXT_FAILED").catch((error) => {
+        logger.warn({ error, messageId: message.id }, "Não foi possível marcar a mensagem como falha de envio");
+      });
       return {
         kind: "PROVIDER_ERROR" as const,
         error: delivery && typeof delivery === "object" && "error" in delivery
@@ -772,6 +777,15 @@ export class ConversationsService {
           ? "Não foi possível enviar para o grupo porque o identificador do grupo não está disponível. Sincronize os grupos da Z-API e tente novamente."
           : "Não foi possível entregar a mensagem pela integração Z-API.",
       };
+    }
+
+    const providerMessageId = typeof delivery === "object"
+      ? String(delivery.messageId || delivery.zaapId || delivery.id || "").trim() || null
+      : null;
+    if (providerMessageId) {
+      await conversationsRepository.updateMessageExternalId(message.id, providerMessageId).catch((error) => {
+        logger.warn({ error, messageId: message.id }, "Não foi possível registrar o ID da mensagem enviada pela Z-API");
+      });
     }
 
     if (wasDraft) {
@@ -796,6 +810,7 @@ export class ConversationsService {
       senderName: agentName,
       senderDepartmentName: agent.department?.name ?? null,
       senderContactId: null,
+      externalMessageId: providerMessageId,
       content: message.content,
       createdAt: message.createdAt.toISOString(),
     };

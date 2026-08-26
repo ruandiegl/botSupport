@@ -55,6 +55,7 @@ export interface Message {
   senderName: string | null;
   senderDepartmentName?: string | null;
   senderContactId?: string | null;
+  externalMessageId?: string | null;
   content: string;
   messageType?: "TEXT" | "CONTACT" | "IMAGE" | "AUDIO" | "VIDEO" | "DOCUMENT" | string;
   contactShare?: ContactShare | null;
