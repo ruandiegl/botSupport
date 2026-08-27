@@ -280,7 +280,60 @@ function mediaFallback(media: ParsedIncomingMedia): string {
  */
 function isGroupPayload(payload: any): boolean {
   const chatId = String(payload?.phone || payload?.chatId || "").trim();
-  return payload?.isGroup === true || /@g\.us$/i.test(chatId);
+  return payload?.isGroup === true
+    || /@g\.us$/i.test(chatId)
+    // Some Z-API callbacks omit `isGroup` and the JID suffix while retaining
+    // the provider's group-id shape (numeric id followed by a dash).
+    || /^\d{8,}-\d+(?:@g\.us)?$/i.test(chatId);
+}
+
+function firstNonEmptyString(values: unknown[]): string | null {
+  for (const value of values) {
+    const candidate = String(value ?? "").trim();
+    if (candidate) return candidate;
+  }
+  return null;
+}
+
+/**
+ * Group callbacks identify the chat with `chatName`, but that is the group
+ * title, not the person who sent the message. Prefer the participant fields
+ * and deliberately never fall back to `chatName` for group messages.
+ */
+function resolveIncomingSenderName(payload: any, groupPayload: boolean): string {
+  if (!groupPayload) {
+    return firstNonEmptyString([
+      payload.senderName,
+      payload.pushName,
+      payload.chatName,
+      payload.name,
+    ]) || "Contato WhatsApp";
+  }
+
+  const groupName = String(payload.chatName || "").trim();
+  const groupNameKey = groupName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").toLowerCase();
+  const candidates = [
+    payload.senderName,
+    payload.pushName,
+    payload.participantName,
+    payload.participantPushName,
+    payload.sender?.name,
+    payload.sender?.pushName,
+    payload.participant?.name,
+    payload.participant?.pushName,
+    payload.contactName,
+    payload.name,
+  ];
+  for (const value of candidates) {
+    const candidate = String(value ?? "").trim();
+    if (!candidate) continue;
+    const candidateKey = candidate.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").toLowerCase();
+    // A malformed callback has occasionally put the group title in a sender
+    // field. Reject it so bot templates cannot address the group as a person.
+    if (groupNameKey && candidateKey === groupNameKey) continue;
+    return candidate;
+  }
+  return "Participante";
 }
 
 export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null {
@@ -330,7 +383,7 @@ export function parseIncomingMessage(payload: any): ParsedIncomingMessage | null
   return {
     phone,
     ...(groupPayload ? { targetPhone: String(payload.phone || payload.chatId || "").trim() } : {}),
-    senderName: payload.senderName || payload.pushName || payload.chatName || payload.name || "Contato WhatsApp",
+    senderName: resolveIncomingSenderName(payload, groupPayload),
     content,
     ...(contactShare ? { messageType: "CONTACT" as const, contactShare } : {}),
     selectedOptionId,
@@ -545,6 +598,16 @@ function renderGroupTemplate(template: string | null | undefined, name: string, 
     .replace(/{{\s*grupo\s*}}/gi, group);
 }
 
+/**
+ * A group has one active ticket at a time. Additional participants can still
+ * mention the instance, but they must be directed to the existing ticket
+ * instead of receiving another greeting or opening a duplicate ticket.
+ */
+export function buildGroupAlreadyOpenMessage(requesterName: string): string {
+  const name = String(requesterName || "Participante").trim() || "Participante";
+  return `Olá, ${name}! Já existe um chamado aberto neste grupo. Prossiga com o atendimento no chamado atual para manter todo o histórico organizado.`;
+}
+
 function normalize(value: string): string {
   return value
     .normalize("NFD")
@@ -745,7 +808,7 @@ export class ZApiService {
     // not mistake its hyphen for a group separator: Z-API requires private
     // recipients as digits only. Preserve explicit WhatsApp JIDs and both
     // documented group-id formats returned by get/chats.
-    if (value.includes("@") || /^\d{8,}-(?:\d+|group)$/i.test(value)) return value;
+    if (value.includes("@") || /^\d{8,}-\d+$/.test(value) || /^\d{8,}-group$/i.test(value)) return value;
     return this.formatPhone(value);
   }
 
@@ -1714,6 +1777,7 @@ export class ZApiService {
     let groupAuditMessageId: string | null = null;
     let groupAuditCreatedAt: Date | null = null;
     let skipGroupAutomation = false;
+    let groupMonitorActivated = false;
     if (isGroup) {
       if (!config.groupsEnabled) return { status: "ignored_groups_disabled" };
       const participant = payload.participantPhone || payload.participant;
@@ -1816,7 +1880,10 @@ export class ZApiService {
         lastMessageAt: (groupAuditCreatedAt ?? new Date()).toISOString(),
       });
       const isGroupMonitor = activeGroupConversation?.status === "DRAFT" && activeGroupConversation.currentStep === "GROUP_MONITOR";
-      if (activeGroupConversation && !isGroupMonitor && config.groupResponseMode === "ORIGIN_PARTICIPANT") {
+      // Keep passive messages scoped to the requester when configured, but do
+      // not discard a valid mention from another participant: it must reach
+      // the active-ticket notice below instead of looking like a new ticket.
+      if (activeGroupConversation && !isGroupMonitor && config.groupResponseMode === "ORIGIN_PARTICIPANT" && !groupMentioned) {
         const origin = this.formatPhone(activeGroupConversation.groupParticipant || "");
         const sender = this.formatPhone(incoming.phone);
         if (!origin || !sender || origin !== sender) return { status: "group_message_logged_non_origin" };
@@ -1844,7 +1911,12 @@ export class ZApiService {
         );
         return { status: identityAvailable ? (mentions.length ? "group_message_logged_not_mentioned" : "group_message_logged") : "ignored_instance_identity_unavailable" };
       }
-      if (groupMentioned) {
+      // Cooldown protects the first mention from duplicate provider retries.
+      // Once a real group ticket is already open, do not suppress a new
+      // participant's mention: it must receive the explicit "ticket already
+      // open" guidance below. `messageId` already provides idempotency for
+      // retries of the same callback.
+      if (groupMentioned && (!activeGroupConversation || isGroupMonitor)) {
         const reserved = await zApiRepository.reserveGroupMention(
           hashIdentifier(String(payload.phone)),
           hashIdentifier(String(participant)),
@@ -1857,6 +1929,17 @@ export class ZApiService {
     const phone = this.formatPhone(incoming.phone);
     let contact = preloadedContact || await zApiRepository.findContactByPhone(phone);
     if (!contact) contact = await zApiRepository.createContact(phone, incoming.senderName);
+    // A monitor can be created before the first mention, when the callback
+    // does not expose the participant display name yet. Reuse the known
+    // contact profile so templates address the person instead of the group.
+    if (
+      incoming.group
+      && incoming.senderName === "Participante"
+      && preloadedContact?.name?.trim()
+      && normalize(preloadedContact.name) !== normalize(incoming.group.name)
+    ) {
+      incoming.senderName = preloadedContact.name.trim();
+    }
 
     if (incoming.contactShare?.phones.length) {
       const sharedOwner = await zApiRepository.findContactByAnyPhone(incoming.contactShare.phones);
@@ -1883,8 +1966,21 @@ export class ZApiService {
           ...(config.groupConversationMode === "IN_GROUP" ? { channel: "GROUP" as const, remoteChatId: incoming.group.jid, groupChatId: groupChat?.id ?? null } : {}),
         } : undefined,
       );
-    } else if (incoming.group) {
-      await zApiRepository.updateGroupContext(activeConversation.id, incoming.group.name, phone);
+    } else if (
+      incoming.group
+      // A monitor is still a draft. Let the conditional activation below
+      // bind the first mention atomically; updating it here would allow two
+      // simultaneous participants to overwrite the original requester.
+      && !(activeConversation.status === "DRAFT" && activeConversation.currentStep === "GROUP_MONITOR")
+    ) {
+      // Keep the original requester attached to the ticket. A later mention
+      // from another participant must not replace the participant used for
+      // origin-scoped replies or audit history.
+      await zApiRepository.updateGroupContext(
+        activeConversation.id,
+        incoming.group.name,
+        activeConversation.groupParticipant || phone,
+      );
     }
 
     // The monitor is intentionally stored as DRAFT so it does not create a
@@ -1895,9 +1991,17 @@ export class ZApiService {
       && activeConversation.status === "DRAFT"
       && activeConversation.currentStep === "GROUP_MONITOR";
     if (groupMentioned && isGroupMonitor) {
-      const activated = await zApiRepository.activateGroupMonitorConversation(activeConversation.id);
+      const activated = await zApiRepository.activateGroupMonitorConversation(activeConversation.id, contact.id, phone);
       if (activated) {
+        groupMonitorActivated = true;
         activeConversation = { ...activeConversation, status: "OPEN", currentStep: "AWAITING_TEAM", queuedAt: new Date() };
+      } else {
+        // Another webhook may have promoted the monitor between our read and
+        // the conditional update. Re-read the winner so the second mention is
+        // handled as an existing ticket instead of being left on a draft (or
+        // creating a second ticket).
+        const promoted = await zApiRepository.findActiveConversationByGroup(incoming.group!.jid);
+        if (promoted) activeConversation = promoted;
       }
     }
 
@@ -2071,6 +2175,58 @@ export class ZApiService {
     }
 
     if (!config.isActive || !config.autoReply) return { status: "auto_reply_disabled" };
+
+    const groupAlreadyHasTicket = Boolean(
+      incoming.group
+      && groupMentioned
+      && !groupMonitorActivated
+      && !isNewConversation
+      && (
+        activeConversation.channel === "GROUP"
+        || Boolean(activeConversation.groupChatId || activeConversation.groupChatName)
+      ),
+    );
+    if (groupAlreadyHasTicket) {
+      const notice = buildGroupAlreadyOpenMessage(incoming.senderName);
+      const storedNotice = await zApiRepository.addMessage({
+        conversationId,
+        direction: "OUT",
+        senderType: "BOT",
+        messageType: "GROUP_TICKET_ALREADY_OPEN",
+        content: notice,
+      });
+      // Keep the duplicate-ticket notice on the same channel as the rest of
+      // the configured group flow. This preserves the legacy private mode
+      // while sending it to the group in the unified IN_GROUP mode.
+      const noticeTarget = config.groupConversationMode === "IN_GROUP" ? incoming.group!.jid : phone;
+      const delivery = await this.sendBotText(noticeTarget, notice, phone);
+      if (delivery && "blocked" in delivery && delivery.blocked) {
+        await zApiRepository.deleteMessage(storedNotice.id);
+        return { status: "bot_excluded" };
+      }
+      if (!delivery || delivery.error) {
+        await zApiRepository.deleteMessage(storedNotice.id);
+        logger.error(
+          { conversationId, error: delivery?.error || "integration_inactive", requesterName: incoming.senderName },
+          "Falha ao informar que o grupo já possui um chamado ativo",
+        );
+        return { status: "group_active_ticket_notice_failed" };
+      }
+      publishStoredBotMessage(conversationId, storedNotice);
+      conversationEvents.emit("conversation_updated", {
+        conversationId,
+        status: activeConversation.status,
+        eventType: "GROUP_TICKET_ALREADY_OPEN",
+        messageId: storedNotice.id,
+        departmentId: activeConversation.departmentId,
+        assignedAgentId: activeConversation.assignedAgentId,
+      });
+      return { status: "group_ticket_already_open" };
+    }
+
+    // Assigned tickets are stored as IN_PROGRESS. They still represent an
+    // active group call, so the duplicate-ticket guidance above must run
+    // before the normal OPEN-only automation guard.
     if (activeConversation.status !== "OPEN") return { status: "message_logged" };
 
     const businessHours = await businessHoursService.decide({
@@ -2118,7 +2274,11 @@ export class ZApiService {
       return { status: businessHours.reason === "OUTSIDE_HOURS" ? "outside_hours_reply" : "no_agent_online_reply" };
     }
 
-    if (incoming.group && (isNewConversation || groupMentioned)) {
+    // In the unified in-group mode the conversation already lives in the
+    // WhatsApp group, so the legacy "redirecionando para o privado" notice
+    // would be misleading and add an unnecessary message before the greeting.
+    // Keep it for PRIVATE_LEGACY so the rollback mode preserves its contract.
+    if (incoming.group && config.groupConversationMode !== "IN_GROUP" && (isNewConversation || groupMentioned)) {
       const confirmation = renderGroupTemplate(config.groupConfirmMessage, incoming.senderName, incoming.group.name);
       const storedConfirmation = await zApiRepository.addMessage({ conversationId, direction: "OUT", senderType: "BOT", content: confirmation });
       const sendInGroup = config.groupConversationMode === "IN_GROUP";

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
-import { isInstanceMentioned, parseIncomingMessage } from "../dist/modules/zapi/zapi.service.js";
+import { buildGroupAlreadyOpenMessage, isInstanceMentioned, parseIncomingMessage } from "../dist/modules/zapi/zapi.service.js";
 import { UpdateZApiConfigSchema, ZApiReceivedWebhookSchema } from "../dist/modules/zapi/zapi.schemas.js";
 import { ListConversationsQuerySchema } from "../dist/modules/conversations/conversations.schemas.js";
 
@@ -28,8 +28,35 @@ test("callback de grupo valida participante e até 100 menções", () => {
 test("parser vincula a conversa ao participante, não ao JID do grupo", () => {
   const parsed = parseIncomingMessage(groupPayload);
   assert.equal(parsed?.phone, "5511999999999");
+  assert.equal(parsed?.senderName, "Participante");
   assert.equal(parsed?.group?.name, "Suporte técnico");
   assert.equal(parsed?.group?.jid, groupPayload.phone);
+});
+
+test("parser prioriza o nome do participante e nunca o nome do grupo", () => {
+  const parsed = parseIncomingMessage({
+    ...groupPayload,
+    senderName: "João Valente",
+  });
+  assert.equal(parsed?.senderName, "João Valente");
+
+  const malformed = parseIncomingMessage({
+    ...groupPayload,
+    senderName: groupPayload.chatName,
+  });
+  assert.equal(malformed?.senderName, "Participante");
+});
+
+test("aviso de chamado já aberto identifica quem mencionou o bot", () => {
+  const message = buildGroupAlreadyOpenMessage("João Valente");
+  assert.match(message, /João Valente/);
+  assert.match(message, /já existe um chamado aberto neste grupo/i);
+  assert.doesNotMatch(message, /Suporte técnico/);
+});
+
+test("modo unificado não envia a confirmação legada de redirecionamento ao privado", async () => {
+  const service = await readFile(new URL("../src/modules/zapi/zapi.service.ts", import.meta.url), "utf8");
+  assert.match(service, /config\.groupConversationMode !== "IN_GROUP" && \(isNewConversation \|\| groupMentioned\)/);
 });
 
 test("aceita o formato oficial da Z-API para participante e telefone conectado", () => {
@@ -42,6 +69,17 @@ test("aceita o formato oficial da Z-API para participante e telefone conectado",
   };
   assert.equal(ZApiReceivedWebhookSchema.safeParse(payload).success, true);
   assert.equal(parseIncomingMessage(payload)?.phone, "5511777777777");
+});
+
+test("reconhece JID de grupo mesmo sem isGroup e sem o sufixo @g.us", () => {
+  const payload = {
+    ...groupPayload,
+    isGroup: undefined,
+    phone: "120363000000000000-1234567890",
+  };
+  const parsed = parseIncomingMessage(payload);
+  assert.equal(parsed?.phone, "5511999999999");
+  assert.equal(parsed?.group?.jid, payload.phone);
 });
 
 test("somente a menção da própria instância ativa o bot no grupo", () => {

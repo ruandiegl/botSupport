@@ -2,6 +2,17 @@ import { randomUUID } from "node:crypto";
 import { Prisma } from "../../generated/prisma/index.js";
 import { prisma } from "../../shared/prisma.js";
 
+/**
+ * Z-API alternates between a bare group id and the WhatsApp JID suffix.
+ * Keep lookups tolerant of both representations without requiring a data
+ * migration or rewriting historical rows.
+ */
+function groupRemoteChatIdVariants(remoteChatId: string): string[] {
+  const raw = String(remoteChatId ?? "").trim();
+  const bare = raw.replace(/@g\.us$/i, "");
+  return [...new Set([raw, bare].filter(Boolean))];
+}
+
 export class ZApiRepository {
   private async mirrorUnlinkedGroupMessages(groupChatId: string, conversationId: string) {
     const pending = await prisma.groupMessage.findMany({
@@ -220,25 +231,33 @@ export class ZApiRepository {
   }
 
   async findActiveConversationByGroup(remoteChatId: string) {
+    const remoteChatIds = groupRemoteChatIdVariants(remoteChatId);
+    const groupLookup = {
+      OR: [
+        { remoteChatId: { in: remoteChatIds } },
+        { groupChat: { remoteChatId: { in: remoteChatIds } } },
+      ],
+    };
     // Prefer a real ticket, but keep the persistent group monitor (DRAFT)
     // available so messages received before a mention are also mirrored into
     // the unified conversation view without triggering the bot.
     const active = await prisma.conversation.findFirst({
       // Group JIDs are unique in remoteChatId. Older rows may predate the
       // GROUP channel value, so the JID is the compatibility key here.
-      where: { remoteChatId, status: { notIn: ["CLOSED", "DRAFT"] } },
+      where: { ...groupLookup, status: { notIn: ["CLOSED", "DRAFT"] } },
       include: { contact: true, department: true, assignedAgent: true, groupChat: true },
       orderBy: { startedAt: "desc" },
     });
     if (active) return active;
     return prisma.conversation.findFirst({
-      where: { remoteChatId, status: "DRAFT", currentStep: "GROUP_MONITOR" },
+      where: { ...groupLookup, status: "DRAFT", currentStep: "GROUP_MONITOR" },
       include: { contact: true, department: true, assignedAgent: true, groupChat: true },
       orderBy: { startedAt: "desc" },
     });
   }
 
   async ensureGroupMonitorConversation(groupChat: { id: string; remoteChatId: string; name: string }) {
+    const remoteChatIds = groupRemoteChatIdVariants(groupChat.remoteChatId);
     // A group has one canonical conversation in the unified queue. If a
     // mention already promoted the monitor to a real ticket, reuse that
     // ticket instead of creating a second monitor row for the same group.
@@ -247,7 +266,7 @@ export class ZApiRepository {
         status: { notIn: ["CLOSED", "DRAFT"] },
         OR: [
           { groupChatId: groupChat.id },
-          { remoteChatId: groupChat.remoteChatId },
+          { remoteChatId: { in: remoteChatIds } },
         ],
       },
       include: { contact: true, department: true, assignedAgent: true, groupChat: true },
@@ -262,7 +281,7 @@ export class ZApiRepository {
       where: {
         status: "DRAFT",
         currentStep: "GROUP_MONITOR",
-        OR: [{ groupChatId: groupChat.id }, { remoteChatId: groupChat.remoteChatId }],
+        OR: [{ groupChatId: groupChat.id }, { remoteChatId: { in: remoteChatIds } }],
       },
       include: { contact: true, department: true, assignedAgent: true, groupChat: true },
       orderBy: { startedAt: "desc" },
@@ -321,7 +340,7 @@ export class ZApiRepository {
         where: {
           status: "DRAFT",
           currentStep: "GROUP_MONITOR",
-          OR: [{ groupChatId: groupChat.id }, { remoteChatId: groupChat.remoteChatId }],
+          OR: [{ groupChatId: groupChat.id }, { remoteChatId: { in: remoteChatIds } }],
         },
         include: { contact: true, department: true, assignedAgent: true, groupChat: true },
         orderBy: { startedAt: "desc" },
@@ -336,13 +355,23 @@ export class ZApiRepository {
     return prisma.groupChat.findFirst({ where: { remoteChatId, isActive: true }, select: { id: true } });
   }
 
-  async activateGroupMonitorConversation(id: string) {
+  async activateGroupMonitorConversation(id: string, contactId?: string, participant?: string | null) {
     const now = new Date();
     const result = await prisma.conversation.updateMany({
       // Keep old monitor rows activatable even when their channel was stored
       // before the unified GROUP value existed.
       where: { id, status: "DRAFT", currentStep: "GROUP_MONITOR" },
-      data: { status: "OPEN", queuedAt: now, lastActivityAt: now, currentStep: "AWAITING_TEAM" },
+      data: {
+        status: "OPEN",
+        queuedAt: now,
+        lastActivityAt: now,
+        currentStep: "AWAITING_TEAM",
+        // The monitor may have been created from an earlier participant. On
+        // the first mention, make the requester the ticket contact so flow
+        // variables and contact summaries never use the group name.
+        ...(contactId ? { contactId } : {}),
+        ...(participant !== undefined ? { groupParticipant: participant } : {}),
+      },
     });
     return result.count > 0;
   }
@@ -419,11 +448,33 @@ export class ZApiRepository {
 
   async upsertGroupChat(remoteChatId: string, name: string, lastMessageAt = new Date()) {
     const safeName = name.trim().slice(0, 300) || "Grupo do WhatsApp";
-    return prisma.groupChat.upsert({
-      where: { remoteChatId },
-      create: { remoteChatId, name: safeName, lastMessageAt },
-      update: { name: safeName, lastMessageAt, isActive: true },
+    const variants = groupRemoteChatIdVariants(remoteChatId);
+    const existing = await prisma.groupChat.findFirst({
+      where: { remoteChatId: { in: variants } },
     });
+    if (existing) {
+      return prisma.groupChat.update({
+        where: { id: existing.id },
+        data: { name: safeName, lastMessageAt, isActive: true },
+      });
+    }
+    try {
+      return await prisma.groupChat.create({
+        // New rows use the provider's bare id. Existing suffix-based rows
+        // continue to work through the tolerant lookup above.
+        data: { remoteChatId: variants[1] || variants[0], name: safeName, lastMessageAt },
+      });
+    } catch (error: any) {
+      // A webhook and a synchronization request can race before either sees
+      // the row. Re-read the unique winner instead of creating a duplicate.
+      if (error?.code !== "P2002") throw error;
+      const winner = await prisma.groupChat.findFirst({ where: { remoteChatId: { in: variants } } });
+      if (!winner) throw error;
+      return prisma.groupChat.update({
+        where: { id: winner.id },
+        data: { name: safeName, lastMessageAt, isActive: true },
+      });
+    }
   }
 
   async addGroupMessage(data: {
