@@ -1879,6 +1879,17 @@ body { letter-spacing: 0; }
 }
 [data-theme="dark"] .bar span,
 [data-theme="dark"] .dot { background: #7f9eab; }
+
+/* Contadores de mensagens: verde de sucesso para diferenciar atividade
+   disponível dos alertas críticos do sino. Mantemos a forma e o tamanho
+   atuais, alterando apenas a cor visual. */
+.count,
+.nav-badge {
+  background: #2c9d7b !important;
+  border-color: #2c9d7b !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
 [data-theme="dark"] .service-icon { color: #b6cfd5; }
 [data-theme="dark"] .tag { color: #b0c8d0; }
 [data-theme="dark"] .out .bubble { background: #527087; border-color: #527087; box-shadow: none; }
