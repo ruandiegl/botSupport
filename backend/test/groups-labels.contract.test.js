@@ -131,6 +131,23 @@ test("fila aceita etiquetas como UUIDs e rejeita identificadores inválidos", ()
   assert.equal(ListConversationsQuerySchema.safeParse({ labelIds: "label-system-group" }).success, false);
 });
 
+test("filtro de grupos exibe somente o fluxo vivo e não chamados encerrados", async () => {
+  const repository = await readFile(new URL("../src/modules/conversations/conversations.repository.ts", import.meta.url), "utf8");
+  const service = await readFile(new URL("../src/modules/conversations/conversations.service.ts", import.meta.url), "utf8");
+  const queuePage = await readFile(new URL("../../frontend/src/pages/queue/index.tsx", import.meta.url), "utf8");
+  assert.match(repository, /const isGroupChannel = filters\.channel === "GROUP"/);
+  assert.match(repository, /!isGroupChannel && filters\.status/);
+  assert.match(repository, /\{ status: \{ not: "CLOSED" \} \}/);
+  assert.match(repository, /c\."status" <> 'CLOSED'/);
+  assert.match(repository, /const isGroupScope = filters\.scope === "groups"/);
+  assert.match(repository, /isGroupScope\) conditions\.push\(Prisma\.sql\`\(c\."channel" = 'GROUP'/);
+  assert.match(service, /const groupChat = conversation\.groupChat/);
+  assert.match(service, /this\.isGroupConversation\(conversation\) && groupChat/);
+  assert.match(service, /ensureGroupMonitorConversation\(groupChat\)/);
+  assert.match(queuePage, /const matchesLiveGroup = .*channel !== "GROUP".*item\.status !== "CLOSED"/);
+  assert.match(queuePage, /setMetricFilter\("ALL"\);\s*setStatus\("ALL"\);\s*setChannel\("GROUP"\)/);
+});
+
 test("migration de etiquetas é aditiva, idempotente no seed e protege o cooldown", async () => {
   const sql = await readFile(new URL("../prisma/migrations/20260817090000_add_group_mentions_and_labels/migration.sql", import.meta.url), "utf8");
   assert.match(sql, /CREATE TABLE "gtf_labels"/);

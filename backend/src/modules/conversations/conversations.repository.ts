@@ -46,9 +46,13 @@ export class ConversationsRepository {
     // Group monitor conversations are persisted as DRAFT so they never count
     // as an open ticket until a mention (or an agent message) promotes them.
     // They are nevertheless real conversation records and must be visible
-    // whenever the queue is filtered to groups.
-    const includeGroupMonitors = filters.channel === "GROUP" && (!filters.status || filters.status === "ALL");
-    if (filters.status && filters.status !== "ALL") {
+    // whenever the queue is filtered to groups. A group filter represents the
+    // continuous WhatsApp stream, not the ticket lifecycle: it must therefore
+    // ignore OPEN/IN_PROGRESS/CLOSED status selection and only exclude closed
+    // ticket rows (the monitor itself can remain DRAFT).
+    const isGroupChannel = filters.channel === "GROUP";
+    const includeGroupMonitors = isGroupChannel;
+    if (!isGroupChannel && filters.status && filters.status !== "ALL") {
       // Map legacy statuses for backward compatibility
       const statusValue = filters.status;
       where.status = statusValue;
@@ -63,6 +67,7 @@ export class ConversationsRepository {
             OR: [
               { channel: "GROUP" },
               { groupChatId: { not: null } },
+              { groupChatName: { not: null } },
               { remoteChatId: { contains: "@g.us", mode: "insensitive" } },
             ],
           },
@@ -79,20 +84,20 @@ export class ConversationsRepository {
       where.assignedAgentId = filters.assignedAgentId;
     }
 
-    if (filters.openOnly && !where.status) {
-      if (includeGroupMonitors) {
-        where.status = { not: "CLOSED" };
-        where.AND = [{ OR: [{ status: { not: "DRAFT" } }, { status: "DRAFT", currentStep: "GROUP_MONITOR" }] }];
-      } else {
-        where.status = { notIn: ["CLOSED", "DRAFT"] };
-      }
+    if (isGroupChannel) {
+      // Keep the channel predicate already added above and append the live
+      // stream constraints instead of replacing it. Replacing `AND` here
+      // used to let closed ticket rows leak into the group filter.
+      where.AND = [
+        ...(where.AND ?? []),
+        { status: { not: "CLOSED" } },
+        { OR: [{ status: { not: "DRAFT" } }, { status: "DRAFT", currentStep: "GROUP_MONITOR" }] },
+      ];
+    } else if (filters.openOnly && !where.status) {
+      where.status = { notIn: ["CLOSED", "DRAFT"] };
     } else if (!where.status) {
-      if (includeGroupMonitors) {
-        where.AND = [{ OR: [{ status: { not: "DRAFT" } }, { status: "DRAFT", currentStep: "GROUP_MONITOR" }] }];
-      } else {
-        // DRAFT conversations are private composer sessions, not tickets.
-        where.status = { not: "DRAFT" };
-      }
+      // DRAFT conversations are private composer sessions, not tickets.
+      where.status = { not: "DRAFT" };
     }
     if (filters.unreadOnly) {
       where.messages = { some: { direction: "IN", readAt: null } };
@@ -133,18 +138,19 @@ export class ConversationsRepository {
       // Never expose a private composer draft. Group monitor drafts are the
       // exception: when the group channel is selected they are the canonical
       // conversation row for the always-on group history.
-      const groupChannelCondition = Prisma.sql`(c."channel" = 'GROUP' OR c."group_chat_id" IS NOT NULL OR c."remote_chat_id" ILIKE '%@g.us')`;
+      const groupChannelCondition = Prisma.sql`(c."channel" = 'GROUP' OR c."group_chat_id" IS NOT NULL OR c."group_chat_name" IS NOT NULL OR c."remote_chat_id" ILIKE '%@g.us')`;
       const conditions: Prisma.Sql[] = [
         includeGroupMonitors
           ? Prisma.sql`(c."status" <> 'DRAFT' OR (c."status" = 'DRAFT' AND c."current_step" = 'GROUP_MONITOR' AND ${groupChannelCondition}))`
           : Prisma.sql`c."status" <> 'DRAFT'`,
       ];
-      if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
+      if (!isGroupChannel && filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
       if (filters.channel === "GROUP") conditions.push(groupChannelCondition);
       else if (filters.channel && filters.channel !== "ALL") conditions.push(Prisma.sql`c."channel" = ${filters.channel}`);
+      if (isGroupChannel) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
       if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
       if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
-      if (filters.openOnly) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
+      if (filters.openOnly && !isGroupChannel) conditions.push(Prisma.sql`c."status" <> 'CLOSED'`);
       if (filters.unreadOnly) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" umf WHERE umf."conversation_id" = c."id" AND umf."direction" = 'IN' AND umf."read_at" IS NULL)`);
       if (filters.labelIds?.length) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_conversation_labels" clf WHERE clf."conversation_id" = c."id" AND clf."label_id" IN (${Prisma.join(filters.labelIds)}))`);
       const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
@@ -316,13 +322,21 @@ export class ConversationsRepository {
     const query = filters.q.trim();
     const like = `%${query}%`;
     const digits = query.replace(/\D/g, "");
-    const conditions: Prisma.Sql[] = [Prisma.sql`c."status" <> 'DRAFT'`];
+    const isGroupScope = filters.scope === "groups";
+    const conditions: Prisma.Sql[] = [
+      isGroupScope
+        ? Prisma.sql`(c."status" <> 'CLOSED' AND (c."status" <> 'DRAFT' OR (c."status" = 'DRAFT' AND c."current_step" = 'GROUP_MONITOR')))`
+        : Prisma.sql`c."status" <> 'DRAFT'`,
+    ];
 
-    if (filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
+    // The groups scope is a continuous stream, so ticket status is not a
+    // second filter there. Closed ticket rows are excluded by the base
+    // predicate while OPEN/IN_PROGRESS selections cannot hide the monitor.
+    if (!isGroupScope && filters.status && filters.status !== "ALL") conditions.push(Prisma.sql`c."status" = ${filters.status}`);
     if (filters.departmentId && filters.departmentId !== "ALL") conditions.push(Prisma.sql`c."department_id" = ${filters.departmentId}`);
     if (filters.assignedAgentId) conditions.push(Prisma.sql`c."assigned_agent_id" = ${filters.assignedAgentId}`);
     if (filters.scope === "unread") conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" unread_m WHERE unread_m."conversation_id" = c."id" AND unread_m."direction" = 'IN' AND unread_m."read_at" IS NULL)`);
-    if (filters.scope === "groups") conditions.push(Prisma.sql`c."group_chat_name" IS NOT NULL`);
+    if (isGroupScope) conditions.push(Prisma.sql`(c."channel" = 'GROUP' OR c."group_chat_id" IS NOT NULL OR c."group_chat_name" IS NOT NULL OR c."remote_chat_id" ILIKE '%@g.us')`);
     if (filters.labelIds?.length) conditions.push(Prisma.sql`EXISTS (SELECT 1 FROM "gtf_conversation_labels" search_label WHERE search_label."conversation_id" = c."id" AND search_label."label_id" IN (${Prisma.join(filters.labelIds)})`);
     const dateColumn = Prisma.raw(filters.dateField === "createdAt" ? 'c."started_at"' : 'c."last_activity_at"');
     if (filters.from) conditions.push(Prisma.sql`${dateColumn} >= ${new Date(filters.from)}`);
@@ -330,15 +344,16 @@ export class ConversationsRepository {
 
     const messageMatch = Prisma.sql`EXISTS (SELECT 1 FROM "gtf_messages" search_m WHERE search_m."conversation_id" = c."id" AND search_m."content" ILIKE ${like})`;
     const phoneMatch = digits.length >= 3 ? Prisma.sql`ct."phone" LIKE ${`%${digits}%`}` : Prisma.sql`FALSE`;
-    conditions.push(Prisma.sql`(ct."name" ILIKE ${like} OR ${phoneMatch} OR ${messageMatch})`);
+    conditions.push(Prisma.sql`(ct."name" ILIKE ${like} OR c."group_chat_name" ILIKE ${like} OR ${phoneMatch} OR ${messageMatch})`);
 
     const whereSql = Prisma.join(conditions, " AND ");
     const relevanceSql = Prisma.sql`CASE
       WHEN ${digits.length >= 3 ? Prisma.sql`ct."phone" = ${digits}` : Prisma.sql`FALSE`} THEN 0
       WHEN lower(ct."name") = lower(${query}) THEN 1
       WHEN ct."name" ILIKE ${`${query}%`} THEN 2
-      WHEN ${messageMatch} THEN 3
-      ELSE 4
+      WHEN c."group_chat_name" ILIKE ${`${query}%`} THEN 3
+      WHEN ${messageMatch} THEN 4
+      ELSE 5
     END`;
     const orderSql = filters.sort === "oldest"
       ? Prisma.sql`c."last_activity_at" ASC, c."id" ASC`

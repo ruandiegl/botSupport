@@ -8,6 +8,7 @@ import { mediaService } from "../media/media.service.js";
 import { notificationsService } from "../notifications/notifications.service.js";
 import { contactsRepository } from "../contacts/contacts.repository.js";
 import { validateOutgoingMedia, type OutgoingMediaKind } from "./outgoing-media.js";
+import { zApiRepository } from "../zapi/zapi.repository.js";
 
 const DEFAULT_MESSAGE_LIMIT = 50;
 
@@ -725,6 +726,17 @@ export class ConversationsService {
     await conversationsRepository.close(id, closeReason);
 
     conversationEvents.emit("conversation_updated", { conversationId: id, status: "CLOSED", eventType: "CLOSED", closeReason });
+
+    // A group is a permanent WhatsApp stream, while a ticket is only one
+    // lifecycle inside that stream. Once a group ticket is closed, recreate
+    // its lightweight monitor so the group remains visible in the queue
+    // without exposing the closed ticket in the Groups filter.
+    const groupChat = conversation.groupChat;
+    if (this.isGroupConversation(conversation) && groupChat) {
+      await zApiRepository.ensureGroupMonitorConversation(groupChat).catch((error) => {
+        logger.warn({ conversationId: id, groupChatId: groupChat.id, error }, "Não foi possível manter o monitor do grupo após encerrar o chamado");
+      });
+    }
 
     return this.formatConversation(id, { messageLimit: DEFAULT_MESSAGE_LIMIT });
   }

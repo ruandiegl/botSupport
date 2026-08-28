@@ -160,7 +160,12 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const all = result?.items ?? [];
   const locallyFiltered = useMemo(() => all.filter((item) => {
     const matchesMine = isGlobalSearch || !queryMine || item.assignedAgentId === currentAgentId;
-    const matchesChannel = isGlobalSearch || channel === "ALL" || (item.channel ?? "PRIVATE") === channel;
+    const itemIsGroup = item.channel === "GROUP" || Boolean(item.groupChatName);
+    const matchesChannel = isGlobalSearch || channel === "ALL" || (channel === "GROUP" ? itemIsGroup : !itemIsGroup);
+    // Group rows are a continuous WhatsApp stream. A closed ticket from the
+    // same group must never leak into this view; the live monitor (including a
+    // DRAFT monitor) remains visible independently of ticket status.
+    const matchesLiveGroup = isGlobalSearch || channel !== "GROUP" || item.status !== "CLOSED";
     const matchesDepartment = isGlobalSearch || department === "ALL" || item.departmentId === department;
     const searchText = `${item.contact.name} ${item.contact.phone} ${item.contact.email ?? ""} ${item.groupChatName ?? ""} ${item.lastMessage} ${item.searchMatch?.snippet ?? ""}`.toLowerCase();
     const matchesSearch = !search.trim() || searchText.includes(search.trim().toLowerCase());
@@ -168,7 +173,7 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
     const matchesDate = isGlobalSearch || ((!dateRange.from || timestamp >= dateRange.from) && (!dateRange.to || timestamp < dateRange.to));
     const matchesOpen = isGlobalSearch || metricFilter !== "ALL" || item.status !== "CLOSED";
     const matchesStatus = isGlobalSearch || metricFilter !== "CLOSED" || item.status === "CLOSED";
-    return matchesMine && matchesChannel && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
+    return matchesMine && matchesChannel && matchesLiveGroup && matchesDepartment && matchesSearch && matchesDate && matchesOpen && matchesStatus;
   }), [all, channel, currentAgentId, dateRange, department, metricFilter, onlyMine, queryMine, search]);
 
   const visibleConversations = result?.legacy ? locallyFiltered.slice((currentPage - 1) * CONVERSATIONS_PER_PAGE, currentPage * CONVERSATIONS_PER_PAGE) : locallyFiltered;
@@ -227,7 +232,10 @@ export default function QueuePage(props?: { onlyMine?: boolean } & Record<string
   const activateGroups = () => {
     // Groups is only a channel filter.  Keep the status/date/department
     // choices intact so the user can return to the private queue without the
-    // other cards being reset.
+    // other cards being reset. Status does not apply to the continuous group
+    // stream, so reset a stale status selection such as "Encerradas".
+    setMetricFilter("ALL");
+    setStatus("ALL");
     setChannel("GROUP");
     setCurrentPage(1);
   };
