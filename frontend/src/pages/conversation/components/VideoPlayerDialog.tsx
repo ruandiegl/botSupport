@@ -7,6 +7,7 @@ import {
   PictureInPicture2,
   Play,
   Rewind,
+  VolumeX,
   Volume2,
 } from "lucide-react";
 import type { ConversationMedia } from "@/types";
@@ -51,6 +52,7 @@ export function VideoPlayerDialog({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [muted, setMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
   const [playerError, setPlayerError] = useState<string | null>(null);
@@ -67,11 +69,13 @@ export function VideoPlayerDialog({
     setCurrentTime(0);
     setDuration(0);
     setPlaybackRate(1);
+    setMuted(false);
     setPlayerError(null);
     if (video) {
       video.pause();
       video.currentTime = 0;
       video.playbackRate = 1;
+      video.muted = false;
     }
   }, [open, source]);
 
@@ -79,7 +83,11 @@ export function VideoPlayerDialog({
     const video = videoRef.current;
     if (!video) return;
 
-    const onLoadedMetadata = () => setDuration(Number.isFinite(video.duration) ? video.duration : 0);
+    const syncMetadata = () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) setDuration(video.duration);
+    };
+    const onLoadedMetadata = syncMetadata;
+    const onDurationChange = syncMetadata;
     const onTimeUpdate = () => setCurrentTime(video.currentTime);
     const onPlay = () => setPlaying(true);
     const onPause = () => setPlaying(false);
@@ -90,6 +98,9 @@ export function VideoPlayerDialog({
     const onFullscreenChange = () => setIsFullscreen(document.fullscreenElement === playerRef.current);
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
+    video.addEventListener("durationchange", onDurationChange);
+    video.addEventListener("loadeddata", syncMetadata);
+    video.addEventListener("canplay", syncMetadata);
     video.addEventListener("timeupdate", onTimeUpdate);
     video.addEventListener("play", onPlay);
     video.addEventListener("pause", onPause);
@@ -98,8 +109,15 @@ export function VideoPlayerDialog({
     video.addEventListener("enterpictureinpicture", onEnterPictureInPicture);
     video.addEventListener("leavepictureinpicture", onLeavePictureInPicture);
     document.addEventListener("fullscreenchange", onFullscreenChange);
+    // Metadata can be available from cache before the effect subscribes to
+    // the media events. Read it immediately as well so the timeline does not
+    // remain stuck at 0:00 / 0:00.
+    syncMetadata();
     return () => {
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("durationchange", onDurationChange);
+      video.removeEventListener("loadeddata", syncMetadata);
+      video.removeEventListener("canplay", syncMetadata);
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("play", onPlay);
       video.removeEventListener("pause", onPause);
@@ -133,6 +151,14 @@ export function VideoPlayerDialog({
     if (!Number.isFinite(next) || next <= 0) return;
     setPlaybackRate(next);
     if (videoRef.current) videoRef.current.playbackRate = next;
+  };
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const next = !video.muted;
+    video.muted = next;
+    setMuted(next);
   };
 
   const toggleFullscreen = async () => {
@@ -219,7 +245,9 @@ export function VideoPlayerDialog({
               <Button variant="ghost" size="icon-sm" onClick={() => seekBy(-10)} aria-label="Voltar 10 segundos" title="Voltar 10 segundos"><Rewind data-icon="icon" /></Button>
               <Button variant="ghost" size="icon-sm" onClick={() => seekBy(10)} aria-label="Adiantar 10 segundos" title="Adiantar 10 segundos"><FastForward data-icon="icon" /></Button>
               <span className="min-w-20 text-center text-xs tabular-nums text-muted-foreground">{formatTime(currentTime)} / {formatTime(duration)}</span>
-              <span className="ml-auto hidden items-center gap-1 text-xs text-muted-foreground sm:inline-flex"><Volume2 className="size-3.5" /> Áudio</span>
+              <Button variant="ghost" size="icon-sm" onClick={toggleMute} aria-pressed={muted} aria-label={muted ? "Ativar áudio" : "Silenciar vídeo"} title={muted ? "Ativar áudio" : "Silenciar vídeo"}>
+                {muted ? <VolumeX data-icon="icon" /> : <Volume2 data-icon="icon" />}
+              </Button>
               <Select value={String(playbackRate)} onValueChange={changeSpeed}>
                 <SelectTrigger className="h-7 w-20 text-xs" aria-label="Velocidade de reprodução"><SelectValue>{playbackRate}x</SelectValue></SelectTrigger>
                 <SelectContent side="bottom" align="end"><SelectGroup>{SPEEDS.map((speed) => <SelectItem key={speed} value={String(speed)}>{speed}x</SelectItem>)}</SelectGroup></SelectContent>

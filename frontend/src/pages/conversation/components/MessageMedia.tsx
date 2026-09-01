@@ -40,6 +40,44 @@ function metaLabel(media: ConversationMedia) {
   return details.join(" · ");
 }
 
+function mediaExtension(media: ConversationMedia) {
+  const mime = media.mimeType?.split(";")[0].trim().toLowerCase();
+  const extensions: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/gif": "gif",
+    "video/mp4": "mp4",
+    "video/webm": "webm",
+    "video/3gpp": "3gp",
+    "video/quicktime": "mov",
+    "audio/ogg": "ogg",
+    "audio/mpeg": "mp3",
+    "audio/mp3": "mp3",
+    "audio/mp4": "m4a",
+    "audio/wav": "wav",
+    "audio/x-wav": "wav",
+    "audio/webm": "webm",
+    "application/pdf": "pdf",
+    "application/msword": "doc",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+    "application/vnd.ms-excel": "xls",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+    "application/vnd.ms-powerpoint": "ppt",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+    "text/plain": "txt",
+    "text/csv": "csv",
+    "application/zip": "zip",
+  };
+  return extensions[mime] || (media.type === "VIDEO" ? "mp4" : media.type === "AUDIO" ? "ogg" : media.type === "IMAGE" ? "jpg" : "bin");
+}
+
+function downloadFileName(media: ConversationMedia, messageId: string) {
+  const provided = (media.fileName || media.title || "").trim();
+  const baseName = provided || `${media.type.toLowerCase()}-${messageId}`;
+  return /\.[a-z0-9]{1,8}$/i.test(baseName) ? baseName : `${baseName}.${mediaExtension(media)}`;
+}
+
 function unavailableMessage(media: ConversationMedia) {
   if (media.status === "EXPIRED") return "A mídia expirou após a janela de retenção de 30 dias.";
   if (media.viewOnce) return "Mídias de visualização única não ficam disponíveis na plataforma.";
@@ -146,7 +184,10 @@ export function MessageMedia({ conversationId, messageId, media }: Props) {
       const result = await requestMediaAccess(conversationId, messageId, "download");
       const anchor = document.createElement("a");
       anchor.href = resolveMediaUrl(result.url);
-      anchor.download = media.fileName || `${media.type.toLowerCase()}-${messageId}`;
+      // Incoming videos frequently do not include a filename in the Z-API
+      // payload. Always provide a real extension so the downloaded bytes are
+      // recognized by WhatsApp, Windows and media players.
+      anchor.download = downloadFileName(media, messageId);
       anchor.rel = "noreferrer";
       document.body.appendChild(anchor);
       anchor.click();

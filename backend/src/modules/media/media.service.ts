@@ -67,6 +67,43 @@ function sanitizeFileName(value?: string | null): string {
   return clean || "arquivo";
 }
 
+function mediaExtension(type: string, mimeType?: string | null): string {
+  const mime = (mimeType || "").split(";")[0].trim().toLowerCase();
+  const extensions: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/gif": "gif",
+    "video/mp4": "mp4",
+    "video/webm": "webm",
+    "video/3gpp": "3gp",
+    "video/quicktime": "mov",
+    "audio/ogg": "ogg",
+    "audio/mpeg": "mp3",
+    "audio/mp3": "mp3",
+    "audio/mp4": "m4a",
+    "audio/wav": "wav",
+    "audio/x-wav": "wav",
+    "audio/webm": "webm",
+    "application/pdf": "pdf",
+    "application/msword": "doc",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+    "application/vnd.ms-excel": "xls",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+    "application/vnd.ms-powerpoint": "ppt",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+    "text/plain": "txt",
+    "text/csv": "csv",
+    "application/zip": "zip",
+  };
+  return extensions[mime] || (type === "VIDEO" ? "mp4" : type === "AUDIO" ? "ogg" : type === "IMAGE" ? "jpg" : "bin");
+}
+
+function fileNameWithExtension(value: string, type: string, mimeType?: string | null): string {
+  if (/\.[a-z0-9]{1,8}$/i.test(value)) return value;
+  return `${value}.${mediaExtension(type, mimeType)}`;
+}
+
 function isBlockedIpv4(address: string): boolean {
   const parts = address.split(".").map(Number);
   if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
@@ -378,10 +415,17 @@ export class MediaService {
       if (acceptRanges) res.setHeader("Accept-Ranges", acceptRanges);
 
       const disposition = expectedPurpose === "download" || media.type === "DOCUMENT" ? "attachment" : "inline";
-      const fileName = sanitizeFileName(media.originalFileName || media.title || `midia-${media.id}`);
+      const fileName = fileNameWithExtension(
+        sanitizeFileName(media.originalFileName || media.title || `midia-${media.id}`),
+        media.type,
+        media.mimeType,
+      );
+      // Keep an ASCII fallback for browsers that do not support filename*;
+      // the UTF-8 value preserves the original name where supported.
+      const asciiFileName = fileName.replace(/[^\x20-\x7e]/g, "_");
       res.setHeader(
         "Content-Disposition",
-        `${disposition}; filename="download"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+        `${disposition}; filename="${asciiFileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
       );
 
       let streamedBytes = 0;

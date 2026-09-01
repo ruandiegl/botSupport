@@ -154,10 +154,13 @@ export async function renderEditedVideo(inputFile: File, edit: VideoEdit, option
     const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream };
     // A reprodução acontece fora da tela após uma operação assíncrona. Mantê-la
     // silenciosa evita que a política de autoplay bloqueie o processamento.
+    // Capture a faixa antes de silenciar o elemento. O estado `muted` do
+    // elemento pode fazer alguns navegadores omitirem a faixa da captura.
+    video.muted = false;
+    sourceStream = typeof captureVideo.captureStream === "function" ? captureVideo.captureStream() : null;
+    video.muted = true;
     // A faixa de áudio capturada continua sendo adicionada quando o usuário
     // não escolheu removê-la.
-    video.muted = true;
-    sourceStream = typeof captureVideo.captureStream === "function" ? captureVideo.captureStream() : null;
     if (!edit.muteAudio && !sourceStream) throw new Error("Seu navegador não permite capturar o áudio deste vídeo.");
     if (!edit.muteAudio && sourceStream) {
       sourceStream.getAudioTracks().forEach((track) => outputStream?.addTrack(track));

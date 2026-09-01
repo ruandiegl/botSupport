@@ -307,11 +307,15 @@ export function VideoEditorDialog({ file, open, onOpenChange, onApply, caption =
 
     const outputStream = outputCanvas.captureStream(30);
     const captureVideo = video as HTMLVideoElement & { captureStream?: () => MediaStream };
-    const sourceStream = typeof captureVideo.captureStream === "function" ? captureVideo.captureStream() : null;
-    if (!muteAudio && !sourceStream) throw new Error("Seu navegador não permite capturar o áudio deste vídeo.");
     const previousMuted = video.muted;
     const previousTime = video.currentTime;
     const wasPlaying = !video.paused;
+    // Capture o áudio antes de silenciar o elemento para que o navegador não
+    // descarte a faixa. Ela só é adicionada ao resultado quando o áudio foi
+    // mantido pelo usuário.
+    video.muted = false;
+    const sourceStream = typeof captureVideo.captureStream === "function" ? captureVideo.captureStream() : null;
+    if (!muteAudio && !sourceStream) throw new Error("Seu navegador não permite capturar o áudio deste vídeo.");
     const start = Math.max(0, Math.min(startTime, duration));
     const end = Math.max(start + 0.05, Math.min(endTime || duration, duration));
     const mimeTypes = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];

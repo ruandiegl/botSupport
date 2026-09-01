@@ -246,6 +246,7 @@ function parseIncomingMedia(payload: any): ParsedIncomingMedia | undefined {
       mimeType: String(payload.video.mimeType || "video/mp4"),
       sourceUrl: payload.video.videoUrl,
       caption: payload.video.caption || "",
+      originalFileName: payload.video.fileName || payload.video.originalFileName,
       seconds: payload.video.seconds,
       viewOnce: payload.video.viewOnce === true,
     };
