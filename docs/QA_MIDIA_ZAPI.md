@@ -18,5 +18,9 @@
 - Alterar retenção em homologação, executar worker e confirmar `410`, status `EXPIRED` e ciphertext nulo.
 - Reenviar o mesmo callback, inclusive simultaneamente, e confirmar um único registro/unread/notificação.
 - Verificar fila, marcação de leitura, notificações, assumir, transferir, encerrar, atalhos e fluxo do bot.
+- Colar uma captura de tela com `Ctrl/Cmd+V` em uma conversa privada e em um grupo: o editor deve abrir antes do envio, sem inserir texto no campo e sem requisição automática.
+- Arrastar uma imagem para o compositor nos dois chats: validar destaque visual, drop único, prévia/edição, legenda, progresso, cancelamento e sucesso pelo endpoint existente.
+- Arrastar PDF, vídeo, áudio, arquivo vazio ou múltiplos arquivos: confirmar erro orientativo, ausência de navegação da página e nenhuma requisição iniciada; colar texto sem imagem deve continuar nativo.
+- Confirmar revogação dos `ObjectURL`s ao cancelar, substituir, enviar ou desmontar o compositor, sem persistência do Blob em localStorage, IndexedDB, cache ou logs.
 
 O rollout não deve avançar sem fixtures reais da instância, allowlist confirmada e evidência de que nenhum URL original aparece no frontend, banco em texto claro ou logs.

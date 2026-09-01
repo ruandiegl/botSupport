@@ -34,7 +34,8 @@ import { SharedContactCard } from "./components/SharedContactCard";
 import { ContactFormDialog } from "./components/ContactFormDialog";
 import { ContactConversationsDialog } from "./components/ContactConversationsDialog";
 import { ContactProfileDialog } from "./components/ContactProfileDialog";
-import { MediaAttachmentPicker } from "./components/MediaAttachmentPicker";
+import { MediaAttachmentPicker, type MediaAttachmentPickerHandle } from "./components/MediaAttachmentPicker";
+import { MediaComposerDropZone } from "./components/MediaComposerDropZone";
 import { OutgoingMediaCard } from "./components/OutgoingMediaCard";
 import { NewConversationDialog } from "./components/NewConversationDialog";
 import { renderEditedVideo, type VideoEdit } from "./components/video-processing";
@@ -105,6 +106,7 @@ export default function ConversationPage() {
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const [newConversationPhone, setNewConversationPhone] = useState<string | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const mediaPickerRef = useRef<MediaAttachmentPickerHandle>(null);
   const previousMessagesHeightRef = useRef<number | null>(null);
   const lastReadAttemptRef = useRef<string | null>(null);
   const { activeAgent } = useActiveAgent();
@@ -354,6 +356,11 @@ export default function ConversationPage() {
     setMediaFile(file);
     setMediaEdit(file ? edit : null);
   };
+
+  const handleExternalMediaFile = useCallback((file: File) => {
+    setMediaValidationError(null);
+    mediaPickerRef.current?.openFile(file);
+  }, []);
 
   const mediaError = sendMedia.isError && !mediaUploadCancelledRef.current
     ? friendlyMediaError(sendMedia.error, mediaFile)
@@ -631,10 +638,17 @@ export default function ConversationPage() {
           ))}
         </div>
 
-        <div className="composer">
+        <MediaComposerDropZone
+          className="composer-drop-zone"
+          disabled={!canSendMedia || sendMessage.isPending || sendMedia.isPending || mediaProcessing}
+          onFile={handleExternalMediaFile}
+          onError={setMediaValidationError}
+        >
+          <div className="composer">
           <div className="composer-toolbar">
             {canSendMedia ? (
               <MediaAttachmentPicker
+                ref={mediaPickerRef}
                 file={mediaFile}
                 onChange={handleMediaChange}
                 caption={message}
@@ -656,7 +670,7 @@ export default function ConversationPage() {
                 onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} 
               />
             )}
-            {can("shortcuts", "use") ? <span>Selecione uma mensagem pronta{canSendMedia ? " ou anexe um arquivo" : ""}.</span> : canSendMedia ? <span>Envie uma mídia temporária sem retenção local.</span> : null}
+            {can("shortcuts", "use") ? <span>Selecione uma mensagem pronta{canSendMedia ? ", anexe ou cole uma imagem" : ""}.</span> : canSendMedia ? <span>Anexe, cole ou solte uma imagem para enviar.</span> : null}
           </div>
           <Textarea
             value={message}
@@ -688,7 +702,8 @@ export default function ConversationPage() {
               <Send size={14} /> Enviar
             </Button>
           </div>
-        </div>
+          </div>
+        </MediaComposerDropZone>
       </section>
 
       <DetailPanel

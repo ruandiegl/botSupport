@@ -144,6 +144,8 @@ O backend valida MIME, extensão e assinatura do arquivo, converte o conteúdo p
 
 Respostas: `201` com a mensagem criada; `400` arquivo inválido; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. O envio fica habilitado por padrão quando a API está configurada; defina `OUTBOUND_MEDIA_ENABLED=false` para desativar ou fazer rollback. O limite padrão para vídeo é 64 MiB (ajustável até o limite de 100 MB documentado pela Z‑API) e o leitor multipart drena uploads acima do limite antes de responder, evitando reset de conexão no navegador.
 
+O frontend também pode obter o `file` a partir de uma imagem colada no compositor (`Ctrl/Cmd+V`) ou arrastada para a área de composição. Essas entradas passam pelo mesmo fluxo multipart do seletor nativo; não existe endpoint adicional, alteração de payload ou persistência do clipboard.
+
 ---
 
 ## 3. Notificações (`/notifications`)

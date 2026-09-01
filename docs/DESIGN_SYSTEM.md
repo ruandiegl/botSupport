@@ -126,3 +126,11 @@ Para garantir clareza visual instantânea aos atendentes de suporte, as conversa
 - Em modo de busca, o painel usa cabeçalhos discretos “Conversas” e “Mensagens”; filtros operacionais ficam inativos porque a pesquisa atravessa todos os status e mantém somente o escopo de acesso do servidor.
 - O destaque do termo é renderizado como texto segmentado; nunca inserir o snippet como HTML. Skeleton, erro, vazio, paginação e retry devem manter a query digitada.
 - `Escape` fecha, `Enter` abre o resultado ativo, `↑/↓` mudam a seleção e `/` ou `Ctrl/Cmd+K` focam o campo quando o usuário não está digitando em outro controle.
+
+## 10. Entrada rápida de imagens no compositor
+
+- O compositor de conversas aceita uma imagem colada (`Ctrl/Cmd+V`) ou solta sobre a área de composição. O drop não cobre o histórico nem inicia o envio automaticamente.
+- Durante o arraste, a indicação usa tokens semânticos (`border-primary`, `bg-primary/10`, `text-primary`) e uma mensagem textual **“Solte uma imagem para anexar”**; não depender apenas de cor.
+- Colagem de texto sem item de imagem permanece nativa na `Textarea`. Arquivos não-imagem e múltiplos arquivos recebem `role="alert"` com orientação para usar **Anexar arquivo**.
+- O arquivo é entregue ao mesmo `MediaAttachmentPicker` e `ImageEditorDialog` do botão de anexo. Progresso, cancelamento, foco de retorno e revogação de `ObjectURL` não mudam.
+- A entrada rápida deve ser responsiva, respeitar `prefers-reduced-motion`, manter foco visível e usar componentes shadcn existentes sem cores fixas por tema.

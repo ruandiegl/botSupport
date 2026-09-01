@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Edit3, FileText, Image as ImageIcon, Paperclip, X } from "lucide-react";
 import {
   Attachment,
@@ -51,7 +51,11 @@ type Props = {
   onValidationError?: (message: string | null) => void;
 };
 
-export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null, processing = false, processingProgress = null, onCancelUpload, onValidationError }: Props) {
+export type MediaAttachmentPickerHandle = {
+  openFile: (file: File) => void;
+};
+
+export const MediaAttachmentPicker = forwardRef<MediaAttachmentPickerHandle, Props>(function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange, disabled = false, uploadProgress = null, processing = false, processingProgress = null, onCancelUpload, onValidationError }, ref) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -87,6 +91,25 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
     setVideoEditorOpen(true);
   };
 
+  const handleFileSelection = useCallback((nextFile: File | null) => {
+    onValidationError?.(null);
+    if (!nextFile) {
+      onChange(null);
+      return;
+    }
+    if (nextFile.type.startsWith("image/")) {
+      openEditor(nextFile);
+    } else if (nextFile.type.startsWith("video/")) {
+      openVideoEditor(nextFile);
+    } else {
+      onChange(nextFile);
+    }
+  }, [disabled, onChange, onValidationError]);
+
+  useImperativeHandle(ref, () => ({
+    openFile: (nextFile) => handleFileSelection(nextFile),
+  }), [handleFileSelection]);
+
   const isUploading = uploadProgress !== null && uploadProgress !== undefined;
   const isProcessing = processing;
   const isBusy = isUploading || isProcessing;
@@ -101,14 +124,7 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
         className="sr-only"
         onChange={(event) => {
           const nextFile = event.target.files?.[0] ?? null;
-          onValidationError?.(null);
-          if (nextFile?.type.startsWith("image/")) {
-            openEditor(nextFile);
-          } else if (nextFile?.type.startsWith("video/")) {
-            openVideoEditor(nextFile);
-          } else {
-            onChange(nextFile);
-          }
+          handleFileSelection(nextFile);
           event.currentTarget.value = "";
         }}
         disabled={disabled}
@@ -201,4 +217,6 @@ export function MediaAttachmentPicker({ file, onChange, caption, onCaptionChange
       />
     </div>
   );
-}
+});
+
+MediaAttachmentPicker.displayName = "MediaAttachmentPicker";

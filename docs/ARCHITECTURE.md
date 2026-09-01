@@ -92,6 +92,8 @@ O navegador primeiro solicita um ticket autenticado. Depois, o proxy valida tick
 
 No frontend, `MessageMedia` compõe os primitives shadcn `Message`, `Bubble`, `Attachment`, `Dialog`, `Badge`, `Button` e `Skeleton`. React Query guarda somente o ticket interno; imagem é lazy, áudio/vídeo não usam autoplay e documentos exigem ação explícita.
 
+O compositor de mídia possui uma única entrada de arquivo compartilhada pelo seletor nativo, colagem de imagem (`Ctrl/Cmd+V`) e arrastar-e-soltar. Colagem e drop entregam um `File` local ao mesmo `MediaAttachmentPicker`, que abre o editor antes de qualquer requisição. O clipboard é lido somente durante o evento de colagem, não é persistido e os `ObjectURL`s da prévia são revogados ao cancelar, substituir ou concluir o envio. O alvo de drop fica restrito ao compositor; a colagem de texto continua nativa quando não há imagem.
+
 Imagens usam miniatura maior no histórico e um `Dialog` shadcn opaco, quadrático e centralizado para o conteúdo original protegido. O preview oferece zoom, reset, roda do mouse e fechamento acessível sem expor a URL temporária.
 
 O transporte Z-API consulta a última mensagem `BOT` persistida para aplicar `BOT_REPLY_COOLDOWN_MINUTES` (15 por padrão) somente enquanto o fluxo aguarda uma decisão inválida. Mensagens recebidas continuam sendo armazenadas, respostas de triagem nunca são atrasadas e escolhas de rota ou submenu válidas avançam imediatamente, sejam entregues pela Z-API como `buttonId`/`selectedRowId`, índice ou texto exato do rótulo. O `referenceMessageId`, quando fornecido, precisa corresponder ao último prompt interativo persistido. Estados `QUEUED` e `AWAITING_DETAILS` nunca reiniciam o fluxo.

@@ -18,7 +18,8 @@ import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { ChatScroller, type ChatScrollerHandle } from "@/components/ui/chat-scroller";
 import { Attachment, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle } from "@/components/ui/attachment";
 import { ShortcutPicker } from "@/pages/conversation/components/ShortcutPicker";
-import { MediaAttachmentPicker } from "@/pages/conversation/components/MediaAttachmentPicker";
+import { MediaAttachmentPicker, type MediaAttachmentPickerHandle } from "@/pages/conversation/components/MediaAttachmentPicker";
+import { MediaComposerDropZone } from "@/pages/conversation/components/MediaComposerDropZone";
 import { MessageMedia } from "@/pages/conversation/components/MessageMedia";
 import { OutgoingMediaCard } from "@/pages/conversation/components/OutgoingMediaCard";
 import { renderEditedVideo, type VideoEdit } from "@/pages/conversation/components/video-processing";
@@ -123,6 +124,7 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
   const registerShortcutUse = useRegisterShortcutUse();
   const scrollerRef = useRef<ChatScrollerHandle>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
+  const mediaPickerRef = useRef<MediaAttachmentPickerHandle>(null);
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -310,6 +312,11 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
     setMediaValidationError("Envio cancelado.");
   };
 
+  const handleExternalMediaFile = useCallback((file: File) => {
+    setMediaValidationError(null);
+    mediaPickerRef.current?.openFile(file);
+  }, []);
+
   const typedNames = useMemo(() => Object.values(typingAgents), [typingAgents]);
   const renderedHistory = useMemo(() => {
     let previousDay = "";
@@ -378,18 +385,23 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
               </div>
             </ChatScroller>
 
-            {can("groups", "send_message") ? <div className="border-t bg-card p-3 sm:p-4"><div className="mx-auto max-w-5xl">
+            {can("groups", "send_message") ? <MediaComposerDropZone
+              className="border-t bg-card p-3 sm:p-4"
+              disabled={sendText.isPending || sendMedia.isPending || mediaProcessing}
+              onFile={handleExternalMediaFile}
+              onError={setMediaValidationError}
+            ><div className="mx-auto max-w-5xl">
               <div className="mb-2 flex flex-wrap items-center gap-2">
-                <MediaAttachmentPicker file={mediaFile} onChange={(file, edit = null) => { setMediaFile(file); setMediaEdit(file ? edit : null); setMediaValidationError(null); }} caption={message} onCaptionChange={setMessage} uploadProgress={sendMedia.isPending ? mediaUploadProgress : null} processing={mediaProcessing} processingProgress={mediaProcessingProgress} onCancelUpload={cancelUpload} onValidationError={setMediaValidationError} disabled={sendText.isPending || sendMedia.isPending || mediaProcessing} />
+                <MediaAttachmentPicker ref={mediaPickerRef} file={mediaFile} onChange={(file, edit = null) => { setMediaFile(file); setMediaEdit(file ? edit : null); setMediaValidationError(null); }} caption={message} onCaptionChange={setMessage} uploadProgress={sendMedia.isPending ? mediaUploadProgress : null} processing={mediaProcessing} processingProgress={mediaProcessingProgress} onCancelUpload={cancelUpload} onValidationError={setMediaValidationError} disabled={sendText.isPending || sendMedia.isPending || mediaProcessing} />
                 {can("shortcuts", "use") ? <ShortcutPicker agentName={user?.name || "Atendente"} contactName={selected.name} departmentName={(user as any)?.departmentName || "Atendimento"} onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} /> : null}
-                <span className="text-xs text-muted-foreground">Enter envia · Shift + Enter quebra a linha</span>
+                <span className="text-xs text-muted-foreground">Enter envia · Shift + Enter quebra a linha · Cole ou solte uma imagem</span>
               </div>
               <div className="flex items-end gap-2 rounded-xl border bg-background p-2 focus-within:ring-2 focus-within:ring-ring/30">
                 <Textarea value={message} onChange={(event) => { setMessage(event.target.value); setFeedback(null); startGroupTyping(selected.id); }} onBlur={() => stopGroupTyping(selected.id)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(); } }} placeholder={mediaFile ? "Adicione uma legenda (opcional)…" : "Escreva uma mensagem para o grupo…"} maxLength={4096} className="min-h-12 max-h-36 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0" />
                 <Button size="icon" className="shrink-0 rounded-full" aria-label="Enviar no grupo" title="Enviar no grupo" onClick={() => void send()} disabled={(!message.trim() && !mediaFile) || sendText.isPending || sendMedia.isPending || mediaProcessing}>{sendText.isPending || sendMedia.isPending || mediaProcessing ? <RefreshCw className="animate-spin" /> : <Send data-icon="icon" />}</Button>
               </div>
               <div className="mt-1.5 flex min-h-5 items-center justify-between gap-3 text-xs"><span className={mediaValidationError || feedback ? "text-destructive" : "text-muted-foreground"}>{mediaValidationError || feedback || (mediaFile ? "O arquivo será enviado à Z-API e não ficará armazenado localmente." : "")}</span><span className="shrink-0 text-muted-foreground">{message.length}/4096</span></div>
-            </div></div> : <p className="border-t bg-card p-4 text-center text-sm text-muted-foreground">Seu perfil pode visualizar grupos, mas não possui permissão para enviar mensagens.</p>}
+            </div></MediaComposerDropZone> : <p className="border-t bg-card p-4 text-center text-sm text-muted-foreground">Seu perfil pode visualizar grupos, mas não possui permissão para enviar mensagens.</p>}
           </> : <Empty className="m-auto border"><EmptyHeader><EmptyMedia variant="icon"><MessageCircle /></EmptyMedia><EmptyTitle>Selecione um grupo</EmptyTitle><EmptyDescription>Escolha uma conversa à esquerda para abrir o histórico.</EmptyDescription></EmptyHeader></Empty>}
         </section>
       </div>
