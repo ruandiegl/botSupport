@@ -63,7 +63,8 @@ export class ConversationsService {
    */
   private isGroupConversation(conversation: any): boolean {
     return conversation?.channel === "GROUP"
-      || Boolean(conversation?.groupChatId || conversation?.groupChatName)
+      || Boolean(conversation?.groupChatId || conversation?.groupChatName || conversation?.groupChat?.id)
+      || (typeof conversation?.groupChat?.remoteChatId === "string" && /@g\.us$/i.test(conversation.groupChat.remoteChatId))
       || (typeof conversation?.remoteChatId === "string" && /@g\.us$/i.test(conversation.remoteChatId));
   }
 
@@ -592,7 +593,14 @@ export class ConversationsService {
     if (!conversation) return null;
     if (!this.canAccess(conversation, user)) return null;
 
-    await conversationsRepository.markIncomingMessagesAsRead(id);
+    if (this.isGroupConversation(conversation)) {
+      // A group transcript spans several ticket rows. Mark all canonical
+      // messages in that stream as read so reopening a monitor does not bring
+      // back unread markers from a previously closed ticket.
+      await conversationsRepository.markIncomingGroupMessagesAsRead(conversation);
+    } else {
+      await conversationsRepository.markIncomingMessagesAsRead(id);
+    }
     const groupRemoteChatId = this.groupRemoteChatId(conversation);
     if (this.isGroupConversation(conversation) && groupRemoteChatId) {
       const group = await zApiService.findGroupChatByRemoteChatId(groupRemoteChatId);

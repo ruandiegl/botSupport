@@ -48,7 +48,7 @@ function canAccess(conversation: any, user?: AuthenticatedRequest["user"]): bool
   // collect the complete group transcript without opening a ticket. Their
   // messages (including protected media) are still shared with attendants who
   // can view groups, so do not apply the private-ticket assignment gate here.
-  if (conversation.channel === "GROUP" && conversation.currentStep === "GROUP_MONITOR") return true;
+  if (conversation.channel === "GROUP" || conversation.groupChatId || conversation.groupChatName) return true;
   if (user.role !== "AGENT") return true;
   if (conversation.assignedAgentId === user.id) return true;
   return Boolean(

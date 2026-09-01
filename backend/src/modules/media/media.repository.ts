@@ -2,7 +2,7 @@ import { prisma } from "../../shared/prisma.js";
 
 export class MediaRepository {
   async findByMessage(conversationId: string, messageId: string) {
-    return prisma.conversationMedia.findFirst({
+    const direct = await prisma.conversationMedia.findFirst({
       where: { conversationId, messageId },
       include: {
         conversation: {
@@ -13,10 +13,51 @@ export class MediaRepository {
             currentStep: true,
             departmentId: true,
             assignedAgentId: true,
+            remoteChatId: true,
+            groupChatId: true,
+            groupChatName: true,
           },
         },
       },
     });
+    if (direct) return direct;
+
+    // A group transcript is continuous even though its tickets are separate
+    // lifecycle records. Media rendered from a historical ticket is opened
+    // while the user is viewing the current group monitor, so allow the
+    // message lookup across rows that identify the same group.
+    const selected = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      select: { channel: true, remoteChatId: true, groupChatId: true, groupChatName: true },
+    });
+    if (!selected) return null;
+    const isGroup = Boolean(selected?.channel === "GROUP" || selected?.groupChatId || selected?.groupChatName || selected?.remoteChatId?.includes("@g.us"));
+    if (!isGroup) return null;
+
+    const media = await prisma.conversationMedia.findUnique({
+      where: { messageId },
+      include: {
+        conversation: {
+          select: {
+            id: true,
+            status: true,
+            channel: true,
+            currentStep: true,
+            departmentId: true,
+            assignedAgentId: true,
+            remoteChatId: true,
+            groupChatId: true,
+            groupChatName: true,
+          },
+        },
+      },
+    });
+    if (!media) return null;
+    const remoteVariants = [selected.remoteChatId, selected.remoteChatId?.replace(/@g\.us$/i, "")].filter(Boolean);
+    const sameGroup = (selected.groupChatId && media.conversation.groupChatId === selected.groupChatId)
+      || (selected.groupChatName && media.conversation.groupChatName === selected.groupChatName)
+      || (remoteVariants.length > 0 && remoteVariants.includes(media.conversation.remoteChatId ?? ""));
+    return sameGroup ? media : null;
   }
 
   async findById(id: string) {

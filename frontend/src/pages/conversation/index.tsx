@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useParams } from "wouter";
 import { ArrowLeft, Check, Archive, Send, RefreshCw, CheckCircle2, Clock, UserRoundCheck, MessageCircleOff, Users } from "lucide-react";
 import { useActiveAgent } from "@/app/Shell";
@@ -52,6 +52,18 @@ const dateLabel = (date?: string) =>
   date
     ? new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")
     : "";
+
+const dayKey = (date: string) => new Date(date).toLocaleDateString("en-CA");
+
+const dayDividerLabel = (date: string) => {
+  const value = new Date(date);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (value.toLocaleDateString("en-CA") === today.toLocaleDateString("en-CA")) return "Hoje";
+  if (value.toLocaleDateString("en-CA") === yesterday.toLocaleDateString("en-CA")) return "Ontem";
+  return value.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+};
 
 const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
 
@@ -138,6 +150,35 @@ export default function ConversationPage() {
   const updateProfileContact = useUpdateContact(profileEditContact?.id || "");
   const createConversation = useCreateConversation();
   const { data: departments = [] } = useListDepartments();
+
+  // Keep every hook above the loading/error branches. Calling this callback
+  // only after the conversation has loaded changes the hook order when the
+  // request resolves and crashes React on direct conversation links.
+  const handleExternalMediaFile = useCallback((file: File) => {
+    setMediaValidationError(null);
+    mediaPickerRef.current?.openFile(file);
+  }, []);
+
+  const loadOlderMessages = useCallback(() => {
+    const container = messagesRef.current;
+    const pagination = conversation?.messagesPagination;
+    if (!container || !pagination?.hasPrevious || !pagination.previousCursor || loadPrevious.isPending) return;
+    previousMessagesHeightRef.current = container.scrollHeight;
+    loadPrevious.mutate(
+      { before: pagination.previousCursor },
+      { onError: () => { previousMessagesHeightRef.current = null; } },
+    );
+  }, [conversation?.messagesPagination?.hasPrevious, conversation?.messagesPagination?.previousCursor, loadPrevious.isPending]);
+
+  useEffect(() => {
+    const container = messagesRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      if (container.scrollTop <= 64) loadOlderMessages();
+    };
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [loadOlderMessages]);
 
   // Socket.IO: Entrar na sala da conversa para receber mensagens e atualizações em tempo real
   useEffect(() => {
@@ -357,11 +398,6 @@ export default function ConversationPage() {
     setMediaEdit(file ? edit : null);
   };
 
-  const handleExternalMediaFile = useCallback((file: File) => {
-    setMediaValidationError(null);
-    mediaPickerRef.current?.openFile(file);
-  }, []);
-
   const mediaError = sendMedia.isError && !mediaUploadCancelledRef.current
     ? friendlyMediaError(sendMedia.error, mediaFile)
     : null;
@@ -575,21 +611,19 @@ export default function ConversationPage() {
                 variant="outline"
                 size="sm"
                 disabled={loadPrevious.isPending}
-                onClick={() => {
-                  if (messagesRef.current) previousMessagesHeightRef.current = messagesRef.current.scrollHeight;
-                  loadPrevious.mutate(
-                    { before: conversation.messagesPagination!.previousCursor! },
-                    { onError: () => { previousMessagesHeightRef.current = null; } },
-                  );
-                }}
+                onClick={loadOlderMessages}
               >
                 {loadPrevious.isPending ? "Carregando..." : "Carregar mensagens anteriores"}
               </Button>
             </div>
           ) : null}
-          <div className="day-divider">Hoje</div>
-          {conversation.messages?.map((item) => (
-            <Message align={item.direction === "OUT" ? "end" : "start"} key={item.id}>
+          {conversation.messages?.map((item, index) => {
+            const previous = conversation.messages[index - 1];
+            const showDayDivider = !previous || dayKey(previous.createdAt) !== dayKey(item.createdAt);
+            return (
+            <Fragment key={item.id}>
+              {showDayDivider ? <div className="day-divider">{dayDividerLabel(item.createdAt)}</div> : null}
+            <Message align={item.direction === "OUT" ? "end" : "start"}>
               <MessageContent>
                 <Bubble
                   align={item.direction === "OUT" ? "end" : "start"}
@@ -635,7 +669,9 @@ export default function ConversationPage() {
                 ) : null}
               </MessageContent>
             </Message>
-          ))}
+            </Fragment>
+            );
+          })}
         </div>
 
         <MediaComposerDropZone
@@ -670,7 +706,7 @@ export default function ConversationPage() {
                 onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} 
               />
             )}
-            {can("shortcuts", "use") ? <span>Selecione uma mensagem pronta{canSendMedia ? ", anexe ou cole uma imagem" : ""}.</span> : canSendMedia ? <span>Anexe, cole ou solte uma imagem para enviar.</span> : null}
+            {can("shortcuts", "use") ? <span>Selecione uma mensagem pronta{canSendMedia ? ", anexe ou cole um arquivo" : ""}.</span> : canSendMedia ? <span>Anexe, cole ou solte um arquivo para enviar.</span> : null}
           </div>
           <Textarea
             value={message}

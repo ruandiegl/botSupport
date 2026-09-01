@@ -7,7 +7,188 @@ function escapeLike(value: string): string {
   return value.replace(/[\\%_]/g, "\\$&");
 }
 
+function groupRemoteChatIdVariants(remoteChatId: string | null | undefined): string[] {
+  const raw = String(remoteChatId ?? "").trim();
+  if (!raw) return [];
+  const bare = raw.replace(/@g\.us$/i, "");
+  return [...new Set([raw, bare].filter(Boolean))];
+}
+
 export class ConversationsRepository {
+  private isGroupConversationRecord(conversation: any): boolean {
+    return conversation?.channel === "GROUP"
+      || Boolean(conversation?.groupChatId || conversation?.groupChatName || conversation?.groupChat?.id)
+      || (typeof conversation?.remoteChatId === "string" && (/@g\.us$/i.test(conversation.remoteChatId) || /^\d{8,}-(?:\d+|group)$/i.test(conversation.remoteChatId)));
+  }
+
+  /**
+   * Group tickets are lifecycle records, but the WhatsApp group itself is a
+   * single continuous stream. A new monitor is created after a ticket closes,
+   * so reading only the selected conversation would make the group appear to
+   * have lost its old messages. Resolve every ticket/monitor belonging to the
+   * same group before loading the transcript.
+   */
+  private async findGroupConversationIds(conversation: any): Promise<string[]> {
+    const conditions: any[] = [];
+    const groupChatId = conversation?.groupChatId || conversation?.groupChat?.id;
+    if (groupChatId) conditions.push({ groupChatId });
+
+    const remoteChatId = conversation?.groupChat?.remoteChatId || conversation?.remoteChatId;
+    const remoteVariants = groupRemoteChatIdVariants(remoteChatId);
+    if (remoteVariants.length && (remoteVariants.some((value) => /@g\.us$/i.test(value)) || conversation?.channel === "GROUP")) {
+      conditions.push({
+        AND: [
+          { remoteChatId: { in: remoteVariants } },
+          { OR: [{ channel: "GROUP" }, { groupChatId: { not: null } }, { groupChatName: { not: null } }] },
+        ],
+      });
+    }
+
+    if (conversation?.groupChatName) {
+      // Some early group tickets were saved before groupChatId was added. The
+      // denormalized name is the remaining stable key for those rows.
+      conditions.push({ groupChatName: conversation.groupChatName });
+    }
+    if (!conditions.length) return [conversation.id];
+
+    const rows = await prisma.conversation.findMany({
+      where: { OR: conditions },
+      select: { id: true },
+    });
+    return [...new Set([conversation.id, ...rows.map((row) => row.id)])];
+  }
+
+  private async findGroupStreamMessages(conversation: any, conversationIds: string[], options: { messageLimit?: number; before?: { createdAt: Date; id: string } }) {
+    const cursorIsMessageId = Boolean(options.before?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(options.before.id));
+    const isBeforeCursor = (createdAt: Date, id: string) => !options.before
+      || createdAt.getTime() < options.before.createdAt.getTime()
+      || (createdAt.getTime() === options.before.createdAt.getTime() && id.localeCompare(options.before.id) < 0);
+    const messageWhere: any = {
+      conversationId: { in: conversationIds },
+      ...(options.before
+        ? {
+            OR: [
+              { createdAt: { lt: options.before.createdAt } },
+              ...(cursorIsMessageId ? [{ createdAt: options.before.createdAt, id: { lt: options.before.id } }] : []),
+            ],
+          }
+        : {}),
+    };
+    const canonicalRows = await prisma.message.findMany({
+      // Synthetic audit cursors are not UUIDs and cannot be compared against
+      // the UUID message column. Load the candidate timestamp and apply the
+      // complete cursor comparison in memory for that rare case.
+      where: options.before && !cursorIsMessageId ? { conversationId: { in: conversationIds } } : messageWhere,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      include: { media: true, outgoingMedia: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
+    });
+    const canonical = options.before && !cursorIsMessageId
+      ? canonicalRows.filter((row) => isBeforeCursor(row.createdAt, row.id))
+      : canonicalRows;
+
+    // Most messages already live in gtf_messages. The audit tables below are
+    // still needed for records created by the older group composer and for
+    // webhooks that arrived before the unified conversation was available.
+    const groupChatId = conversation?.groupChatId || conversation?.groupChat?.id;
+    if (!groupChatId) return { messages: canonical, unreadCount: await prisma.message.count({ where: { ...messageWhere, direction: "IN", readAt: null } }) };
+
+    const [groupRows, outboundRows] = await Promise.all([
+      prisma.groupMessage.findMany({ where: { groupChatId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }] }),
+      prisma.groupOutboundMessage.findMany({ where: { groupChatId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], include: { agent: { include: { department: true } } } }),
+    ]);
+    const filteredGroupRows = groupRows.filter((row) => isBeforeCursor(row.createdAt, `group-message-${row.id}`));
+    const filteredOutboundRows = outboundRows.filter((row) => isBeforeCursor(row.createdAt, `group-outbound-${row.id}`));
+    const externalIds = filteredGroupRows.map((row) => row.externalMessageId).filter((value): value is string => Boolean(value));
+    const linkedRows = externalIds.length
+      ? await prisma.message.findMany({
+          where: { externalMessageId: { in: externalIds } },
+          include: { media: true, outgoingMedia: true, contactShare: true, senderAgent: { include: { department: true } }, senderContact: true },
+        })
+      : [];
+    const linkedByExternalId = new Map(linkedRows.map((row) => [row.externalMessageId, row]));
+    const seenIds = new Set(canonical.map((row) => row.id));
+    const seenExternalIds = new Set(canonical.map((row) => row.externalMessageId).filter(Boolean));
+    const seenSignatures = new Set(canonical.map((row) => `${row.direction}|${row.createdAt.getTime()}|${row.content}|${row.senderAgentId ?? ""}`));
+    const merged = [...canonical] as any[];
+
+    for (const audit of filteredGroupRows) {
+      const linked = audit.externalMessageId ? linkedByExternalId.get(audit.externalMessageId) : undefined;
+      if (linked) {
+        if (!seenIds.has(linked.id)) {
+          merged.push(linked);
+          seenIds.add(linked.id);
+          if (linked.externalMessageId) seenExternalIds.add(linked.externalMessageId);
+        }
+        continue;
+      }
+      const signature = `${audit.direction}|${audit.createdAt.getTime()}|${audit.content}|`;
+      if (audit.externalMessageId && seenExternalIds.has(audit.externalMessageId)) continue;
+      // Without an external id, two participants may legitimately send the
+      // same text at the same instant. Keep both audit rows instead of using
+      // the best-effort signature as an accidental deduplication key.
+      if (audit.externalMessageId && seenSignatures.has(signature)) continue;
+      merged.push({
+        id: `group-message-${audit.id}`,
+        externalMessageId: audit.externalMessageId,
+        direction: audit.direction,
+        senderType: audit.senderType,
+        senderContactId: audit.senderContactId,
+        senderNameSnapshot: audit.senderNameSnapshot,
+        messageType: audit.messageType,
+        content: audit.content,
+        createdAt: audit.createdAt,
+        media: null,
+        outgoingMedia: null,
+        contactShare: null,
+        senderAgent: null,
+        senderContact: null,
+        readAt: audit.readAt,
+      });
+      if (audit.externalMessageId) seenExternalIds.add(audit.externalMessageId);
+      seenSignatures.add(signature);
+    }
+
+    for (const audit of filteredOutboundRows) {
+      const signature = `OUT|${audit.createdAt.getTime()}|${audit.content}|${audit.agentId}`;
+      if ((audit.providerMessageId && seenExternalIds.has(audit.providerMessageId)) || seenSignatures.has(signature)) continue;
+      merged.push({
+        id: `group-outbound-${audit.id}`,
+        externalMessageId: audit.providerMessageId,
+        direction: "OUT",
+        senderType: "AGENT",
+        senderAgentId: audit.agentId,
+        senderNameSnapshot: audit.agent.name,
+        senderDepartmentSnapshot: audit.agent.department?.name ?? null,
+        senderContactId: null,
+        messageType: audit.messageType,
+        content: audit.content,
+        createdAt: audit.createdAt,
+        media: null,
+        contactShare: null,
+        senderAgent: audit.agent,
+        senderContact: null,
+        outgoingMedia: audit.messageType === "TEXT" ? null : {
+          id: audit.id,
+          type: audit.messageType,
+          mimeType: audit.mimeType || "application/octet-stream",
+          fileName: audit.fileName,
+          caption: audit.caption,
+          sizeBytes: audit.sizeBytes || 0,
+          status: audit.status,
+          providerMessageId: audit.providerMessageId,
+          failureCode: audit.failureCode,
+          createdAt: audit.createdAt,
+        },
+      });
+      if (audit.providerMessageId) seenExternalIds.add(audit.providerMessageId);
+      seenSignatures.add(signature);
+    }
+
+    merged.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || String(b.id).localeCompare(String(a.id)));
+    const unreadCount = merged.filter((row) => row.direction === "IN" && !row.readAt).length;
+    return { messages: options.messageLimit ? merged.slice(0, options.messageLimit + 1) : merged, unreadCount };
+  }
+
   createManualConversation(contactId: string, departmentId?: string) {
     const now = new Date();
     return prisma.conversation.create({
@@ -482,7 +663,7 @@ export class ConversationsRepository {
           ],
         }
       : undefined;
-    return prisma.conversation.findUnique({
+    const conversation = await prisma.conversation.findUnique({
       where: { id },
       include: {
         contact: { include: { phoneNumbers: { select: { id: true } } } },
@@ -490,6 +671,7 @@ export class ConversationsRepository {
         assignedAgent: {
           include: { department: true },
         },
+        groupChat: { select: { id: true, remoteChatId: true, name: true } },
         labels: {
           include: { label: { select: { id: true, name: true, slug: true, color: true, icon: true, isSystem: true } } },
           orderBy: { createdAt: "asc" },
@@ -514,6 +696,15 @@ export class ConversationsRepository {
         },
       },
     });
+    if (!conversation || !this.isGroupConversationRecord(conversation)) return conversation;
+
+    const conversationIds = await this.findGroupConversationIds(conversation);
+    const stream = await this.findGroupStreamMessages(conversation, conversationIds, options);
+    return {
+      ...conversation,
+      messages: stream.messages,
+      _count: { ...conversation._count, messages: stream.unreadCount },
+    };
   }
 
   async findAccessById(id: string) {
@@ -523,6 +714,8 @@ export class ConversationsRepository {
         id: true,
         channel: true,
         remoteChatId: true,
+        groupChatName: true,
+        groupChatId: true,
         status: true,
         currentStep: true,
         departmentId: true,
@@ -545,6 +738,29 @@ export class ConversationsRepository {
   }
 
   async findMessages(id: string, options: { limit: number; before?: { createdAt: Date; id: string } }) {
+    const conversation = await prisma.conversation.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        channel: true,
+        remoteChatId: true,
+        groupChatId: true,
+        groupChatName: true,
+        groupChat: { select: { id: true, remoteChatId: true, name: true } },
+      },
+    });
+    if (!conversation) return { items: [], hasPrevious: false };
+
+    if (this.isGroupConversationRecord(conversation)) {
+      const conversationIds = await this.findGroupConversationIds(conversation);
+      const stream = await this.findGroupStreamMessages(conversation, conversationIds, {
+        messageLimit: options.limit,
+        before: options.before,
+      });
+      const hasPrevious = stream.messages.length > options.limit;
+      return { items: stream.messages.slice(0, options.limit).reverse(), hasPrevious };
+    }
+
     const where = options.before
       ? {
           conversationId: id,
@@ -716,6 +932,15 @@ export class ConversationsRepository {
         direction: "IN",
         readAt: null,
       },
+      data: { readAt: new Date() },
+    });
+  }
+
+  async markIncomingGroupMessagesAsRead(conversation: { id: string; channel?: string | null; remoteChatId?: string | null; groupChatId?: string | null; groupChatName?: string | null; groupChat?: { id?: string | null; remoteChatId?: string | null } | null }) {
+    if (!this.isGroupConversationRecord(conversation)) return { count: 0 };
+    const ids = await this.findGroupConversationIds(conversation);
+    return prisma.message.updateMany({
+      where: { conversationId: { in: ids }, direction: "IN", readAt: null },
       data: { readAt: new Date() },
     });
   }

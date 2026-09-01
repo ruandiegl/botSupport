@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ImagePlus } from "lucide-react";
+import { Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMediaClipboardDrop, type MediaInputSource } from "../hooks/use-media-clipboard-drop";
 
@@ -37,8 +37,8 @@ export function MediaComposerDropZone({ children, disabled = false, className, o
           aria-live="polite"
         >
           <span className="flex items-center gap-2 rounded-full border border-primary/30 bg-background/95 px-4 py-2 text-sm font-medium shadow-sm">
-            <ImagePlus data-icon="inline-start" />
-            Solte uma imagem para anexar
+            <Paperclip data-icon="inline-start" />
+            Solte um arquivo para anexar
           </span>
         </div>
       ) : null}

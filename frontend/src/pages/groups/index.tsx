@@ -94,6 +94,7 @@ function friendlyMediaError(error: unknown, file: File | null) {
       : "Este arquivo é grande demais para enviar. Reduza o tamanho e tente novamente.";
   }
   if (/signature|conteúdo.*tipo|formato/.test(normalized)) return "Não conseguimos reconhecer o formato deste arquivo. Selecione-o novamente.";
+  if (/type_not_allowed|tipo.*permitido/.test(normalized)) return "Este formato não é aceito. Envie uma imagem, vídeo, áudio ou documento compatível.";
   return raw || "Não foi possível enviar a mídia ao grupo.";
 }
 
@@ -394,7 +395,7 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <MediaAttachmentPicker ref={mediaPickerRef} file={mediaFile} onChange={(file, edit = null) => { setMediaFile(file); setMediaEdit(file ? edit : null); setMediaValidationError(null); }} caption={message} onCaptionChange={setMessage} uploadProgress={sendMedia.isPending ? mediaUploadProgress : null} processing={mediaProcessing} processingProgress={mediaProcessingProgress} onCancelUpload={cancelUpload} onValidationError={setMediaValidationError} disabled={sendText.isPending || sendMedia.isPending || mediaProcessing} />
                 {can("shortcuts", "use") ? <ShortcutPicker agentName={user?.name || "Atendente"} contactName={selected.name} departmentName={(user as any)?.departmentName || "Atendimento"} onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} /> : null}
-                <span className="text-xs text-muted-foreground">Enter envia · Shift + Enter quebra a linha · Cole ou solte uma imagem</span>
+                <span className="text-xs text-muted-foreground">Enter envia · Shift + Enter quebra a linha · Cole ou solte um arquivo</span>
               </div>
               <div className="flex items-end gap-2 rounded-xl border bg-background p-2 focus-within:ring-2 focus-within:ring-ring/30">
                 <Textarea value={message} onChange={(event) => { setMessage(event.target.value); setFeedback(null); startGroupTyping(selected.id); }} onBlur={() => stopGroupTyping(selected.id)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(); } }} placeholder={mediaFile ? "Adicione uma legenda (opcional)…" : "Escreva uma mensagem para o grupo…"} maxLength={4096} className="min-h-12 max-h-36 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0" />
