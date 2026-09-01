@@ -52,6 +52,20 @@ VITE_API_URL=https://<dominio-publico-da-api>
 
 Após o primeiro deploy da API, gere o domínio público dela; depois configure `VITE_API_URL`, faça o deploy do front-end e atualize `CORS_ORIGIN` com o domínio final do front-end.
 
+### Hardening do frontend
+
+O frontend publica os headers de segurança no template do Nginx (`frontend/nginx.conf`):
+`Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`,
+`X-Frame-Options`, `Referrer-Policy` e `Permissions-Policy`. A CSP permite somente
+o próprio frontend e o domínio público da API configurado atualmente. Se o domínio
+da API mudar, atualize o `connect-src`, `img-src` e `media-src` antes do redeploy.
+
+As fontes são empacotadas localmente pelo `@fontsource-variable/geist`; o frontend
+não depende mais de `fonts.googleapis.com` ou `fonts.gstatic.com`. `robots.txt`
+bloqueia indexação do painel autenticado e `.well-known/security.txt` publica o
+canal de contato de segurança. Substitua o contato provisório desse arquivo pelo
+canal oficial da empresa antes de publicar em produção.
+
 ## Ordem segura
 
 1. Criar/adicionar o serviço PostgreSQL.

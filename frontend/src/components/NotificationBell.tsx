@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Bell, Check, CheckCheck, ExternalLink, Inbox, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bell, Check, CheckCheck, ExternalLink, Inbox, Volume2, VolumeX, X } from "lucide-react";
 import { useLocation } from "wouter";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
-import { useNotifications } from "@/hooks/use-notifications";
+import { OPEN_NOTIFICATIONS_EVENT, useNotifications } from "@/hooks/use-notifications";
+import { useNotificationPreferences } from "@/hooks/use-notification-preferences";
+import { playNotificationSound } from "@/hooks/use-attention-notifications";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { AgentNotification } from "@/types";
 
 const notificationTypeLabel: Record<string, string> = {
@@ -66,8 +68,67 @@ function NotificationItem({ notification, onOpen, onDismiss }: { notification: A
 export function NotificationBell() {
   const [, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
+  const [permission, setPermission] = useState<NotificationPermission>("default");
+  const [preferenceMessage, setPreferenceMessage] = useState<string | null>(null);
   const { notifications, unreadCount, isLoading, isError, markAllRead, dismiss } = useNotifications(true);
+  const { preference, updatePreference } = useNotificationPreferences(true);
   const visibleNotifications = notifications.filter((notification) => !notification.dismissedAt);
+
+  useEffect(() => {
+    const readPermission = () => {
+      setPermission(typeof Notification === "undefined" ? "denied" : Notification.permission);
+    };
+    readPermission();
+    window.addEventListener("focus", readPermission);
+    return () => window.removeEventListener("focus", readPermission);
+  }, []);
+
+  useEffect(() => {
+    const openNotifications = () => setOpen(true);
+    window.addEventListener(OPEN_NOTIFICATIONS_EVENT, openNotifications);
+    return () => window.removeEventListener(OPEN_NOTIFICATIONS_EVENT, openNotifications);
+  }, []);
+
+  const toggleSound = (checked: boolean) => {
+    setPreferenceMessage(null);
+    updatePreference.mutate({ soundEnabled: checked });
+  };
+
+  const toggleBrowserNotifications = async (checked: boolean) => {
+    setPreferenceMessage(null);
+    if (!checked) {
+      updatePreference.mutate({ browserEnabled: false });
+      return;
+    }
+    if (typeof Notification === "undefined") {
+      setPreferenceMessage("Este navegador não oferece notificações nativas. O sino e o título da aba continuam disponíveis.");
+      updatePreference.mutate({ browserEnabled: false });
+      return;
+    }
+    try {
+      const nextPermission = Notification.permission === "default"
+        ? await Notification.requestPermission()
+        : Notification.permission;
+      setPermission(nextPermission);
+      if (nextPermission === "granted") {
+        updatePreference.mutate({ browserEnabled: true });
+        setPreferenceMessage("Notificações do navegador ativadas.");
+      } else if (nextPermission === "denied") {
+        updatePreference.mutate({ browserEnabled: false });
+        setPreferenceMessage("As notificações estão bloqueadas. Libere-as nas configurações do navegador para ativá-las.");
+      } else {
+        updatePreference.mutate({ browserEnabled: false });
+      }
+    } catch {
+      updatePreference.mutate({ browserEnabled: false });
+      setPreferenceMessage("Não foi possível solicitar a permissão neste navegador.");
+    }
+  };
+
+  const testSound = async () => {
+    const played = await playNotificationSound();
+    setPreferenceMessage(played ? "Som de teste reproduzido." : "O navegador bloqueou o som. Clique novamente ou verifique o volume do dispositivo.");
+  };
 
   const openNotification = (notification: AgentNotification) => {
     // Opening a notification acknowledges it and removes it from the active feed.
@@ -120,6 +181,45 @@ export function NotificationBell() {
         {visibleNotifications.some((notification) => notification.conversationId) ? (
           <div className="notification-popover-footer"><ExternalLink data-icon="inline-start" /> Clique para abrir o atendimento</div>
         ) : null}
+        <div className="notification-preferences" aria-label="Preferências de notificações">
+          <div className="notification-preferences-title">Preferências de alerta</div>
+          <label className="notification-preference-row">
+            {preference.soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
+            <span className="notification-preference-copy">
+              <strong>Som de novas notificações</strong>
+              <small>Reproduzir um alerta quando a aba estiver em segundo plano.</small>
+            </span>
+            <Checkbox
+              checked={preference.soundEnabled}
+              disabled={updatePreference.isPending}
+              onCheckedChange={(checked) => toggleSound(Boolean(checked))}
+              aria-label="Ativar som de novas notificações"
+            />
+          </label>
+          <div className="notification-preference-actions">
+            <Button type="button" variant="outline" size="sm" onClick={() => void testSound()}>
+              <Volume2 data-icon="inline-start" /> Testar som
+            </Button>
+            <label className="notification-preference-toggle">
+              <span>Notificações do navegador</span>
+              <Checkbox
+                checked={preference.browserEnabled && permission === "granted"}
+                disabled={updatePreference.isPending}
+                onCheckedChange={(checked) => void toggleBrowserNotifications(Boolean(checked))}
+                aria-label="Ativar notificações do navegador"
+              />
+            </label>
+          </div>
+          <div className="notification-preference-status" aria-live="polite">
+            {preferenceMessage || (updatePreference.isError
+              ? "Não foi possível salvar a preferência. Tente novamente."
+              : permission === "granted"
+              ? "Permissão do navegador: permitida."
+              : permission === "denied"
+                ? "Permissão do navegador: bloqueada nas configurações."
+                : "Permissão do navegador: ainda não solicitada.")}
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );

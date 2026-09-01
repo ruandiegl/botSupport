@@ -49,6 +49,7 @@ Bem-vindo à central de documentação técnica e de engenharia do **GTF-Bot**, 
 - [**Runbook de horários de funcionamento**](RUNBOOK_HORARIO_FUNCIONAMENTO.md): configuração, deduplicação, diagnóstico e rollback da mensagem de expediente.
 - [**Plano 026: categorias, itens e resumo de contato**](../plans/plan-026-categorias-itens-resumo-contato.md): menus hierárquicos em duas etapas e confirmação do perfil cadastrado.
 - [**Plano 029: colagem e arrastar-e-soltar de imagens**](../plans/plan-029-colar-imagens-drag-drop-chat.md): entrada rápida de capturas de tela no compositor privado e de grupos.
+- [**Plano 030: notificações na aba, alertas sonoros e envio de ZIP**](../plans/plan-030-notificacoes-aba-alertas-sonoros.md): atenção global em segundo plano, preferências de alerta e documentos compactados.
 ├── agents/           # Agentes de IA do time de desenvolvimento e automação de bot
 └── docker-compose.yml # PostgreSQL 16 para banco de dados local
 ```

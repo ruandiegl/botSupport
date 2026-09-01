@@ -15,6 +15,7 @@
 - Confirmar que outro departamento recebe `403` e que nenhum request do navegador usa domínio Z-API.
 - Validar áudio/vídeo com play, pause, seek e Range; imagem lazy/zoom; documento com download explícito.
 - Testar `downloadError`, `viewOnce`, origem `404/410`, timeout, MIME falso, arquivo excedente e ticket adulterado/expirado.
+- Enviar ZIP válido abaixo de `OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES` em conversa privada e grupo, confirmar o endpoint `send-document/zip`, MIME normalizado e entrega no WhatsApp; rejeitar ZIP sem assinatura `PK`, com extensão incompatível ou acima do limite com mensagem orientando dividir o conteúdo.
 - Alterar retenção em homologação, executar worker e confirmar `410`, status `EXPIRED` e ciphertext nulo.
 - Reenviar o mesmo callback, inclusive simultaneamente, e confirmar um único registro/unread/notificação.
 - Verificar fila, marcação de leitura, notificações, assumir, transferir, encerrar, atalhos e fluxo do bot.

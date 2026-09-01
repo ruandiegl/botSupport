@@ -22,6 +22,7 @@ import { MediaAttachmentPicker, type MediaAttachmentPickerHandle } from "@/pages
 import { MediaComposerDropZone } from "@/pages/conversation/components/MediaComposerDropZone";
 import { MessageMedia } from "@/pages/conversation/components/MessageMedia";
 import { OutgoingMediaCard } from "@/pages/conversation/components/OutgoingMediaCard";
+import { mediaFileKind, mediaSizeError } from "@/pages/conversation/components/media-file";
 import { renderEditedVideo, type VideoEdit } from "@/pages/conversation/components/video-processing";
 import { useRegisterShortcutUse } from "@/pages/conversation/hooks/use-shortcuts";
 import type { ConversationMedia, OutgoingMedia } from "@/types";
@@ -51,8 +52,6 @@ type GroupHistoryResponse = { items: GroupMessage[] };
 type GroupSocketMessage = { groupId: string; message: GroupMessage };
 type GroupUpdated = { groupId: string; lastMessageAt?: string; unread?: number; unreadIncrement?: number; activeConversation?: GroupItem["activeConversation"] };
 
-const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
-
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "GP";
 }
@@ -81,20 +80,23 @@ function dayLabel(value: string) {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: date.getFullYear() === today.getFullYear() ? undefined : "numeric" }).format(date);
 }
 
-function formatFileSize(bytes: number) {
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 function friendlyMediaError(error: unknown, file: File | null) {
   const raw = error instanceof Error ? error.message : String(error || "");
   const normalized = raw.toLowerCase();
+  // Prefer the backend's message when it contains the effective configured
+  // limit. This keeps environment-specific document/video limits accurate.
+  if (/^(este arquivo|este documento|este vídeo|este áudio|o arquivo excede|a extensão não|não conseguimos confirmar)/i.test(raw)) return raw;
+  const fileKind = file ? mediaFileKind(file) : null;
+  const isDocument = fileKind === "DOCUMENT";
   if (/413|payload too large|grande demais|excede|size_limit|limite/.test(normalized)) {
-    return file?.type.startsWith("video/")
+    return fileKind === "VIDEO"
       ? "Este vídeo é grande demais para enviar. O limite é 64 MB. Corte ou comprima o vídeo e tente novamente."
+      : isDocument
+        ? "Este documento é grande demais para enviar. Divida o arquivo ou reduza o conteúdo e tente novamente. Um ZIP também precisa respeitar o limite de documentos."
       : "Este arquivo é grande demais para enviar. Reduza o tamanho e tente novamente.";
   }
-  if (/signature|conteúdo.*tipo|formato/.test(normalized)) return "Não conseguimos reconhecer o formato deste arquivo. Selecione-o novamente.";
-  if (/type_not_allowed|tipo.*permitido/.test(normalized)) return "Este formato não é aceito. Envie uma imagem, vídeo, áudio ou documento compatível.";
+  if (/signature|conteúdo.*tipo|formato/.test(normalized)) return "Não conseguimos reconhecer o formato deste arquivo. Selecione uma imagem, vídeo, áudio, documento ou ZIP válido e tente novamente.";
+  if (/type_not_allowed|tipo.*permitido/.test(normalized)) return "Este formato não é aceito. Envie uma imagem, vídeo, áudio, documento compatível ou arquivo ZIP.";
   return raw || "Não foi possível enviar a mídia ao grupo.";
 }
 
@@ -295,8 +297,9 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
       }
     }
     if (controller.signal.aborted) return;
-    if (fileToSend.type.startsWith("video/") && fileToSend.size > MAX_VIDEO_BYTES) {
-      setMediaValidationError(`Este vídeo é grande demais para enviar (${formatFileSize(fileToSend.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
+    const fileSizeError = mediaSizeError(fileToSend);
+    if (fileSizeError) {
+      setMediaValidationError(fileSizeError);
       uploadAbortRef.current = null;
       return;
     }

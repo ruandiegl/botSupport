@@ -152,6 +152,8 @@ io.use(async (socket, next) => {
 | `agent:status` | `agents` | `{ agentId, isOnline, lastSeen }` | Presença do atendente mudou |
 | `notification:new` | `agent:{id}` (namespace `/notifications`) | `{ id, type, title, body, conversationId?, payload?, createdAt }` | Notificação pessoal; `CONVERSATION_DELEGATED` abre o modal de decisão no destinatário |
 
+> Nota de implementação: a versão atual usa o namespace Socket.IO configurado pela aplicação (padrão) e as salas `agent:{id}`. O frontend mantém uma única assinatura de `notification:new` no hook do sino e redistribui o evento internamente para o orquestrador de título, favicon, som e Notification API; não há uma segunda assinatura concorrente. O REST continua sendo a fonte da verdade após reconexões.
+
 ### 5.2 Eventos do Cliente → Servidor (Emitidos pelo frontend)
 
 | Evento | Payload | Descrição |
@@ -213,8 +215,10 @@ io.use(async (socket, next) => {
 - **Transferência**: Notificar atendentes do departamento destino.
 - O frontend deve:
   - Exibir toast/badge visual.
-  - Tocar som de notificação (configurável).
-  - Atualizar contador de não lidas no favicon/tab title.
+  - Tocar som de notificação (configurável e desativado por padrão).
+  - Quando a aba estiver oculta ou sem foco, atualizar o contador transitório no título e favicon e, somente com permissão explícita, usar a Notification API do navegador.
+  - Solicitar permissão do navegador apenas após ação explícita do atendente; em contexto sem suporte, manter sino, título e favicon como fallback.
+  - Coordenar múltiplas abas por `BroadcastChannel` com fallback curto em `localStorage`, evitando som/popup duplicados sem compartilhar conteúdo sensível.
 
 ### RF-06 — Reconexão Automática
 

@@ -31,6 +31,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useSocketEvent } from "@/lib/use-socket-events";
 import { DelegationAlertDialog } from "@/components/DelegationAlertDialog";
+import { useAttentionNotifications } from "@/hooks/use-attention-notifications";
 
 export interface AgentContextType {
   activeAgent: Agent | null;
@@ -69,6 +70,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const { user, logout, isAdmin, isAuthenticated, canViewScreen } = useAuth();
   const queryClient = useQueryClient();
   const conversationRefreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useAttentionNotifications(isAuthenticated);
 
   // A fila e seus contadores são atualizados por eventos do Socket.IO.
   // Assim evitamos polling contínuo em todas as telas.

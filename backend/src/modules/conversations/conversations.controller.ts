@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import type { AuthenticatedRequest } from "../auth/auth.middleware.js";
 import { conversationsService } from "./conversations.service.js";
 import { MultipartError, readMultipartForm } from "../../shared/multipart.js";
-import { outboundMediaBodyLimit } from "./outgoing-media.js";
+import { outboundMediaBodyLimit, outboundMediaMultipartLimitMessage, outboundMediaValidationMessage } from "./outgoing-media.js";
 import {
   ListConversationsQuerySchema,
   AssumeConversationBodySchema,
@@ -268,16 +268,7 @@ export class ConversationsController {
           res.status(403).json({ error: "Seu usuário não está disponível para enviar mídias." });
           return;
         case "INVALID": {
-          const messages: Record<string, string> = {
-            FILE_REQUIRED: "Selecione um arquivo antes de enviar.",
-            TYPE_NOT_ALLOWED: "Este tipo de arquivo não é permitido.",
-            SIZE_LIMIT: "O arquivo é grande demais para envio. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB.",
-            SIGNATURE_INVALID: "Não conseguimos confirmar o formato deste arquivo. Selecione um arquivo válido e tente novamente.",
-            NAME_INVALID: "O nome do arquivo é inválido.",
-            CAPTION_INVALID: "A legenda excede o limite permitido.",
-            CLIENT_MESSAGE_INVALID: "Identificador de envio inválido.",
-          };
-          res.status(400).json({ error: messages[result.code] || "Arquivo inválido." });
+          res.status(400).json({ error: outboundMediaValidationMessage(result.code, result.details) });
           return;
         }
         case "DUPLICATE":
@@ -297,7 +288,7 @@ export class ConversationsController {
       if (error instanceof MultipartError) {
         const status = error.code === "TOO_LARGE" ? 413 : error.code === "CONTENT_TYPE" ? 415 : 400;
         const message = error.code === "TOO_LARGE"
-          ? "O arquivo é grande demais para envio. Reduza o tamanho ou corte a mídia e tente novamente. Vídeos podem ter até 64 MB."
+          ? outboundMediaMultipartLimitMessage()
           : "Não foi possível ler o arquivo enviado. Selecione o arquivo novamente e tente outra vez.";
         res.status(status).json({ error: message });
         return;

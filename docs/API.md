@@ -132,7 +132,7 @@ Envia uma nova mensagem para a conversa como atendente.
 ```
 
 ### `POST /conversations/:id/media`
-Envia uma imagem, vídeo, áudio ou documento como atendente. Requer `conversations:send_media` e recebe `multipart/form-data` com:
+Envia uma imagem, vídeo, áudio, documento ou arquivo ZIP como atendente. Requer `conversations:send_media` e recebe `multipart/form-data` com:
 
 - `file` (obrigatório): um arquivo dentro dos limites configurados;
 - `caption` (opcional): legenda para imagem, vídeo ou documento;
@@ -140,9 +140,9 @@ Envia uma imagem, vídeo, áudio ou documento como atendente. Requer `conversati
 
 O cliente também envia `Idempotency-Key: clientMessageId`; o backend aceita o valor do header como fallback para clientes que não incluírem o campo multipart.
 
-O backend valida MIME, extensão e assinatura do arquivo, converte o conteúdo para Data URL/Base64 somente em memória e encaminha ao endpoint correspondente da Z‑API. Não grava o binário em disco, banco, R2, cache persistente ou resposta de histórico. O histórico mantém somente metadados (`type`, `mimeType`, `fileName`, `sizeBytes`, status e IDs do provedor); após recarregar a conversa não existe download da mídia enviada.
+O backend valida MIME, extensão e assinatura do arquivo, converte o conteúdo para Data URL/Base64 somente em memória e encaminha ao endpoint correspondente da Z‑API. ZIPs usam `application/zip` (o MIME legado `application/x-zip-compressed` também é aceito e normalizado) e são enviados pelo endpoint `send-document/zip`. O nome deve terminar em `.zip` e o cabeçalho do arquivo precisa usar uma assinatura ZIP `PK` válida; o conteúdo nunca é descompactado ou inspecionado para tentar contornar limites. Não grava o binário em disco, banco, R2, cache persistente ou resposta de histórico. O histórico mantém somente metadados (`type`, `mimeType`, `fileName`, `sizeBytes`, status e IDs do provedor); após recarregar a conversa não existe download da mídia enviada.
 
-Respostas: `201` com a mensagem criada; `400` arquivo inválido; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. O envio fica habilitado por padrão quando a API está configurada; defina `OUTBOUND_MEDIA_ENABLED=false` para desativar ou fazer rollback. O limite padrão para vídeo é 64 MiB (ajustável até o limite de 100 MB documentado pela Z‑API) e o leitor multipart drena uploads acima do limite antes de responder, evitando reset de conexão no navegador.
+Respostas: `201` com a mensagem criada; `400` arquivo inválido ou extensão incompatível; `403` sem permissão; `413` acima do limite; `409` `clientMessageId` duplicado; `502` falha da Z‑API; `503` feature desativada/configuração ausente. O envio fica habilitado por padrão quando a API está configurada; defina `OUTBOUND_MEDIA_ENABLED=false` para desativar ou fazer rollback. O limite padrão para documentos, incluindo ZIP, é 16 MiB e pode ser ajustado por `OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES`; compactar não permite ultrapassar o limite do arquivo final nem o limite da Z‑API/WhatsApp. O limite padrão para vídeo é 64 MiB (ajustável até o limite de 100 MB documentado pela Z‑API) e o leitor multipart drena uploads acima do limite antes de responder, evitando reset de conexão no navegador.
 
 O frontend também pode obter o `file` a partir de uma imagem colada no compositor (`Ctrl/Cmd+V`) ou arrastada para a área de composição. Essas entradas passam pelo mesmo fluxo multipart do seletor nativo; não existe endpoint adicional, alteração de payload ou persistência do clipboard.
 
@@ -544,6 +544,6 @@ O catálogo de grupos da Z-API é persistido em `GroupChat`; mensagens recebidas
 
 Com `groupsEnabled=true` e `groupConversationMode=IN_GROUP`, uma menção à própria instância abre ou reutiliza uma única `Conversation` com `channel=GROUP`. A autoria continua sendo do participante individual, mas confirmação, triagem e respostas humanas são entregues no grupo. `PRIVATE_LEGACY` preserva o fluxo privado atual e `groupResponseMode=ORIGIN_PARTICIPANT` restringe quem avança a triagem.
 
-`GET /zapi/groups` lista grupos (com busca `q` e fallback de cache). `GET /zapi/groups/:groupId/messages` retorna histórico sanitizado. `POST /zapi/groups/:groupId/messages` recebe `{ message, clientMessageId }`, exige `groups:send_message`, envia sem criar `Conversation` e grava `GroupOutboundMessage` com idempotência e estados `PENDING`, `SENT` ou `FAILED`.
+`GET /zapi/groups` lista grupos (com busca `q` e fallback de cache). `GET /zapi/groups/:groupId/messages` retorna histórico sanitizado. `POST /zapi/groups/:groupId/messages` recebe `{ message, clientMessageId }`, exige `groups:send_message`, envia sem criar `Conversation` e grava `GroupOutboundMessage` com idempotência e estados `PENDING`, `SENT` ou `FAILED`. `POST /zapi/groups/:groupId/media` recebe `multipart/form-data` com `file`, `caption` e `clientMessageId`, usa o mesmo validador e limites do envio privado e encaminha ZIPs válidos como documento via `send-document/zip`.
 
 Para rollback, mantenha `groupsEnabled=false` ou altere `groupConversationMode` para `PRIVATE_LEGACY`; as tabelas e auditorias aditivas permanecem intactas.

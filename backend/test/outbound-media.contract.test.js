@@ -2,10 +2,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
-import { validateOutgoingMedia } from "../dist/modules/conversations/outgoing-media.js";
+import {
+  outboundMediaValidationMessage,
+  validateOutgoingMedia,
+} from "../dist/modules/conversations/outgoing-media.js";
 
 const root = process.cwd();
 const source = readFileSync(join(root, "src", "modules", "zapi", "zapi.service.ts"), "utf8");
+const outgoingMediaSource = readFileSync(join(root, "src", "modules", "conversations", "outgoing-media.ts"), "utf8");
 const schema = readFileSync(join(root, "prisma", "schema.prisma"), "utf8");
 const migration = readFileSync(join(root, "prisma", "migrations", "20260824150000_add_outgoing_media_metadata", "migration.sql"), "utf8");
 const routes = readFileSync(join(root, "src", "modules", "conversations", "conversations.routes.ts"), "utf8");
@@ -47,11 +51,80 @@ test("normaliza vídeos quando o MIME declarado não acompanha o container real"
   assert.equal(webmMetadata.mimeType, "video/webm");
 });
 
+test("aceita ZIP válido como documento e normaliza o MIME reportado pelo Windows", () => {
+  // PK\x05\x06 is the end-of-central-directory signature used by an empty
+  // archive. The validator only needs the bounded magic bytes; it never
+  // unpacks or persists the archive contents.
+  const emptyZip = Buffer.from([
+    0x50, 0x4b, 0x05, 0x06,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00,
+  ]);
+  const metadata = validateOutgoingMedia({
+    fieldName: "file",
+    fileName: "../relatorio.zip",
+    mimeType: "application/x-zip-compressed",
+    buffer: emptyZip,
+  }, "", id);
+  assert.equal(metadata.type, "DOCUMENT");
+  assert.equal(metadata.mimeType, "application/zip");
+  assert.equal(metadata.fileName, "relatorio.zip");
+  assert.equal(metadata.sizeBytes, emptyZip.length);
+
+  const multipartMetadata = validateOutgoingMedia({
+    fieldName: "file",
+    fileName: "relatorio-multipart.zip",
+    mimeType: "multipart/x-zip",
+    buffer: emptyZip,
+  }, "", id);
+  assert.equal(multipartMetadata.mimeType, "application/zip");
+});
+
+test("exige extensão ZIP e assinatura PK para arquivos application/zip", () => {
+  const zipHeader = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x00, 0x00, 0x00, 0x00]);
+  assert.throws(
+    () => validateOutgoingMedia({ fieldName: "file", fileName: "arquivo.pdf", mimeType: "application/zip", buffer: zipHeader }, "", id),
+    /EXTENSION_INVALID/,
+  );
+  assert.throws(
+    () => validateOutgoingMedia({ fieldName: "file", fileName: "arquivo.zip", mimeType: "application/zip", buffer: Buffer.from("texto") }, "", id),
+    /SIGNATURE_INVALID/,
+  );
+});
+
+test("mostra limite efetivo e orientação específica para ZIP acima do limite", () => {
+  const previous = process.env.OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES;
+  process.env.OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES = String(4 * 1024 * 1024);
+  try {
+    assert.throws(
+      () => validateOutgoingMedia({ fieldName: "file", fileName: "arquivo.zip", mimeType: "application/zip", buffer: Buffer.alloc(5 * 1024 * 1024, 0x50) }, "", id),
+      /SIZE_LIMIT/,
+    );
+    assert.match(
+      outboundMediaValidationMessage("SIZE_LIMIT", {
+        kind: "DOCUMENT",
+        mimeType: "application/zip",
+        sizeBytes: 5 * 1024 * 1024,
+        limitBytes: 4 * 1024 * 1024,
+      }),
+      /arquivo ZIP.*5 MB.*4 MB/i,
+    );
+  } finally {
+    if (previous === undefined) delete process.env.OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES;
+    else process.env.OUTBOUND_MEDIA_MAX_DOCUMENT_BYTES = previous;
+  }
+});
+
 test("contrato de saída usa endpoints específicos e migration somente aditiva", () => {
   assert.match(source, /send-image/);
   assert.match(source, /send-video/);
   assert.match(source, /send-audio/);
   assert.match(source, /send-document/);
+  assert.match(outgoingMediaSource, /application\/zip/);
+  assert.match(outgoingMediaSource, /application\/x-zip-compressed/);
   assert.match(source, /data:\$\{mimeType\};base64/);
   assert.match(source, /replyToMessageId/);
   assert.doesNotMatch(source, /messageId:\s*clientMessageId/);

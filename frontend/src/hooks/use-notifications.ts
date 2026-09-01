@@ -4,6 +4,20 @@ import { apiFetch } from "@/lib/api-client";
 import { useSocketEvent } from "@/lib/use-socket-events";
 import type { AgentNotification, NotificationListResponse } from "@/types";
 
+/**
+ * Internal browser event used to fan out the single Socket.IO notification
+ * subscription to global UI concerns (title, favicon and native alerts).
+ * Keeping this in the existing hook prevents a second notification:new
+ * listener from being attached by the Shell.
+ */
+export const NOTIFICATION_RECEIVED_EVENT = "gtfbot:notification-received";
+export const OPEN_NOTIFICATIONS_EVENT = "gtfbot:open-notifications";
+
+function dispatchNotificationReceived(notification: AgentNotification) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent<AgentNotification>(NOTIFICATION_RECEIVED_EVENT, { detail: notification }));
+}
+
 type NotificationPayload =
   | AgentNotification[]
   | { items?: AgentNotification[]; data?: AgentNotification[]; unreadCount?: number; meta?: { total?: number; unreadCount?: number; page?: number; limit?: number; totalPages?: number } };
@@ -69,6 +83,7 @@ export function useNotifications(enabled = true) {
       return;
     }
     const notification = payload as AgentNotification;
+    dispatchNotificationReceived(notification);
     queryClient.setQueryData<NotificationListResponse>(["notifications", "list"], (previous) => {
       if (!previous || previous.items.some((item) => item.id === notification.id)) return previous;
       const unread = !notification.readAt && !notification.dismissedAt;
@@ -125,9 +140,17 @@ export function useNotifications(enabled = true) {
     queryClient.setQueryData<number>(["notifications", "unread-count"], (count) => Math.max(0, (count ?? 0) - (wasUnread ? 1 : 0)));
   }, [queryClient]);
 
+  const handleSocketConnect = useCallback(() => {
+    // Socket.IO emits `connect` both on the first connection and after a
+    // reconnect. REST reconciles anything missed while the socket was away;
+    // this invalidation does not dispatch historical notifications again.
+    void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  }, [queryClient]);
+
   useSocketEvent("notification:new", handleNew);
   useSocketEvent("notification:read", handleRead);
   useSocketEvent("notification:dismissed", handleDismissed);
+  useSocketEvent("connect", handleSocketConnect);
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {

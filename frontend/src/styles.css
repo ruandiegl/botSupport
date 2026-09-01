@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import "tw-animate-css";
@@ -31,9 +30,9 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --radius: 0.625rem;
-  --app-font-sans: 'Geist Variable', 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
-  --app-font-display: 'Outfit', 'Geist Variable', sans-serif;
-  --app-font-mono: 'Fira Code', monospace;
+  --app-font-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --app-font-display: 'Geist Variable', system-ui, sans-serif;
+  --app-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -1223,6 +1222,18 @@ body { letter-spacing: 0; }
 .notification-empty [data-slot="empty-title"] { color: #1a3044; }
 .notification-popover-footer { display: flex; align-items: center; gap: 5px; padding: 10px 14px; border-top: 1px solid #e4ebf1; color: #71869a; font-size: 10px; }
 .notification-popover-footer svg { width: 12px; height: 12px; color: #2d89c8; }
+.notification-preferences { display: flex; flex-direction: column; gap: 9px; padding: 12px 14px 14px; border-top: 1px solid #e4ebf1; }
+.notification-preferences-title { color: #1a3044; font-size: 11px; font-weight: 700; }
+.notification-preference-row { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+.notification-preference-row > svg { width: 15px; height: 15px; flex: 0 0 auto; color: #2d89c8; }
+.notification-preference-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+.notification-preference-copy strong { color: #1a3044; font-size: 11px; }
+.notification-preference-copy small { color: #71869a; font-size: 10px; line-height: 1.35; }
+.notification-preference-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.notification-preference-actions [data-slot="button"] { height: 28px; padding: 0 9px; font-size: 10px; }
+.notification-preference-actions [data-slot="button"] svg { width: 13px; height: 13px; }
+.notification-preference-toggle { display: inline-flex; align-items: center; gap: 6px; color: #587087; font-size: 10px; cursor: pointer; }
+.notification-preference-status { min-height: 14px; color: #71869a; font-size: 10px; line-height: 1.35; }
 @media (max-width: 760px) {
   .queue-sort-hint { width: 100%; margin-left: 0; }
   .date-range-filter { flex: 1; }
@@ -1610,6 +1621,12 @@ body { letter-spacing: 0; }
 [data-theme="dark"] .notification-item.is-unread { background: #161b26; }
 [data-theme="dark"] .notification-item-icon,
 [data-theme="dark"] .notification-empty [data-slot="empty-icon"] { background: #1e2638; color: #00dbe9; }
+[data-theme="dark"] .notification-preferences { border-color: #262f45; }
+[data-theme="dark"] .notification-preferences-title,
+[data-theme="dark"] .notification-preference-copy strong { color: #f8fafc; }
+[data-theme="dark"] .notification-preference-copy small,
+[data-theme="dark"] .notification-preference-toggle,
+[data-theme="dark"] .notification-preference-status { color: #94a3b8; }
 
 [data-theme="dark"] .login-main,
 [data-theme="dark"] .login-card,

@@ -37,6 +37,7 @@ import { ContactProfileDialog } from "./components/ContactProfileDialog";
 import { MediaAttachmentPicker, type MediaAttachmentPickerHandle } from "./components/MediaAttachmentPicker";
 import { MediaComposerDropZone } from "./components/MediaComposerDropZone";
 import { OutgoingMediaCard } from "./components/OutgoingMediaCard";
+import { mediaFileKind, mediaSizeError } from "./components/media-file";
 import { NewConversationDialog } from "./components/NewConversationDialog";
 import { renderEditedVideo, type VideoEdit } from "./components/video-processing";
 import { useContact, useCreateContact, useCreateConversation, useUpdateContact, type ContactDetail } from "./hooks/use-contacts";
@@ -65,19 +66,20 @@ const dayDividerLabel = (date: string) => {
   return value.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 };
 
-const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
-
-function formatFileSize(bytes: number) {
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 function friendlyMediaError(error: unknown, file: File | null) {
   const raw = error instanceof Error ? error.message : String(error || "");
   const normalized = raw.toLowerCase();
-  const isVideo = file?.type.startsWith("video/") === true;
+  // Prefer the backend's message when it contains the effective configured
+  // limit. This keeps environment-specific document/video limits accurate.
+  if (/^(este arquivo|este documento|este vídeo|este áudio|o arquivo excede|a extensão não|não conseguimos confirmar)/i.test(raw)) return raw;
+  const fileKind = file ? mediaFileKind(file) : null;
+  const isVideo = fileKind === "VIDEO";
+  const isDocument = fileKind === "DOCUMENT";
   if (/413|payload too large|grande demais|excede|size_limit|limite configurado/.test(normalized)) {
     return isVideo
       ? "Este vídeo é grande demais para enviar. O limite é 64 MB. Corte ou comprima o vídeo e tente novamente."
+      : isDocument
+        ? "Este documento é grande demais para enviar. Divida o arquivo ou reduza o conteúdo e tente novamente. Um ZIP também precisa respeitar o limite de documentos."
       : "Este arquivo é grande demais para enviar. Reduza o tamanho e tente novamente.";
   }
   if (/signature|conteúdo.*tipo|formato/.test(normalized)) {
@@ -86,7 +88,7 @@ function friendlyMediaError(error: unknown, file: File | null) {
       : "Não conseguimos reconhecer o formato deste arquivo. Selecione-o novamente e tente outra vez.";
   }
   if (/type_not_allowed|tipo.*permitido/.test(normalized)) {
-    return "Este formato não é aceito. Envie uma imagem, vídeo, áudio ou documento compatível.";
+    return "Este formato não é aceito. Envie uma imagem, vídeo, áudio, documento compatível ou arquivo ZIP.";
   }
   return raw || "Não foi possível enviar a mídia. Tente novamente.";
 }
@@ -338,8 +340,9 @@ export default function ConversationPage() {
       }
 
       if (uploadController.signal.aborted) return;
-      if (fileToSend.type.startsWith("video/") && fileToSend.size > MAX_VIDEO_BYTES) {
-        setMediaValidationError(`Este vídeo é grande demais para enviar (${formatFileSize(fileToSend.size)}). O limite é 64 MB. Corte ou comprima o vídeo e tente novamente.`);
+      const fileSizeError = mediaSizeError(fileToSend);
+      if (fileSizeError) {
+        setMediaValidationError(fileSizeError);
         mediaUploadAbortRef.current = null;
         return;
       }

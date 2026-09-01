@@ -2,33 +2,10 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      (function () {
-        try {
-          var storedTheme = localStorage.getItem("theme");
-          var theme = storedTheme === "light" || storedTheme === "dark"
-            ? storedTheme
-            : window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-
-          document.documentElement.classList.remove("light", "dark");
-          document.documentElement.classList.add(theme);
-          document.documentElement.dataset.theme = theme;
-          document.documentElement.style.colorScheme = theme;
-        } catch (_) {
-          document.documentElement.classList.add("light");
-          document.documentElement.dataset.theme = "light";
-          document.documentElement.style.colorScheme = "light";
-        }
-      })();
-    </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme-init.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/grupogtf-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GTF-Bot — Operação Torre Forte</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>

@@ -227,6 +227,16 @@ export interface NotificationListResponse {
   totalPages: number;
 }
 
+export interface NotificationPreference {
+  id?: string;
+  soundEnabled: boolean;
+  browserEnabled: boolean;
+  unresolvedRemindersEnabled?: boolean;
+  unresolvedReminderMinutes?: number;
+  reminderRepeatMinutes?: number;
+  updatedAt?: string;
+}
+
 export interface Procedure {
   id: string;
   title: string;

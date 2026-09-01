@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import type { ConversationMedia } from "@/types";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -48,6 +48,7 @@ export function VideoPlayerDialog({
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
+  const playRequestRef = useRef<Promise<void> | null>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -61,6 +62,7 @@ export function VideoPlayerDialog({
   useEffect(() => {
     const video = videoRef.current;
     if (!open) {
+      playRequestRef.current = null;
       video?.pause();
       setPlaying(false);
       setIsPictureInPicture(false);
@@ -73,6 +75,7 @@ export function VideoPlayerDialog({
     setVolume(1);
     setMuted(false);
     setPlayerError(null);
+    playRequestRef.current = null;
     if (video) {
       video.pause();
       video.currentTime = 0;
@@ -112,25 +115,46 @@ export function VideoPlayerDialog({
     if (video) setCurrentTime(video.currentTime);
   };
 
-  const togglePlayback = () => {
+  const startPlayback = () => {
     const video = videoRef.current;
     if (!video) return;
+    if (playRequestRef.current) return;
     setPlayerError(null);
-    if (!video.paused && !video.ended) {
-      video.pause();
-      setPlaying(false);
-      return;
-    }
-
     if (video.ended) video.currentTime = 0;
     // Update the overlay immediately. Some browsers resolve the play promise
     // only after the first frame is ready, which used to leave the center
     // button visible while playback was already being requested.
     setPlaying(true);
-    void video.play().catch(() => {
+    let playRequest: Promise<void>;
+    try {
+      playRequest = video.play();
+    } catch {
       setPlaying(false);
       setPlayerError("Não foi possível iniciar a reprodução neste navegador.");
-    });
+      return;
+    }
+    playRequestRef.current = playRequest;
+    void playRequest
+      .then(() => setPlaying(true))
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setPlaying(false);
+        setPlayerError("Não foi possível iniciar a reprodução neste navegador.");
+      })
+      .finally(() => {
+        if (playRequestRef.current === playRequest) playRequestRef.current = null;
+      });
+  };
+
+  const togglePlayback = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (playing && !video.ended) {
+      video.pause();
+      setPlaying(false);
+      return;
+    }
+    startPlayback();
   };
 
   const seekBy = (seconds: number) => {
@@ -231,19 +255,20 @@ export function VideoPlayerDialog({
               Seu navegador não reproduz vídeo.
             </video>
             {!playing ? (
-              <Button
-                variant="secondary"
-                size="icon-lg"
-                className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-lg hover:bg-background"
+              <button
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "icon-lg" }),
+                  "absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-lg hover:bg-background",
+                )}
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
-                  togglePlayback();
+                  startPlayback();
                 }}
                 aria-label="Reproduzir vídeo"
               >
                 <Play data-icon="icon" className="fill-current" />
-              </Button>
+              </button>
             ) : null}
           </div>
 

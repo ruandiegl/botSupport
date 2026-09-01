@@ -15,25 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { ImageEditorDialog } from "./ImageEditorDialog";
 import { VideoEditorDialog } from "./VideoEditorDialog";
 import type { VideoEdit } from "./video-processing";
-
-const ACCEPT = [
-  "image/jpeg", "image/png", "image/webp", "image/gif",
-  "video/mp4", "video/webm", "video/3gpp", "video/quicktime",
-  "audio/ogg", "audio/mpeg", "audio/mp3", "audio/mp4", "audio/wav", "audio/webm",
-  "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "text/plain",
-  ".jpg", ".jpeg", ".png", ".webp", ".gif",
-  ".mp4", ".webm", ".3gp", ".mov",
-  ".ogg", ".mp3", ".m4a", ".wav",
-  ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt",
-].join(",");
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+import { MEDIA_ACCEPT, normalizeMediaFile, formatMediaBytes } from "./media-file";
 
 function mediaLabel(file: File) {
   if (file.type.startsWith("image/")) return "Imagem";
@@ -101,12 +83,13 @@ export const MediaAttachmentPicker = forwardRef<MediaAttachmentPickerHandle, Pro
       onChange(null);
       return;
     }
-    if (nextFile.type.startsWith("image/")) {
-      openEditor(nextFile);
-    } else if (nextFile.type.startsWith("video/")) {
-      openVideoEditor(nextFile);
+    const normalizedFile = normalizeMediaFile(nextFile);
+    if (normalizedFile.type.startsWith("image/")) {
+      openEditor(normalizedFile);
+    } else if (normalizedFile.type.startsWith("video/")) {
+      openVideoEditor(normalizedFile);
     } else {
-      onChange(nextFile);
+      onChange(normalizedFile);
     }
   }, [disabled, onChange, onValidationError]);
 
@@ -124,7 +107,7 @@ export const MediaAttachmentPicker = forwardRef<MediaAttachmentPickerHandle, Pro
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPT}
+        accept={MEDIA_ACCEPT}
         className="sr-only"
         onChange={(event) => {
           const nextFile = event.target.files?.[0] ?? null;
@@ -132,7 +115,7 @@ export const MediaAttachmentPicker = forwardRef<MediaAttachmentPickerHandle, Pro
           event.currentTarget.value = "";
         }}
         disabled={disabled}
-        aria-label="Selecionar imagem, vídeo, áudio ou documento"
+        aria-label="Selecionar imagem, vídeo, áudio, documento ou arquivo ZIP"
       />
       <Button type="button" variant="outline" size="sm" onClick={chooseFile} disabled={disabled}>
         <Paperclip data-icon="inline-start" /> Anexar arquivo
@@ -149,7 +132,7 @@ export const MediaAttachmentPicker = forwardRef<MediaAttachmentPickerHandle, Pro
           </AttachmentMedia>
           <AttachmentContent>
             <AttachmentTitle title={file.name}>{file.name}</AttachmentTitle>
-            <AttachmentDescription>{mediaLabel(file)} · {formatBytes(file.size)}</AttachmentDescription>
+            <AttachmentDescription>{mediaLabel(file)} · {formatMediaBytes(file.size)}</AttachmentDescription>
             {isBusy ? (
               <div className="mt-1.5 flex min-w-32 flex-col gap-1" aria-live="polite">
                 <Progress value={progressValue} aria-label={`${isProcessing ? "Processando" : "Enviando"} ${mediaLabel(file).toLowerCase()}: ${progressValue}%`} />

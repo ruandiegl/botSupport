@@ -1052,7 +1052,11 @@ export class ZApiService {
     try {
       metadata = validateOutgoingMedia(input.file, input.caption.trim(), input.clientMessageId);
     } catch (error: any) {
-      return { kind: "INVALID" as const, code: error?.code || "INVALID_FILE" };
+      return {
+        kind: "INVALID" as const,
+        code: error?.code || "INVALID_FILE",
+        ...(error?.details ? { details: error.details } : {}),
+      };
     }
 
     const existing = await zApiRepository.findGroupOutboundByClientMessageId(input.clientMessageId);
