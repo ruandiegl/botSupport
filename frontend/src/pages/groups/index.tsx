@@ -361,6 +361,12 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
         </section>
 
         <section className={`${mobileThreadOpen ? "flex" : "hidden"} min-h-0 flex-col bg-background lg:flex`} aria-label="Conversa do grupo">
+          <MediaComposerDropZone
+            className="flex min-h-0 flex-1 flex-col"
+            disabled={!can("groups", "send_message") || sendText.isPending || sendMedia.isPending || mediaProcessing}
+            onFile={handleExternalMediaFile}
+            onError={setMediaValidationError}
+          >
           {selected ? <>
             <header className="flex min-h-20 items-center gap-3 border-b bg-card px-4 py-3">
               <Button variant="ghost" size="icon-sm" className="lg:hidden" aria-label="Voltar aos grupos" onClick={() => setMobileThreadOpen(false)}><ArrowLeft data-icon="icon" /></Button>
@@ -386,12 +392,7 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
               </div>
             </ChatScroller>
 
-            {can("groups", "send_message") ? <MediaComposerDropZone
-              className="border-t bg-card p-3 sm:p-4"
-              disabled={sendText.isPending || sendMedia.isPending || mediaProcessing}
-              onFile={handleExternalMediaFile}
-              onError={setMediaValidationError}
-            ><div className="mx-auto max-w-5xl">
+            {can("groups", "send_message") ? <div className="border-t bg-card p-3 sm:p-4"><div className="mx-auto max-w-5xl">
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <MediaAttachmentPicker ref={mediaPickerRef} file={mediaFile} onChange={(file, edit = null) => { setMediaFile(file); setMediaEdit(file ? edit : null); setMediaValidationError(null); }} caption={message} onCaptionChange={setMessage} uploadProgress={sendMedia.isPending ? mediaUploadProgress : null} processing={mediaProcessing} processingProgress={mediaProcessingProgress} onCancelUpload={cancelUpload} onValidationError={setMediaValidationError} disabled={sendText.isPending || sendMedia.isPending || mediaProcessing} />
                 {can("shortcuts", "use") ? <ShortcutPicker agentName={user?.name || "Atendente"} contactName={selected.name} departmentName={(user as any)?.departmentName || "Atendimento"} onSelect={(shortcut) => { setMessage(shortcut.message); setSelectedShortcutId(shortcut.id); }} /> : null}
@@ -402,8 +403,9 @@ export default function GroupsPage({ embedded = false }: GroupsPageProps = {}) {
                 <Button size="icon" className="shrink-0 rounded-full" aria-label="Enviar no grupo" title="Enviar no grupo" onClick={() => void send()} disabled={(!message.trim() && !mediaFile) || sendText.isPending || sendMedia.isPending || mediaProcessing}>{sendText.isPending || sendMedia.isPending || mediaProcessing ? <RefreshCw className="animate-spin" /> : <Send data-icon="icon" />}</Button>
               </div>
               <div className="mt-1.5 flex min-h-5 items-center justify-between gap-3 text-xs"><span className={mediaValidationError || feedback ? "text-destructive" : "text-muted-foreground"}>{mediaValidationError || feedback || (mediaFile ? "O arquivo será enviado à Z-API e não ficará armazenado localmente." : "")}</span><span className="shrink-0 text-muted-foreground">{message.length}/4096</span></div>
-            </div></MediaComposerDropZone> : <p className="border-t bg-card p-4 text-center text-sm text-muted-foreground">Seu perfil pode visualizar grupos, mas não possui permissão para enviar mensagens.</p>}
+            </div></div> : <p className="border-t bg-card p-4 text-center text-sm text-muted-foreground">Seu perfil pode visualizar grupos, mas não possui permissão para enviar mensagens.</p>}
           </> : <Empty className="m-auto border"><EmptyHeader><EmptyMedia variant="icon"><MessageCircle /></EmptyMedia><EmptyTitle>Selecione um grupo</EmptyTitle><EmptyDescription>Escolha uma conversa à esquerda para abrir o histórico.</EmptyDescription></EmptyHeader></Empty>}
+          </MediaComposerDropZone>
         </section>
       </div>
     </div>

@@ -52,6 +52,7 @@ export function VideoPlayerDialog({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
@@ -69,75 +70,67 @@ export function VideoPlayerDialog({
     setCurrentTime(0);
     setDuration(0);
     setPlaybackRate(1);
+    setVolume(1);
     setMuted(false);
     setPlayerError(null);
     if (video) {
       video.pause();
       video.currentTime = 0;
       video.playbackRate = 1;
+      video.volume = 1;
       video.muted = false;
     }
   }, [open, source]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-
-    const syncMetadata = () => {
-      if (Number.isFinite(video.duration) && video.duration > 0) setDuration(video.duration);
-    };
-    const onLoadedMetadata = syncMetadata;
-    const onDurationChange = syncMetadata;
-    const onTimeUpdate = () => setCurrentTime(video.currentTime);
-    const onPlay = () => setPlaying(true);
-    const onPause = () => setPlaying(false);
-    const onEnded = () => setPlaying(false);
-    const onError = () => setPlayerError("Não foi possível reproduzir este vídeo. Tente novamente ou baixe o arquivo.");
     const onEnterPictureInPicture = () => setIsPictureInPicture(true);
     const onLeavePictureInPicture = () => setIsPictureInPicture(false);
     const onFullscreenChange = () => setIsFullscreen(document.fullscreenElement === playerRef.current);
 
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("durationchange", onDurationChange);
-    video.addEventListener("loadeddata", syncMetadata);
-    video.addEventListener("canplay", syncMetadata);
-    video.addEventListener("timeupdate", onTimeUpdate);
-    video.addEventListener("play", onPlay);
-    video.addEventListener("pause", onPause);
-    video.addEventListener("ended", onEnded);
-    video.addEventListener("error", onError);
-    video.addEventListener("enterpictureinpicture", onEnterPictureInPicture);
-    video.addEventListener("leavepictureinpicture", onLeavePictureInPicture);
+    video?.addEventListener("enterpictureinpicture", onEnterPictureInPicture);
+    video?.addEventListener("leavepictureinpicture", onLeavePictureInPicture);
     document.addEventListener("fullscreenchange", onFullscreenChange);
-    // Metadata can be available from cache before the effect subscribes to
-    // the media events. Read it immediately as well so the timeline does not
-    // remain stuck at 0:00 / 0:00.
-    syncMetadata();
     return () => {
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("durationchange", onDurationChange);
-      video.removeEventListener("loadeddata", syncMetadata);
-      video.removeEventListener("canplay", syncMetadata);
-      video.removeEventListener("timeupdate", onTimeUpdate);
-      video.removeEventListener("play", onPlay);
-      video.removeEventListener("pause", onPause);
-      video.removeEventListener("ended", onEnded);
-      video.removeEventListener("error", onError);
-      video.removeEventListener("enterpictureinpicture", onEnterPictureInPicture);
-      video.removeEventListener("leavepictureinpicture", onLeavePictureInPicture);
+      video?.removeEventListener("enterpictureinpicture", onEnterPictureInPicture);
+      video?.removeEventListener("leavepictureinpicture", onLeavePictureInPicture);
       document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
   }, [open, source]);
+
+  const syncMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (Number.isFinite(video.duration) && video.duration > 0) {
+      setDuration(video.duration);
+      setCurrentTime(Math.min(video.currentTime, video.duration));
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (video) setCurrentTime(video.currentTime);
+  };
 
   const togglePlayback = () => {
     const video = videoRef.current;
     if (!video) return;
     setPlayerError(null);
-    if (video.paused) {
-      void video.play().catch(() => setPlayerError("Não foi possível iniciar a reprodução neste navegador."));
-    } else {
+    if (!video.paused && !video.ended) {
       video.pause();
+      setPlaying(false);
+      return;
     }
+
+    if (video.ended) video.currentTime = 0;
+    // Update the overlay immediately. Some browsers resolve the play promise
+    // only after the first frame is ready, which used to leave the center
+    // button visible while playback was already being requested.
+    setPlaying(true);
+    void video.play().catch(() => {
+      setPlaying(false);
+      setPlayerError("Não foi possível iniciar a reprodução neste navegador.");
+    });
   };
 
   const seekBy = (seconds: number) => {
@@ -156,9 +149,28 @@ export function VideoPlayerDialog({
   const toggleMute = () => {
     const video = videoRef.current;
     if (!video) return;
-    const next = !video.muted;
-    video.muted = next;
-    setMuted(next);
+    if (video.muted || muted) {
+      const nextVolume = volume > 0 ? volume : 1;
+      video.volume = nextVolume;
+      video.muted = false;
+      setVolume(nextVolume);
+      setMuted(false);
+      return;
+    }
+    video.muted = true;
+    setMuted(true);
+  };
+
+  const changeVolume = (value: string) => {
+    const next = Math.min(1, Math.max(0, Number(value)));
+    if (!Number.isFinite(next)) return;
+    const video = videoRef.current;
+    setVolume(next);
+    if (video) {
+      video.volume = next;
+      video.muted = next === 0;
+    }
+    setMuted(next === 0);
   };
 
   const toggleFullscreen = async () => {
@@ -205,6 +217,15 @@ export function VideoPlayerDialog({
               preload="metadata"
               playsInline
               onClick={togglePlayback}
+              onLoadedMetadata={syncMetadata}
+              onDurationChange={syncMetadata}
+              onLoadedData={syncMetadata}
+              onCanPlay={syncMetadata}
+              onTimeUpdate={handleTimeUpdate}
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onEnded={() => setPlaying(false)}
+              onError={() => setPlayerError("Não foi possível reproduzir este vídeo. Tente novamente ou baixe o arquivo.")}
               aria-label={media.caption || "Vídeo recebido no WhatsApp"}
             >
               Seu navegador não reproduz vídeo.
@@ -213,8 +234,12 @@ export function VideoPlayerDialog({
               <Button
                 variant="secondary"
                 size="icon-lg"
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-lg hover:bg-background"
-                onClick={togglePlayback}
+                className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-lg hover:bg-background"
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  togglePlayback();
+                }}
                 aria-label="Reproduzir vídeo"
               >
                 <Play data-icon="icon" className="fill-current" />
@@ -245,9 +270,21 @@ export function VideoPlayerDialog({
               <Button variant="ghost" size="icon-sm" onClick={() => seekBy(-10)} aria-label="Voltar 10 segundos" title="Voltar 10 segundos"><Rewind data-icon="icon" /></Button>
               <Button variant="ghost" size="icon-sm" onClick={() => seekBy(10)} aria-label="Adiantar 10 segundos" title="Adiantar 10 segundos"><FastForward data-icon="icon" /></Button>
               <span className="min-w-20 text-center text-xs tabular-nums text-muted-foreground">{formatTime(currentTime)} / {formatTime(duration)}</span>
-              <Button variant="ghost" size="icon-sm" onClick={toggleMute} aria-pressed={muted} aria-label={muted ? "Ativar áudio" : "Silenciar vídeo"} title={muted ? "Ativar áudio" : "Silenciar vídeo"}>
-                {muted ? <VolumeX data-icon="icon" /> : <Volume2 data-icon="icon" />}
-              </Button>
+              <div className="flex items-center gap-1.5" role="group" aria-label="Volume do vídeo">
+                <Button variant="ghost" size="icon-sm" onClick={toggleMute} aria-pressed={muted} aria-label={muted ? "Ativar áudio" : "Silenciar vídeo"} title={muted ? "Ativar áudio" : "Silenciar vídeo"}>
+                  {muted ? <VolumeX data-icon="icon" /> : <Volume2 data-icon="icon" />}
+                </Button>
+                <input
+                  aria-label="Volume do vídeo"
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={muted ? 0 : volume}
+                  onChange={(event) => changeVolume(event.target.value)}
+                  className="w-20 cursor-pointer accent-primary"
+                />
+              </div>
               <Select value={String(playbackRate)} onValueChange={changeSpeed}>
                 <SelectTrigger className="h-7 w-20 text-xs" aria-label="Velocidade de reprodução"><SelectValue>{playbackRate}x</SelectValue></SelectTrigger>
                 <SelectContent side="bottom" align="end"><SelectGroup>{SPEEDS.map((speed) => <SelectItem key={speed} value={String(speed)}>{speed}x</SelectItem>)}</SelectGroup></SelectContent>

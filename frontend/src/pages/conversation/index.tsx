@@ -531,6 +531,12 @@ export default function ConversationPage() {
   return (
     <div className="content conversation-page">
       <section className="panel thread">
+        <MediaComposerDropZone
+          className="flex min-h-0 flex-1 flex-col"
+          disabled={!canSendMedia || sendMessage.isPending || sendMedia.isPending || mediaProcessing}
+          onFile={handleExternalMediaFile}
+          onError={setMediaValidationError}
+        >
         <div className="thread-head">
           <div className="contact-block">
             <Button
@@ -674,12 +680,6 @@ export default function ConversationPage() {
           })}
         </div>
 
-        <MediaComposerDropZone
-          className="composer-drop-zone"
-          disabled={!canSendMedia || sendMessage.isPending || sendMedia.isPending || mediaProcessing}
-          onFile={handleExternalMediaFile}
-          onError={setMediaValidationError}
-        >
           <div className="composer">
           <div className="composer-toolbar">
             {canSendMedia ? (

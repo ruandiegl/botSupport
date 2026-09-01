@@ -22,7 +22,7 @@ export function MediaComposerDropZone({ children, disabled = false, className, o
     <div
       className={cn("relative", className)}
       role="group"
-      aria-label="Área de composição da mensagem"
+      aria-label="Área da conversa para arrastar arquivos"
       onPaste={onPaste}
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
@@ -33,7 +33,7 @@ export function MediaComposerDropZone({ children, disabled = false, className, o
       {children}
       {isDragActive ? (
         <div
-          className="pointer-events-none absolute inset-1 grid place-items-center rounded-xl border-2 border-dashed border-primary bg-primary/10 text-primary backdrop-blur-[1px]"
+          className="pointer-events-none absolute inset-0 z-30 grid place-items-center rounded-xl border-2 border-dashed border-primary bg-primary/10 text-primary backdrop-blur-[1px]"
           aria-live="polite"
         >
           <span className="flex items-center gap-2 rounded-full border border-primary/30 bg-background/95 px-4 py-2 text-sm font-medium shadow-sm">
