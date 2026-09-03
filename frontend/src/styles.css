@@ -1197,11 +1197,11 @@ body { letter-spacing: 0; }
 .notification-bell { position: relative; color: #587087; background: #fff !important; border: 1px solid #d8e1ea !important; }
 .notification-bell:hover { color: #2d89c8; border-color: #2d89c8 !important; background: #edf6fc !important; }
 .notification-bell-badge { position: absolute; top: -4px; right: -5px; min-width: 17px; height: 17px; display: grid; place-items: center; padding: 0 4px; border-radius: 999px; background: #e9664d; color: #fff; font-size: 9px; font-weight: 700; border: 2px solid #fff; }
-.notification-popover { width: min(390px, calc(100vw - 24px)); max-height: min(620px, calc(100vh - 110px)); padding: 0 !important; overflow: hidden; background: #fff !important; border-color: #d8e1ea !important; box-shadow: 0 18px 48px rgba(26,43,61,.2) !important; }
+.notification-popover { display: flex; width: min(390px, calc(100vw - 24px)); max-height: min(620px, calc(100vh - 110px)); flex-direction: column; padding: 0 !important; overflow-y: auto; overscroll-behavior: contain; background: #fff !important; border-color: #d8e1ea !important; box-shadow: 0 18px 48px rgba(26,43,61,.2) !important; }
 .notification-popover-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 15px 16px 13px; border-bottom: 1px solid #e4ebf1; }
 .notification-popover-heading [data-slot="popover-title"] { color: #1a3044; font-size: 15px; }
 .notification-popover-heading [data-slot="popover-description"] { max-width: 270px; font-size: 11px; line-height: 1.4; }
-.notification-list { display: flex; max-height: 460px; flex-direction: column; overflow-y: auto; }
+.notification-list { display: flex; max-height: min(320px, 38vh); min-height: 0; flex-direction: column; overflow-y: auto; }
 .notification-item { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 12px 14px; border-bottom: 1px solid #edf1f4; cursor: pointer; transition: background-color .15s ease; }
 .notification-item:hover, .notification-item:focus-visible { background: #f5f9fc; outline: none; }
 .notification-item.is-unread { background: #fbfdff; }
@@ -1222,7 +1222,7 @@ body { letter-spacing: 0; }
 .notification-empty [data-slot="empty-title"] { color: #1a3044; }
 .notification-popover-footer { display: flex; align-items: center; gap: 5px; padding: 10px 14px; border-top: 1px solid #e4ebf1; color: #71869a; font-size: 10px; }
 .notification-popover-footer svg { width: 12px; height: 12px; color: #2d89c8; }
-.notification-preferences { display: flex; flex-direction: column; gap: 9px; padding: 12px 14px 14px; border-top: 1px solid #e4ebf1; }
+.notification-preferences { position: sticky; bottom: 0; z-index: 1; display: flex; flex-shrink: 0; flex-direction: column; gap: 9px; padding: 12px 14px 14px; border-top: 1px solid #e4ebf1; background: #fff; }
 .notification-preferences-title { color: #1a3044; font-size: 11px; font-weight: 700; }
 .notification-preference-row { display: flex; align-items: center; gap: 9px; cursor: pointer; }
 .notification-preference-row > svg { width: 15px; height: 15px; flex: 0 0 auto; color: #2d89c8; }
@@ -1621,7 +1621,7 @@ body { letter-spacing: 0; }
 [data-theme="dark"] .notification-item.is-unread { background: #161b26; }
 [data-theme="dark"] .notification-item-icon,
 [data-theme="dark"] .notification-empty [data-slot="empty-icon"] { background: #1e2638; color: #00dbe9; }
-[data-theme="dark"] .notification-preferences { border-color: #262f45; }
+[data-theme="dark"] .notification-preferences { border-color: #262f45; background: #0d111d; }
 [data-theme="dark"] .notification-preferences-title,
 [data-theme="dark"] .notification-preference-copy strong { color: #f8fafc; }
 [data-theme="dark"] .notification-preference-copy small,
