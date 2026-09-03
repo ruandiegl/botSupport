@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBotExclusions, useCreateBotExclusion, useRemoveBotExclusion, useUpdateBotExclusion } from "./hooks/use-bot-exclusions";
+import { BotExclusionCreateModal } from "./components/BotExclusionCreateModal";
 import { BotExclusionEditModal } from "./components/BotExclusionEditModal";
-import { BotExclusionFormFields, formatPhoneInput, type BotExclusionFormValues } from "./components/BotExclusionFormFields";
+import { formatPhoneInput, type BotExclusionFormValues } from "./components/BotExclusionFormFields";
 
 const emptyForm: BotExclusionFormValues = { phone: "", label: "", reason: "" };
 
@@ -33,6 +34,7 @@ export default function BotExclusionsAdmin() {
   const [editing, setEditing] = useState<BotExclusion | null>(null);
   const [editForm, setEditForm] = useState<BotExclusionFormValues>(emptyForm);
   const [editOpen, setEditOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<BotExclusion | null>(null);
   const [confirmAction, setConfirmAction] = useState<"create" | "edit" | null>(null);
 
@@ -40,12 +42,20 @@ export default function BotExclusionsAdmin() {
     () => (data?.items || []).filter((item) => (item.phone + " " + (item.label || "") + " " + (item.reason || "")).toLowerCase().includes(query.toLowerCase())),
     [data?.items, query],
   );
-  const createInvalid = createForm.phone.replace(/\D/g, "").length < 7;
-  const saving = create.isPending || update.isPending;
-
   const resetCreate = () => {
     create.reset();
     setCreateForm(emptyForm);
+  };
+
+  const openCreate = () => {
+    resetCreate();
+    setCreateOpen(true);
+  };
+
+  const closeCreate = (open: boolean) => {
+    if (open || create.isPending) return;
+    setCreateOpen(false);
+    resetCreate();
   };
 
   const startEdit = (item: BotExclusion) => {
@@ -66,6 +76,7 @@ export default function BotExclusionsAdmin() {
   const saveCreate = async () => {
     await create.mutateAsync({ phone: createForm.phone, label: createForm.label.trim() || null, reason: createForm.reason.trim() || null });
     setConfirmAction(null);
+    setCreateOpen(false);
     resetCreate();
   };
 
@@ -83,13 +94,14 @@ export default function BotExclusionsAdmin() {
     const action = confirmAction;
     setConfirmAction(null);
     if (action === "edit") setEditOpen(true);
+    if (action === "create") setCreateOpen(true);
   };
 
   return (
     <div className="content">
-      <PageHeader eyebrow="Administração / automação" title="Contatos ignorados pelo bot" description="Impeça respostas automáticas para números que também são bots ou não devem iniciar atendimentos." action={can("bot_exclusions", "create") ? <Button onClick={resetCreate}><Plus data-icon="inline-start" /> Novo bloqueio</Button> : undefined} />
+      <PageHeader eyebrow="Administração / automação" title="Contatos ignorados pelo bot" description="Impeça respostas automáticas para números que também são bots ou não devem iniciar atendimentos." action={can("bot_exclusions", "create") ? <Button onClick={openCreate}><Plus data-icon="inline-start" /> Novo bloqueio</Button> : undefined} />
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><ShieldOff data-icon="inline-start" /> Lista de bloqueios</CardTitle>
@@ -131,19 +143,9 @@ export default function BotExclusionsAdmin() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader><CardTitle>Novo bloqueio</CardTitle><CardDescription>O contato continuará visível no histórico, mas o bot não enviará mensagens automáticas.</CardDescription></CardHeader>
-          <CardContent>
-            <BotExclusionFormFields form={createForm} onChange={(patch) => setCreateForm((old) => ({ ...old, ...patch }))} />
-            <div className="mt-5 flex justify-end gap-2">
-              <Button variant="outline" onClick={resetCreate}>Limpar</Button>
-              <Button disabled={createInvalid || saving || !can("bot_exclusions", "create")} onClick={() => setConfirmAction("create")}>{create.isPending ? "Salvando..." : "Adicionar número"}</Button>
-            </div>
-            {create.error ? <Alert variant="destructive" className="mt-4" aria-live="polite"><AlertDescription>{create.error.message}</AlertDescription></Alert> : null}
-          </CardContent>
-        </Card>
       </div>
 
+      <BotExclusionCreateModal open={createOpen} form={createForm} onChange={(patch) => setCreateForm((old) => ({ ...old, ...patch }))} onOpenChange={closeCreate} onRequestSave={() => { setCreateOpen(false); setConfirmAction("create"); }} pending={create.isPending} error={create.error?.message || null} />
       <BotExclusionEditModal open={editOpen} target={editing} form={editForm} onChange={(patch) => setEditForm((old) => ({ ...old, ...patch }))} onOpenChange={closeEdit} onRequestSave={() => { setEditOpen(false); setConfirmAction("edit"); }} pending={update.isPending} error={update.error?.message || null} />
 
       <ConfirmationDialog open={Boolean(confirmAction)} onOpenChange={cancelConfirmation} tone="warning" title={confirmAction === "edit" ? "Salvar alteração?" : "Adicionar número à lista?"} description="O bot deixará de responder automaticamente a este número. O envio manual do atendente continuará funcionando." confirmLabel={confirmAction === "edit" ? "Salvar alteração" : "Adicionar número"} details={<span className="font-medium">{confirmAction === "edit" ? editForm.phone : createForm.phone}</span>} onConfirm={confirmAction === "edit" ? saveEdit : saveCreate} />
